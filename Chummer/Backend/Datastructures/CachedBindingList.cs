@@ -255,7 +255,7 @@ namespace Chummer
             try
             {
                 // INotifyPropertyChangedAsync will call PropertyChangedAsync anyway, which does everything we would do here
-                if (Count > 0 && this[0] is INotifyPropertyChangedAsync)
+                if (e.ListChangedType >= ListChangedType.ItemChanged && Count > 0 && this[0] is INotifyPropertyChangedAsync)
                     return;
                 if (_setListChangedAsync.Count > 0)
                 {

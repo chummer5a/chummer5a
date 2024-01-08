@@ -252,6 +252,7 @@ namespace Chummer.Backend.Skills
                 throw new ArgumentNullException(nameof(objCharacter));
             if (blnSetProperties)
                 DefaultAttribute = "LOG";
+            IsLoading = false;
         }
 
         public static async Task<KnowledgeSkill> NewAsync(Character objCharacter, string strForcedName,
@@ -280,6 +281,7 @@ namespace Chummer.Backend.Skills
             WritableName = strForcedName;
             ForcedName = true;
             _blnAllowUpgrade = blnAllowUpgrade;
+            IsLoading = false;
         }
 
         private bool _blnAllowUpgrade = true;

@@ -50,6 +50,17 @@ namespace Chummer.Backend.Skills
         private int _intKarma;
         private bool _blnBuyWithKarma;
 
+        private int _intIsLoading = 1;
+        public bool IsLoading
+        {
+            get => _intIsLoading > 0;
+            protected set
+            {
+                if (value || Interlocked.Decrement(ref _intIsLoading) < 0)
+                    Interlocked.Increment(ref _intIsLoading);
+            }
+        }
+
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public CharacterAttrib AttributeObject
@@ -405,6 +416,8 @@ namespace Chummer.Backend.Skills
                         {
                             objKnowledgeSkill = new KnowledgeSkill(objCharacter);
                         }
+
+                        objKnowledgeSkill.IsLoading = true;
                     }
                 }
 
@@ -449,12 +462,14 @@ namespace Chummer.Backend.Skills
                         ExoticSkill exotic = FromData(xmlSkillDataNode, objCharacter, false) as ExoticSkill
                                              ?? throw new ArgumentException(
                                                  "Attempted to load non-exotic skill as exotic skill");
+                        exotic.IsLoading = true;
                         exotic.Load(xmlSkillNode);
                         objLoadingSkill = exotic;
                     }
                     else
                     {
                         objLoadingSkill = new Skill(objCharacter, xmlSkillDataNode);
+                        objLoadingSkill.IsLoading = true;
                     }
                 }
             }
@@ -478,48 +493,59 @@ namespace Chummer.Backend.Skills
             if (objLoadingSkill == null)
             {
                 if (xmlSkillNode["forced"] != null)
+                {
                     objLoadingSkill = new KnowledgeSkill(objCharacter,
                         xmlSkillNode["name"]?.InnerText ?? string.Empty,
                         !Convert.ToBoolean(
                             xmlSkillNode["disableupgrades"]?.InnerText,
                             GlobalSettings.InvariantCultureInfo));
+                    objLoadingSkill.IsLoading = true;
+                }
                 else
                 {
                     KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter);
+                    objKnowledgeSkill.IsLoading = true;
                     objKnowledgeSkill.Load(xmlSkillNode);
                     objLoadingSkill = objKnowledgeSkill;
                 }
             }
 
-            if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out guiTemp))
-                objLoadingSkill.Id = guiTemp;
-
-            if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
-                xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
-
-            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
-
-            if (!objLoadingSkill.IsNativeLanguage)
+            try
             {
-                xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
-                xmlSkillNode.TryGetInt32FieldQuickly("base", ref objLoadingSkill._intBase);
-                xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objLoadingSkill._blnBuyWithKarma);
-                using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
+                if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out guiTemp))
+                    objLoadingSkill.Id = guiTemp;
+
+                if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
+                    xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                if (!objLoadingSkill.IsNativeLanguage)
                 {
-                    if (xmlSpecList == null)
-                        return objLoadingSkill;
-                    foreach (XmlNode xmlSpec in xmlSpecList)
+                    xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
+                    xmlSkillNode.TryGetInt32FieldQuickly("base", ref objLoadingSkill._intBase);
+                    xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objLoadingSkill._blnBuyWithKarma);
+                    using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
                     {
-                        SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
-                        if (objSpec != null)
-                            objLoadingSkill._lstSpecializations.Add(objSpec);
+                        if (xmlSpecList == null)
+                            return objLoadingSkill;
+                        foreach (XmlNode xmlSpec in xmlSpecList)
+                        {
+                            SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                            if (objSpec != null)
+                                objLoadingSkill._lstSpecializations.Add(objSpec);
+                        }
                     }
                 }
-            }
 
-            return objLoadingSkill;
+                return objLoadingSkill;
+            }
+            finally
+            {
+                objLoadingSkill.IsLoading = false;
+            }
         }
 
         /// <summary>
@@ -708,7 +734,8 @@ namespace Chummer.Backend.Skills
         /// <param name="blnIsKnowledgeSkill">Whether or not this skill is a knowledge skill.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async Task<Skill> FromDataAsync(XmlNode xmlNode, Character objCharacter, bool blnIsKnowledgeSkill, CancellationToken token = default)
+        public static async Task<Skill> FromDataAsync(XmlNode xmlNode, Character objCharacter, bool blnIsKnowledgeSkill,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (xmlNode == null)
@@ -717,18 +744,33 @@ namespace Chummer.Backend.Skills
             {
                 //load exotic skill
                 ExoticSkill objExoticReturn = new ExoticSkill(objCharacter, xmlNode, false);
-                string strExoticGroup = xmlNode["skillgroup"]?.InnerText;
-
-                if (!string.IsNullOrEmpty(strExoticGroup))
+                objExoticReturn.IsLoading = true;
+                try
                 {
-                    objExoticReturn.SkillGroup = strExoticGroup;
-                    SkillGroup objGroup = await Skills.SkillGroup.GetAsync(objExoticReturn, token).ConfigureAwait(false);
-                    objExoticReturn.SkillGroupObject = objGroup;
-                    if (objGroup != null)
+                    string strExoticGroup = xmlNode["skillgroup"]?.InnerText;
+
+                    if (!string.IsNullOrEmpty(strExoticGroup))
                     {
-                        objGroup.PropertyChangedAsync += objExoticReturn.OnSkillGroupChanged;
+                        objExoticReturn.SkillGroup = strExoticGroup;
+                        SkillGroup objGroup =
+                            await Skills.SkillGroup.GetAsync(objExoticReturn, token).ConfigureAwait(false);
+                        objExoticReturn.SkillGroupObject = objGroup;
+                        if (objGroup != null)
+                        {
+                            objGroup.PropertyChangedAsync += objExoticReturn.OnSkillGroupChanged;
+                        }
                     }
                 }
+                catch
+                {
+                    await objExoticReturn.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
+                finally
+                {
+                    objExoticReturn.IsLoading = false;
+                }
+
                 return objExoticReturn;
             }
 
@@ -738,24 +780,50 @@ namespace Chummer.Backend.Skills
                 Utils.BreakIfDebug();
 
                 KnowledgeSkill objKnoSkillReturn = new KnowledgeSkill(objCharacter, false);
-                await objKnoSkillReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                objKnoSkillReturn.IsLoading = true;
+                try
+                {
+                    await objKnoSkillReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await objKnoSkillReturn.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
+                finally
+                {
+                    objKnoSkillReturn.IsLoading = false;
+                }
                 return objKnoSkillReturn;
             }
 
             //TODO INIT SKILL
 
             Skill objReturn = new Skill(objCharacter, xmlNode, false);
-            string strGroup = xmlNode["skillgroup"]?.InnerText;
-
-            if (!string.IsNullOrEmpty(strGroup))
+            objReturn.IsLoading = true;
+            try
             {
-                objReturn.SkillGroup = strGroup;
-                SkillGroup objGroup = await Skills.SkillGroup.GetAsync(objReturn, token).ConfigureAwait(false);
-                objReturn.SkillGroupObject = objGroup;
-                if (objGroup != null)
+                string strGroup = xmlNode["skillgroup"]?.InnerText;
+
+                if (!string.IsNullOrEmpty(strGroup))
                 {
-                    objGroup.PropertyChangedAsync += objReturn.OnSkillGroupChanged;
+                    objReturn.SkillGroup = strGroup;
+                    SkillGroup objGroup = await Skills.SkillGroup.GetAsync(objReturn, token).ConfigureAwait(false);
+                    objReturn.SkillGroupObject = objGroup;
+                    if (objGroup != null)
+                    {
+                        objGroup.PropertyChangedAsync += objReturn.OnSkillGroupChanged;
+                    }
                 }
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
+            finally
+            {
+                objReturn.IsLoading = false;
             }
 
             return objReturn;
@@ -883,6 +951,7 @@ namespace Chummer.Backend.Skills
             }
 
             _blnRecalculateCachedSuggestedSpecializations = true;
+            IsLoading = false;
         }
 
         #endregion Factory
