@@ -36690,7 +36690,7 @@ namespace Chummer
                 return true;
             }
 
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 //Get attributes affected by redliner/cyber singularity seeker
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
@@ -36705,87 +36705,105 @@ namespace Chummer
                                                .Where(objLoopImprovement =>
                                                           objLoopImprovement.SourceName.Contains("SEEKER")));
                 List<string> lstSeekerAttributes = ImprovementManager
-                                                   .GetCachedImprovementListForValueOf(
-                                                       this, Improvement.ImprovementType.Seeker, token: token)
-                                                   .ConvertAll(objImprovement => objImprovement.ImprovedName);
-                lstSeekerAttributes.RemoveAll(x => x != "BOX" && !AttributeSection.AttributeStrings.Contains(x));
+                    .GetCachedImprovementListForValueOf(
+                        this, Improvement.ImprovementType.Seeker, token: token)
+                    .Select(x => x.ImprovedName).Where(x => x == "BOX" || AttributeSection.AttributeStrings.Contains(x))
+                    .ToList();
                 //if neither contains anything, it is safe to exit
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {
-                    _intCachedRedlinerBonus = 0;
+                    if (_intCachedRedlinerBonus != 0)
+                    {
+                        using (LockObject.EnterWriteLock(token))
+                            _intCachedRedlinerBonus = 0;
+                    }
+
                     return true;
                 }
 
                 //Calculate bonus from cyberlimbs
                 int intCount = Math.Min(Cyberware.Sum(x => x.GetCyberlimbCount(Settings.RedlinerExcludes)) / 2, 2);
 
-                _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
-                    ? intCount
-                    : 0;
-
-                if (lstSeekerImprovements.Count == lstSeekerAttributes.Count)
+                for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
                 {
-                    for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
+                    string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
+                    int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
+                    Improvement objImprovement
+                        = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
+                                                          && x.Value == intCountToTarget);
+                    if (objImprovement != null)
                     {
-                        string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
-                        int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
-                        Improvement objImprovement
-                            = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
-                                                              && x.Value == intCountToTarget);
-                        if (objImprovement != null)
-                        {
-                            lstSeekerAttributes.RemoveAt(i);
-                            lstSeekerImprovements.Remove(objImprovement);
-                        }
+                        lstSeekerAttributes.RemoveAt(i);
+                        lstSeekerImprovements.Remove(objImprovement);
                     }
                 }
 
-                //Improvement manager defines the functions needed to manipulate improvements
-                //When the locals (someday) gets moved to this class, this can be removed and use
-                //the local
-
-                // Remove which qualities have been removed or which values have changed
-                ImprovementManager.RemoveImprovements(this, lstSeekerImprovements, token: token);
-
-                try
+                if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {
-                    token.ThrowIfCancellationRequested();
-                    // Add new improvements or old improvements with new values
-                    foreach (string strAttribute in lstSeekerAttributes)
+                    int intNewCachedValue = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
+                        ? intCount
+                        : 0;
+                    if (_intCachedRedlinerBonus != intNewCachedValue)
                     {
-                        if (strAttribute == "BOX")
+                        using (LockObject.EnterWriteLock(token))
+                            _intCachedRedlinerBonus = intNewCachedValue;
+                    }
+                    return true;
+                }
+
+                using (LockObject.EnterWriteLock(token))
+                {
+                    _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
+                        ? intCount
+                        : 0;
+
+                    //Improvement manager defines the functions needed to manipulate improvements
+                    //When the locals (someday) gets moved to this class, this can be removed and use
+                    //the local
+
+                    // Remove which qualities have been removed or which values have changed
+                    ImprovementManager.RemoveImprovements(this, lstSeekerImprovements, token: token);
+
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        // Add new improvements or old improvements with new values
+                        foreach (string strAttribute in lstSeekerAttributes)
                         {
-                            ImprovementManager.CreateImprovement(this, strAttribute,
-                                Improvement.ImprovementSource.Quality,
-                                "SEEKER_BOX",
-                                Improvement.ImprovementType.PhysicalCM,
-                                Guid.NewGuid()
-                                    .ToString(
-                                        "D", GlobalSettings.InvariantCultureInfo),
-                                intCount * -3, token: token);
-                        }
-                        else
-                        {
-                            ImprovementManager.CreateImprovement(this, strAttribute,
-                                Improvement.ImprovementSource.Quality,
-                                "SEEKER_" + strAttribute,
-                                Improvement.ImprovementType.Attribute,
-                                Guid.NewGuid()
-                                    .ToString(
-                                        "D", GlobalSettings.InvariantCultureInfo),
-                                intCount, 1, 0, 0,
-                                intCount, token: token);
+                            if (strAttribute == "BOX")
+                            {
+                                ImprovementManager.CreateImprovement(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_BOX",
+                                    Improvement.ImprovementType.PhysicalCM,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount * -3, token: token);
+                            }
+                            else
+                            {
+                                ImprovementManager.CreateImprovement(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_" + strAttribute,
+                                    Improvement.ImprovementType.Attribute,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount, 1, 0, 0,
+                                    intCount, token: token);
+                            }
                         }
                     }
-                }
-                catch
-                {
-                    ImprovementManager.Rollback(this, CancellationToken.None);
-                    throw;
-                }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
+                    }
 
-                ImprovementManager.Commit(this);
-                return true;
+                    ImprovementManager.Commit(this);
+                    return true;
+                }
             }
         }
 
@@ -36796,7 +36814,7 @@ namespace Chummer
                 await EnqueuePostLoadAsyncMethodAsync(RefreshRedlinerImprovementsAsync, token).ConfigureAwait(false);
                 return true;
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -36816,12 +36834,25 @@ namespace Chummer
                 List<string> lstSeekerAttributes = (await ImprovementManager
                         .GetCachedImprovementListForValueOfAsync(
                             this, Improvement.ImprovementType.Seeker, token: token).ConfigureAwait(false))
-                                                   .ConvertAll(objImprovement => objImprovement.ImprovedName);
-                lstSeekerAttributes.RemoveAll(x => x != "BOX" && !AttributeSection.AttributeStrings.Contains(x));
+                    .Select(x => x.ImprovedName).Where(x => x == "BOX" || AttributeSection.AttributeStrings.Contains(x))
+                    .ToList();
                 //if neither contains anything, it is safe to exit
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {
-                    _intCachedRedlinerBonus = 0;
+                    if (_intCachedRedlinerBonus != 0)
+                    {
+                        IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _intCachedRedlinerBonus = 0;
+                        }
+                        finally
+                        {
+                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+
                     return true;
                 }
 
@@ -36831,75 +36862,103 @@ namespace Chummer
                         await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token), token)
                             .ConfigureAwait(false) / 2, 2);
 
-                _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
-                    ? intCount
-                    : 0;
-
-                if (lstSeekerImprovements.Count == lstSeekerAttributes.Count)
+                for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
                 {
-                    for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
+                    string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
+                    int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
+                    Improvement objImprovement
+                        = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
+                                                          && x.Value == intCountToTarget);
+                    if (objImprovement != null)
                     {
-                        string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
-                        int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
-                        Improvement objImprovement
-                            = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
-                                                              && x.Value == intCountToTarget);
-                        if (objImprovement != null)
-                        {
-                            lstSeekerAttributes.RemoveAt(i);
-                            lstSeekerImprovements.Remove(objImprovement);
-                        }
+                        lstSeekerAttributes.RemoveAt(i);
+                        lstSeekerImprovements.Remove(objImprovement);
                     }
                 }
 
-                //Improvement manager defines the functions needed to manipulate improvements
-                //When the locals (someday) gets moved to this class, this can be removed and use
-                //the local
+                if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+                {
+                    int intNewCachedValue = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
+                        ? intCount
+                        : 0;
+                    if (_intCachedRedlinerBonus != intNewCachedValue)
+                    {
+                        IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _intCachedRedlinerBonus = intNewCachedValue;
+                        }
+                        finally
+                        {
+                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
 
-                // Remove which qualities have been removed or which values have changed
-                await ImprovementManager.RemoveImprovementsAsync(this, lstSeekerImprovements, token: token)
-                    .ConfigureAwait(false);
+                    return true;
+                }
 
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    // Add new improvements or old improvements with new values
-                    foreach (string strAttribute in lstSeekerAttributes)
+                    _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
+                        ? intCount
+                        : 0;
+
+                    //Improvement manager defines the functions needed to manipulate improvements
+                    //When the locals (someday) gets moved to this class, this can be removed and use
+                    //the local
+
+                    // Remove which qualities have been removed or which values have changed
+                    await ImprovementManager.RemoveImprovementsAsync(this, lstSeekerImprovements, token: token)
+                        .ConfigureAwait(false);
+
+                    try
                     {
-                        if (strAttribute == "BOX")
+                        token.ThrowIfCancellationRequested();
+                        // Add new improvements or old improvements with new values
+                        foreach (string strAttribute in lstSeekerAttributes)
                         {
-                            await ImprovementManager.CreateImprovementAsync(this, strAttribute,
-                                Improvement.ImprovementSource.Quality,
-                                "SEEKER_BOX",
-                                Improvement.ImprovementType.PhysicalCM,
-                                Guid.NewGuid()
-                                    .ToString(
-                                        "D", GlobalSettings.InvariantCultureInfo),
-                                intCount * -3, token: token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await ImprovementManager.CreateImprovementAsync(this, strAttribute,
-                                Improvement.ImprovementSource.Quality,
-                                "SEEKER_" + strAttribute,
-                                Improvement.ImprovementType.Attribute,
-                                Guid.NewGuid()
-                                    .ToString(
-                                        "D", GlobalSettings.InvariantCultureInfo),
-                                intCount, 1, 0, 0,
-                                intCount, token: token).ConfigureAwait(false);
+                            if (strAttribute == "BOX")
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_BOX",
+                                    Improvement.ImprovementType.PhysicalCM,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount * -3, token: token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, strAttribute,
+                                    Improvement.ImprovementSource.Quality,
+                                    "SEEKER_" + strAttribute,
+                                    Improvement.ImprovementType.Attribute,
+                                    Guid.NewGuid()
+                                        .ToString(
+                                            "D", GlobalSettings.InvariantCultureInfo),
+                                    intCount, 1, 0, 0,
+                                    intCount, token: token).ConfigureAwait(false);
+                            }
                         }
                     }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+
+                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+
+                    return true;
                 }
-                catch
+                finally
                 {
-                    await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
-                    throw;
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
-
-                return true;
             }
             finally
             {
