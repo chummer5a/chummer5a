@@ -491,7 +491,6 @@ namespace Chummer.Backend.Attributes
                 {
                     if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                     {
-                        objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                         objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                     }
 
@@ -514,7 +513,6 @@ namespace Chummer.Backend.Attributes
                 {
                     if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                     {
-                        objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                         objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                     }
 
@@ -548,7 +546,6 @@ namespace Chummer.Backend.Attributes
                             });
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                         }
@@ -560,7 +557,6 @@ namespace Chummer.Backend.Attributes
                         {
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                             Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -580,7 +576,6 @@ namespace Chummer.Backend.Attributes
                                 continue;
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                             Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -602,7 +597,6 @@ namespace Chummer.Backend.Attributes
                             });
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                         }
@@ -633,7 +627,6 @@ namespace Chummer.Backend.Attributes
                             });
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                         }
@@ -645,7 +638,6 @@ namespace Chummer.Backend.Attributes
                         {
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                             Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -665,7 +657,6 @@ namespace Chummer.Backend.Attributes
                                 continue;
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                             Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -687,7 +678,6 @@ namespace Chummer.Backend.Attributes
                             });
                             if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                             {
-                                objAttribute.PropertyChanged += RunExtraPropertyChanged(objAttribute.Abbrev);
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
                         }
@@ -705,7 +695,6 @@ namespace Chummer.Backend.Attributes
                 {
                     if (objAttribute == GetAttributeByName(objAttribute.Abbrev))
                     {
-                        objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                         objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                     }
                     objAttribute.Dispose();
@@ -728,7 +717,6 @@ namespace Chummer.Backend.Attributes
                 {
                     if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev).ConfigureAwait(false))
                     {
-                        objAttribute.PropertyChanged -= RunExtraPropertyChanged(objAttribute.Abbrev);
                         objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                     }
                     await objAttribute.DisposeAsync().ConfigureAwait(false);
