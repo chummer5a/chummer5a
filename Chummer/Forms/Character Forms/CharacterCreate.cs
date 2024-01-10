@@ -4901,7 +4901,7 @@ namespace Chummer
 
         private async void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10072,7 +10072,7 @@ namespace Chummer
 
         private async void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10387,7 +10387,7 @@ namespace Chummer
 
         private async void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10432,7 +10432,7 @@ namespace Chummer
 
         private async void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10455,7 +10455,7 @@ namespace Chummer
 
         private async void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10640,7 +10640,7 @@ namespace Chummer
 
         private async void treWeapons_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10702,7 +10702,7 @@ namespace Chummer
 
         private async void treArmor_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10759,7 +10759,7 @@ namespace Chummer
 
         private async void treLifestyles_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10917,7 +10917,7 @@ namespace Chummer
 
         private async void nudLifestyleMonths_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10949,7 +10949,7 @@ namespace Chummer
 
         private async void treGear_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -10964,7 +10964,7 @@ namespace Chummer
 
         private async void nudGearRating_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11046,7 +11046,7 @@ namespace Chummer
 
         private async void nudGearQty_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11092,7 +11092,7 @@ namespace Chummer
 
         private async void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11151,7 +11151,7 @@ namespace Chummer
 
         private async void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11195,7 +11195,7 @@ namespace Chummer
 
         private async void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11278,7 +11278,7 @@ namespace Chummer
 
         private async void chkGearEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11303,7 +11303,7 @@ namespace Chummer
 
         private async void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11324,7 +11324,7 @@ namespace Chummer
 
         private async void chkArmorHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11345,7 +11345,7 @@ namespace Chummer
 
         private async void chkWeaponHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11366,7 +11366,7 @@ namespace Chummer
 
         private async void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11387,7 +11387,7 @@ namespace Chummer
 
         private async void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11422,7 +11422,7 @@ namespace Chummer
 
         private async void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11445,7 +11445,7 @@ namespace Chummer
 
         private async void chkArmorActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11468,7 +11468,7 @@ namespace Chummer
 
         private async void chkWeaponActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11491,7 +11491,7 @@ namespace Chummer
 
         private async void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11514,7 +11514,7 @@ namespace Chummer
 
         private async void chkVehicleActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -11974,7 +11974,7 @@ namespace Chummer
 
         private async void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -11993,7 +11993,7 @@ namespace Chummer
 
         private async void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -12068,7 +12068,7 @@ namespace Chummer
 
         private async void nudVehicleRating_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -12157,7 +12157,7 @@ namespace Chummer
 
         private async void chkVehicleWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -12179,7 +12179,7 @@ namespace Chummer
 
         private async void nudVehicleGearQty_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -12209,7 +12209,7 @@ namespace Chummer
 
         private async void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -12273,7 +12273,7 @@ namespace Chummer
 
         private async void treFoci_BeforeCheck(object sender, TreeViewCancelEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             TreeView treViewToUse = e.Node.TreeView;
@@ -12553,7 +12553,7 @@ namespace Chummer
 
         private async void nudArmorRating_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -12880,7 +12880,7 @@ namespace Chummer
 
         private async void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -12952,7 +12952,7 @@ namespace Chummer
 
         private async void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -13014,7 +13014,7 @@ namespace Chummer
 
         private async void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -13037,7 +13037,7 @@ namespace Chummer
 
         private async void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -13167,7 +13167,7 @@ namespace Chummer
 
         private async void treCritterPowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -13263,7 +13263,7 @@ namespace Chummer
 
         private async void chkCritterPowerCount_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -13397,7 +13397,7 @@ namespace Chummer
 
         private async void tabCharacterTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -13411,7 +13411,7 @@ namespace Chummer
 
         private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -24933,7 +24933,7 @@ namespace Chummer
 
         private async void chkDrugStolen_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -24952,7 +24952,7 @@ namespace Chummer
 
         private async void chkCyberwareStolen_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -24972,7 +24972,7 @@ namespace Chummer
 
         private async void chkGearStolen_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -24991,7 +24991,7 @@ namespace Chummer
 
         private async void chkArmorStolen_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -25011,7 +25011,7 @@ namespace Chummer
 
         private async void chkWeaponStolen_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -25031,7 +25031,7 @@ namespace Chummer
 
         private async void chkVehicleStolen_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -25075,7 +25075,7 @@ namespace Chummer
 
         private async void cboVehicleWeaponFiringMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
 
             try
@@ -25099,7 +25099,7 @@ namespace Chummer
 
         private async void chkCyberwareBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -25120,7 +25120,7 @@ namespace Chummer
 
         private async void chkGearBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -25142,7 +25142,7 @@ namespace Chummer
 
         private async void chkArmorBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -25164,7 +25164,7 @@ namespace Chummer
 
         private async void chkWeaponBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {
@@ -25186,7 +25186,7 @@ namespace Chummer
 
         private async void chkVehicleBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing)
+            if (IsRefreshing || SkipUpdate)
                 return;
             try
             {

@@ -402,6 +402,7 @@ namespace Chummer
             if (objSelectedNode == null || objSelectedNode.Level == 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -436,6 +437,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -451,6 +453,7 @@ namespace Chummer
             if (!(treNode?.Tag is IHasNotes objNotes))
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 using (ThreadSafeForm<EditNotes> frmItemNotes =
@@ -480,6 +483,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -502,6 +506,7 @@ namespace Chummer
             if (pnlAttributes == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -754,6 +759,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -779,6 +785,7 @@ namespace Chummer
             TreeNode objRitualsNode = null;
             TreeNode objEnchantmentsNode = null;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -905,6 +912,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -1058,7 +1066,7 @@ namespace Chummer
                             objSpellNode = new TreeNode
                             {
                                 Tag = objSpell.Category,
-                                Text = objSpell.DisplayCategory(GlobalSettings.Language)
+                                Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -1133,6 +1141,7 @@ namespace Chummer
                 return;
             TreeNode objParentNode = null;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -1224,6 +1233,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -1238,7 +1248,8 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAIPrograms",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: token).ConfigureAwait(false)
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: token)
+                            .ConfigureAwait(false)
                     };
                     await treAIPrograms.DoThreadSafeAsync(x =>
                     {
@@ -1280,6 +1291,7 @@ namespace Chummer
                 return;
             TreeNode objParentNode = null;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -1399,6 +1411,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -1485,6 +1498,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                SkipUpdate = true;
                 if (e == null ||
                     e.Action == NotifyCollectionChangedAction.Reset)
                 {
@@ -1594,6 +1608,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -1746,6 +1761,7 @@ namespace Chummer
             if (treMetamagic == null || e == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 switch (e.Action)
@@ -1797,6 +1813,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -1842,6 +1859,7 @@ namespace Chummer
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 switch (e.Action)
@@ -1893,6 +1911,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -1935,6 +1954,7 @@ namespace Chummer
         protected async Task RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 switch (e?.ListChangedType)
@@ -1986,6 +2006,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -1997,6 +2018,7 @@ namespace Chummer
         protected async Task RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (removingOldEventArgs?.OldObject is Power objPower)
@@ -2006,6 +2028,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -2015,6 +2038,7 @@ namespace Chummer
             if (treMetamagic == null || e == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 switch (e.Action)
@@ -2066,6 +2090,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -2146,6 +2171,7 @@ namespace Chummer
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null
@@ -2239,6 +2265,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -2331,6 +2358,7 @@ namespace Chummer
             TreeNode objLifeModuleRoot = null;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -2480,6 +2508,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
@@ -2621,6 +2650,7 @@ namespace Chummer
             if (intTopLevelNodeCount <= 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 List<Tuple<TreeNode, Task<string>>> lstNames = new List<Tuple<TreeNode, Task<string>>>(intTopLevelNodeCount);
@@ -2648,6 +2678,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -2664,6 +2695,7 @@ namespace Chummer
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 foreach (XPathNavigator objNode in objNodeList)
@@ -2681,6 +2713,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -3197,6 +3230,7 @@ namespace Chummer
             if (treWeapons == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 await CharacterObject.Weapons.ForEachAsync(
@@ -3205,6 +3239,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -3214,6 +3249,7 @@ namespace Chummer
             if (treWeapons == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -3398,6 +3434,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -3407,6 +3444,7 @@ namespace Chummer
             if (treArmor == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 await CharacterObject.Armor.ForEachAsync(async objArmor =>
@@ -3443,6 +3481,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -3452,6 +3491,7 @@ namespace Chummer
             if (treArmor == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -3857,6 +3897,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -3866,6 +3907,7 @@ namespace Chummer
             if (treArmor == null || objArmor == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 await objArmor.ArmorMods.ForEachAsync(async objArmorMod =>
@@ -3881,6 +3923,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -3893,6 +3936,7 @@ namespace Chummer
             if (nodArmor == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 switch (e.Action)
@@ -4044,6 +4088,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -4053,6 +4098,7 @@ namespace Chummer
             if (treGear == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 await CharacterObject.Gear.ForEachAsync(
@@ -4060,6 +4106,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -4069,6 +4116,7 @@ namespace Chummer
             if (treGear == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -4234,6 +4282,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -4243,6 +4292,7 @@ namespace Chummer
             if (treGear == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -4358,6 +4408,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -4367,6 +4418,7 @@ namespace Chummer
             if (treCyberware == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 await CharacterObject.Cyberware.ForEachAsync(
@@ -4376,6 +4428,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -4393,6 +4446,7 @@ namespace Chummer
             TreeNode objAntiHoleNode = null;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -4683,6 +4737,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -4692,6 +4747,7 @@ namespace Chummer
             if (treVehicles == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 await CharacterObject.Vehicles.ForEachAsync(
@@ -4796,6 +4852,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -4805,6 +4862,7 @@ namespace Chummer
             if (treVehicles == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -5881,6 +5939,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -5890,6 +5949,7 @@ namespace Chummer
             if (treFoci == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -6362,6 +6422,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -6371,6 +6432,7 @@ namespace Chummer
             if (treMartialArts == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 await CharacterObject.MartialArts.ForEachAsync(
@@ -6380,6 +6442,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -6389,6 +6452,7 @@ namespace Chummer
             if (treMartialArts == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -6590,6 +6654,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -6602,6 +6667,7 @@ namespace Chummer
             if (nodMartialArt == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 switch (e.Action)
@@ -6696,6 +6762,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -6708,6 +6775,7 @@ namespace Chummer
             if (treImprovements == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId =
@@ -7081,6 +7149,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -7091,6 +7160,7 @@ namespace Chummer
             if (treLifestyles == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 string strSelectedId
@@ -7238,6 +7308,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -7250,6 +7321,7 @@ namespace Chummer
             if (lstCalendar == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
@@ -7393,6 +7465,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -7409,6 +7482,8 @@ namespace Chummer
                 token = objSource.Token;
             }
 
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (panContacts != null)
@@ -7485,6 +7560,8 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 objSource?.Dispose();
             }
         }
@@ -7493,7 +7570,9 @@ namespace Chummer
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
+
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -7853,6 +7932,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -7868,6 +7948,8 @@ namespace Chummer
                 token = objSource.Token;
             }
 
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (pnlSustainedSpells != null)
@@ -7941,6 +8023,8 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 objSource?.Dispose();
             }
         }
@@ -7961,6 +8045,7 @@ namespace Chummer
                 return;
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 Panel DetermineRefreshingPanel(SustainedObject objSustained, Panel flpSustainedSpellsParam,
@@ -8294,6 +8379,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -8311,6 +8397,8 @@ namespace Chummer
                 token = objSource.Token;
             }
 
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 SustainedObject objSustainedObject = objSender.LinkedSustainedObject;
@@ -8332,6 +8420,8 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 objSource?.Dispose();
             }
         }
@@ -8356,6 +8446,7 @@ namespace Chummer
             if (lstNodes == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 List<ICanSort> lstSorted = treOwningTree != null
@@ -8386,6 +8477,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -8947,6 +9039,7 @@ namespace Chummer
         protected async Task AddContactsFromFile(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 XPathDocument xmlDoc;
@@ -8996,6 +9089,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -9013,6 +9107,8 @@ namespace Chummer
                 token = objSource.Token;
             }
 
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (panSpirits != null)
@@ -9063,15 +9159,19 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 objSource?.Dispose();
             }
         }
 
         public async Task RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (panSpirits == null && panSprites == null)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 if (e == null ||
@@ -9406,6 +9506,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -9525,6 +9626,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            SkipUpdate = true;
             try
             {
                 ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
@@ -9606,6 +9708,7 @@ namespace Chummer
             }
             finally
             {
+                SkipUpdate = false;
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -9826,10 +9929,8 @@ namespace Chummer
             get => _intRefreshingCount > 0;
             set
             {
-                if (value)
+                if (value || Interlocked.Decrement(ref _intRefreshingCount) < 0)
                     Interlocked.Increment(ref _intRefreshingCount);
-                else
-                    Interlocked.Decrement(ref _intRefreshingCount);
             }
         }
 
@@ -9838,10 +9939,8 @@ namespace Chummer
             get => _intLoadingCount > 0;
             set
             {
-                if (value)
+                if (value || Interlocked.Decrement(ref _intLoadingCount) < 0)
                     Interlocked.Increment(ref _intLoadingCount);
-                else
-                    Interlocked.Decrement(ref _intLoadingCount);
             }
         }
 
@@ -10398,11 +10497,11 @@ namespace Chummer
                         return false;
                     }
 
-                    string strOldFileName = CharacterObject.FileName;
-                    string strShowFileName = Path.GetFileName(CharacterObject.FileName);
+                    string strOldFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
+                    string strShowFileName = Path.GetFileName(strOldFileName);
                     if (string.IsNullOrEmpty(strShowFileName))
                     {
-                        strShowFileName = CharacterObject.CharacterName.CleanForFileName();
+                        strShowFileName = (await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false)).CleanForFileName();
                     }
 
                     dlgSaveFile.FileName = strShowFileName;
@@ -10419,17 +10518,17 @@ namespace Chummer
                             ? ".chum5lz"
                             : ".chum5";
                     }
-                    CharacterObject.FileName = strFileName;
                     try
                     {
+                        await CharacterObject.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
                         bool blnReturn = await SaveCharacter(false, blnDoCreated, token).ConfigureAwait(false);
                         if (!blnReturn)
-                            CharacterObject.FileName = strOldFileName;
+                            await CharacterObject.SetFileNameAsync(strOldFileName, token).ConfigureAwait(false);
                         return blnReturn;
                     }
                     catch
                     {
-                        CharacterObject.FileName = strOldFileName;
+                        await CharacterObject.SetFileNameAsync(strOldFileName, CancellationToken.None).ConfigureAwait(false);
                         throw;
                     }
                 }
@@ -10547,109 +10646,123 @@ namespace Chummer
                     {
                         if (await frmPickGear.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                        // Open the Gear XML file and locate the selected piece.
-                        XmlNode objXmlGear = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                        // Create the new piece of Gear.
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                        Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
-
-                        if (objGear.InternalId.IsEmptyGuid())
-                            continue;
-
-                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-                        objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                        // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.MyForm.DoItYourself)
-                            objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.MyForm.FreeCost)
-                            objGear.Cost = "0";
-
-                        if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                        SkipUpdate = true;
+                        try
                         {
-                            decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
+                            blnAddAgain = frmPickGear.MyForm.AddAgain;
 
-                            // Multiply the cost if applicable.
-                            char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
-                            switch (chrAvail)
+                            // Open the Gear XML file and locate the selected piece.
+                            XmlNode objXmlGear = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                frmPickGear.MyForm.SelectedGear);
+
+                            // Create the new piece of Gear.
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                            Gear objGear = new Gear(CharacterObject);
+                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                false);
+
+                            if (objGear.InternalId.IsEmptyGuid())
+                                continue;
+
+                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                            objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                            // Reduce the cost for Do It Yourself components.
+                            if (frmPickGear.MyForm.DoItYourself)
+                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                            // If the item was marked as free, change its cost.
+                            if (frmPickGear.MyForm.FreeCost)
+                                objGear.Cost = "0";
+
+                            if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                             {
-                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                    break;
+                                decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
 
-                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                    break;
-                            }
-
-                            // Check the item's Cost and make sure the character can afford it.
-                            if (!frmPickGear.MyForm.FreeCost)
-                            {
-                                if (decCost > CharacterObject.Nuyen)
+                                // Multiply the cost if applicable.
+                                char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false))
+                                    .Suffix;
+                                switch (chrAvail)
                                 {
-                                    Program.ShowScrollableMessageBox(this,
-                                                           await LanguageManager.GetStringAsync(
-                                                               "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
-                                                           await LanguageManager.GetStringAsync(
-                                                               "MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
-                                                           MessageBoxButtons.OK,
-                                                           MessageBoxIcon.Information);
-                                    continue;
+                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                        break;
+
+                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                        break;
                                 }
 
-                                // Create the Expense Log Entry.
-                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                objExpense.Create(decCost * -1,
-                                                  await LanguageManager.GetStringAsync(
-                                                      "String_ExpensePurchaseVehicleGear", token: token).ConfigureAwait(false) +
-                                                  await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
-                                                  await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
-                                                  DateTime.Now);
-                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                                await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+                                // Check the item's Cost and make sure the character can afford it.
+                                if (!frmPickGear.MyForm.FreeCost)
+                                {
+                                    if (decCost > CharacterObject.Nuyen)
+                                    {
+                                        Program.ShowScrollableMessageBox(this,
+                                            await LanguageManager.GetStringAsync(
+                                                "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                            await LanguageManager.GetStringAsync(
+                                                "MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information);
+                                        continue;
+                                    }
 
-                                ExpenseUndo objUndo = new ExpenseUndo();
-                                objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
-                                objExpense.Undo = objUndo;
+                                    // Create the Expense Log Entry.
+                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                    objExpense.Create(decCost * -1,
+                                        await LanguageManager.GetStringAsync(
+                                            "String_ExpensePurchaseVehicleGear", token: token).ConfigureAwait(false) +
+                                        await LanguageManager.GetStringAsync("String_Space", token: token)
+                                            .ConfigureAwait(false) +
+                                        await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        ExpenseType.Nuyen,
+                                        DateTime.Now);
+                                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                        .ConfigureAwait(false);
+                                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                                    ExpenseUndo objUndo = new ExpenseUndo();
+                                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
+                                    objExpense.Undo = objUndo;
+                                }
                             }
-                        }
 
-                        Gear objExistingGear = null;
-                        // If this is Ammunition, see if the character already has it on them.
-                        if ((objGear.Category == "Ammunition" ||
-                             !string.IsNullOrEmpty(objGear.AmmoForWeaponType)) && frmPickGear.MyForm.Stack)
-                        {
-                            objExistingGear =
-                                objSelectedVehicle.GearChildren.FirstOrDefault(x =>
-                                                                                   objGear.IsIdenticalToOtherGear(x));
-                        }
-
-                        if (objExistingGear != null)
-                        {
-                            // A match was found, so increase the quantity instead.
-                            objExistingGear.Quantity += objGear.Quantity;
-                        }
-                        else
-                        {
-                            // Add the Gear to the Vehicle.
-                            if (objLocation != null)
-                                await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                            await objSelectedVehicle.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-                            objGear.Parent = objSelectedVehicle;
-
-                            foreach (Weapon objWeapon in lstWeapons)
+                            Gear objExistingGear = null;
+                            // If this is Ammunition, see if the character already has it on them.
+                            if ((objGear.Category == "Ammunition" ||
+                                 !string.IsNullOrEmpty(objGear.AmmoForWeaponType)) && frmPickGear.MyForm.Stack)
                             {
+                                objExistingGear =
+                                    objSelectedVehicle.GearChildren.FirstOrDefault(x =>
+                                        objGear.IsIdenticalToOtherGear(x));
+                            }
+
+                            if (objExistingGear != null)
+                            {
+                                // A match was found, so increase the quantity instead.
+                                objExistingGear.Quantity += objGear.Quantity;
+                            }
+                            else
+                            {
+                                // Add the Gear to the Vehicle.
                                 if (objLocation != null)
                                     await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                                objWeapon.ParentVehicle = objSelectedVehicle;
-                                await objSelectedVehicle.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                await objSelectedVehicle.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
+                                objGear.Parent = objSelectedVehicle;
+
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    if (objLocation != null)
+                                        await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                                    objWeapon.ParentVehicle = objSelectedVehicle;
+                                    await objSelectedVehicle.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                }
                             }
+                        }
+                        finally
+                        {
+                            SkipUpdate = false;
                         }
                     }
 
