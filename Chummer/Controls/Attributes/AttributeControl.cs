@@ -173,7 +173,7 @@ namespace Chummer.UI.Attributes
                     break;
                 case nameof(CharacterAttrib.ToolTip):
                     string strToolTip = await AttributeObject.GetToolTipAsync(token).ConfigureAwait(false);
-                    await lblLimits.DoThreadSafeAsync(x => x.ToolTipText = strToolTip, token).ConfigureAwait(false);
+                    await lblValue.DoThreadSafeAsync(x => x.ToolTipText = strToolTip, token).ConfigureAwait(false);
                     break;
                 case nameof(CharacterAttrib.UpgradeToolTip):
                     if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
@@ -258,7 +258,7 @@ namespace Chummer.UI.Attributes
                         await objAttrib.GetAugmentedMetatypeLimitsAsync().ConfigureAwait(false);
                     await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits).ConfigureAwait(false);
                     string strToolTip = await objAttrib.GetToolTipAsync().ConfigureAwait(false);
-                    await lblLimits.DoThreadSafeAsync(x => x.ToolTipText = strToolTip).ConfigureAwait(false);
+                    await lblValue.DoThreadSafeAsync(x => x.ToolTipText = strToolTip).ConfigureAwait(false);
                     if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
                     {
                         string strUpgradeToolTip =
