@@ -36694,21 +36694,27 @@ namespace Chummer
             {
                 //Get attributes affected by redliner/cyber singularity seeker
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
-                lstSeekerImprovements.AddRange(ImprovementManager
-                                               .GetCachedImprovementListForValueOf(
-                                                   this, Improvement.ImprovementType.Attribute, token: token)
-                                               .Where(objLoopImprovement =>
-                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
-                lstSeekerImprovements.AddRange(ImprovementManager
-                                               .GetCachedImprovementListForValueOf(
-                                                   this, Improvement.ImprovementType.PhysicalCM, token: token)
-                                               .Where(objLoopImprovement =>
-                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
-                List<string> lstSeekerAttributes = ImprovementManager
-                    .GetCachedImprovementListForValueOf(
-                        this, Improvement.ImprovementType.Seeker, token: token)
-                    .Select(x => x.ImprovedName).Where(x => x == "BOX" || AttributeSection.AttributeStrings.Contains(x))
-                    .ToList();
+                List<string> lstSeekerAttributes = new List<string>(AttributeSection.AttributeStrings.Count);
+                bool blnCreated = Created;
+                Improvements.ForEach(objImprovement =>
+                {
+                    if ((objImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                         || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM))
+                    {
+                        if (objImprovement.SourceName.Contains("SEEKER"))
+                            lstSeekerImprovements.Add(objImprovement);
+                    }
+                    else if (objImprovement.ImproveType == Improvement.ImprovementType.Seeker
+                             && objImprovement.Enabled
+                             && (string.IsNullOrEmpty(objImprovement.Condition)
+                                 || (objImprovement.Condition == "career") == blnCreated
+                                 || (objImprovement.Condition == "create") != blnCreated))
+                    {
+                        string strImprovedName = objImprovement.ImprovedName;
+                        if (strImprovedName == "BOX" || AttributeSection.AttributeStrings.Contains(strImprovedName))
+                            lstSeekerAttributes.Add(strImprovedName);
+                    }
+                }, token);
                 //if neither contains anything, it is safe to exit
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {
@@ -36721,6 +36727,8 @@ namespace Chummer
                     return true;
                 }
 
+                bool blnDoHasRedliner = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI");
+
                 //Calculate bonus from cyberlimbs
                 int intCount = Math.Min(Cyberware.Sum(x => x.GetCyberlimbCount(Settings.RedlinerExcludes)) / 2, 2);
 
@@ -36730,7 +36738,8 @@ namespace Chummer
                     int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
                     Improvement objImprovement
                         = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
-                                                          && x.Value == intCountToTarget);
+                                                          && x.Value == intCountToTarget
+                                                          && x.Enabled);
                     if (objImprovement != null)
                     {
                         lstSeekerAttributes.RemoveAt(i);
@@ -36740,9 +36749,7 @@ namespace Chummer
 
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {
-                    int intNewCachedValue = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
-                        ? intCount
-                        : 0;
+                    int intNewCachedValue = blnDoHasRedliner ? intCount : 0;
                     if (_intCachedRedlinerBonus != intNewCachedValue)
                     {
                         using (LockObject.EnterWriteLock(token))
@@ -36753,9 +36760,7 @@ namespace Chummer
 
                 using (LockObject.EnterWriteLock(token))
                 {
-                    _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
-                        ? intCount
-                        : 0;
+                    _intCachedRedlinerBonus = blnDoHasRedliner ? intCount : 0;
 
                     //Improvement manager defines the functions needed to manipulate improvements
                     //When the locals (someday) gets moved to this class, this can be removed and use
@@ -36821,21 +36826,27 @@ namespace Chummer
 
                 //Get attributes affected by redliner/cyber singularity seeker
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
-                lstSeekerImprovements.AddRange((await ImprovementManager
-                        .GetCachedImprovementListForValueOfAsync(
-                            this, Improvement.ImprovementType.Attribute, token: token).ConfigureAwait(false))
-                                               .Where(objLoopImprovement =>
-                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
-                lstSeekerImprovements.AddRange((await ImprovementManager
-                        .GetCachedImprovementListForValueOfAsync(
-                            this, Improvement.ImprovementType.PhysicalCM, token: token).ConfigureAwait(false))
-                                               .Where(objLoopImprovement =>
-                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
-                List<string> lstSeekerAttributes = (await ImprovementManager
-                        .GetCachedImprovementListForValueOfAsync(
-                            this, Improvement.ImprovementType.Seeker, token: token).ConfigureAwait(false))
-                    .Select(x => x.ImprovedName).Where(x => x == "BOX" || AttributeSection.AttributeStrings.Contains(x))
-                    .ToList();
+                List<string> lstSeekerAttributes = new List<string>(AttributeSection.AttributeStrings.Count);
+                bool blnCreated = await GetCreatedAsync(token);
+                await Improvements.ForEachAsync(objImprovement =>
+                {
+                    if ((objImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                         || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM))
+                    {
+                        if (objImprovement.SourceName.Contains("SEEKER"))
+                            lstSeekerImprovements.Add(objImprovement);
+                    }
+                    else if (objImprovement.ImproveType == Improvement.ImprovementType.Seeker
+                             && objImprovement.Enabled
+                             && (string.IsNullOrEmpty(objImprovement.Condition)
+                                 || (objImprovement.Condition == "career") == blnCreated
+                                 || (objImprovement.Condition == "create") != blnCreated))
+                    {
+                        string strImprovedName = objImprovement.ImprovedName;
+                        if (strImprovedName == "BOX" || AttributeSection.AttributeStrings.Contains(strImprovedName))
+                            lstSeekerAttributes.Add(strImprovedName);
+                    }
+                }, token);
                 //if neither contains anything, it is safe to exit
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {
@@ -36856,6 +36867,8 @@ namespace Chummer
                     return true;
                 }
 
+                bool blnDoHasRedliner = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI");
+
                 //Calculate bonus from cyberlimbs
                 int intCount =
                     Math.Min(
@@ -36868,7 +36881,8 @@ namespace Chummer
                     int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
                     Improvement objImprovement
                         = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
-                                                          && x.Value == intCountToTarget);
+                                                          && x.Value == intCountToTarget
+                                                          && x.Enabled);
                     if (objImprovement != null)
                     {
                         lstSeekerAttributes.RemoveAt(i);
@@ -36878,9 +36892,7 @@ namespace Chummer
 
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {
-                    int intNewCachedValue = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
-                        ? intCount
-                        : 0;
+                    int intNewCachedValue = blnDoHasRedliner ? intCount : 0;
                     if (_intCachedRedlinerBonus != intNewCachedValue)
                     {
                         IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -36902,9 +36914,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
-                        ? intCount
-                        : 0;
+                    _intCachedRedlinerBonus = blnDoHasRedliner ? intCount : 0;
 
                     //Improvement manager defines the functions needed to manipulate improvements
                     //When the locals (someday) gets moved to this class, this can be removed and use
