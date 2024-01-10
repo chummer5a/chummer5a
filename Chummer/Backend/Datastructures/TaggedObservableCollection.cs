@@ -232,7 +232,7 @@ namespace Chummer
                     objTag, x => new HashSet<NotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
-                base.CollectionChanged += funcDelegateToAdd;
+                base.BeforeClearCollectionChanged += funcDelegateToAdd;
                 return true;
             }
             Utils.BreakIfDebug();
@@ -312,7 +312,7 @@ namespace Chummer
                     objTag, x => new HashSet<AsyncNotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
-                base.CollectionChangedAsync += funcDelegateToAdd;
+                base.BeforeClearCollectionChangedAsync += funcDelegateToAdd;
                 return true;
             }
             Utils.BreakIfDebug();
