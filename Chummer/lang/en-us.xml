@@ -5186,6 +5186,10 @@
       <text>Unequipped Modular Cyberware</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Unequipped Modular Bioware</text>
+    </string>
+    <string>
       <key>Label_EssenceConsumption</key>
       <text>Essence Consumption</text>
     </string>

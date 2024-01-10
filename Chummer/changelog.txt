@@ -110,6 +110,7 @@ Changed/New Strings:
 - String_ExpenseSoldVehicleWeaponMount
 - Label_Options_Carryover_Nuyen
 - Label_Options_Carryover_Karma
+- Node_UnequippedModularBioware
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

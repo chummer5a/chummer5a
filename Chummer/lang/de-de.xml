@@ -7366,6 +7366,10 @@
       <text>Unausgerüstete Modulare Cyberware</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Unausgerüstete Modulare Bioware</text>
+    </string>
+    <string>
       <key>Menu_EditWeaponMount</key>
       <text>Waffenhalterung &amp;bearbeiten</text>
     </string>

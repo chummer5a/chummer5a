@@ -4388,6 +4388,7 @@ namespace Chummer
             TreeNode objCyberwareRoot = null;
             TreeNode objBiowareRoot = null;
             TreeNode objModularRoot = null;
+            TreeNode objModularBioRoot = null;
             TreeNode objHoleNode = null;
             TreeNode objAntiHoleNode = null;
 
@@ -4428,6 +4429,7 @@ namespace Chummer
                         objCyberwareRoot = x.FindNode("Node_SelectedCyberware", false);
                         objBiowareRoot = x.FindNode("Node_SelectedBioware", false);
                         objModularRoot = x.FindNode("Node_UnequippedModularCyberware", false);
+                        objModularBioRoot = x.FindNode("Node_UnequippedModularBioware", false);
                         objHoleNode = x.FindNode(
                             Cyberware.EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo), false);
                         objAntiHoleNode
@@ -4513,7 +4515,7 @@ namespace Chummer
 
                 async Task AddToTree(Cyberware objCyberware, bool blnSingleAdd = true)
                 {
-                    if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                    if (await objCyberware.GetSourceIDAsync(token) == Cyberware.EssenceHoleGUID)
                     {
                         await treCyberware.DoThreadSafeAsync(x =>
                         {
@@ -4530,7 +4532,7 @@ namespace Chummer
                         return;
                     }
 
-                    if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                    if (await objCyberware.GetSourceIDAsync(token) == Cyberware.EssenceAntiHoleGUID)
                     {
                         await treCyberware.DoThreadSafeAsync(x =>
                         {
@@ -4556,7 +4558,7 @@ namespace Chummer
                     {
                         case Improvement.ImprovementSource.Cyberware:
                         {
-                            if (objCyberware.IsModularCurrentlyEquipped)
+                            if (await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                             {
                                 if (objCyberwareRoot == null)
                                 {
@@ -4604,22 +4606,50 @@ namespace Chummer
                         }
                         case Improvement.ImprovementSource.Bioware:
                         {
-                            if (objBiowareRoot == null)
+                            if (await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                             {
-                                objBiowareRoot = new TreeNode
+                                if (objBiowareRoot == null)
                                 {
-                                    Tag = "Node_SelectedBioware",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedBioware", token: token).ConfigureAwait(false)
-                                };
-                                await treCyberware.DoThreadSafeAsync(x =>
-                                {
-                                    // ReSharper disable once AssignNullToNotNullAttribute
-                                    x.Nodes.Insert((objCyberwareRoot != null).ToInt32(), objBiowareRoot);
-                                    objBiowareRoot.Expand();
-                                }, token).ConfigureAwait(false);
-                            }
+                                    objBiowareRoot = new TreeNode
+                                    {
+                                        Tag = "Node_SelectedBioware",
+                                        Text = await LanguageManager
+                                            .GetStringAsync("Node_SelectedBioware", token: token).ConfigureAwait(false)
+                                    };
+                                    await treCyberware.DoThreadSafeAsync(x =>
+                                    {
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        x.Nodes.Insert((objCyberwareRoot != null).ToInt32(), objBiowareRoot);
+                                        objBiowareRoot.Expand();
+                                    }, token).ConfigureAwait(false);
+                                }
 
-                            nodParent = objBiowareRoot;
+                                nodParent = objBiowareRoot;
+                            }
+                            else
+                            {
+                                if (objModularBioRoot == null)
+                                {
+                                    objModularBioRoot = new TreeNode
+                                    {
+                                        Tag = "Node_UnequippedModularBioware",
+                                        Text = await LanguageManager
+                                            .GetStringAsync("Node_UnequippedModularBioware", token: token)
+                                            .ConfigureAwait(false)
+                                    };
+                                    await treCyberware.DoThreadSafeAsync(x =>
+                                    {
+                                        int intIndex = (objCyberwareRoot != null).ToInt32() +
+                                                       (objBiowareRoot != null).ToInt32() +
+                                                       (objModularRoot != null).ToInt32();
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        x.Nodes.Insert(intIndex, objModularBioRoot);
+                                        objModularBioRoot.Expand();
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                nodParent = objModularBioRoot;
+                            }
                             break;
                         }
                     }

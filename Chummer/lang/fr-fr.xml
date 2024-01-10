@@ -8399,6 +8399,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Cyberware modulable déséquipé</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Bioware modulable déséquipé</text>
+    </string>
+    <string>
       <key>Label_PrototypeTranshuman</key>
       <text>Prototype Transhumain :</text>
     </string>

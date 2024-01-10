@@ -7913,6 +7913,10 @@
       <text>Cibernético Modular Não-equipado</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Biônico Modular Não-equipado</text>
+    </string>
+    <string>
       <key>Button_ChangeMountedLocation</key>
       <text>Alterar Localização da Montagem</text>
     </string>

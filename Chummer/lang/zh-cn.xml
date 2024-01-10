@@ -8462,6 +8462,10 @@
       <text>未装载的模块赛博改造</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>未装载的模块生体改造</text>
+    </string>
+    <string>
       <key>Tip_Skill_OffHand</key>
       <text>副手</text>
     </string>
