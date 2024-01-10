@@ -3929,7 +3929,9 @@ namespace Chummer.Backend.Skills
                 }
 
                 return await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(
-                               async x => x.Name == strSpecialization || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == strSpecialization,
+                               async x => await x.GetNameAsync(token).ConfigureAwait(false) == strSpecialization ||
+                                          await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) ==
+                                          strSpecialization,
                                token: token)
                            .ConfigureAwait(false)
                        && (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
@@ -3967,9 +3969,11 @@ namespace Chummer.Backend.Skills
 
                 return await HasSpecializationAsync(strSpecialization, token).ConfigureAwait(false)
                     ? await (await GetSpecializationsAsync(token).ConfigureAwait(false))
-                            .FirstOrDefaultAsync(
-                                async x => x.Name == strSpecialization || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == strSpecialization, token: token)
-                            .ConfigureAwait(false)
+                        .FirstOrDefaultAsync(
+                            async x => await x.GetNameAsync(token).ConfigureAwait(false) == strSpecialization ||
+                                       await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) ==
+                                       strSpecialization, token: token)
+                        .ConfigureAwait(false)
                     : null;
             }
         }
@@ -4573,7 +4577,7 @@ namespace Chummer.Backend.Skills
                             int intMaxBonus = 0;
                             await lstSpecs.ForEachAsync(async objLoopSpecialization =>
                             {
-                                if (objLoopSpecialization.Name == strExclude)
+                                if (await objLoopSpecialization.GetNameAsync(token).ConfigureAwait(false) == strExclude)
                                 {
                                     int intLoopBonus = await objLoopSpecialization.GetSpecializationBonusAsync(token)
                                         .ConfigureAwait(false);

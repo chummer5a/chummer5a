@@ -14011,7 +14011,10 @@ namespace Chummer
                                 async spec =>
                                     await (await CharacterObject.GetSpellsAsync(token)
                                             .ConfigureAwait(false)).AnyAsync(
-                                            spell => spell.Category == spec.Name && !spell.FreeBonus,
+                                            async spell =>
+                                                spell.Category ==
+                                                await spec.GetNameAsync(token).ConfigureAwait(false) &&
+                                                !spell.FreeBonus,
                                             token)
                                         .ConfigureAwait(false),
                                 token)
@@ -21571,8 +21574,10 @@ namespace Chummer
                                     async spec =>
                                         await (await CharacterObject.GetSpellsAsync(token)
                                                 .ConfigureAwait(false)).AnyAsync(
-                                                spell => spell.Category == spec.Name
-                                                         && !spell.FreeBonus,
+                                                async spell =>
+                                                    spell.Category ==
+                                                    await spec.GetNameAsync(token).ConfigureAwait(false)
+                                                    && !spell.FreeBonus,
                                                 token)
                                             .ConfigureAwait(false),
                                     token)

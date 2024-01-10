@@ -3533,7 +3533,7 @@ namespace Chummer
                     if (objSkill != null) //More or less a safeguard only. Should not be empty at that point any longer.
                     {
                         if (string.IsNullOrEmpty(strSpec)) continue;
-                        if (await objSkill.Specializations.AllAsync(x => x.Name != strSpec, token)
+                        if (await objSkill.Specializations.AllAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) != strSpec, token)
                                 .ConfigureAwait(false))
                         {
                             SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
@@ -40545,8 +40545,12 @@ namespace Chummer
                     else
                         intFreeGenericSpells += intSkillValue;
                     //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
-                    intFreeGenericSpells += await skill.Specializations.CountAsync(spec =>
-                        lstSpells.AnyAsync(spell => spell.Category == spec.Name && !spell.FreeBonus, token: token), token).ConfigureAwait(false);
+                    intFreeGenericSpells += await skill.Specializations.CountAsync(async spec =>
+                    {
+                        string strSpecName = await spec.GetNameAsync(token).ConfigureAwait(false);
+                        return await lstSpells.AnyAsync(spell => spell.Category == strSpecName && !spell.FreeBonus,
+                            token: token);
+                    }, token).ConfigureAwait(false);
                 }
 
                 int intTotalFreeNonTouchSpellsCount = await lstSpells.CountAsync(spell =>

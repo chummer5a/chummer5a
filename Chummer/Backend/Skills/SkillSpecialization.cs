@@ -168,13 +168,13 @@ namespace Chummer.Backend.Skills
         public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return Name;
+                return await GetNameAsync(token).ConfigureAwait(false);
 
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                return objNode?.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? Name;
+                return objNode?.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? await GetNameAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -235,7 +235,9 @@ namespace Chummer.Backend.Skills
                             // ReSharper disable once MethodHasAsyncOverload
                             ? Parent.GetNode(strLanguage, token: token)
                             : await Parent.GetNodeAsync(strLanguage, token: token).ConfigureAwait(false))
-                        ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+                        ?.SelectSingleNode("specs/spec[. = " +
+                                           (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
+                                           .CleanXPath() + ']');
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -263,7 +265,9 @@ namespace Chummer.Backend.Skills
                             // ReSharper disable once MethodHasAsyncOverload
                             ? Parent.GetNodeXPath(strLanguage, token: token)
                             : await Parent.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
-                        ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+                        ?.SelectSingleNode("specs/spec[. = " +
+                                           (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
+                                           .CleanXPath() + ']');
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
@@ -356,12 +360,128 @@ namespace Chummer.Backend.Skills
                                                                            value, GlobalSettings.Language, "skills.xml",
                                                                            objToken), objToken));
                         if (tskOld != null)
-                            Utils.SafelyRunSynchronously(() => tskOld);
+                            _strName = Utils.SafelyRunSynchronously(() => tskOld);
                         Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Skill Specialization's name.
+        /// </summary>
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intNameLoaded <= 1)
+                {
+                    int intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
+                    while (intOld < 3) // Need this in case we reset name while in the process of fetching it
+                    {
+                        if (intOld == 0)
+                        {
+                            CancellationTokenSource objNewSource = new CancellationTokenSource();
+                            CancellationToken objToken = objNewSource.Token;
+                            CancellationTokenSource objOldSource
+                                = Interlocked.CompareExchange(ref _objNameLoaderCancellationTokenSource,
+                                                              objNewSource,
+                                                              null);
+                            // Cancellation token source is only null if it's our first time running
+                            if (objOldSource == null && Interlocked.CompareExchange(ref _intNameLoaded, 2, 0) == 0)
+                            {
+                                Task<string> tskNewTask
+                                    = Task.Run(
+                                        () => _objCharacter.ReverseTranslateExtraAsync(
+                                            _strName, GlobalSettings.Language, "skills.xml", objToken), objToken);
+                                Task<string> tskOld
+                                    = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
+                                if (tskOld != null)
+                                {
+                                    // This should never happen, throw an exception immediately
+                                    Utils.BreakIfDebug();
+                                    throw new InvalidOperationException();
+                                }
+
+                                _strName = await _tskNameLoader.ConfigureAwait(false);
+                                intOld = Interlocked.CompareExchange(ref _intNameLoaded, 3, 2);
+                            }
+                            else
+                                objNewSource.Dispose();
+                        }
+
+                        while (intOld == 0 || intOld == 2)
+                        {
+                            await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                            intOld = Interlocked.CompareExchange(ref _intNameLoaded, 2, 1);
+                        }
+                    }
+                }
+
+                return _strName;
+            }
+        }
+
+        public async Task SetName(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetNameAsync(token).ConfigureAwait(false) == value)
+                    return;
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetNameAsync(token).ConfigureAwait(false) == value)
+                    return;
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationToken objToken = objNewSource.Token;
+                using (token.Register(() =>
+                       {
+                           objNewSource.Cancel(false);
+                           objNewSource.Dispose();
+                       }))
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _intNameLoaded = 0;
+                        CancellationTokenSource objOldSource
+                            = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, objNewSource);
+                        if (objOldSource != null)
+                        {
+                            objOldSource.Cancel(false);
+                            objOldSource.Dispose();
+                        }
+
+                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, Task.Run(
+                            () => _objCharacter.ReverseTranslateExtraAsync(
+                                value, GlobalSettings.Language, "skills.xml",
+                                objToken), objToken));
+                        if (tskOld != null)
+                            await tskOld.ConfigureAwait(false);
+                        Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -437,8 +557,9 @@ namespace Chummer.Backend.Skills
                     }
 
                     decimal decBonus = 0;
+                    string strName = Name;
                     foreach (Improvement objImprovement in Parent.RelevantImprovements(
-                                 x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true))
+                                 x => x.Condition == strName && !x.AddToRating, blnIncludeConditionals: true))
                     {
                         switch (objImprovement.ImproveType)
                         {
@@ -482,8 +603,9 @@ namespace Chummer.Backend.Skills
                 }
 
                 decimal decBonus = 0;
+                string strName = await GetNameAsync(token).ConfigureAwait(false);
                 foreach (Improvement objImprovement in await Parent.RelevantImprovementsAsync(
-                                                                       x => x.Condition == Name && !x.AddToRating,
+                                                                       x => x.Condition == strName && !x.AddToRating,
                                                                        blnIncludeConditionals: true, token: token)
                                                                    .ConfigureAwait(false))
                 {

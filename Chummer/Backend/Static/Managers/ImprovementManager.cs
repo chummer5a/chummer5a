@@ -5101,7 +5101,8 @@ namespace Chummer
                                             x => x.InternalId == strUniqueName, token).ConfigureAwait(false)
                                         // Kept for legacy reasons
                                         : await objSkill.Specializations.FirstOrDefaultAsync(
-                                            x => x.Name == strUniqueName, token).ConfigureAwait(false);
+                                            async x => await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                       strUniqueName, token).ConfigureAwait(false);
                                 if (objSkillSpec != null)
                                 {
                                     if (blnSync)
