@@ -4062,27 +4062,28 @@ namespace Chummer
             }
 
             bool blnErrorFree = true;
-
-            IDisposable objLocker = null;
-            IDisposable objLockerAsync = null;
-            if (blnSync)
-                // ReSharper disable once MethodHasAsyncOverload
-                objLocker = LockObject.EnterReadLock(token);
-            else
-                objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            token.ThrowIfCancellationRequested();
+            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
                 token.ThrowIfCancellationRequested();
-                if (blnSync)
-                    DoSave();
-                else
-                    await Task.Run(DoSaveAsync, token).ConfigureAwait(false);
-
-                void DoSave()
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    IDisposable objLocker = null;
+                    IDisposable objLockerAsync = null;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objLocker = LockObject.EnterReadLock(token);
+                    else
+                        objLockerAsync = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                        token.ThrowIfCancellationRequested();
+                        if (blnSync)
+                            DoSave();
+                        else
+                            await Task.Run(DoSaveAsync, token).ConfigureAwait(false);
+
+                        void DoSave()
                         {
                             // ReSharper disable AccessToDisposedClosure
                             objWriter.WriteStartDocument();
@@ -4669,65 +4670,60 @@ namespace Chummer
                             objWriter.WriteEndDocument();
                             objWriter.Flush();
                             // ReSharper restore AccessToDisposedClosure
-                        }
 
-                        objStream.Seek(0, SeekOrigin.Begin);
+                            objStream.Seek(0, SeekOrigin.Begin);
 
-                        // Validate that the character can save properly. If there's no error, save the file to the listed file location.
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
-                            using (XmlReader objXmlReader
-                                   = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                objDoc.Load(objXmlReader);
-                            using (FileStream objFileStream
-                                   = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                            // Validate that the character can save properly. If there's no error, save the file to the listed file location.
+                            try
                             {
-                                if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                    objDoc.Save(objFileStream);
-                                else
+                                token.ThrowIfCancellationRequested();
+                                XmlDocument objDoc = new XmlDocument { XmlResolver = null };
+                                using (XmlReader objXmlReader
+                                       = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                                    objDoc.Load(objXmlReader);
+                                using (FileStream objFileStream
+                                       = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
                                 {
-                                    objStream.Seek(0, SeekOrigin.Begin);
-                                    objStream.CompressToLzmaFile(objFileStream, GlobalSettings.Chum5lzCompressionLevel);
+                                    if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                                        objDoc.Save(objFileStream);
+                                    else
+                                    {
+                                        objStream.Seek(0, SeekOrigin.Begin);
+                                        objStream.CompressToLzmaFile(objFileStream,
+                                            GlobalSettings.Chum5lzCompressionLevel);
+                                    }
                                 }
                             }
+                            catch (IOException e)
+                            {
+                                Log.Error(e);
+                                if (Utils.IsUnitTest)
+                                    throw;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                Program.ShowScrollableMessageBox(
+                                    LanguageManager.GetString("Message_Save_Error_Warning", token: token));
+                                blnErrorFree = false;
+                            }
+                            catch (XmlException ex)
+                            {
+                                Log.Warn(ex);
+                                if (Utils.IsUnitTest)
+                                    throw;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                Program.ShowScrollableMessageBox(
+                                    LanguageManager.GetString("Message_Save_Error_Warning", token: token));
+                                blnErrorFree = false;
+                            }
+                            catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverload
+                                Program.ShowScrollableMessageBox(
+                                    LanguageManager.GetString("Message_Save_Error_Warning", token: token));
+                                blnErrorFree = false;
+                            }
                         }
-                        catch (IOException e)
-                        {
-                            Log.Error(e);
-                            if (Utils.IsUnitTest)
-                                throw;
-                            // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_Save_Error_Warning", token: token));
-                            blnErrorFree = false;
-                        }
-                        catch (XmlException ex)
-                        {
-                            Log.Warn(ex);
-                            if (Utils.IsUnitTest)
-                                throw;
-                            // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_Save_Error_Warning", token: token));
-                            blnErrorFree = false;
-                        }
-                        catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
-                        {
-                            // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_Save_Error_Warning", token: token));
-                            blnErrorFree = false;
-                        }
-                    }
-                }
 
-                async Task DoSaveAsync()
-                {
-                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                    {
-                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                        async Task DoSaveAsync()
                         {
                             await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
 
@@ -5501,93 +5497,114 @@ namespace Chummer
                             await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                             await objWriter.FlushAsync().ConfigureAwait(false);
                         }
-
-                        objStream.Position = 0;
-
-                        // Validate that the character can save properly. If there's no error, save the file to the listed file location.
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
-                            using (XmlReader objXmlReader
-                                   = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                objDoc.Load(objXmlReader);
-                            using (FileStream objFileStream
-                                   = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                            {
-                                if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                    objDoc.Save(objFileStream);
-                                else
-                                {
-                                    objStream.Seek(0, SeekOrigin.Begin);
-                                    await objStream.CompressToLzmaFileAsync(
-                                            objFileStream, GlobalSettings.Chum5lzCompressionLevel,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                }
-                            }
-                        }
-                        catch (IOException e)
-                        {
-                            Log.Error(e);
-                            if (Utils.IsUnitTest)
-                                throw;
-                            Program.ShowScrollableMessageBox(await LanguageManager
-                                .GetStringAsync(
-                                    "Message_Save_Error_Warning", token: token)
-                                .ConfigureAwait(false));
-                            blnErrorFree = false;
-                        }
-                        catch (XmlException ex)
-                        {
-                            Log.Warn(ex);
-                            if (Utils.IsUnitTest)
-                                throw;
-                            Program.ShowScrollableMessageBox(await LanguageManager
-                                .GetStringAsync(
-                                    "Message_Save_Error_Warning", token: token)
-                                .ConfigureAwait(false));
-                            blnErrorFree = false;
-                        }
-                        catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
-                        {
-                            Program.ShowScrollableMessageBox(await LanguageManager
-                                .GetStringAsync(
-                                    "Message_Save_Error_Warning", token: token)
-                                .ConfigureAwait(false));
-                            blnErrorFree = false;
-                        }
+                    }
+                    finally
+                    {
+                        if (blnSync)
+                            objLocker.Dispose();
+                        else
+                            objLockerAsync.Dispose();
                     }
                 }
 
-                if (addToMRU)
+                objStream.Position = 0;
+
+                // Validate that the character can save properly. If there's no error, save the file to the listed file location.
+                try
                 {
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
-                    else
-                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, FileName, token)
-                            .ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    XmlDocument objDoc = new XmlDocument { XmlResolver = null };
+                    using (XmlReader objXmlReader
+                           = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                        objDoc.Load(objXmlReader);
+                    using (FileStream objFileStream
+                           = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            objDoc.Save(objFileStream);
+                        else
+                        {
+                            objStream.Seek(0, SeekOrigin.Begin);
+                            await objStream.CompressToLzmaFileAsync(
+                                    objFileStream, GlobalSettings.Chum5lzCompressionLevel,
+                                    token: token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                }
+                catch (IOException e)
+                {
+                    Log.Error(e);
+                    if (Utils.IsUnitTest)
+                        throw;
+                    Program.ShowScrollableMessageBox(await LanguageManager
+                        .GetStringAsync(
+                            "Message_Save_Error_Warning", token: token)
+                        .ConfigureAwait(false));
+                    blnErrorFree = false;
+                }
+                catch (XmlException ex)
+                {
+                    Log.Warn(ex);
+                    if (Utils.IsUnitTest)
+                        throw;
+                    Program.ShowScrollableMessageBox(await LanguageManager
+                        .GetStringAsync(
+                            "Message_Save_Error_Warning", token: token)
+                        .ConfigureAwait(false));
+                    blnErrorFree = false;
+                }
+                catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
+                {
+                    Program.ShowScrollableMessageBox(await LanguageManager
+                        .GetStringAsync(
+                            "Message_Save_Error_Warning", token: token)
+                        .ConfigureAwait(false));
+                    blnErrorFree = false;
                 }
             }
-            finally
+
+            if (addToMRU)
             {
                 if (blnSync)
-                    objLocker.Dispose();
+                    // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
                 else
-                    objLockerAsync.Dispose();
+                    await GlobalSettings.MostRecentlyUsedCharacters
+                        .InsertAsync(0, await GetFileNameAsync(token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
             }
 
             if (callOnSaveCallBack)
             {
-                IDisposable objLocker2 = null;
-                IAsyncDisposable objLockerAsync2 = null;
+                if (blnSync)
+                {
+                    // ReSharper disable once MethodHasAsyncOverload
+                    using (LockObject.EnterReadLock(token))
+                    {
+                        if (DoOnSaveCompleted.Count == 0 && DoOnSaveCompletedAsync.Count == 0)
+                            return blnErrorFree;
+                    }
+                }
+                else
+                {
+                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (await DoOnSaveCompleted.GetCountAsync(token).ConfigureAwait(false) == 0 &&
+                            await DoOnSaveCompletedAsync.GetCountAsync(token).ConfigureAwait(false) == 0)
+                            return blnErrorFree;
+                    }
+                }
+
+                IDisposable objLocker = null;
+                IAsyncDisposable objLockerAsync = null;
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    objLocker2 = LockObject.EnterUpgradeableReadLock(token);
+                    objLocker = LockObject.EnterUpgradeableReadLock(token);
                 else
-                    objLockerAsync2 = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    objLockerAsync = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -5728,9 +5745,9 @@ namespace Chummer
                 finally
                 {
                     if (blnSync)
-                        objLocker2.Dispose();
+                        objLocker.Dispose();
                     else
-                        await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
+                        await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
