@@ -72,7 +72,7 @@ namespace Chummer
         public void Dispose()
         {
             _objInternalEnumerator.Dispose();
-            _objMyRelease.Dispose();
+            _objMyRelease?.Dispose();
         }
 
         /// <inheritdoc />
