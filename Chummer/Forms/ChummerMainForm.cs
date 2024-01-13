@@ -1514,7 +1514,20 @@ namespace Chummer
         private void closeWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is Form frmCurrentForm)
-                frmCurrentForm.Close();
+            {
+                try
+                {
+                    frmCurrentForm.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }
         }
 
         private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1522,7 +1535,20 @@ namespace Chummer
             foreach (Form childForm in MdiChildren)
             {
                 if (childForm != CharacterRoster && childForm != MasterIndex)
-                    childForm.Close();
+                {
+                    try
+                    {
+                        childForm.Close();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                    catch (ArgumentException)
+                    {
+                        // swallow this
+                    }
+                }
             }
         }
 
@@ -1785,9 +1811,35 @@ namespace Chummer
         private void ResetChummerUpdater(ChummerUpdater frmExistingUpdater)
         {
             if (frmExistingUpdater == null)
-                Interlocked.Exchange(ref _frmUpdate, null)?.Close();
+            {
+                try
+                {
+                    Interlocked.Exchange(ref _frmUpdate, null)?.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }
             else if (Interlocked.CompareExchange(ref _frmUpdate, null, frmExistingUpdater) == frmExistingUpdater)
-                frmExistingUpdater.Close();
+            {
+                try
+                {
+                    frmExistingUpdater.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }
         }
 
         private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2745,6 +2797,10 @@ namespace Chummer
                             {
                                 // swallow this
                             }
+                            catch (ArgumentException)
+                            {
+                                // swallow this
+                            }
                         });
                         objFormCharacter.Dispose();
                     }
@@ -2774,6 +2830,10 @@ namespace Chummer
                             {
                                 // swallow this
                             }
+                            catch (ArgumentException)
+                            {
+                                // swallow this
+                            }
                         });
                         objFormCharacter.Dispose();
                     }
@@ -2800,6 +2860,10 @@ namespace Chummer
                                 x.Close();
                             }
                             catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                            catch (ArgumentException)
                             {
                                 // swallow this
                             }
@@ -2845,6 +2909,10 @@ namespace Chummer
                             {
                                 // swallow this
                             }
+                            catch (ArgumentException)
+                            {
+                                // swallow this
+                            }
                         }).ConfigureAwait(false);
                         await objFormCharacter.DisposeAsync().ConfigureAwait(false);
                     }
@@ -2883,6 +2951,10 @@ namespace Chummer
                                 x.Close();
                             }
                             catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                            catch (ArgumentException)
                             {
                                 // swallow this
                             }
@@ -2925,6 +2997,10 @@ namespace Chummer
                                 x.Close();
                             }
                             catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                            catch (ArgumentException)
                             {
                                 // swallow this
                             }
@@ -3015,7 +3091,18 @@ namespace Chummer
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.Close();
+                try
+                {
+                    objShared.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
             }
         }
 
