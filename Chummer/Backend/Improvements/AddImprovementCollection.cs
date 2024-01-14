@@ -4268,8 +4268,7 @@ namespace Chummer
                         objBoostedPower.Rating = Math.Max(objBoostedPower.TotalMaximumLevels - intLevels, 0);
                     }
 
-                    objBoostedPower.OnPropertyChanged(nameof(objBoostedPower.TotalRating));
-                    objBoostedPower.OnPropertyChanged(nameof(objBoostedPower.FreeLevels));
+                    objBoostedPower.OnPropertyChanged(nameof(Power.FreeLevels));
                 }
             }
         }

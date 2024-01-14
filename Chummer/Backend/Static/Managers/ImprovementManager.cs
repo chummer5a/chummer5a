@@ -5177,19 +5177,19 @@ namespace Chummer
                                     // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                                     if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
                                         objImprovedPower.OnMultiplePropertyChanged(
-                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreeLevels));
+                                            nameof(Power.TotalRating), nameof(Power.FreeLevels));
                                     else
                                         objImprovedPower.OnMultiplePropertyChanged(
-                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreePoints));
+                                            nameof(Power.TotalRating), nameof(Power.FreePoints));
                                 }
                                 // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                                 else if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
                                     await objImprovedPower.OnMultiplePropertyChangedAsync(token,
-                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreeLevels))
+                                            nameof(Power.TotalRating), nameof(Power.FreeLevels))
                                         .ConfigureAwait(false);
                                 else
                                     await objImprovedPower.OnMultiplePropertyChangedAsync(token,
-                                            nameof(objImprovedPower.TotalRating), nameof(objImprovedPower.FreePoints))
+                                            nameof(Power.TotalRating), nameof(Power.FreePoints))
                                         .ConfigureAwait(false);
                             }
 

@@ -459,17 +459,24 @@ namespace Chummer
                     await objWriter
                         .WriteElementStringAsync(
                             "extra",
-                            await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
+                            await CharacterObject.TranslateExtraAsync(await GetExtraAsync(token).ConfigureAwait(false),
+                                    strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture), token)
+                        .WriteElementStringAsync("pointsperlevel",
+                            (await GetPointsPerLevelAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture), token)
+                    await objWriter.WriteElementStringAsync("adeptway",
+                            (await GetAdeptWayDiscountAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
-                        .WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0",
+                        .WriteElementStringAsync("rating",
+                            await GetLevelsEnabledAsync(token).ConfigureAwait(false)
+                                ? (await GetTotalRatingAsync(token).ConfigureAwait(false)).ToString(objCulture)
+                                : "0",
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture), token)
+                    await objWriter.WriteElementStringAsync("totalpoints",
+                            (await GetPowerPointsAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
@@ -491,10 +498,9 @@ namespace Chummer
                         = await objWriter.StartElementAsync("enhancements", token).ConfigureAwait(false);
                     try
                     {
-                        foreach (Enhancement objEnhancement in Enhancements)
-                        {
-                            await objEnhancement.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
-                        }
+                        await Enhancements
+                            .ForEachAsync(objEnhancement => objEnhancement.Print(objWriter, strLanguageToPrint, token),
+                                token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -1235,6 +1241,7 @@ namespace Chummer
         /// </summary>
         public async Task<int> GetTotalRatingAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
@@ -1245,7 +1252,6 @@ namespace Chummer
             }
         }
 
-        public bool DoesNotHaveFreeLevels => FreeLevels == 0;
 
         private int _intCachedFreeLevels = int.MinValue;
 
@@ -2283,9 +2289,6 @@ namespace Chummer
                     new DependencyGraphNode<string, Power>(nameof(Rating)),
                     new DependencyGraphNode<string, Power>(nameof(PointsPerLevel))
                 ),
-                new DependencyGraphNode<string, Power>(nameof(DoesNotHaveFreeLevels),
-                    new DependencyGraphNode<string, Power>(nameof(FreeLevels))
-                ),
                 new DependencyGraphNode<string, Power>(nameof(AdeptWayDiscountEnabled),
                     new DependencyGraphNode<string, Power>(nameof(AdeptWayDiscount))
                 ),
@@ -2820,6 +2823,8 @@ namespace Chummer
 
                 MAGAttributeObject = null;
                 BoostedSkill = null;
+                _objCachedFreeLevelsLock.Dispose();
+                _objCachedPowerPointsLock.Dispose();
                 Enhancements.Dispose();
             }
 
@@ -2840,6 +2845,8 @@ namespace Chummer
 
                 await SetMAGAttributeObjectAsync(null).ConfigureAwait(false);
                 await SetBoostedSkillAsync(null).ConfigureAwait(false);
+                await _objCachedFreeLevelsLock.DisposeAsync().ConfigureAwait(false);
+                await _objCachedPowerPointsLock.DisposeAsync().ConfigureAwait(false);
                 await Enhancements.DisposeAsync().ConfigureAwait(false);
             }
             finally
