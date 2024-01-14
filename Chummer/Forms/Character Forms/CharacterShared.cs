@@ -4569,7 +4569,7 @@ namespace Chummer
 
                 async Task AddToTree(Cyberware objCyberware, bool blnSingleAdd = true)
                 {
-                    if (await objCyberware.GetSourceIDAsync(token) == Cyberware.EssenceHoleGUID)
+                    if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceHoleGUID)
                     {
                         await treCyberware.DoThreadSafeAsync(x =>
                         {
@@ -4586,7 +4586,7 @@ namespace Chummer
                         return;
                     }
 
-                    if (await objCyberware.GetSourceIDAsync(token) == Cyberware.EssenceAntiHoleGUID)
+                    if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceAntiHoleGUID)
                     {
                         await treCyberware.DoThreadSafeAsync(x =>
                         {

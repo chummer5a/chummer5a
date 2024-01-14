@@ -162,7 +162,7 @@ namespace Chummer
             decimal decTotalCost = 0;
 
             List<Cyberware> lstSuiteCyberwares = new List<Cyberware>(5);
-            ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
+            await ParseNode(xmlSuite, objGrade, lstSuiteCyberwares).ConfigureAwait(false);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdCyberwareLabelString))
             {
@@ -271,7 +271,8 @@ namespace Chummer
         /// <param name="xmlSuite">XmlNode to parse.</param>
         /// <param name="objGrade">Grade that the Cyberware should be created with.</param>
         /// <param name="lstChildren">List for children to which child items should be assigned.</param>
-        private void ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren, CancellationToken token = default)
         {
             // Run through all of the items in the Suite list.
             using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
@@ -291,12 +292,12 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         Cyberware objCyberware = new Cyberware(_objCharacter);
-                        objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
+                        await objCyberware.CreateAsync(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false, token: token).ConfigureAwait(false);
                         objCyberware.Suite = true;
 
                         lstChildren.Add(objCyberware);
 
-                        ParseNode(xmlChildItem, objGrade, objCyberware.Children);
+                        await ParseNode(xmlChildItem, objGrade, objCyberware.Children).ConfigureAwait(false);
                     }
                 }
             }

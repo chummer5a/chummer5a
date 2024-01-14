@@ -14221,14 +14221,14 @@ namespace Chummer
 
                         XmlNode objXmlCyberware = objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", frmPickCyberware.MyForm.SelectedCyberware);
                         Cyberware objCyberware = new Cyberware(CharacterObject);
-                        if (!objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
-                                                   frmPickCyberware.MyForm.SelectedGrade,
-                                                   frmPickCyberware.MyForm.SelectedRating,
-                                                   objVehicle, objMod.Cyberware, CharacterObject.Vehicles,
-                                                   objMod.Weapons,
-                                                   frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
-                                                   frmPickCyberware.MyForm.BlackMarketDiscount, true,
-                                                   "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
+                        if (!await objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
+                                frmPickCyberware.MyForm.SelectedGrade,
+                                frmPickCyberware.MyForm.SelectedRating,
+                                objVehicle, objMod.Cyberware, await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false),
+                                objMod.Weapons,
+                                frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
+                                frmPickCyberware.MyForm.BlackMarketDiscount, true,
+                                "String_ExpensePurchaseVehicleCyberware", objCyberwareParent).ConfigureAwait(false))
                             await objCyberware.DeleteCyberwareAsync(token: GenericToken).ConfigureAwait(false);
                     }
                 } while (blnAddAgain);
@@ -23653,14 +23653,14 @@ namespace Chummer
 
                 Cyberware objCyberware = new Cyberware(CharacterObject)
                     {ESSDiscount = frmPickCyberware.MyForm.SelectedESSDiscount, Parent = objSelectedCyberware};
-                if (!objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.MyForm.SelectedGrade,
-                                           frmPickCyberware.MyForm.SelectedRating, null,
-                                           objSelectedCyberware?.Children ?? CharacterObject.Cyberware,
-                                           CharacterObject.Vehicles,
-                                           CharacterObject.Weapons, frmPickCyberware.MyForm.Markup,
-                                           frmPickCyberware.MyForm.FreeCost,
-                                           frmPickCyberware.MyForm.BlackMarketDiscount,
-                                           objParent: objSelectedCyberware))
+                if (!await objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.MyForm.SelectedGrade,
+                        frmPickCyberware.MyForm.SelectedRating, null,
+                        objSelectedCyberware?.Children ?? await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false),
+                        await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false),
+                        await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false), frmPickCyberware.MyForm.Markup,
+                        frmPickCyberware.MyForm.FreeCost,
+                        frmPickCyberware.MyForm.BlackMarketDiscount,
+                        objParent: objSelectedCyberware).ConfigureAwait(false))
                     await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
 
                 return frmPickCyberware.MyForm.AddAgain;
@@ -26938,28 +26938,29 @@ namespace Chummer
         /// <param name="intRating">Rating of the Cyberware.</param>
         /// <param name="eSource">Source representing whether the suite is cyberware or bioware.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        private Cyberware CreateSuiteCyberware(XmlNode xmlSuiteNode, XmlNode xmlCyberwareNode, Grade objGrade,
+        private async Task<Cyberware> CreateSuiteCyberware(XmlNode xmlSuiteNode, XmlNode xmlCyberwareNode, Grade objGrade,
                                                int intRating, Improvement.ImprovementSource eSource,
                                                CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>(1);
             List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
             string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
 
-            objCyberware.Create(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
-                                strForced);
+            await objCyberware.CreateAsync(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
+                strForced, token: token).ConfigureAwait(false);
             objCyberware.Suite = true;
 
             foreach (Weapon objWeapon in lstWeapons)
             {
-                CharacterObject.Weapons.Add(objWeapon);
+                await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
             }
 
             foreach (Vehicle objVehicle in lstVehicles)
             {
-                CharacterObject.Vehicles.Add(objVehicle);
+                await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
             }
 
             string strType = eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
@@ -26968,7 +26969,7 @@ namespace Chummer
             {
                 if (xmlChildrenList?.Count > 0)
                 {
-                    XmlDocument objXmlDocument = CharacterObject.LoadData(strType + ".xml", token: token);
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml", token: token).ConfigureAwait(false);
                     foreach (XmlNode objXmlChild in xmlChildrenList)
                     {
                         string strChildName = objXmlChild["name"]?.InnerText;
@@ -26979,8 +26980,8 @@ namespace Chummer
                         int intChildRating
                             = Convert.ToInt32(objXmlChild["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
 
-                        objCyberware.Children.Add(CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade,
-                                                                       intChildRating, eSource, token));
+                        await objCyberware.Children.AddAsync(await CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade,
+                            intChildRating, eSource, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
             }
@@ -27051,7 +27052,7 @@ namespace Chummer
                                 = Convert.ToInt32(xmlItem["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
 
                             Cyberware objCyberware
-                                = CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating, objSource, token);
+                                = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating, objSource, token).ConfigureAwait(false);
                             await CharacterObject.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
                         }
                     }

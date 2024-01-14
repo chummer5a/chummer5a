@@ -3711,10 +3711,14 @@ namespace Chummer
                             .ExpressionToIntAsync(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token)
                             .ConfigureAwait(false);
 
-                    objWare.Create(objXmlCyberwareNode,
-                        GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
-                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
-                        Weapons, Vehicles, true, true, strForcedValue);
+                    await objWare.CreateAsync(objXmlCyberwareNode,
+                            GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
+                                .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype,
+                            intRating,
+                            await GetWeaponsAsync(token).ConfigureAwait(false),
+                            await GetVehiclesAsync(token).ConfigureAwait(false), true, true, strForcedValue,
+                            token: token)
+                        .ConfigureAwait(false);
                     await Cyberware.AddAsync(objWare, token).ConfigureAwait(false);
                     try
                     {
@@ -3748,10 +3752,14 @@ namespace Chummer
                             .ExpressionToIntAsync(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token)
                             .ConfigureAwait(false);
 
-                    objWare.Create(objXmlCyberwareNode,
-                        GetGrades(Improvement.ImprovementSource.Bioware, true, token)
-                            .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
-                        Weapons, Vehicles, true, true, strForcedValue);
+                    await objWare.CreateAsync(objXmlCyberwareNode,
+                            GetGrades(Improvement.ImprovementSource.Bioware, true, token)
+                                .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype,
+                            intRating,
+                            await GetWeaponsAsync(token).ConfigureAwait(false),
+                            await GetVehiclesAsync(token).ConfigureAwait(false), true, true, strForcedValue,
+                            token: token)
+                        .ConfigureAwait(false);
                     await Cyberware.AddAsync(objWare, token).ConfigureAwait(false);
                     try
                     {
@@ -23556,12 +23564,12 @@ namespace Chummer
                         objHole = new Cyberware(this);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
-                        objHole.Create(
+                        await objHole.CreateAsync(
                             xmlEssHole,
-                            GetGrades(Improvement.ImprovementSource.Cyberware, true)
+                            GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
                                 .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware,
                             intCentiessence, lstWeapons,
-                            lstVehicles);
+                            lstVehicles, token: token).ConfigureAwait(false);
 
                         await Cyberware.AddAsync(objHole, token).ConfigureAwait(false);
 
@@ -23733,11 +23741,11 @@ namespace Chummer
                         objAntiHole = new Cyberware(this);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
-                        objAntiHole.Create(xmlEssAntiHole,
-                            GetGrades(Improvement.ImprovementSource.Cyberware, true)
+                        await objAntiHole.CreateAsync(xmlEssAntiHole,
+                            GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
                                 .FirstOrDefault(x => x.Name == "None"),
                             Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons,
-                            lstVehicles);
+                            lstVehicles, token: token).ConfigureAwait(false);
 
                         await Cyberware.AddAsync(objAntiHole, token).ConfigureAwait(false);
 
