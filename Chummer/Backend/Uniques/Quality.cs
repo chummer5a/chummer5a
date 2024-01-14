@@ -246,6 +246,7 @@ namespace Chummer
                 objAsyncLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _strSourceName = strSourceName;
                 objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
                 if (!objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic))

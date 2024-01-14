@@ -40018,68 +40018,69 @@ namespace Chummer
                 await ImprovementManager
                     .RemoveImprovementsAsync(this, Improvement.ImprovementSource.Encumbrance, token: token)
                     .ConfigureAwait(false);
-                if (!Settings.DoEncumbrancePenaltyPhysicalLimit
-                    && !Settings.DoEncumbrancePenaltyMovementSpeed
-                    && !Settings.DoEncumbrancePenaltyAgility
-                    && !Settings.DoEncumbrancePenaltyReaction)
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                if (!objSettings.DoEncumbrancePenaltyPhysicalLimit
+                    && !objSettings.DoEncumbrancePenaltyMovementSpeed
+                    && !objSettings.DoEncumbrancePenaltyAgility
+                    && !objSettings.DoEncumbrancePenaltyReaction)
                     return;
                 // Create the Encumbrance Improvements.
-                int intEncumbrance = Encumbrance;
+                int intEncumbrance = await GetEncumbranceAsync(token).ConfigureAwait(false);
                 if (intEncumbrance == 0)
                     return;
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                    if (objSettings.DoEncumbrancePenaltyPhysicalLimit)
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Physical", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.PhysicalLimit,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit,
+                                intEncumbrance * objSettings.EncumbrancePenaltyPhysicalLimit,
                                 token: token)
                             .ConfigureAwait(false);
-                    if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                    if (objSettings.DoEncumbrancePenaltyMovementSpeed)
                     {
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Ground", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.SprintBonusPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Fly", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.SprintBonusPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Swim", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.SprintBonusPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Ground", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Fly", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "Swim", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
@@ -40087,7 +40088,7 @@ namespace Chummer
                                 string.Empty,
                                 Improvement.ImprovementType.WalkMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
@@ -40095,7 +40096,7 @@ namespace Chummer
                                 string.Empty,
                                 Improvement.ImprovementType.WalkMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                         await ImprovementManager.CreateImprovementAsync(
@@ -40103,25 +40104,25 @@ namespace Chummer
                                 string.Empty,
                                 Improvement.ImprovementType.WalkMultiplierPercent,
                                 "precedence-1",
-                                intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                intEncumbrance * objSettings.EncumbrancePenaltyMovementSpeed,
                                 token: token)
                             .ConfigureAwait(false);
                     }
 
-                    if (Settings.DoEncumbrancePenaltyAgility)
+                    if (objSettings.DoEncumbrancePenaltyAgility)
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "AGI", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.Attribute,
                                 "precedence-1", 0, 1, 0, 0,
-                                intEncumbrance * Settings.EncumbrancePenaltyAgility,
+                                intEncumbrance * objSettings.EncumbrancePenaltyAgility,
                                 token: token)
                             .ConfigureAwait(false);
-                    if (Settings.DoEncumbrancePenaltyReaction)
+                    if (objSettings.DoEncumbrancePenaltyReaction)
                         await ImprovementManager.CreateImprovementAsync(
                                 this, "REA", Improvement.ImprovementSource.Encumbrance,
                                 string.Empty, Improvement.ImprovementType.Attribute,
                                 "precedence-1", 0, 1, 0, 0,
-                                intEncumbrance * Settings.EncumbrancePenaltyReaction,
+                                intEncumbrance * objSettings.EncumbrancePenaltyReaction,
                                 token: token)
                             .ConfigureAwait(false);
                 }
@@ -41985,37 +41986,34 @@ namespace Chummer
                         }
                     }
 
-                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                     if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
-                        lstTasks.Add(RefreshDealerConnectionDiscountsAsync(token));
+                        await RefreshDealerConnectionDiscountsAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
-                        lstTasks.Add(RefreshBlackMarketDiscountsAsync(token));
+                        await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
-                        lstTasks.Add(RefreshRedlinerImprovementsAsync(token));
+                        await RefreshRedlinerImprovementsAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(Essence)))
                     {
                         await ResetCachedEssenceAsync(token).ConfigureAwait(false);
-                        lstTasks.Add(RefreshEssenceLossImprovementsAsync(token));
+                        await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                     }
 
                     if (setNamesOfChangedProperties.Contains(nameof(Encumbrance)))
-                        lstTasks.Add(RefreshEncumbranceAsync(token));
+                        await RefreshEncumbranceAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(ArmorEncumbrance)))
-                        lstTasks.Add(RefreshArmorEncumbranceAsync(token));
+                        await RefreshArmorEncumbranceAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
-                        lstTasks.Add(RefreshWoundPenaltiesAsync(token));
+                        await RefreshWoundPenaltiesAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(SustainingPenalty)))
-                        lstTasks.Add(RefreshSustainingPenaltiesAsync(token));
+                        await RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
-                        lstTasks.Add(RefreshAstralReputationImprovementsAsync(token));
-
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await RefreshAstralReputationImprovementsAsync(token).ConfigureAwait(false);
 
                     if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        lstTasks.Clear();
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
                         int i = 0;
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {

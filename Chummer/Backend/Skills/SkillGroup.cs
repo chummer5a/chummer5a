@@ -1454,7 +1454,7 @@ namespace Chummer.Backend.Skills
         public async Task AddAsync(Skill skill, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token))
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 Guid guidAddedSkillId = await skill.GetSkillIdAsync(token).ConfigureAwait(false);
