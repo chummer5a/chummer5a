@@ -863,7 +863,7 @@ namespace Chummer.Backend.Equipment
                             // ReSharper disable once MethodHasAsyncOverload
                             Notes = CommonFunctions.GetBookNotes(objXmlCyberware, Name, CurrentDisplayName, Source,
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                Page, DisplayPage(GlobalSettings.Language), _objCharacter);
+                                Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
                         else
                             Notes = await CommonFunctions.GetBookNotesAsync(objXmlCyberware, Name,
                                 await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
@@ -933,14 +933,14 @@ namespace Chummer.Backend.Equipment
                     // Add Subsytem information if applicable.
                     XPathNavigator xmlCyberwareNavigator = objXmlCyberware.CreateNavigator();
                     XPathNavigator xmlAllowSubsystems =
-                        xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("allowsubsystems");
+                        xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("allowsubsystems", token);
                     if (xmlAllowSubsystems != null)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                    out StringBuilder sbdSubsystem))
                         {
                             foreach (XPathNavigator xmlSubsystem in xmlAllowSubsystems.SelectAndCacheExpression(
-                                         "category"))
+                                         "category", token))
                             {
                                 sbdSubsystem.Append(xmlSubsystem.Value).Append(',');
                             }
@@ -952,16 +952,16 @@ namespace Chummer.Backend.Equipment
                     }
 
                     XPathNavigator xmlPairInclude =
-                        xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("pairinclude");
+                        xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("pairinclude", token);
                     if (xmlPairInclude != null)
                     {
-                        if (xmlPairInclude.SelectSingleNodeAndCacheExpression("@includeself")?.Value !=
+                        if (xmlPairInclude.SelectSingleNodeAndCacheExpression("@includeself", token)?.Value !=
                             bool.FalseString)
                         {
                             _lstIncludeInPairBonus.Add(Name);
                         }
 
-                        foreach (XPathNavigator objPairNameNode in xmlPairInclude.SelectAndCacheExpression("name"))
+                        foreach (XPathNavigator objPairNameNode in xmlPairInclude.SelectAndCacheExpression("name", token))
                         {
                             _lstIncludeInPairBonus.Add(objPairNameNode.Value);
                         }
@@ -969,16 +969,16 @@ namespace Chummer.Backend.Equipment
                     else
                         _lstIncludeInPairBonus.Add(Name);
 
-                    xmlPairInclude = xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("wirelesspairinclude");
+                    xmlPairInclude = xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("wirelesspairinclude", token);
                     if (xmlPairInclude != null)
                     {
-                        if (xmlPairInclude.SelectSingleNodeAndCacheExpression("@includeself")?.Value !=
+                        if (xmlPairInclude.SelectSingleNodeAndCacheExpression("@includeself", token)?.Value !=
                             bool.FalseString)
                         {
                             _lstIncludeInWirelessPairBonus.Add(Name);
                         }
 
-                        foreach (XPathNavigator objPairNameNode in xmlPairInclude.SelectAndCacheExpression("name"))
+                        foreach (XPathNavigator objPairNameNode in xmlPairInclude.SelectAndCacheExpression("name", token))
                         {
                             _lstIncludeInPairBonus.Add(objPairNameNode.Value);
                         }
@@ -1038,7 +1038,7 @@ namespace Chummer.Backend.Equipment
                                                }))
                                     {
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                                        if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
                                         {
                                             _guiID = Guid.Empty;
                                             return;
@@ -1087,7 +1087,7 @@ namespace Chummer.Backend.Equipment
                         // Add Cyberweapons if applicable.
                         XmlDocument objXmlWeaponDocument = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadData("weapons.xml")
+                            ? _objCharacter.LoadData("weapons.xml", token: token)
                             : await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
 
                         // More than one Weapon can be added, so loop through all occurrences.
@@ -1189,7 +1189,7 @@ namespace Chummer.Backend.Equipment
                         // Add Drone Bodyparts if applicable.
                         XmlDocument objXmlVehicleDocument = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadData("vehicles.xml")
+                            ? _objCharacter.LoadData("vehicles.xml", token: token)
                             : await _objCharacter.LoadDataAsync("vehicles.xml", token: token).ConfigureAwait(false);
 
                         // More than one Weapon can be added, so loop through all occurrences.
@@ -1250,7 +1250,7 @@ namespace Chummer.Backend.Equipment
                                 // ReSharper disable once MethodHasAsyncOverload
                                 if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
                                         _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, Rating,
-                                        CurrentDisplayNameShort, blnCreateImprovements))
+                                        CurrentDisplayNameShort, blnCreateImprovements, token))
                                 {
                                     _guiID = Guid.Empty;
                                     return;
@@ -1274,7 +1274,7 @@ namespace Chummer.Backend.Equipment
                             List<Cyberware> lstPairableCyberwares = blnSync
                                 ? _objCharacter.Cyberware.DeepWhere(x => x.Children,
                                     x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                         x.IsModularCurrentlyEquipped).ToList()
+                                         x.IsModularCurrentlyEquipped, token).ToList()
                                 : await _objCharacter.Cyberware.DeepWhereAsync(x => x.Children,
                                     async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
                                                await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -5097,7 +5097,7 @@ namespace Chummer.Backend.Equipment
                                         if (!kvpToCheck.Value.Contains(Name))
                                             continue;
                                         foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(
-                                                     kvpToCheck.Key))
+                                                     kvpToCheck.Key, token: token))
                                         {
                                             if (!dicChangedProperties.TryGetValue(
                                                     objCharacterAttrib, out HashSet<string> setChangedProperties))
@@ -10669,6 +10669,7 @@ namespace Chummer.Backend.Equipment
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 decimal decSaleCost = await GetTotalCostAsync(token).ConfigureAwait(false) * refundPercentage;
                 decimal decOldEssence = await GetCalculatedESSAsync(token).ConfigureAwait(false);
 
@@ -10717,8 +10718,10 @@ namespace Chummer.Backend.Equipment
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
                 objExpense.Undo = objUndo;
-                using (LockObject.EnterWriteLock())
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
+                    token.ThrowIfCancellationRequested();
                     Interlocked.Decrement(ref _intProcessPropertyChanges);
                     try
                     {
@@ -10744,6 +10747,10 @@ namespace Chummer.Backend.Equipment
                     }
 
                     await DoPropertyChangesAsync(blnDoRatingChange, blnDoGradeChange, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally

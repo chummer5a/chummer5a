@@ -23660,7 +23660,7 @@ namespace Chummer
                         await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false), frmPickCyberware.MyForm.Markup,
                         frmPickCyberware.MyForm.FreeCost,
                         frmPickCyberware.MyForm.BlackMarketDiscount,
-                        objParent: objSelectedCyberware).ConfigureAwait(false))
+                        objParent: objSelectedCyberware, token: token).ConfigureAwait(false))
                     await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
 
                 return frmPickCyberware.MyForm.AddAgain;

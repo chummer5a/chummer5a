@@ -2994,7 +2994,7 @@ namespace Chummer
                     objWare.Create(objXmlCyberwareNode,
                         GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
-                        Weapons, Vehicles, true, true, strForcedValue);
+                        Weapons, Vehicles, true, true, strForcedValue, token: token);
                     Cyberware.Add(objWare);
                     try
                     {
@@ -3028,7 +3028,7 @@ namespace Chummer
                     objWare.Create(objXmlCyberwareNode,
                         GetGrades(Improvement.ImprovementSource.Bioware, true, token)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
-                        Weapons, Vehicles, true, true, strForcedValue);
+                        Weapons, Vehicles, true, true, strForcedValue, token: token);
                     Cyberware.Add(objWare);
                     try
                     {
