@@ -45,8 +45,8 @@
     <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core" Version="3.7.300.25" />
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.300.25" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.301.6" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.300.36" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
