@@ -22194,7 +22194,7 @@ namespace Chummer
 
                             Spell objSpell = new Spell(CharacterObject);
                             string strForceValue = objXmlSpell.Attributes?["select"]?.InnerText ?? string.Empty;
-                            await objSpell.CreateAsync(objXmlSpellNode, strForceValue, token).ConfigureAwait(false);
+                            await objSpell.CreateAsync(objXmlSpellNode, strForceValue, token: token).ConfigureAwait(false);
                             await CharacterObject.Spells.AddAsync(objSpell, token).ConfigureAwait(false);
                         }
                     }
