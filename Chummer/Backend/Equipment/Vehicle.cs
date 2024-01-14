@@ -338,7 +338,7 @@ namespace Chummer.Backend.Equipment
             if (blnCreateChildren)
             {
                 // If there are any VehicleMods that come with the Vehicle, add them.
-                XmlNode xmlMods = objXmlVehicle["mods"];
+                XmlElement xmlMods = objXmlVehicle["mods"];
                 if (xmlMods != null)
                 {
                     XmlDocument objXmlDocument = _objCharacter.LoadData("vehicles.xml");
@@ -392,7 +392,7 @@ namespace Chummer.Backend.Equipment
                                     objMod.Extra = strForcedValue;
                                     objMod.Create(objXmlMod, intRating, this, 0, strForcedValue, blnSkipSelectForms);
 
-                                    XmlNode xmlSubsystemsNode = objXmlVehicleMod["subsystems"];
+                                    XmlElement xmlSubsystemsNode = objXmlVehicleMod["subsystems"];
                                     if (xmlSubsystemsNode != null)
                                     {
                                         // Load Cyberware subsystems first
@@ -437,7 +437,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // If there are any Weapon Mounts that come with the Vehicle, add them.
-                XmlNode xmlWeaponMounts = objXmlVehicle["weaponmounts"];
+                XmlElement xmlWeaponMounts = objXmlVehicle["weaponmounts"];
                 if (xmlWeaponMounts != null)
                 {
                     foreach (XmlNode objXmlVehicleMod in xmlWeaponMounts.SelectNodes("weaponmount"))
@@ -450,7 +450,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // If there is any Gear that comes with the Vehicle, add them.
-                XmlNode xmlGears = objXmlVehicle["gears"];
+                XmlElement xmlGears = objXmlVehicle["gears"];
                 if (xmlGears != null)
                 {
                     XmlDocument objXmlDocument = _objCharacter.LoadData("gear.xml");
@@ -482,7 +482,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // If there are any Weapons that come with the Vehicle, add them.
-                XmlNode xmlWeapons = objXmlVehicle["weapons"];
+                XmlElement xmlWeapons = objXmlVehicle["weapons"];
                 if (xmlWeapons != null)
                 {
                     XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
@@ -547,7 +547,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Look for Weapon Accessories.
-                        XmlNode xmlAccessories = objXmlWeapon["accessories"];
+                        XmlElement xmlAccessories = objXmlWeapon["accessories"];
                         if (xmlAccessories != null)
                         {
                             foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
@@ -855,7 +855,7 @@ namespace Chummer.Backend.Equipment
                             XmlNode xmlVehicleDataNode = objMyNode.Value;
                             if (xmlVehicleDataNode != null)
                             {
-                                XmlNode xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weaponmounts"];
+                                XmlElement xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weaponmounts"];
                                 if (xmlDataNodesForMissingKrakeStuff != null)
                                 {
                                     foreach (XmlNode objXmlVehicleMod in xmlDataNodesForMissingKrakeStuff.SelectNodes("weaponmount"))
@@ -932,7 +932,7 @@ namespace Chummer.Backend.Equipment
                                         }
 
                                         // Look for Weapon Accessories.
-                                        XmlNode xmlAccessories = objXmlWeapon["accessories"];
+                                        XmlElement xmlAccessories = objXmlWeapon["accessories"];
                                         if (xmlAccessories != null)
                                         {
                                             foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
@@ -2091,7 +2091,7 @@ namespace Chummer.Backend.Equipment
                                                                   .GetCachedImprovementListForValueOf(
                                                                       _objCharacter,
                                                                       Improvement.ImprovementType.DealerConnection)
-                                                                  .Any(x => x.UniqueName == strUniqueToSearchFor);
+                                                                  .Exists(x => x.UniqueName == strUniqueToSearchFor);
         }
 
         /// <summary>
@@ -2998,7 +2998,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
@@ -4044,7 +4044,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (VehicleMod objMod in Mods)
                 {
-                    XmlNode objBonus = objMod.Bonus?[strAttributeNodeName];
+                    XmlElement objBonus = objMod.Bonus?[strAttributeNodeName];
                     if (objBonus != null)
                     {
                         intReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);
@@ -4094,7 +4094,7 @@ namespace Chummer.Backend.Equipment
                 intReturn += await Mods.SumAsync(objMod =>
                 {
                     int intInnerReturn = 0;
-                    XmlNode objBonus = objMod.Bonus?[strAttributeNodeName];
+                    XmlElement objBonus = objMod.Bonus?[strAttributeNodeName];
                     if (objBonus != null)
                     {
                         intInnerReturn += Convert.ToInt32(objBonus.InnerText, GlobalSettings.InvariantCultureInfo);

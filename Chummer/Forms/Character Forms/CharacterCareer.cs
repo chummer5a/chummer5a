@@ -3293,12 +3293,12 @@ namespace Chummer
                                                  && await x.GetIsModularCurrentlyEquippedAsync(token)
                                                            .ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), token)
+                                                     || await x.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false)), token)
                                          .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (!objCyberware.CanRemoveThroughImprovements)
+                                    if (!await objCyberware.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false))
                                         continue;
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
@@ -3360,12 +3360,12 @@ namespace Chummer
                                                  && x.SourceID != Cyberware.EssenceAntiHoleGUID
                                                  && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), token)
+                                                     || await x.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false)), token)
                                          .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (!objCyberware.CanRemoveThroughImprovements)
+                                    if (!await objCyberware.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false))
                                         continue;
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
@@ -3423,7 +3423,7 @@ namespace Chummer
                                                  && x.Grade.Name != "None"
                                                  && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), token)
+                                                     || await x.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false)), token)
                                          .ConfigureAwait(false))
                             {
                                 char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, token)
@@ -3432,7 +3432,7 @@ namespace Chummer
                                     continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (!objCyberware.CanRemoveThroughImprovements)
+                                    if (!await objCyberware.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false))
                                         continue;
                                     if (objCyberware.Parent != null)
                                         await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)

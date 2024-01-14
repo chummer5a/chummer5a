@@ -576,7 +576,7 @@ namespace Chummer
                 strPath = "/chummer/echoes/echo";
             }
 
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token)

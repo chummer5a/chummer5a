@@ -1775,12 +1775,12 @@ namespace Chummer.Backend.Skills
                                 if (SkillGroupObject != null)
                                 {
                                     setSkillNames.AddRange(SkillGroupObject.SkillList.Select(x => x.DictionaryKey));
-                                    if (lstReflexRecorders.Any(x => setSkillNames.Contains(x.Extra)))
+                                    if (lstReflexRecorders.Exists(x => setSkillNames.Contains(x.Extra)))
                                     {
                                         return 0;
                                     }
                                 }
-                                else if (lstReflexRecorders.Any(x => x.Extra == DictionaryKey))
+                                else if (lstReflexRecorders.Exists(x => x.Extra == DictionaryKey))
                                     return 0;
                             }
                         }
@@ -1813,7 +1813,7 @@ namespace Chummer.Backend.Skills
                                 foreach (Skill objSkill in SkillGroupObject.SkillList)
                                     setSkillNames.Add(await objSkill.GetDictionaryKeyAsync(token)
                                         .ConfigureAwait(false));
-                                if (lstReflexRecorders.Any(x => setSkillNames.Contains(x.Extra)))
+                                if (lstReflexRecorders.Exists(x => setSkillNames.Contains(x.Extra)))
                                 {
                                     return 0;
                                 }
@@ -1821,7 +1821,7 @@ namespace Chummer.Backend.Skills
                             else
                             {
                                 string strKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                                if (lstReflexRecorders.Any(x => x.Extra == strKey))
+                                if (lstReflexRecorders.Exists(x => x.Extra == strKey))
                                     return 0;
                             }
                         }
@@ -3613,7 +3613,7 @@ namespace Chummer.Backend.Skills
                                              CharacterObject, Improvement.ImprovementType.SkillSpecializationOption,
                                              DictionaryKey).Select(x => x.UniqueName))
                             {
-                                if (_lstCachedSuggestedSpecializations.Any(
+                                if (_lstCachedSuggestedSpecializations.Exists(
                                         y => y.Value?.ToString() == strSpecializationName))
                                     continue;
                                 _lstCachedSuggestedSpecializations.Add(
@@ -3688,7 +3688,7 @@ namespace Chummer.Backend.Skills
                                          await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
                                      .ConfigureAwait(false)).Select(x => x.UniqueName))
                         {
-                            if (_lstCachedSuggestedSpecializations.Any(
+                            if (_lstCachedSuggestedSpecializations.Exists(
                                     y => y.Value?.ToString() == strSpecializationName))
                                 continue;
                             _lstCachedSuggestedSpecializations.Add(
@@ -4413,7 +4413,7 @@ namespace Chummer.Backend.Skills
                             .Append((await objShowOnlyCyberware.GetAttributeTotalValueAsync(att.Abbrev, token)
                                     .ConfigureAwait(false))
                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
-                        if ((objShowOnlyCyberware.LimbSlot == "arm"
+                        if ((await objShowOnlyCyberware.GetLimbSlotAsync(token).ConfigureAwait(false) == "arm"
                              || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
                             && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
                             && !blnAmbidextrous

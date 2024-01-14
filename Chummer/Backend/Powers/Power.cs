@@ -217,7 +217,7 @@ namespace Chummer
                 if (objBonusNodeOverride != null)
                     Bonus = objBonusNodeOverride;
                 _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator();
-                XmlNode nodEnhancements = objNode["enhancements"];
+                XmlElement nodEnhancements = objNode["enhancements"];
                 if (nodEnhancements != null)
                 {
                     using (XmlNodeList xmlEnhancementList = nodEnhancements.SelectNodes("enhancement"))
@@ -2759,7 +2759,7 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlNode objDoc = blnSync
+                XmlDocument objDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? CharacterObject.LoadData("powers.xml", strLanguage, token: token)
                     : await CharacterObject.LoadDataAsync("powers.xml", strLanguage, token: token).ConfigureAwait(false);

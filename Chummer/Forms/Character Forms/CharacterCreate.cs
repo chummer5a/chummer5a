@@ -2679,7 +2679,7 @@ namespace Chummer
                                                  && x.SourceID != Cyberware.EssenceAntiHoleGUID
                                                  && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), token)
+                                                     || await x.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false)), token)
                                          .ConfigureAwait(false))
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
@@ -2719,7 +2719,7 @@ namespace Chummer
                                                  && x.Grade.Name != "None"
                                                  && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                                                  && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
-                                                     || x.CanRemoveThroughImprovements), token)
+                                                     || await x.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false)), token)
                                          .ConfigureAwait(false))
                             {
                                 char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, token)

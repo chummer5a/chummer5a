@@ -389,6 +389,7 @@ namespace Chummer
                     ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
                     if (blnSync)
                     {
+                        // ReSharper disable once MethodHasAsyncOverload
                         if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
                                 InternalId, _nodNaturalWeaponsNode, 1,
                                 CurrentDisplayNameShort, token: token))

@@ -665,7 +665,7 @@ namespace Chummer.Backend.Equipment
 
         private void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements, bool blnSkipSelectForms)
         {
-            XmlNode objGearsNode = xmlParentGearNode?["gears"];
+            XmlElement objGearsNode = xmlParentGearNode?["gears"];
             if (objGearsNode != null)
             {
                 // Create Gear by looking up the name of the item we're provided with.
@@ -699,8 +699,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode objChoiceNode in objXmlNodeList)
                                 {
-                                    XmlNode xmlChoiceName = objChoiceNode["name"];
-                                    XmlNode xmlChoiceCategory = objChoiceNode["category"];
+                                    XmlElement xmlChoiceName = objChoiceNode["name"];
+                                    XmlElement xmlChoiceCategory = objChoiceNode["category"];
                                     string strFilter = "/chummer/gears/gear";
                                     if (xmlChoiceName != null || xmlChoiceCategory != null)
                                     {
@@ -817,8 +817,8 @@ namespace Chummer.Backend.Equipment
         {
             if (xmlChildNode == null)
                 return;
-            XmlNode xmlChildName = xmlChildNode["name"];
-            XmlNode xmlChildCategory = xmlChildNode["category"];
+            XmlElement xmlChildName = xmlChildNode["name"];
+            XmlElement xmlChildCategory = xmlChildNode["category"];
             string strFilter = "/chummer/gears/gear";
             if (xmlChildName != null || xmlChildCategory != null)
             {
@@ -875,7 +875,7 @@ namespace Chummer.Backend.Equipment
         private async Task CreateChildrenAsync(XmlNode xmlParentGearNode, bool blnAddImprovements, bool blnSkipSelectForms, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            XmlNode objGearsNode = xmlParentGearNode?["gears"];
+            XmlElement objGearsNode = xmlParentGearNode?["gears"];
             if (objGearsNode != null)
             {
                 // Create Gear by looking up the name of the item we're provided with.
@@ -909,8 +909,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode objChoiceNode in objXmlNodeList)
                                 {
-                                    XmlNode xmlChoiceName = objChoiceNode["name"];
-                                    XmlNode xmlChoiceCategory = objChoiceNode["category"];
+                                    XmlElement xmlChoiceName = objChoiceNode["name"];
+                                    XmlElement xmlChoiceCategory = objChoiceNode["category"];
                                     string strFilter = "/chummer/gears/gear";
                                     if (xmlChoiceName != null || xmlChoiceCategory != null)
                                     {
@@ -1029,8 +1029,8 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (xmlChildNode == null)
                 return;
-            XmlNode xmlChildName = xmlChildNode["name"];
-            XmlNode xmlChildCategory = xmlChildNode["category"];
+            XmlElement xmlChildName = xmlChildNode["name"];
+            XmlElement xmlChildCategory = xmlChildNode["category"];
             string strFilter = "/chummer/gears/gear";
             if (xmlChildName != null || xmlChildCategory != null)
             {

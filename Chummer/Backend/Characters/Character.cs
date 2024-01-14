@@ -44772,7 +44772,7 @@ namespace Chummer
                                                     ?.ValueAsInt
                                                 ?? 1,
                                                 lstWeapons,
-                                                strIdentityName);
+                                                strIdentityName).ConfigureAwait(false);
                                             foreach (XPathNavigator xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity
                                                          .Select(
                                                              "license[@name = \"Fake License\"]"))
@@ -44788,7 +44788,7 @@ namespace Chummer
                                                     xmlHeroLabFakeLicenseNode
                                                         .SelectSingleNodeAndCacheExpression(
                                                             "@for", token)
-                                                        ?.Value ?? string.Empty, token: token);
+                                                        ?.Value ?? string.Empty, token: token).ConfigureAwait(false);
                                                 objFakeLicense.Parent = objFakeSIN;
                                                 await objFakeSIN.Children.AddAsync(objFakeLicense, token)
                                                     .ConfigureAwait(false);

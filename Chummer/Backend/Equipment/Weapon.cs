@@ -567,7 +567,7 @@ namespace Chummer.Backend.Equipment
                                  ?? Category.ToLowerInvariant();
 
             // Populate the Range if it differs from the Weapon's Category.
-            XmlNode objRangeNode = objXmlWeapon["range"];
+            XmlElement objRangeNode = objXmlWeapon["range"];
             if (objRangeNode != null)
             {
                 _strRange = objRangeNode.InnerText;
@@ -683,14 +683,14 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Add any extra Gear that comes with the Weapon Accessory.
-                        XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
+                        XmlElement xmlGearsNode = objXmlWeaponAccessory["gears"];
                         if (xmlGearsNode != null)
                         {
                             XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
                             foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
                             {
-                                XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                                XmlNode objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
+                                XmlElement objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                                XmlElement objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
                                 XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
                                 int intGearRating = 0;
                                 decimal decGearQty = 1;
@@ -834,7 +834,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("accuracy", _strAccuracy);
 
             objWriter.WriteElementString("activeammoslot", _intActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo));
-            if (_lstAmmo.Any(x => x.AmmoGear != null || x.Ammo != 0))
+            if (_lstAmmo.Exists(x => x.AmmoGear != null || x.Ammo != 0))
             {
                 objWriter.WriteStartElement("clips");
                 foreach (Clip clip in _lstAmmo)
@@ -1191,7 +1191,7 @@ namespace Chummer.Backend.Equipment
                                                      + "]/@type")?.Value
                                  ?? Category.ToLowerInvariant();
 
-            XmlNode xmlAccessoriesNode = objNode["accessories"];
+            XmlElement xmlAccessoriesNode = objNode["accessories"];
             if (xmlAccessoriesNode != null)
             {
                 using (XmlNodeList nodChildren = xmlAccessoriesNode.SelectNodes("accessory"))
@@ -1223,7 +1223,7 @@ namespace Chummer.Backend.Equipment
                 {
                     _lstAmmo.Clear();
                     _intActiveAmmoSlot = 1;
-                    XmlNode clipNode = objNode["clips"];
+                    XmlElement clipNode = objNode["clips"];
                     AddClipNodes(clipNode);
                 }
                 // Legacy for items that were saved before internal clip tracking for weapons that don't need ammo was implemented
@@ -1238,7 +1238,7 @@ namespace Chummer.Backend.Equipment
                 _lstAmmo.Clear();
                 if (objNode["clips"] != null)
                 {
-                    XmlNode clipNode = objNode["clips"];
+                    XmlElement clipNode = objNode["clips"];
                     AddClipNodes(clipNode);
                 }
                 else //Load old clips
@@ -1348,7 +1348,7 @@ namespace Chummer.Backend.Equipment
                 _strAmmo = "1";
             }
 
-            XmlNode xmlUnderbarrelNode = objNode["underbarrel"];
+            XmlElement xmlUnderbarrelNode = objNode["underbarrel"];
             if (xmlUnderbarrelNode != null)
             {
                 using (XmlNodeList nodChildren = xmlUnderbarrelNode.SelectNodes("weapon"))
@@ -2859,7 +2859,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("weapons.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);

@@ -1789,7 +1789,7 @@ namespace Chummer.Backend.Equipment
             IList<Vehicle> objVehicles, bool blnCreateImprovements = true)
         {
             // If we've just added a new base item, see if there are any subsystems that should automatically be added.
-            XmlNode xmlSubsystemsNode = objParentNode["subsystems"];
+            XmlElement xmlSubsystemsNode = objParentNode["subsystems"];
             if (xmlSubsystemsNode != null)
             {
                 // Load Cyberware subsystems first
@@ -1898,7 +1898,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             // If we've just added a new base item, see if there are any subsystems that should automatically be added.
-            XmlNode xmlSubsystemsNode = objParentNode["subsystems"];
+            XmlElement xmlSubsystemsNode = objParentNode["subsystems"];
             if (xmlSubsystemsNode != null)
             {
                 // Load Cyberware subsystems first
@@ -2365,7 +2365,7 @@ namespace Chummer.Backend.Equipment
 
                     _nodBonus = objNode["bonus"] ?? objMyNode.Value?["bonus"];
                     _nodPairBonus = objNode["pairbonus"] ?? objMyNode.Value?["pairbonus"];
-                    XmlNode xmlPairIncludeNode = objNode["pairinclude"];
+                    XmlElement xmlPairIncludeNode = objNode["pairinclude"];
                     if (xmlPairIncludeNode == null)
                     {
                         xmlPairIncludeNode = objMyNode.Value?["pairinclude"];
@@ -4760,6 +4760,30 @@ namespace Chummer.Backend.Equipment
 
                     return blnNoParentIsModular;
                 }
+            }
+        }
+
+        public async Task<bool> GetCanRemoveThroughImprovementsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                Cyberware objGrandparent = Parent;
+                bool blnNoParentIsModular = string.IsNullOrEmpty(PlugsIntoModularMount);
+                while (objGrandparent != null && blnNoParentIsModular)
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (await objGrandparent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        Cyberware objParent = objGrandparent;
+                        objGrandparent = objGrandparent.Parent;
+                        blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                    }
+                }
+
+                return blnNoParentIsModular;
             }
         }
 

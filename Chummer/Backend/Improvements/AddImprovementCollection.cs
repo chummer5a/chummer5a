@@ -1403,7 +1403,7 @@ namespace Chummer
                         frmPickSkill.MyForm.OnlySkillGroup = strTemp;
                     else
                     {
-                        XmlNode xmlSkillCategories = bonusNode["skillcategories"];
+                        XmlElement xmlSkillCategories = bonusNode["skillcategories"];
                         if (xmlSkillCategories != null)
                             frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
                         else
@@ -1545,7 +1545,7 @@ namespace Chummer
                         frmPickSkill.MyForm.OnlySkillGroup = strTemp;
                     else
                     {
-                        XmlNode xmlSkillCategories = bonusNode["skillcategories"];
+                        XmlElement xmlSkillCategories = bonusNode["skillcategories"];
                         if (xmlSkillCategories != null)
                             frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
                         else
@@ -2627,7 +2627,7 @@ namespace Chummer
             }
 
             // Condition Monitor Threshold.
-            XmlNode objNode = bonusNode["threshold"];
+            XmlElement objNode = bonusNode["threshold"];
             if (objNode != null)
             {
                 string strUseUnique = _strUnique;
@@ -4226,7 +4226,6 @@ namespace Chummer
             // If the character isn't an adept or mystic adept, skip the rest of this.
             if (_objCharacter.AdeptEnabled)
             {
-                string strSelection = string.Empty;
                 ForcedValue = string.Empty;
 
                 string strPowerName = bonusNode["name"]?.InnerText;
@@ -4234,6 +4233,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strPowerName))
                 {
                     // Check if the character already has this power
+                    string strSelection = string.Empty;
                     Log.Trace("strSelection = " + strSelection);
                     Power objNewPower = new Power(_objCharacter);
                     XmlNode objXmlPower = _objCharacter.LoadData("powers.xml").TryGetNodeByNameOrId("/chummer/powers/power", strPowerName);
@@ -5834,7 +5834,7 @@ namespace Chummer
                     }
 
                     if (string.IsNullOrWhiteSpace(LimitSelection)
-                        || lstWeapons.Any(item => item.Name == LimitSelection))
+                        || lstWeapons.Exists(item => item.Name == LimitSelection))
                     {
                         if (lstWeapons.Count == 0)
                         {
@@ -6034,7 +6034,7 @@ namespace Chummer
                             if (ImprovementManager
                                 .GetCachedImprovementListForValueOf(_objCharacter,
                                                                     Improvement.ImprovementType.DealerConnection)
-                                .All(x => x.UniqueName != strText))
+                                .TrueForAll(x => x.UniqueName != strText))
                             {
                                 lstItems.Add(new ListItem(strText,
                                                           LanguageManager.GetString(
@@ -6209,7 +6209,6 @@ namespace Chummer
                         = bonusNode.SelectSingleNode("quality[. = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                 }
 
-                List<Weapon> lstWeapons = new List<Weapon>(1);
                 int intQualityDiscount = 0;
 
                 if (bonusNode["discountqualities"] != null)
@@ -6267,6 +6266,7 @@ namespace Chummer
                             intQualityDiscount
                                 = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount")?.Value,
                                                   GlobalSettings.InvariantCultureInfo);
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality discountQuality = new Quality(_objCharacter)
                             {
                                 BP = 0
@@ -6286,6 +6286,9 @@ namespace Chummer
                             }
 
                             _objCharacter.Qualities.Add(discountQuality);
+                            // Create any Weapons that came with this ware.
+                            foreach (Weapon objWeapon in lstWeapons)
+                                _objCharacter.Weapons.Add(objWeapon);
                         }
                     }
                 }
@@ -6294,7 +6297,8 @@ namespace Chummer
                 bool blnForced = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@forced")?.Value == bool.TrueString;
                 string strRating = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@rating")?.Value;
                 int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, _intRating);
-                AddQuality(intCount, blnForced,objXmlSelectedQuality,strForceValue,blnDoesNotContributeToBP,intQualityDiscount);
+                AddQuality(intCount, blnForced, objXmlSelectedQuality, strForceValue, blnDoesNotContributeToBP,
+                    intQualityDiscount);
             }
         }
 
@@ -7373,7 +7377,7 @@ namespace Chummer
                     + "weaponskillaccuracy = " + bonusNode.OuterXml + Environment.NewLine
                     + "_strForcedValue = " + strForcedValue);
 
-            XmlNode xmlSelectSkillNode = bonusNode["selectskill"];
+            XmlElement xmlSelectSkillNode = bonusNode["selectskill"];
             if (xmlSelectSkillNode != null)
             {
                 bool blnDummy = false;
