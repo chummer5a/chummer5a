@@ -4989,14 +4989,14 @@ namespace Chummer
                             blnAddAgain = frmPickSpell.MyForm.AddAgain;
 
                             XmlNode objXmlSpell
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/spells/spell",frmPickSpell.MyForm.SelectedSpell);
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/spells/spell", frmPickSpell.MyForm.SelectedSpell);
 
                             Spell objSpell = new Spell(CharacterObject);
                             try
                             {
-                                objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited,
-                                                frmPickSpell.MyForm.Extended,
-                                                frmPickSpell.MyForm.Alchemical);
+                                await objSpell.CreateAsync(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited,
+                                    frmPickSpell.MyForm.Extended,
+                                    frmPickSpell.MyForm.Alchemical, token: GenericToken).ConfigureAwait(false);
                                 if (objSpell.InternalId.IsEmptyGuid())
                                 {
                                     await objSpell.DisposeAsync().ConfigureAwait(false);
@@ -5851,7 +5851,7 @@ namespace Chummer
 
                             // Create the Initiate Grade object.
                             InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                            objGrade.Create(
+                            await objGrade.CreateAsync(
                                 await CharacterObject.GetInitiateGradeAsync(GenericToken).ConfigureAwait(false) + 1,
                                 false,
                                 await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
@@ -5859,7 +5859,7 @@ namespace Chummer
                                 await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false),
                                 await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                    .ConfigureAwait(false), GenericToken);
+                                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                             await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
                                 .ConfigureAwait(false);
                         }
@@ -5897,7 +5897,7 @@ namespace Chummer
 
                             // Create the Initiate Grade object.
                             InitiationGrade objGrade = new InitiationGrade(CharacterObject);
-                            objGrade.Create(
+                            await objGrade.CreateAsync(
                                 await CharacterObject.GetSubmersionGradeAsync(GenericToken).ConfigureAwait(false) + 1,
                                 true,
                                 await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
@@ -5905,7 +5905,7 @@ namespace Chummer
                                 await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                     .ConfigureAwait(false),
                                 await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                    .ConfigureAwait(false), GenericToken);
+                                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                             await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
                                 .ConfigureAwait(false);
                         }
@@ -7801,7 +7801,7 @@ namespace Chummer
 
                         // Create the Improvements for the Technique if there are any.
                         MartialArtTechnique objTechnique = new MartialArtTechnique(CharacterObject);
-                        objTechnique.Create(xmlTechnique);
+                        await objTechnique.CreateAsync(xmlTechnique, GenericToken).ConfigureAwait(false);
                         if (objTechnique.InternalId.IsEmptyGuid())
                             return;
 
@@ -7931,8 +7931,8 @@ namespace Chummer
 
                             // Create the new piece of Gear.
                             objGear = new Gear(CharacterObject);
-                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                           false);
+                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                false, token: GenericToken).ConfigureAwait(false);
 
                             if (objGear.InternalId.IsEmptyGuid())
                                 continue;
@@ -9231,8 +9231,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objNewGear = new Gear(CharacterObject);
-                            objNewGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                              objCyberware.IsModularCurrentlyEquipped);
+                            await objNewGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                await objCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
                             objNewGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                             objNewGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
@@ -9338,8 +9338,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objNewGear = new Gear(CharacterObject);
-                            objNewGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                              false);
+                            await objNewGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                false, token: GenericToken).ConfigureAwait(false);
                             objNewGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                             objNewGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
@@ -9451,9 +9451,9 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objGear = new Gear(CharacterObject);
-                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                           (objSensor.Parent as Gear)?.Equipped
-                                           ?? objCyberware?.IsModularCurrentlyEquipped == true);
+                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                (objSensor.Parent as Gear)?.Equipped
+                                ?? objCyberware != null && await objCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
 
                             if (objGear.InternalId.IsEmptyGuid())
                                 continue;
@@ -9564,8 +9564,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objGear = new Gear(CharacterObject);
-                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                           false);
+                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                false, token: GenericToken).ConfigureAwait(false);
 
                             if (objGear.InternalId.IsEmptyGuid())
                                 continue;
@@ -9656,8 +9656,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objGear = new Gear(CharacterObject);
-                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                           objAccessory.Equipped);
+                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                objAccessory.Equipped, token: GenericToken).ConfigureAwait(false);
 
                             if (objGear.InternalId.IsEmptyGuid())
                                 continue;
@@ -9762,8 +9762,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objGear = new Gear(CharacterObject);
-                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                           (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true);
+                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true, token: GenericToken).ConfigureAwait(false);
 
                             if (objGear.InternalId.IsEmptyGuid())
                                 continue;
@@ -9925,8 +9925,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objGear = new Gear(CharacterObject);
-                            objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                           false);
+                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                false, token: GenericToken).ConfigureAwait(false);
 
                             if (objGear.InternalId.IsEmptyGuid())
                                 continue;
@@ -10026,8 +10026,8 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
                             Gear objNewGear = new Gear(CharacterObject);
-                            objNewGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                              false);
+                            await objNewGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                                false, token: GenericToken).ConfigureAwait(false);
 
                             if (objNewGear.InternalId.IsEmptyGuid())
                                 continue;
@@ -18009,8 +18009,8 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                   objSelectedGear?.Equipped != false);
+                    await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                        objSelectedGear?.Equipped != false, token: token).ConfigureAwait(false);
                     if (objGear.InternalId.IsEmptyGuid())
                         return frmPickGear.MyForm.AddAgain;
                     objGear.Quantity = frmPickGear.MyForm.SelectedQty;
@@ -18170,8 +18170,8 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                   objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped);
+                    await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
+                        objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped, token: token).ConfigureAwait(false);
 
                     if (objGear.InternalId.IsEmptyGuid())
                         return frmPickGear.MyForm.AddAgain;
@@ -22085,7 +22085,7 @@ namespace Chummer
                                         XmlNode xmlTechniqueNode = objXmlMartialArtDocument.TryGetNodeByNameOrId(
                                             "/chummer/techniques/technique", xmlTechnique["name"]?.InnerText,
                                             await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
-                                        objTechnique.Create(xmlTechniqueNode);
+                                        await objTechnique.CreateAsync(xmlTechniqueNode, token).ConfigureAwait(false);
                                         await objArt.Techniques.AddAsync(objTechnique, token).ConfigureAwait(false);
                                     }
                                 }
@@ -22194,7 +22194,7 @@ namespace Chummer
 
                             Spell objSpell = new Spell(CharacterObject);
                             string strForceValue = objXmlSpell.Attributes?["select"]?.InnerText ?? string.Empty;
-                            objSpell.Create(objXmlSpellNode, strForceValue);
+                            await objSpell.CreateAsync(objXmlSpellNode, strForceValue, token).ConfigureAwait(false);
                             await CharacterObject.Spells.AddAsync(objSpell, token).ConfigureAwait(false);
                         }
                     }
@@ -23383,7 +23383,7 @@ namespace Chummer
             {
                 try
                 {
-                    objNewGear.Create(objXmlGearNode, intRating, lstWeapons, strForceValue, true, blnCreateChildren);
+                    await objNewGear.CreateAsync(objXmlGearNode, intRating, lstWeapons, strForceValue, true, blnCreateChildren, token: token).ConfigureAwait(false);
                     objNewGear.Quantity = decQty;
 
                     switch (objParentObject)
@@ -23636,7 +23636,7 @@ namespace Chummer
                         objSource = Improvement.ImprovementSource.Metamagic;
                     }
 
-                    objNewMetamagic.Create(objXmlMetamagic, objSource);
+                    await objNewMetamagic.CreateAsync(objXmlMetamagic, objSource, token: GenericToken).ConfigureAwait(false);
                     objNewMetamagic.Grade = objGrade.Grade;
                     if (objNewMetamagic.InternalId.IsEmptyGuid())
                         return;
@@ -23717,8 +23717,8 @@ namespace Chummer
 
                     try
                     {
-                        objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
-                                           Improvement.ImprovementSource.Initiation);
+                        await objNewSpell.CreateAsync(objXmlArt, string.Empty, false, false, false,
+                            Improvement.ImprovementSource.Initiation, GenericToken).ConfigureAwait(false);
                         objNewSpell.Grade = objGrade.Grade;
                         if (objNewSpell.InternalId.IsEmptyGuid())
                         {
@@ -23767,8 +23767,8 @@ namespace Chummer
                     Spell objNewSpell = new Spell(CharacterObject);
                     try
                     {
-                        objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
-                                           Improvement.ImprovementSource.Initiation);
+                        await objNewSpell.CreateAsync(objXmlArt, string.Empty, false, false, false,
+                            Improvement.ImprovementSource.Initiation, GenericToken).ConfigureAwait(false);
                         objNewSpell.Grade = objGrade.Grade;
                         if (objNewSpell.InternalId.IsEmptyGuid())
                         {
@@ -23831,7 +23831,7 @@ namespace Chummer
                         return;
 
                     Enhancement objEnhancement = new Enhancement(CharacterObject);
-                    objEnhancement.Create(objXmlArt, Improvement.ImprovementSource.Initiation);
+                    await objEnhancement.CreateAsync(objXmlArt, Improvement.ImprovementSource.Initiation, token: GenericToken).ConfigureAwait(false);
                     objEnhancement.Grade = objGrade.Grade;
                     if (objEnhancement.InternalId.IsEmptyGuid())
                         return;

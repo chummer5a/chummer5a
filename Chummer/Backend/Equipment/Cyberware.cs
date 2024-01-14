@@ -1982,8 +1982,8 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                         {
                             Gear objGear = new Gear(_objCharacter);
-                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
-                                    blnCreateImprovements))
+                            if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
+                                    blnCreateImprovements, token: token).ConfigureAwait(false))
                                 continue;
                             foreach (Weapon objWeapon in lstChildWeapons)
                             {

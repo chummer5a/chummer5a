@@ -3116,7 +3116,7 @@ namespace Chummer
                     string strForceValue = xmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
 
                     Gear objGear = new Gear(this);
-                    objGear.Create(xmlGearData, intRating, lstWeapons, strForceValue);
+                    objGear.Create(xmlGearData, intRating, lstWeapons, strForceValue, token: token);
 
                     if (objGear.InternalId.IsEmptyGuid())
                         continue;
@@ -3858,7 +3858,7 @@ namespace Chummer
                     string strForceValue = xmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
 
                     Gear objGear = new Gear(this);
-                    objGear.Create(xmlGearData, intRating, lstWeapons, strForceValue);
+                    await objGear.CreateAsync(xmlGearData, intRating, lstWeapons, strForceValue, token: token).ConfigureAwait(false);
 
                     if (objGear.InternalId.IsEmptyGuid())
                         continue;
@@ -44436,7 +44436,10 @@ namespace Chummer
                                         if (xmlSpellData != null)
                                         {
                                             Spell objSpell = new Spell(this);
-                                            objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
+                                            if (blnSync)
+                                                objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
+                                            else
+                                                await objSpell.CreateAsync(xmlSpellData, strForcedValue, blnIsLimited, token: token).ConfigureAwait(false);
                                             objSpell.Notes = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression(
                                                 "description", token)?.Value;
                                             if (blnSync)
@@ -44725,43 +44728,73 @@ namespace Chummer
                                     if (xmlHeroLabFakeSINNode != null)
                                     {
                                         Gear objFakeSIN = new Gear(this);
-                                        objFakeSIN.Create(xmlFakeSINDataNode,
-                                            xmlHeroLabFakeSINNode
-                                                .SelectSingleNodeAndCacheExpression(
-                                                    "@rating", token)
-                                                          ?.ValueAsInt
-                                                          ?? 1,
-                                                          lstWeapons,
-                                                          strIdentityName);
-                                        foreach (XPathNavigator xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity
-                                                     .Select(
-                                                         "license[@name = \"Fake License\"]"))
+                                        if (blnSync)
                                         {
-                                            Gear objFakeLicense = new Gear(this);
-                                            objFakeLicense.Create(xmlFakeLicenseDataNode,
-                                                xmlHeroLabFakeLicenseNode
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objFakeSIN.Create(xmlFakeSINDataNode,
+                                                xmlHeroLabFakeSINNode
                                                     .SelectSingleNodeAndCacheExpression(
                                                         "@rating", token)
-                                                    ?.ValueAsInt ??
-                                                1,
+                                                    ?.ValueAsInt
+                                                ?? 1,
                                                 lstWeapons,
-                                                xmlHeroLabFakeLicenseNode
-                                                    .SelectSingleNodeAndCacheExpression(
-                                                        "@for", token)
-                                                    ?.Value ?? string.Empty);
-                                            objFakeLicense.Parent = objFakeSIN;
-                                            if (blnSync)
+                                                strIdentityName, token: token);
+                                            foreach (XPathNavigator xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity
+                                                         .Select(
+                                                             "license[@name = \"Fake License\"]"))
+                                            {
+                                                Gear objFakeLicense = new Gear(this);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                objFakeLicense.Create(xmlFakeLicenseDataNode,
+                                                    xmlHeroLabFakeLicenseNode
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "@rating", token)
+                                                        ?.ValueAsInt ??
+                                                    1,
+                                                    lstWeapons,
+                                                    xmlHeroLabFakeLicenseNode
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "@for", token)
+                                                        ?.Value ?? string.Empty, token: token);
+                                                objFakeLicense.Parent = objFakeSIN;
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objFakeSIN.Children.Add(objFakeLicense);
-                                            else
-                                                await objFakeSIN.Children.AddAsync(objFakeLicense, token).ConfigureAwait(false);
-                                        }
-
-                                        if (blnSync)
+                                            }
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstGear.Add(objFakeSIN);
+                                        }
                                         else
+                                        {
+                                            await objFakeSIN.CreateAsync(xmlFakeSINDataNode,
+                                                xmlHeroLabFakeSINNode
+                                                    .SelectSingleNodeAndCacheExpression(
+                                                        "@rating", token)
+                                                    ?.ValueAsInt
+                                                ?? 1,
+                                                lstWeapons,
+                                                strIdentityName);
+                                            foreach (XPathNavigator xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity
+                                                         .Select(
+                                                             "license[@name = \"Fake License\"]"))
+                                            {
+                                                Gear objFakeLicense = new Gear(this);
+                                                await objFakeLicense.CreateAsync(xmlFakeLicenseDataNode,
+                                                    xmlHeroLabFakeLicenseNode
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "@rating", token)
+                                                        ?.ValueAsInt ??
+                                                    1,
+                                                    lstWeapons,
+                                                    xmlHeroLabFakeLicenseNode
+                                                        .SelectSingleNodeAndCacheExpression(
+                                                            "@for", token)
+                                                        ?.Value ?? string.Empty, token: token);
+                                                objFakeLicense.Parent = objFakeSIN;
+                                                await objFakeSIN.Children.AddAsync(objFakeLicense, token)
+                                                    .ConfigureAwait(false);
+                                            }
                                             await _lstGear.AddAsync(objFakeSIN, token).ConfigureAwait(false);
+                                        }
                                     }
 
                                     XPathNavigator xmlHeroLabLifestyleNode = xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("lifestyle", token);

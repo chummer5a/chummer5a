@@ -69,8 +69,11 @@ namespace Chummer
         /// <param name="objXmlMetamagicNode">XmlNode to create the object from.</param>
         /// <param name="objSource">Source of the Improvement.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource, string strForcedValue = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource,
+            string strForcedValue = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!objXmlMetamagicNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMetamagicNode });
@@ -97,29 +100,124 @@ namespace Chummer
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlMetamagicNode, Name, CurrentDisplayName, Source, Page,
-                    DisplayPage(GlobalSettings.Language), _objCharacter);
+                    DisplayPage(GlobalSettings.Language), _objCharacter, token);
             }
 
             _nodBonus = objXmlMetamagicNode["bonus"];
             if (_nodBonus != null)
             {
-                int intRating = _objCharacter.SubmersionGrade > 0 ? _objCharacter.SubmersionGrade : _objCharacter.InitiateGrade;
+                int intRating = _objCharacter.SubmersionGrade > 0
+                    ? _objCharacter.SubmersionGrade
+                    : _objCharacter.InitiateGrade;
 
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, intRating, CurrentDisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
+                        _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, intRating,
+                        CurrentDisplayNameShort, token: token))
                 {
                     _guiID = Guid.Empty;
                     ImprovementManager.ForcedValue = strOldFocedValue;
                     return;
                 }
+
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
-                    _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space", token: token) + '(' +
+                                ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }
+
+                ImprovementManager.ForcedValue = strOldFocedValue;
+                ImprovementManager.SelectedValue = strOldSelectedValue;
+            }
+            /*
+            if (string.IsNullOrEmpty(_strNotes))
+            {
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                }
+            }
+            */
+        }
+
+        /// <summary>
+        /// Create a Metamagic from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlMetamagicNode">XmlNode to create the object from.</param>
+        /// <param name="objSource">Source of the Improvement.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource,
+            string strForcedValue = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!objXmlMetamagicNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlMetamagicNode });
+                Utils.BreakIfDebug();
+            }
+
+            if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
+            objXmlMetamagicNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
+            _eImprovementSource = objSource;
+            objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            if (!objXmlMetamagicNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMetamagicNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlMetamagicNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            {
+                Notes = await CommonFunctions.GetBookNotesAsync(objXmlMetamagicNode, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                        token)
+                    .ConfigureAwait(false);
+            }
+
+            _nodBonus = objXmlMetamagicNode["bonus"];
+            if (_nodBonus != null)
+            {
+                int intSubmersionGrade = await _objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false);
+                int intRating = intSubmersionGrade > 0
+                    ? intSubmersionGrade
+                    : await _objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false);
+
+                string strOldFocedValue = ImprovementManager.ForcedValue;
+                string strOldSelectedValue = ImprovementManager.SelectedValue;
+                ImprovementManager.ForcedValue = strForcedValue;
+                if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
+                            _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, intRating,
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false))
+                {
+                    _guiID = Guid.Empty;
+                    ImprovementManager.ForcedValue = strOldFocedValue;
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strName +=
+                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                        ImprovementManager.SelectedValue + ')';
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
                 ImprovementManager.ForcedValue = strOldFocedValue;
                 ImprovementManager.SelectedValue = strOldSelectedValue;
             }

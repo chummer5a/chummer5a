@@ -163,6 +163,103 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Create a Spell from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlSpellNode">XmlNode to create the object from.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="blnLimited">Whether or not the Spell should be marked as Limited.</param>
+        /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
+        /// <param name="blnAlchemical">Whether or not the Spell is one for an alchemical preparation.</param>
+        /// <param name="eSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Spell, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlSpellNode });
+                    Utils.BreakIfDebug();
+                }
+
+                objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
+
+                ImprovementManager.ForcedValue = strForcedValue;
+                if (objXmlSpellNode["bonus"] != null)
+                {
+                    if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.Spell,
+                                _guiID.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo),
+                                objXmlSpellNode["bonus"], 1,
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    {
+                        _strExtra = ImprovementManager.SelectedValue;
+                    }
+                }
+
+                if (!objXmlSpellNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    objXmlSpellNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlSpellNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlSpellNode, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                        token).ConfigureAwait(false);
+                }
+
+                if (objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors))
+                    await UpdateHashDescriptorsAsync(token).ConfigureAwait(false);
+                objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
+                objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
+                objXmlSpellNode.TryGetStringFieldQuickly("range", ref _strRange);
+                objXmlSpellNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+                objXmlSpellNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+                objXmlSpellNode.TryGetStringFieldQuickly("dv", ref _strDV);
+                _blnLimited = blnLimited;
+                _blnAlchemical = blnAlchemical;
+                objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
+                objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
+                _eImprovementSource = eSource;
+
+                _blnExtended = blnExtended;
+                if (blnExtended)
+                {
+                    _blnCustomExtended = !HashDescriptors.Any(x =>
+                        string.Equals(
+                            x.Trim(), "Extended Area",
+                            StringComparison.OrdinalIgnoreCase));
+                }
+
+                /*
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetText(_strSource + ' ' + _strPage, Name);
+                }
+                */
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private SourceString _objCachedSourceDetail;
 
         public SourceString SourceDetail
@@ -525,6 +622,23 @@ namespace Chummer
                 HashDescriptors.Clear();
                 foreach (string strDescriptor in Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                     HashDescriptors.Add(strDescriptor);
+            }
+        }
+
+        private async Task UpdateHashDescriptorsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                HashDescriptors.Clear();
+                foreach (string strDescriptor in Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                    HashDescriptors.Add(strDescriptor);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

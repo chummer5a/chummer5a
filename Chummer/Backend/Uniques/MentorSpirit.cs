@@ -87,10 +87,12 @@ namespace Chummer
         /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         /// <param name="strChoice1">Name/Text for Choice 1.</param>
         /// <param name="strChoice2">Name/Text for Choice 2.</param>
-        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strChoice1 = "", string strChoice2 = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strChoice1 = "", string strChoice2 = "", CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 _eMentorType = eMentorType;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
@@ -115,7 +117,7 @@ namespace Chummer
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(xmlMentor, Name, strDisplayName, Source, Page,
-                                                             DisplayPage(GlobalSettings.Language), _objCharacter);
+                                                             DisplayPage(GlobalSettings.Language), _objCharacter, token);
                 }
 
                 // Cache the English list of advantages gained through the Mentor Spirit.
@@ -135,7 +137,7 @@ namespace Chummer
                                 Improvement.ImprovementSource.MentorSpirit,
                                 _guiID.ToString(
                                     "D", GlobalSettings.InvariantCultureInfo), _nodBonus,
-                                1, strDisplayName))
+                                1, strDisplayName, token: token))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -175,7 +177,7 @@ namespace Chummer
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
                                         "D", GlobalSettings.InvariantCultureInfo),
-                                    _nodChoice1, 1, strDisplayName))
+                                    _nodChoice1, 1, strDisplayName, token: token))
                             {
                                 _guiID = Guid.Empty;
                                 return;
@@ -219,7 +221,7 @@ namespace Chummer
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
                                         "D", GlobalSettings.InvariantCultureInfo),
-                                    _nodChoice2, 1, strDisplayName))
+                                    _nodChoice2, 1, strDisplayName, token: token))
                             {
                                 _guiID = Guid.Empty;
                                 return;
@@ -257,6 +259,195 @@ namespace Chummer
                     }
                 }
                 */
+            }
+        }
+
+        /// <summary>
+        /// Create a Mentor Spirit from an XmlNode.
+        /// </summary>
+        /// <param name="xmlMentor">XmlNode to create the object from.</param>
+        /// <param name="eMentorType">Whether this is a Mentor or a Paragon.</param>
+        /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
+        /// <param name="strChoice1">Name/Text for Choice 1.</param>
+        /// <param name="strChoice2">Name/Text for Choice 2.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strChoice1 = "", string strChoice2 = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _eMentorType = eMentorType;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+                if (!xmlMentor.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    Log.Warn(new object[] { "Missing id field for xmlnode", xmlMentor });
+                    Utils.BreakIfDebug();
+                }
+
+                xmlMentor.TryGetStringFieldQuickly("name", ref _strName);
+                xmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
+                xmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                xmlMentor.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    xmlMentor.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string strDisplayName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(xmlMentor, Name, strDisplayName, Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                }
+
+                // Cache the English list of advantages gained through the Mentor Spirit.
+                xmlMentor.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage);
+                xmlMentor.TryGetMultiLineStringFieldQuickly("disadvantage", ref _strDisadvantage);
+
+                _nodBonus = xmlMentor["bonus"];
+                if (_nodBonus != null)
+                {
+                    string strOldForce = ImprovementManager.ForcedValue;
+                    string strOldSelected = ImprovementManager.SelectedValue;
+                    try
+                    {
+                        ImprovementManager.ForcedValue = strForceValue;
+                        ImprovementManager.SelectedValue = string.Empty;
+                        if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.MentorSpirit,
+                                _guiID.ToString(
+                                    "D", GlobalSettings.InvariantCultureInfo), _nodBonus,
+                                1, strDisplayName, token: token).ConfigureAwait(false))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+
+                        _strExtra = ImprovementManager.SelectedValue;
+                    }
+                    finally
+                    {
+                        ImprovementManager.ForcedValue = strOldForce;
+                        ImprovementManager.SelectedValue = strOldSelected;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(_strExtra))
+                        _strExtra = strForceValue;
+                }
+                else if (!string.IsNullOrWhiteSpace(strForceValue))
+                {
+                    _strExtra = strForceValue;
+                }
+                else
+                    _strExtra = string.Empty;
+
+                if (!string.IsNullOrEmpty(strChoice1))
+                {
+                    _nodChoice1 = xmlMentor.SelectSingleNode("choices/choice[name = " + strChoice1.CleanXPath()
+                        + "]/bonus");
+                    if (_nodChoice1 != null)
+                    {
+                        string strOldForce = ImprovementManager.ForcedValue;
+                        string strOldSelected = ImprovementManager.SelectedValue;
+                        try
+                        {
+                            ImprovementManager.ForcedValue = string.Empty;
+                            ImprovementManager.SelectedValue = string.Empty;
+                            if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                    Improvement.ImprovementSource.MentorSpirit,
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo),
+                                    _nodChoice1, 1, strDisplayName, token: token).ConfigureAwait(false))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+
+                            _strExtraChoice1 = ImprovementManager.SelectedValue;
+                        }
+                        finally
+                        {
+                            ImprovementManager.ForcedValue = strOldForce;
+                            ImprovementManager.SelectedValue = strOldSelected;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(_strExtraChoice1))
+                            _strExtraChoice1 = strChoice1;
+                    }
+                    else
+                    {
+                        _strExtraChoice1 = strChoice1;
+                    }
+                }
+                else
+                {
+                    _nodChoice1 = null;
+                    _strExtraChoice1 = string.Empty;
+                }
+
+                if (!string.IsNullOrEmpty(strChoice2))
+                {
+                    _nodChoice2 = xmlMentor.SelectSingleNode("choices/choice[name = " + strChoice2.CleanXPath()
+                        + "]/bonus");
+                    if (_nodChoice2 != null)
+                    {
+                        string strOldForce = ImprovementManager.ForcedValue;
+                        string strOldSelected = ImprovementManager.SelectedValue;
+                        try
+                        {
+                            ImprovementManager.ForcedValue = string.Empty;
+                            ImprovementManager.SelectedValue = string.Empty;
+                            if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                    Improvement.ImprovementSource.MentorSpirit,
+                                    _guiID.ToString(
+                                        "D", GlobalSettings.InvariantCultureInfo),
+                                    _nodChoice2, 1, strDisplayName, token: token).ConfigureAwait(false))
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+
+                            _strExtraChoice2 = ImprovementManager.SelectedValue;
+                        }
+                        finally
+                        {
+                            ImprovementManager.ForcedValue = strOldForce;
+                            ImprovementManager.SelectedValue = strOldSelected;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(_strExtraChoice2))
+                            _strExtraChoice2 = strChoice2;
+                    }
+                    else
+                    {
+                        _strExtraChoice2 = strChoice2;
+                    }
+                }
+                else
+                {
+                    _nodChoice2 = null;
+                    _strExtraChoice2 = string.Empty;
+                }
+
+                /*
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                    if (string.IsNullOrEmpty(_strNotes))
+                    {
+                        _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                    }
+                }
+                */
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

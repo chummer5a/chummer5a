@@ -83,9 +83,56 @@ namespace Chummer
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
 
-            if (xmlTechniqueDataNode["bonus"] == null) return;
+            XmlElement xmlBonus = xmlTechniqueDataNode["bonus"];
+            if (xmlBonus == null)
+                return;
             if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique,
-                _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), xmlTechniqueDataNode["bonus"], 1, CurrentDisplayName))
+                _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), xmlBonus, 1, CurrentDisplayName))
+            {
+                _guiID = Guid.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Create a Martial Art Technique from an XmlNode.
+        /// </summary>
+        /// <param name="xmlTechniqueDataNode">XmlNode to create the object from.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode xmlTechniqueDataNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!xmlTechniqueDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", xmlTechniqueDataNode });
+                Utils.BreakIfDebug();
+            }
+
+            if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName) &&
+                !xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            xmlTechniqueDataNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
+            xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            {
+                Notes = await CommonFunctions.GetBookNotesAsync(xmlTechniqueDataNode, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                        token)
+                    .ConfigureAwait(false);
+            }
+
+            XmlElement xmlBonus = xmlTechniqueDataNode["bonus"];
+            if (xmlBonus == null)
+                return;
+            if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                    Improvement.ImprovementSource.MartialArtTechnique,
+                    _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), xmlBonus, 1,
+                    await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
             {
                 _guiID = Guid.Empty;
             }

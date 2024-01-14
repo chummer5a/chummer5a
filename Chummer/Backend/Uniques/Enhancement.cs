@@ -113,6 +113,70 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Create an Enhancement from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
+        /// <param name="objSource">Source of the Improvement.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlArtNode, Improvement.ImprovementSource objSource,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!objXmlArtNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlArtNode });
+                Utils.BreakIfDebug();
+            }
+
+            if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
+            objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
+            _objImprovementSource = objSource;
+            if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            _nodBonus = objXmlArtNode["bonus"];
+            if (_nodBonus != null)
+            {
+                if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
+                        _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, 1,
+                        CurrentDisplayNameShort, token: token).ConfigureAwait(false))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strName +=
+                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
+                        ImprovementManager.SelectedValue + ')';
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+            }
+
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            {
+                Notes = await CommonFunctions.GetBookNotesAsync(objXmlArtNode, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                        token)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>

@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 
 namespace Chummer
 {
@@ -103,6 +104,81 @@ namespace Chummer
                 }
 
                 ImprovementManager.Commit(_objCharacter);
+            }
+        }
+
+        /// <summary>
+        /// Create an Initiation Grade from an XmlNode.
+        /// </summary>
+        /// <param name="intGrade">Grade number.</param>
+        /// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
+        /// <param name="blnGroup">Whether or not a Group was used.</param>
+        /// <param name="blnOrdeal">Whether or not an Ordeal was used.</param>
+        /// <param name="blnSchooling">Whether or not Schooling was used.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _intGrade = intGrade;
+            _blnTechnomancer = blnTechnomancer;
+            _blnGroup = blnGroup;
+            _blnOrdeal = blnOrdeal;
+            _blnSchooling = blnSchooling;
+            //TODO: I'm not happy with this.
+            //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
+            //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
+            //Whichever value is lower becomes the value of the improvement.
+            if (intGrade > 0 && blnTechnomancer)
+            {
+                IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && !_objCharacter.Settings
+                                                                          .SpecialKarmaCostBasedOnShownValue
+                                                                      && (await ImprovementManager
+                                                                          .GetCachedImprovementListForValueOfAsync(
+                                                                              _objCharacter,
+                                                                              Improvement.ImprovementType
+                                                                                  .CyberadeptDaemon, token: token).ConfigureAwait(false))
+                                                                      .Count > 0)
+                    {
+                        decimal decNonCyberwareEssence = await _objCharacter.GetBiowareEssenceAsync(token).ConfigureAwait(false) +
+                                                         await _objCharacter.GetEssenceHoleAsync(token).ConfigureAwait(false);
+                        int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
+                            Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
+                                ? Math.Ceiling(await _objCharacter.GetCyberwareEssenceAsync(token).ConfigureAwait(false))
+                                : Math.Floor(await _objCharacter.GetCyberwareEssenceAsync(token).ConfigureAwait(false))));
+                        // Cannot increase RES to be more than what it would be without any Essence loss.
+                        CharacterAttrib objRes = await _objCharacter.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
+                        intResonanceRecovered = _objCharacter.Settings.ESSLossReducesMaximumOnly
+                            ? Math.Min(intResonanceRecovered,
+                                await objRes.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false) - intGrade -
+                                await objRes.GetTotalMaximumAsync(token).ConfigureAwait(false))
+                            // +1 compared to normal because this Grade's effect has not been processed yet.
+                            : Math.Min(intResonanceRecovered,
+                                await objRes.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false) - intGrade + 1 -
+                                await objRes.GetValueAsync(token).ConfigureAwait(false));
+                        try
+                        {
+                            await ImprovementManager.CreateImprovementAsync(_objCharacter, "RESBase",
+                                Improvement.ImprovementSource.CyberadeptDaemon,
+                                InternalId, Improvement.ImprovementType.Attribute,
+                                string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
+                        await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
