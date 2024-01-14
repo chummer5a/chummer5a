@@ -8064,7 +8064,7 @@ namespace Chummer.Backend.Equipment
                                 x.SourceName == InternalId));
                     }
 
-                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId + "Wireless", WirelessBonus, 1, CurrentDisplayNameShort);
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Weapon, InternalId + "Wireless", WirelessBonus, 1, CurrentDisplayNameShort);
                 }
                 else
                 {
