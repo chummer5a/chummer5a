@@ -10419,8 +10419,7 @@ namespace Chummer
                 if (objNewGrade == null)
                     return;
                 // Updated the selected Cyberware Grade.
-                objCyberware.Grade = objNewGrade;
-
+                await objCyberware.SetGradeAsync(objNewGrade, GenericToken).ConfigureAwait(false);
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -10440,10 +10439,9 @@ namespace Chummer
                                         .ConfigureAwait(false) is Cyberware objCyberware))
                     return;
                 // Update the selected Cyberware Rating.
-                objCyberware.PrototypeTranshuman = await chkPrototypeTranshuman
-                                                         .DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                         .ConfigureAwait(false);
-
+                await objCyberware.SetPrototypeTranshumanAsync(await chkPrototypeTranshuman
+                    .DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -10467,9 +10465,9 @@ namespace Chummer
                     case Cyberware objCyberware:
                     {
                         // Update the selected Cyberware Rating.
-                        objCyberware.Rating = await nudCyberwareRating
-                                                    .DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                    .ConfigureAwait(false);
+                        await objCyberware.SetRatingAsync(await nudCyberwareRating
+                            .DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                         // See if a Bonus node exists.
                         if (objCyberware.Bonus?.InnerXml.Contains("Rating") == true
@@ -12133,9 +12131,9 @@ namespace Chummer
                     }
                     case Cyberware objCyberware:
                     {
-                        objCyberware.Rating
-                            = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                    .ConfigureAwait(false);
+                        await objCyberware.SetRatingAsync(await nudVehicleRating
+                            .DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                         string strText = await objCyberware.GetCurrentDisplayNameAsync(GenericToken)
                                                            .ConfigureAwait(false);
                         await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
@@ -17904,18 +17902,18 @@ namespace Chummer
                     return false;
                 }
 
-                if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceAntiHoleGUID)
                 {
-                    CharacterObject.DecreaseEssenceHole(objCyberware.Rating);
+                    await CharacterObject.DecreaseEssenceHoleAsync(await objCyberware.GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
-                else if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                else if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceHoleGUID)
                 {
-                    CharacterObject.IncreaseEssenceHole(objCyberware.Rating);
+                    await CharacterObject.IncreaseEssenceHoleAsync(await objCyberware.GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
                 else
                 {
                     objCyberware.DiscountCost = frmPickCyberware.MyForm.BlackMarketDiscount;
-                    objCyberware.PrototypeTranshuman = frmPickCyberware.MyForm.PrototypeTranshuman;
+                    await objCyberware.SetPrototypeTranshumanAsync(frmPickCyberware.MyForm.PrototypeTranshuman, token).ConfigureAwait(false);
 
                     // Apply the ESS discount if applicable.
                     if (CharacterObjectSettings.AllowCyberwareESSDiscounts)

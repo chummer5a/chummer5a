@@ -28801,8 +28801,10 @@ namespace Chummer
                                 == DialogResult.Cancel)
                                 return;
 
-                            objCyberware.Upgrade(frmCyberware.MyForm.SelectedGrade, frmCyberware.MyForm.SelectedRating,
-                                                 frmSell.MyForm.SellPercent, frmCyberware.MyForm.FreeCost);
+                            await objCyberware.Upgrade(frmCyberware.MyForm.SelectedGrade,
+                                    frmCyberware.MyForm.SelectedRating,
+                                    frmSell.MyForm.SellPercent, frmCyberware.MyForm.FreeCost, GenericToken)
+                                .ConfigureAwait(false);
                         }
                     }
 

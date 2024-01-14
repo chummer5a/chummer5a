@@ -4332,6 +4332,40 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                value = Math.Max(Math.Min(value, await GetMaxRatingAsync(token).ConfigureAwait(false)), await GetMinRatingAsync(token).ConfigureAwait(false));
+                if (Interlocked.Exchange(ref _intRating, value) == value)
+                    return;
+                if (await GearChildren.CountAsync(token).ConfigureAwait(false) > 0)
+                {
+                    await GearChildren.ForEachAsync(objChild =>
+                    {
+                        if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
+                        {
+                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                            int intCurrentRating = objChild.Rating;
+                            objChild.Rating = intCurrentRating;
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+
+                await DoPropertyChangesAsync(true, false, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private int _intProcessPropertyChanges = 1;
 
         private void DoPropertyChanges(bool blnDoRating, bool blnDoGrade)
@@ -4507,6 +4541,213 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
+            }
+        }
+
+        private async Task DoPropertyChangesAsync(bool blnDoRating, bool blnDoGrade, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                // Do not do property changes if we're not directly equipped to a character
+                if (_intProcessPropertyChanges == 0
+                    || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
+                    return;
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Do not do property changes if we're not directly equipped to a character
+                if (_intProcessPropertyChanges == 0
+                    || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
+                    return;
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                           Utils.DictionaryForMultiplePropertyChangedPool,
+                           out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                {
+                    try
+                    {
+                        if ((blnDoGrade || (blnDoRating && ESS.ContainsAny("Rating", "FixedValues"))) &&
+                            (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount))
+                        {
+                            if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                    out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                            }
+
+                            setChangedProperties.Add(await GetEssencePropertyNameAsync(token).ConfigureAwait(false));
+                        }
+
+                        if (blnDoRating)
+                        {
+                            if (await GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false) &&
+                                ParentVehicle == null)
+                            {
+                                if (_objParent != null && await _objParent.GetIsLimbAsync(token).ConfigureAwait(false)
+                                                       && (_objParent.Parent == null || await _objParent.Parent
+                                                           .GetInheritAttributesAsync(token).ConfigureAwait(false))
+                                                       && _objParent.ParentVehicle == null
+                                                       && !_objCharacter.Settings.DontUseCyberlimbCalculation
+                                                       && !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent
+                                                           .LimbSlot))
+                                {
+                                    foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                             s_AttributeAffectingCyberwares)
+                                    {
+                                        if (!kvpToCheck.Value.Contains(Name))
+                                            continue;
+                                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(
+                                                     kvpToCheck.Key))
+                                        {
+                                            if (!dicChangedProperties.TryGetValue(
+                                                    objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                            {
+                                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                                dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                            }
+
+                                            setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                        }
+                                    }
+                                }
+
+                                if (Weight.ContainsAny("Rating", "FixedValues")
+                                    || await GearChildren.AnyAsync(x => x.Equipped
+                                                                        && x.Weight.Contains(
+                                                                            "Parent Rating",
+                                                                            StringComparison.OrdinalIgnoreCase),
+                                        token: token).ConfigureAwait(false)
+                                    || await Children.AnyAsync(async x =>
+                                            await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
+                                            && x.Weight.Contains(
+                                                "Parent Rating", StringComparison.OrdinalIgnoreCase), token: token)
+                                        .ConfigureAwait(false))
+                                {
+                                    if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                            out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                                    }
+
+                                    setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
+                                }
+                            }
+
+                            // Needed in order to properly process named sources where
+                            // the tooltip was built before the object was added to the character
+                            if (Bonus?.InnerText.Contains("Rating") == true
+                                || PairBonus?.InnerText.Contains("Rating") == true
+                                || (WirelessOn && (WirelessBonus?.InnerText.Contains("Rating") == true
+                                                   || WirelessPairBonus?.InnerText.Contains("Rating") == true)))
+                            {
+                                if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                    ImprovementManager.ForcedValue = _strForced;
+
+                                if (Bonus != null)
+                                {
+                                    if (PairBonus != null)
+                                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                            await GetSourceTypeAsync(token).ConfigureAwait(false),
+                                            new[] { InternalId, InternalId + "Pair" }, token).ConfigureAwait(false);
+                                    else
+                                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                                await GetSourceTypeAsync(token).ConfigureAwait(false), InternalId,
+                                                token)
+                                            .ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                        await GetSourceTypeAsync(token).ConfigureAwait(false),
+                                        InternalId, Bonus, await GetRatingAsync(token).ConfigureAwait(false),
+                                        await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        token: token).ConfigureAwait(false);
+                                }
+
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
+                                    && string.IsNullOrEmpty(_strExtra))
+                                    _strExtra = ImprovementManager.SelectedValue;
+
+                                if (PairBonus != null)
+                                {
+                                    if (Bonus == null)
+                                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                            await GetSourceTypeAsync(token).ConfigureAwait(false),
+                                            InternalId + "Pair", token).ConfigureAwait(false);
+                                    // This cyberware should not be included in the count to make things easier.
+                                    List<Cyberware> lstPairableCyberwares = await _objCharacter.Cyberware
+                                        .DeepWhereAsync(
+                                            x => x.Children,
+                                            async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                                       await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                           .ConfigureAwait(false), token).ConfigureAwait(false);
+                                    int intCount = lstPairableCyberwares.Count;
+                                    // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                                    if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                                    {
+                                        intCount = 0;
+                                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                                        {
+                                            if (objPairableCyberware.Location != Location)
+                                                // We have found a cyberware with which this one could be paired, so increase count by 1
+                                                ++intCount;
+                                            else
+                                                // We have found a cyberware that would serve as a pair to another cyberware instead of this one, so decrease count by 1
+                                                --intCount;
+                                        }
+
+                                        // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
+                                        intCount = (intCount > 0).ToInt32();
+                                    }
+
+                                    if ((intCount & 1) == 1)
+                                    {
+                                        if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left"
+                                                                              && _strForced != "Right")
+                                            ImprovementManager.ForcedValue = _strForced;
+                                        else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                            ImprovementManager.ForcedValue = _strExtra;
+                                        await ImprovementManager.CreateImprovementsAsync(
+                                            _objCharacter, await GetSourceTypeAsync(token).ConfigureAwait(false),
+                                            InternalId + "Pair",
+                                            PairBonus, await GetRatingAsync(token).ConfigureAwait(false),
+                                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                }
+
+                                if (!await GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false) ||
+                                    ParentVehicle != null)
+                                    await ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
+                                else
+                                    await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                            }
+                        }
+
+                        foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
+                                 dicChangedProperties)
+                        {
+                            await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4835,6 +5076,69 @@ namespace Chummer.Backend.Equipment
                     if (blnGradeEssenceChanged)
                         DoPropertyChanges(false, true);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Grade level of the Cyberware.
+        /// </summary>
+        public async Task<Grade> GetGradeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrWhiteSpace(ForceGrade) && ForceGrade != _objGrade.Name)
+                {
+                    return Grade.ConvertToCyberwareGrade(ForceGrade, await GetSourceTypeAsync(token).ConfigureAwait(false), _objCharacter);
+                }
+
+                return _objGrade;
+            }
+        }
+
+        /// <summary>
+        /// Grade level of the Cyberware.
+        /// </summary>
+        public async Task SetGradeAsync(Grade value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Grade objOldGrade = Interlocked.Exchange(ref _objGrade, value);
+                if (objOldGrade == value)
+                    return;
+                bool blnGradeEssenceChanged = value == null || objOldGrade.Essence != value.Essence;
+                // Run through all of the child pieces and make sure their Grade matches.
+                await Children.ForEachAsync(async objChild =>
+                {
+                    //Ignore child pieces that have a forcegrade specified.
+                    //Generally expected to be items with <forcegrade>None</forcegrade>
+                    //TODO: This might need a handler for deeper-nested children
+                    if (!string.IsNullOrWhiteSpace(objChild.ForceGrade))
+                        return;
+                    int intMyProcessPropertyChanges = _intProcessPropertyChanges;
+                    int intOldChildProcessPropertyChanges
+                        = Interlocked.Exchange(ref objChild._intProcessPropertyChanges, _intProcessPropertyChanges);
+                    try
+                    {
+                        await objChild.SetGradeAsync(value, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref objChild._intProcessPropertyChanges,
+                            intOldChildProcessPropertyChanges, intMyProcessPropertyChanges);
+                    }
+                }, token).ConfigureAwait(false);
+
+                if (blnGradeEssenceChanged)
+                    await DoPropertyChangesAsync(false, true, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5499,6 +5803,45 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Is the Bioware's cost affected by Prototype Transhuman?
+        /// </summary>
+        public async Task SetPrototypeTranshumanAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnPrototypeTranshuman != value)
+                {
+                    string strOldEssencePropertyName = await GetEssencePropertyNameAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _blnPrototypeTranshuman = value;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
+                        ParentVehicle == null)
+                        await _objCharacter.OnMultiplePropertyChangedAsync(token, strOldEssencePropertyName,
+                            await GetEssencePropertyNameAsync(token).ConfigureAwait(false)).ConfigureAwait(false);
+                }
+
+                await Children.ForEachAsync(x => x.SetPrototypeTranshumanAsync(value, token), token)
+                    .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string EssencePropertyName
         {
             get
@@ -6131,7 +6474,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 return await _objCharacter.GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false)
-                       && PrototypeTranshuman
+                       && await GetPrototypeTranshumanAsync(token).ConfigureAwait(false)
                     ? 0
                     : await GetCalculatedESSPrototypeInvariantAsync(token).ConfigureAwait(false);
             }
@@ -6152,9 +6495,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Essence cost of the Cyberware if Prototype Transhuman is ignored.
         /// </summary>
-        public Task<decimal> GetCalculatedESSPrototypeInvariantAsync(CancellationToken token = default)
+        public async Task<decimal> GetCalculatedESSPrototypeInvariantAsync(CancellationToken token = default)
         {
-            return GetCalculatedESSPrototypeInvariantAsync(Rating, Grade, token);
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetCalculatedESSPrototypeInvariantAsync(await GetRatingAsync(token).ConfigureAwait(false),
+                    await GetGradeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+            }
         }
 
         public decimal GetCalculatedESSPrototypeInvariant(int intRating, Grade objGrade)
@@ -8466,7 +8815,7 @@ namespace Chummer.Backend.Equipment
                             // Add essence hole.
                             decimal decEssenceHoleToAdd = await GetCalculatedESSAsync(token).ConfigureAwait(false);
                             await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
-                            _objCharacter.IncreaseEssenceHole(decEssenceHoleToAdd);
+                            await _objCharacter.IncreaseEssenceHoleAsync(decEssenceHoleToAdd, token: token).ConfigureAwait(false);
                         }
                         else
                             await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
@@ -9812,42 +10161,57 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public void Upgrade(Grade objGrade, int intRating, decimal refundPercentage, bool blnFree)
+        public async Task Upgrade(Grade objGrade, int intRating, decimal refundPercentage, bool blnFree,
+            CancellationToken token = default)
         {
-            using (LockObject.EnterUpgradeableReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                decimal decSaleCost = TotalCost * refundPercentage;
-                decimal decOldEssence = CalculatedESS;
+                decimal decSaleCost = await GetTotalCostAsync(token).ConfigureAwait(false) * refundPercentage;
+                decimal decOldEssence = await GetCalculatedESSAsync(token).ConfigureAwait(false);
 
-                decimal decNewCost = blnFree ? 0 : CalculatedTotalCost(intRating, objGrade) - decSaleCost;
-                if (decNewCost > _objCharacter.Nuyen)
+                decimal decNewCost = blnFree
+                    ? 0
+                    : await CalculatedTotalCostAsync(intRating, objGrade, token).ConfigureAwait(false) - decSaleCost;
+                if (decNewCost > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                 {
                     Program.ShowScrollableMessageBox(
-                        LanguageManager.GetString("Message_NotEnoughNuyen"),
-                        LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
+                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
+                            .ConfigureAwait(false),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                string strSpace = LanguageManager.GetString("String_Space");
-                string strExpense = LanguageManager.GetString("String_ExpenseUpgradedCyberware") + strSpace +
-                                    CurrentDisplayNameShort;
-                bool blnDoGradeChange = Grade.Essence != objGrade.Essence;
-                bool blnDoRatingChange = Rating != intRating;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                    .ConfigureAwait(false);
+                string strExpense =
+                    await LanguageManager.GetStringAsync("String_ExpenseUpgradedCyberware", token: token)
+                        .ConfigureAwait(false) + strSpace +
+                    await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                Grade objOldGrade = await GetGradeAsync(token).ConfigureAwait(false);
+                bool blnDoGradeChange = objOldGrade.Essence != objGrade.Essence;
+                int intOldRating = await GetRatingAsync(token).ConfigureAwait(false);
+                bool blnDoRatingChange = intOldRating != intRating;
                 if (blnDoGradeChange || blnDoRatingChange)
                 {
-                    strExpense += '(' + LanguageManager.GetString("String_Grade") + strSpace + Grade.CurrentDisplayName
-                                  + strSpace + "->" + objGrade.CurrentDisplayName
-                                  + strSpace + LanguageManager.GetString(RatingLabel)
-                                  + Rating.ToString(GlobalSettings.CultureInfo)
-                                  + strSpace + "->" + strSpace + intRating.ToString(GlobalSettings.CultureInfo) + ')';
+                    strExpense +=
+                        '(' + await LanguageManager.GetStringAsync("String_Grade", token: token).ConfigureAwait(false) +
+                        strSpace + await objOldGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                        + strSpace + "->" + await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                        + strSpace + await LanguageManager.GetStringAsync(RatingLabel, token: token)
+                            .ConfigureAwait(false)
+                        + intOldRating.ToString(GlobalSettings.CultureInfo)
+                        + strSpace + "->" + strSpace + intRating.ToString(GlobalSettings.CultureInfo) + ')';
                 }
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(-decNewCost, strExpense, ExpenseType.Nuyen, DateTime.Now);
-                _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                _objCharacter.Nuyen -= decNewCost;
+                await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                await _objCharacter.ModifyNuyenAsync(-decNewCost, token).ConfigureAwait(false);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateNuyen(NuyenExpenseType.AddGear, InternalId);
@@ -9857,27 +10221,33 @@ namespace Chummer.Backend.Equipment
                     Interlocked.Decrement(ref _intProcessPropertyChanges);
                     try
                     {
-                        Rating = intRating;
-                        Grade = objGrade;
+                        await SetRatingAsync(intRating, token).ConfigureAwait(false);
+                        await SetGradeAsync(objGrade, token).ConfigureAwait(false);
                     }
                     finally
                     {
                         Interlocked.Increment(ref _intProcessPropertyChanges);
                     }
 
-                    decimal decEssDelta = GetCalculatedESSPrototypeInvariant(intRating, objGrade) - decOldEssence;
+                    decimal decEssDelta =
+                        await GetCalculatedESSPrototypeInvariantAsync(intRating, objGrade, token)
+                            .ConfigureAwait(false) - decOldEssence;
                     if (decEssDelta > 0)
                     {
                         //The new Essence cost is greater than the old one.
-                        _objCharacter.DecreaseEssenceHole(decEssDelta);
+                        await _objCharacter.DecreaseEssenceHoleAsync(decEssDelta, token: token).ConfigureAwait(false);
                     }
                     else if (decEssDelta < 0)
                     {
-                        _objCharacter.IncreaseEssenceHole(-decEssDelta);
+                        await _objCharacter.IncreaseEssenceHoleAsync(-decEssDelta, token: token).ConfigureAwait(false);
                     }
 
-                    DoPropertyChanges(blnDoRatingChange, blnDoGradeChange);
+                    await DoPropertyChangesAsync(blnDoRatingChange, blnDoGradeChange, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
