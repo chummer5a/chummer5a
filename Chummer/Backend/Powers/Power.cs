@@ -1219,6 +1219,10 @@ namespace Chummer
             }
         }
 
+        private int _intCachedTotalRating = int.MinValue;
+
+        private readonly AsyncFriendlyReaderWriterLock _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock();
+
         /// <summary>
         /// The current Rating of the Power, including any Free Levels.
         /// </summary>
@@ -1227,7 +1231,24 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Math.Min(Rating + FreeLevels, TotalMaximumLevels);
+                {
+                    using (_objCachedTotalRatingLock.EnterReadLock())
+                    {
+                        if (_intCachedTotalRating != int.MinValue)
+                            return _intCachedTotalRating;
+                    }
+
+                    using (_objCachedTotalRatingLock.EnterUpgradeableReadLock())
+                    {
+                        if (_intCachedTotalRating != int.MinValue)
+                            return _intCachedTotalRating;
+
+                        using (_objCachedTotalRatingLock.EnterWriteLock())
+                        {
+                            return _intCachedTotalRating = Math.Min(Rating + FreeLevels, TotalMaximumLevels);
+                        }
+                    }
+                }
             }
             set
             {
@@ -1245,13 +1266,61 @@ namespace Chummer
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                return Math.Min(
-                    await GetRatingAsync(token).ConfigureAwait(false)
-                    + await GetFreeLevelsAsync(token).ConfigureAwait(false),
-                    await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false));
+                using (await _objCachedTotalRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (_intCachedTotalRating != int.MinValue)
+                        return _intCachedTotalRating;
+                }
+
+                IAsyncDisposable objLocker = await _objCachedTotalRatingLock.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (_intCachedTotalRating != int.MinValue)
+                        return _intCachedTotalRating;
+
+                    IAsyncDisposable objLocker2 =
+                        await _objCachedTotalRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        return _intCachedTotalRating = Math.Min(
+                            await GetRatingAsync(token).ConfigureAwait(false)
+                            + await GetFreeLevelsAsync(token).ConfigureAwait(false),
+                            await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false));
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
+        /// <summary>
+        /// The current Rating of the Power, including any Free Levels.
+        /// </summary>
+        public async Task SetTotalRatingAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await SetRatingAsync(Math.Max(value - await GetFreeLevelsAsync(token).ConfigureAwait(false), 0), token)
+                    .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
 
         private int _intCachedFreeLevels = int.MinValue;
 
@@ -2073,20 +2142,15 @@ namespace Chummer
                     if (!LevelsEnabled)
                         return 1;
                     int intReturn = MaxLevels;
-                    if (intReturn == 0)
-                    {
-                        // if unspecified, max rating = MAG
-                        intReturn = MAGAttributeObject?.TotalValue ?? 0;
-                    }
+                    if (intReturn <= 0)
+                        intReturn = int.MaxValue;
 
                     if (BoostedSkill != null)
                     {
-                        // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                        intReturn = Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
-                        if (CharacterObject.Settings.IncreasedImprovedAbilityMultiplier)
-                        {
-                            intReturn += _intCachedLearnedRating;
-                        }
+                        intReturn = CharacterObject.Settings.IncreasedImprovedAbilityMultiplier
+                            // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
+                            ? Math.Min(intReturn, _intCachedLearnedRating + (_intCachedLearnedRating + 1) / 2)
+                            : Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
                     }
 
                     if (!CharacterObject.IgnoreRules)
@@ -2107,24 +2171,16 @@ namespace Chummer
                 if (!await GetLevelsEnabledAsync(token).ConfigureAwait(false))
                     return 1;
                 int intReturn = await GetMaxLevelsAsync(token).ConfigureAwait(false);
-                if (intReturn == 0)
-                {
-                    // if unspecified, max rating = MAG
-                    CharacterAttrib objMag = await GetMAGAttributeObjectAsync(token).ConfigureAwait(false);
-                    intReturn = objMag != null
-                        ? await objMag.GetTotalValueAsync(token).ConfigureAwait(false)
-                        : 0;
-                }
+                if (intReturn <= 0)
+                    intReturn = int.MaxValue;
 
                 if (await GetBoostedSkillAsync(token).ConfigureAwait(false) != null)
                 {
-                    // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
-                    intReturn = Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
-                    if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
-                        .GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false))
-                    {
-                        intReturn += _intCachedLearnedRating;
-                    }
+                    intReturn = await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                        .GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false)
+                        // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
+                        ? Math.Min(intReturn, _intCachedLearnedRating + (_intCachedLearnedRating + 1) / 2)
+                        : Math.Min(intReturn, (_intCachedLearnedRating + 1) / 2);
                 }
 
                 if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
@@ -2358,33 +2414,51 @@ namespace Chummer
                             _decCachedPowerPoints = decimal.MinValue;
 
                         // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                        if (setNamesOfChangedProperties.Contains(nameof(TotalRating))
-                            && Bonus?.InnerXml.Contains("Rating") == true)
+                        if (setNamesOfChangedProperties.Contains(nameof(TotalRating)))
                         {
-                            using (CharacterObject.LockObject.EnterWriteLock())
+                            if (Bonus?.InnerXml.Contains("Rating") == true)
                             {
-                                // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
-                                // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
-                                // TODO: Solve this bad code
-                                ImprovementManager.RemoveImprovements(CharacterObject,
-                                    Improvement.ImprovementSource.Power,
-                                    InternalId);
-                                int intTotalRating = TotalRating;
-                                if (intTotalRating > 0)
+                                bool blnRefreshImprovements = true;
+                                int intTotalRating;
+                                if (_intCachedTotalRating != int.MinValue)
                                 {
-                                    ImprovementManager.ForcedValue = Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                        Improvement.ImprovementSource.Power,
-                                        InternalId, Bonus, intTotalRating,
-                                        CurrentDisplayNameShort);
+                                    int intOldTotalRating = TotalRating;
+                                    _intCachedTotalRating = int.MinValue;
+                                    intTotalRating = TotalRating;
+                                    blnRefreshImprovements = intOldTotalRating != intTotalRating;
+                                }
+                                else
+                                    intTotalRating = TotalRating;
+
+                                if (blnRefreshImprovements)
+                                {
+                                    using (CharacterObject.LockObject.EnterWriteLock())
+                                    {
+                                        // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
+                                        // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
+                                        // TODO: Solve this bad code
+                                        ImprovementManager.RemoveImprovements(CharacterObject,
+                                            Improvement.ImprovementSource.Power,
+                                            InternalId);
+                                        if (intTotalRating > 0)
+                                        {
+                                            ImprovementManager.ForcedValue = Extra;
+                                            ImprovementManager.CreateImprovements(CharacterObject,
+                                                Improvement.ImprovementSource.Power,
+                                                InternalId, Bonus, intTotalRating,
+                                                CurrentDisplayNameShort);
+                                        }
+                                    }
                                 }
                             }
+                            else
+                                _intCachedTotalRating = int.MinValue;
                         }
+                    }
 
-                        if (setNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
-                        {
-                            RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
-                        }
+                    if (setNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
+                    {
+                        RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -2480,42 +2554,60 @@ namespace Chummer
                             XmlNode xmlBonus = await GetBonusAsync(token).ConfigureAwait(false);
                             if (xmlBonus?.InnerXml.Contains("Rating") == true)
                             {
-                                IAsyncDisposable objLocker3 = await CharacterObject.LockObject.EnterWriteLockAsync(token)
-                                    .ConfigureAwait(false);
-                                try
+                                bool blnRefreshImprovements = true;
+                                int intTotalRating;
+                                if (_intCachedTotalRating != int.MinValue)
                                 {
-                                    // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
-                                    // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
-                                    // TODO: Solve this bad code
-                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                        Improvement.ImprovementSource.Power,
-                                        InternalId, token).ConfigureAwait(false);
-                                    int intTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
-                                    if (intTotalRating > 0)
+                                    int intOldTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
+                                    _intCachedTotalRating = int.MinValue;
+                                    intTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
+                                    blnRefreshImprovements = intOldTotalRating != intTotalRating;
+                                }
+                                else
+                                    intTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
+
+                                if (blnRefreshImprovements)
+                                {
+                                    IAsyncDisposable objLocker3 = await CharacterObject.LockObject.EnterWriteLockAsync(token)
+                                        .ConfigureAwait(false);
+                                    try
                                     {
-                                        ImprovementManager.ForcedValue = await GetExtraAsync(token).ConfigureAwait(false);
-                                        await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
+                                        // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
+                                        // TODO: Solve this bad code
+                                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
                                             Improvement.ImprovementSource.Power,
-                                            InternalId, xmlBonus, intTotalRating,
-                                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                            token: token).ConfigureAwait(false);
+                                            InternalId, token).ConfigureAwait(false);
+                                        if (intTotalRating > 0)
+                                        {
+                                            ImprovementManager.ForcedValue = await GetExtraAsync(token).ConfigureAwait(false);
+                                            await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                                Improvement.ImprovementSource.Power,
+                                                InternalId, xmlBonus, intTotalRating,
+                                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                                token: token).ConfigureAwait(false);
+                                        }
+                                    }
+                                    finally
+                                    {
+                                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                                     }
                                 }
-                                finally
-                                {
-                                    await objLocker3.DisposeAsync().ConfigureAwait(false);
-                                }
                             }
-                        }
-
-                        if (setNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
-                        {
-                            await RefreshDiscountedAdeptWayAsync(await GetAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            else
+                                _intCachedTotalRating = int.MinValue;
                         }
                     }
                     finally
                     {
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (setNamesOfChangedProperties.Contains(nameof(AdeptWayDiscountEnabled)))
+                    {
+                        await RefreshDiscountedAdeptWayAsync(
+                                await GetAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -2823,6 +2915,7 @@ namespace Chummer
 
                 MAGAttributeObject = null;
                 BoostedSkill = null;
+                _objCachedTotalRatingLock.Dispose();
                 _objCachedFreeLevelsLock.Dispose();
                 _objCachedPowerPointsLock.Dispose();
                 Enhancements.Dispose();
@@ -2845,6 +2938,7 @@ namespace Chummer
 
                 await SetMAGAttributeObjectAsync(null).ConfigureAwait(false);
                 await SetBoostedSkillAsync(null).ConfigureAwait(false);
+                await _objCachedTotalRatingLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedFreeLevelsLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedPowerPointsLock.DisposeAsync().ConfigureAwait(false);
                 await Enhancements.DisposeAsync().ConfigureAwait(false);
