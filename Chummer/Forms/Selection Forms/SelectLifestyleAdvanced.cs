@@ -173,7 +173,7 @@ namespace Chummer
                         if (objNode == null)
                             return;
                         TreeNode objParentNode;
-                        if (objQuality.IsFreeGrid)
+                        if (await objQuality.GetIsFreeGridAsync(token).ConfigureAwait(false))
                         {
                             if (nodFreeGridsRoot == null)
                             {
@@ -299,12 +299,12 @@ namespace Chummer
 
             await treLifestyleQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 
-            foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities)
+            await _objLifestyle.LifestyleQualities.ForEachAsync(async objQuality =>
             {
                 TreeNode objNode = objQuality.CreateTreeNode();
                 if (objNode == null)
-                    continue;
-                if (objQuality.IsFreeGrid)
+                    return;
+                if (await objQuality.GetIsFreeGridAsync(token).ConfigureAwait(false))
                 {
                     if (nodFreeGridsRoot == null)
                     {
@@ -312,8 +312,8 @@ namespace Chummer
                         {
                             Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
                             Text = await LanguageManager
-                                         .GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities", token: token)
-                                         .ConfigureAwait(false)
+                                .GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities", token: token)
+                                .ConfigureAwait(false)
                         };
                         nodFreeGridsRoot = objNewNode;
                         int intOffset = (nodPositiveQualityRoot == null ? 0 : 1)
@@ -327,7 +327,8 @@ namespace Chummer
                     }
 
                     TreeNode root = nodFreeGridsRoot;
-                    await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token).ConfigureAwait(false);
+                    await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                        .ConfigureAwait(false);
                 }
                 else
                 {
@@ -341,9 +342,9 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
                                     Text = await LanguageManager.GetStringAsync(
-                                                                    "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                                                    token: token)
-                                                                .ConfigureAwait(false)
+                                            "Node_SelectAdvancedLifestyle_PositiveQualities",
+                                            token: token)
+                                        .ConfigureAwait(false)
                                 };
                                 nodPositiveQualityRoot = objNewNode;
                                 await treLifestyleQualities.DoThreadSafeAsync(x =>
@@ -355,7 +356,7 @@ namespace Chummer
 
                             TreeNode root = nodPositiveQualityRoot;
                             await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
-                                                       .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
                         }
                         case QualityType.Negative:
@@ -366,9 +367,9 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
                                     Text = await LanguageManager.GetStringAsync(
-                                                                    "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                                                    token: token)
-                                                                .ConfigureAwait(false)
+                                            "Node_SelectAdvancedLifestyle_NegativeQualities",
+                                            token: token)
+                                        .ConfigureAwait(false)
                                 };
                                 nodNegativeQualityRoot = objNewNode;
                                 int intOffset = nodPositiveQualityRoot == null ? 0 : 1;
@@ -381,7 +382,7 @@ namespace Chummer
 
                             TreeNode root = nodNegativeQualityRoot;
                             await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
-                                                       .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
                         }
                         default:
@@ -392,9 +393,9 @@ namespace Chummer
                                 {
                                     Tag = "Node_SelectAdvancedLifestyle_Entertainments",
                                     Text = await LanguageManager.GetStringAsync(
-                                                                    "Node_SelectAdvancedLifestyle_Entertainments",
-                                                                    token: token)
-                                                                .ConfigureAwait(false)
+                                            "Node_SelectAdvancedLifestyle_Entertainments",
+                                            token: token)
+                                        .ConfigureAwait(false)
                                 };
                                 nodEntertainmentsRoot = objNewNode;
                                 int intOffset = (nodPositiveQualityRoot == null ? 0 : 1)
@@ -408,13 +409,13 @@ namespace Chummer
 
                             TreeNode root = nodEntertainmentsRoot;
                             await treLifestyleQualities
-                                  .DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
-                                  .ConfigureAwait(false);
+                                .DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                                .ConfigureAwait(false);
                             break;
                         }
                     }
                 }
-            }
+            }, token).ConfigureAwait(false);
 
             await treLifestyleQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode), token: token).ConfigureAwait(false);
         }
@@ -695,7 +696,7 @@ namespace Chummer
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                     try
                     {
-                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                        await objQuality.CreateAsync(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected).ConfigureAwait(false);
                         //objNode.ContextMenuStrip = cmsQuality;
                         if (objQuality.InternalId.IsEmptyGuid())
                         {
@@ -703,7 +704,7 @@ namespace Chummer
                             continue;
                         }
 
-                        objQuality.Free = frmSelectLifestyleQuality.MyForm.FreeCost;
+                        await objQuality.SetFreeAsync(frmSelectLifestyleQuality.MyForm.FreeCost).ConfigureAwait(false);
 
                         await _objLifestyle.LifestyleQualities.AddAsync(objQuality).ConfigureAwait(false);
                     }
@@ -732,51 +733,61 @@ namespace Chummer
             TreeNode objNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
             if (objNode == null || objNode.Level == 0 || objNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
-            if (!(objNode.Tag is LifestyleQuality objQuality) || objQuality.OriginSource == QualitySource.BuiltIn)
+            if (!(objNode.Tag is LifestyleQuality objQuality) || await objQuality.GetOriginSourceAsync().ConfigureAwait(false) == QualitySource.BuiltIn)
                 return;
             await objQuality.RemoveAsync().ConfigureAwait(false);
         }
 
-        private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
+            if (await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality)
             {
-                tlpLifestyleQuality.Visible = true;
-                chkQualityUseLPCost.Enabled = !objQuality.Free && objQuality.CanBeFreeByLifestyle;
-
-                Interlocked.Increment(ref _intSkipRefresh);
-                try
+                bool blnUseLpCostEnabled = !await objQuality.GetFreeAsync().ConfigureAwait(false) &&
+                                  await objQuality.GetCanBeFreeByLifestyleAsync().ConfigureAwait(false);
+                bool blnUseLpCost = blnUseLpCostEnabled
+                    ? await objQuality.GetUseLPCostAsync().ConfigureAwait(false)
+                    : !await objQuality.GetFreeAsync().ConfigureAwait(false) && !await objQuality.GetCanBeFreeByLifestyleAsync().ConfigureAwait(false);
+                await chkQualityUseLPCost.DoThreadSafeAsync(x =>
                 {
-                    chkQualityUseLPCost.Checked = chkQualityUseLPCost.Enabled
-                        ? objQuality.UseLPCost
-                        : !objQuality.Free && !objQuality.CanBeFreeByLifestyle;
-                }
-                finally
-                {
-                    Interlocked.Decrement(ref _intSkipRefresh);
-                }
+                    x.Enabled = blnUseLpCostEnabled;
+                    Interlocked.Increment(ref _intSkipRefresh);
+                    try
+                    {
+                        x.Checked = blnUseLpCost;
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intSkipRefresh);
+                    }
+                }).ConfigureAwait(false);
 
-                lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
-                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
-                objQuality.SetSourceDetail(lblQualitySource);
-                cmdDeleteQuality.Enabled = objQuality.OriginSource != QualitySource.BuiltIn;
+                string strLp = (await objQuality.GetLPAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
+                string strCost = (await objQuality.GetCostAsync().ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+                await lblQualityCost.DoThreadSafeAsync(x => x.Text = strCost).ConfigureAwait(false);
+                await objQuality.SetSourceDetailAsync(lblQualitySource).ConfigureAwait(false);
+                bool blnCanDelete = await objQuality.GetOriginSourceAsync().ConfigureAwait(false) != QualitySource.BuiltIn;
+                await cmdDeleteQuality.DoThreadSafeAsync(x => x.Enabled = blnCanDelete).ConfigureAwait(false);
+                await tlpLifestyleQuality.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             else
             {
-                tlpLifestyleQuality.Visible = false;
-                cmdDeleteQuality.Enabled = false;
+                await tlpLifestyleQuality.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await cmdDeleteQuality.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
         }
 
-        private void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
+        private async void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
             if (_intSkipRefresh > 0)
                 return;
-            if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
+            if (!(await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality))
                 return;
-            objQuality.UseLPCost = !chkQualityUseLPCost.Enabled || chkQualityUseLPCost.Checked;
-            lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
-            lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
+            await objQuality.SetUseLPCostAsync(await chkQualityUseLPCost.DoThreadSafeFuncAsync(x => !x.Enabled || x.Checked).ConfigureAwait(false)).ConfigureAwait(false);
+            string strLp = (await objQuality.GetLPAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
+            string strCost = (await objQuality.GetCostAsync().ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+            await lblQualityCost.DoThreadSafeAsync(x => x.Text = strCost).ConfigureAwait(false);
         }
 
         private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
@@ -926,17 +937,17 @@ namespace Chummer
                 return;
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
-            _objLifestyle.Name = strLifestyleName;
-            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false);
-            _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            _objLifestyle.Area = await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
-            _objLifestyle.Comforts = await nudComforts.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
-            _objLifestyle.Security = await nudSecurity.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
-            _objLifestyle.TrustFund = chkTrustFund.Checked;
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
-            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
-            _objLifestyle.BonusLP = await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+            await _objLifestyle.SetNameAsync(strLifestyleName, token).ConfigureAwait(false);
+            await _objLifestyle.SetCostAsync(Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            await _objLifestyle.SetPercentageAsync(await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetBaseLifestyleAsync(strBaseLifestyle, token).ConfigureAwait(false);
+            await _objLifestyle.SetAreaAsync(await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetComfortsAsync(await nudComforts.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetSecurityAsync(await nudSecurity.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetTrustFundAsync(await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetRoommatesAsync(await _objLifestyle.GetTrustFundAsync(token).ConfigureAwait(false) ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false) ;
+            await _objLifestyle.SetPrimaryTenantAsync(await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetBonusLPAsync(await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
@@ -955,7 +966,9 @@ namespace Chummer
             if (_intSkipRefresh > 0)
                 return;
 
-            _objLifestyle.BaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+            await _objLifestyle.SetBaseLifestyleAsync(
+                await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                    .ConfigureAwait(false) ?? string.Empty, token).ConfigureAwait(false);
             XPathNavigator xmlAspect = await _objLifestyle.GetNodeXPathAsync(token: token).ConfigureAwait(false);
             if (xmlAspect != null)
             {
@@ -981,7 +994,7 @@ namespace Chummer
             }
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
-            if (_objLifestyle.IsTrustFundEligible)
+            if (await _objLifestyle.GetIsTrustFundEligibleAsync(token).ConfigureAwait(false))
             {
                 await chkTrustFund.DoThreadSafeAsync(x =>
                 {
@@ -998,7 +1011,7 @@ namespace Chummer
                 }, token).ConfigureAwait(false);
             }
 
-            if (_objLifestyle.AllowBonusLP)
+            if (await _objLifestyle.GetAllowBonusLPAsync(token).ConfigureAwait(false))
             {
                 string strBonusLP = await LanguageManager.GetStringAsync("Label_BonusLP", token: token).ConfigureAwait(false);
                 string strBaseLifestyleName

@@ -6497,7 +6497,7 @@ namespace Chummer
                     if (objXmlComplexForm == null)
                         continue;
                     ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                    objComplexForm.Create(objXmlComplexForm);
+                    await objComplexForm.CreateAsync(objXmlComplexForm, token: GenericToken).ConfigureAwait(false);
                     if (objComplexForm.InternalId.IsEmptyGuid())
                         continue;
 
@@ -18588,7 +18588,7 @@ namespace Chummer
                 }
                 else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
                 {
-                    if (objTradition.Create(xmlTradition))
+                    if (await objTradition.CreateAsync(xmlTradition, token: GenericToken).ConfigureAwait(false))
                     {
                         await lblTraditionName.DoThreadSafeAsync(x => x.Visible = true, GenericToken)
                                               .ConfigureAwait(false);
@@ -18645,7 +18645,7 @@ namespace Chummer
                             .ConfigureAwait(false);
                     }
                 }
-                else if (objTradition.Create(xmlTradition))
+                else if (await objTradition.CreateAsync(xmlTradition, token: GenericToken).ConfigureAwait(false))
                 {
                     await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
                                           .ConfigureAwait(false);
@@ -18756,7 +18756,7 @@ namespace Chummer
                 XmlNode xmlNewStreamNode
                     = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken).ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
-                if (xmlNewStreamNode != null && objTradition.Create(xmlNewStreamNode, true))
+                if (xmlNewStreamNode != null && await objTradition.CreateAsync(xmlNewStreamNode, true, token: GenericToken).ConfigureAwait(false))
                 {
                     await RequestCharacterUpdate().ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
@@ -27326,7 +27326,7 @@ namespace Chummer
                             "/chummer/arts/art", frmPickArt.MyForm.SelectedItem);
 
                     Art objArt = new Art(CharacterObject);
-                    objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
+                    await objArt.CreateAsync(objXmlArt, Improvement.ImprovementSource.Metamagic, GenericToken).ConfigureAwait(false);
                     objArt.Grade = intGrade;
                     if (objArt.InternalId.IsEmptyGuid())
                         return;
@@ -27974,7 +27974,7 @@ namespace Chummer
                         }
 
                         AIProgram objProgram = new AIProgram(CharacterObject);
-                        objProgram.Create(objXmlProgram, strExtra);
+                        await objProgram.CreateAsync(objXmlProgram, strExtra, token: GenericToken).ConfigureAwait(false);
                         if (objProgram.InternalId.IsEmptyGuid())
                             continue;
 

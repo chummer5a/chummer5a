@@ -221,6 +221,61 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Create a Martial Art from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlArtNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!objXmlArtNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlArtNode });
+                    Utils.BreakIfDebug();
+                }
+
+                if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+                {
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
+                objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
+                objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
+                objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
+                if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
+
+                if (objXmlArtNode["bonus"] != null)
+                {
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.MartialArt,
+                        InternalId,
+                        objXmlArtNode["bonus"], 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                }
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlArtNode, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private SourceString _objCachedSourceDetail;
 
         public SourceString SourceDetail
@@ -818,7 +873,7 @@ namespace Chummer
                         MartialArt objMartialArt = new MartialArt(objCharacter);
                         try
                         {
-                            objMartialArt.Create(objXmlArt);
+                            await objMartialArt.CreateAsync(objXmlArt, token).ConfigureAwait(false);
 
                             if (await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             {

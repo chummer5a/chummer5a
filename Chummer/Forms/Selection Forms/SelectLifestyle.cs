@@ -481,19 +481,19 @@ namespace Chummer
 
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
-            _objLifestyle.Name = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            _objLifestyle.BaseLifestyle = objXmlLifestyle["name"]?.InnerText;
-            _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
-            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            await _objLifestyle.SetNameAsync(await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetBaseLifestyleAsync(objXmlLifestyle["name"]?.InnerText, token).ConfigureAwait(false);
+            await _objLifestyle.SetCostAsync(Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            await _objLifestyle.SetRoommatesAsync(await _objLifestyle.GetTrustFundAsync(token).ConfigureAwait(false) ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetPercentageAsync(await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             _objLifestyle.StyleType = StyleType;
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            _objLifestyle.TrustFund = await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            _objLifestyle.City = await cboCity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            _objLifestyle.District = await cboDistrict.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            _objLifestyle.Borough = await cboBorough.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+            await _objLifestyle.SetPrimaryTenantAsync(await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetTrustFundAsync(await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetCityAsync(await cboCity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetDistrictAsync(await cboDistrict.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetBoroughAsync(await cboBorough.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
@@ -518,7 +518,7 @@ namespace Chummer
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                 try
                 {
-                    objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                    await objQuality.CreateAsync(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected, token: token).ConfigureAwait(false);
                     await _objLifestyle.LifestyleQualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
                 }
                 catch

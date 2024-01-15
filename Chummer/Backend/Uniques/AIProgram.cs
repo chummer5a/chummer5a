@@ -87,20 +87,99 @@ namespace Chummer
             if (!objXmlProgramNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlProgramNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+            string strCategory = string.Empty;
+            if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
+                _blnIsAdvancedProgram = strCategory == "Advanced Programs";
+
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlProgramNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlProgramNode, Name, CurrentDisplayNameShort, Source, Page,
+                Notes = CommonFunctions.GetBookNotes(objXmlProgramNode, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
 
-            _strExtra = strExtra;
+            if (objXmlProgramNode["bonus"] != null)
+            {
+                ImprovementManager.ForcedValue = strExtra;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlProgramNode["bonus"], 1, CurrentDisplayNameShort))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
+            else
+            {
+                _strExtra = strExtra;
+            }
+        }
+
+        /// <summary>
+        /// Create a Program from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
+        /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="blnCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlProgramNode, string strExtra = "", bool blnCanDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!objXmlProgramNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for program xmlnode", objXmlProgramNode });
+                Utils.BreakIfDebug();
+            }
+
+            if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
+            _blnCanDelete = blnCanDelete;
+            objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
+            objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
+            if (!objXmlProgramNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlProgramNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
             string strCategory = string.Empty;
             if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
                 _blnIsAdvancedProgram = strCategory == "Advanced Programs";
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlProgramNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            {
+                Notes = await CommonFunctions.GetBookNotesAsync(objXmlProgramNode, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+            }
+
+            if (objXmlProgramNode["bonus"] != null)
+            {
+                ImprovementManager.ForcedValue = strExtra;
+                if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.AIProgram, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlProgramNode["bonus"], 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
+            else
+            {
+                _strExtra = strExtra;
+            }
         }
 
         private SourceString _objCachedSourceDetail;

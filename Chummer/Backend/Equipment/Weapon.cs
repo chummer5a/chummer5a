@@ -571,7 +571,7 @@ namespace Chummer.Backend.Equipment
             if (objRangeNode != null)
             {
                 _strRange = objRangeNode.InnerText;
-                string strMultiply = objRangeNode.Attributes?["multiply"]?.InnerText;
+                string strMultiply = objRangeNode.Attributes["multiply"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMultiply))
                     _decRangeMultiplier = Convert.ToDecimal(strMultiply, GlobalSettings.InvariantCultureInfo);
             }

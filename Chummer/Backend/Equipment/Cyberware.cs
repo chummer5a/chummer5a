@@ -1312,7 +1312,7 @@ namespace Chummer.Backend.Equipment
                                             + "Pair", PairBonus,
                                             Rating,
                                             CurrentDisplayNameShort,
-                                            blnCreateImprovements))
+                                            blnCreateImprovements, token))
                                     {
                                         _guiID = Guid.Empty;
                                         return;

@@ -228,7 +228,121 @@ namespace Chummer.Backend.Equipment
 
                 // Built-In Qualities appear as grey text to show that they cannot be removed.
                 if (objLifestyleQualitySource == QualitySource.BuiltIn)
-                    Free = true;
+                    _blnFree = true;
+            }
+        }
+
+        /// <summary>
+        ///     Create a LifestyleQuality from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlLifestyleQuality">XmlNode to create the object from.</param>
+        /// <param name="objParentLifestyle">Lifestyle object to which the LifestyleQuality will be added.</param>
+        /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
+        /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
+        /// <param name="strExtra">Forced value for the LifestyleQuality's Extra string (also used by its bonus node).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter,
+            QualitySource objLifestyleQualitySource, string strExtra = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _objParentLifestyle = objParentLifestyle;
+                if (!objXmlLifestyleQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyleQuality });
+                    Utils.BreakIfDebug();
+                }
+                else
+                {
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
+                if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
+                {
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
+                objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
+                if (objXmlLifestyleQuality.TryGetStringFieldQuickly("category", ref _strCategory))
+                    _eType = ConvertToLifestyleQualityType(_strCategory);
+                OriginSource = objLifestyleQualitySource;
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortsMaximum);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("area", ref _intArea);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("comforts", ref _intComforts);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("security", ref _intSecurity);
+                objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
+                if (!objXmlLifestyleQuality.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    objXmlLifestyleQuality.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlLifestyleQuality.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
+                objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlLifestyleQuality, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                }
+
+                _setAllowedFreeLifestyles.Clear();
+                string strAllowedFreeLifestyles = string.Empty;
+                if (objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
+                {
+                    foreach (string strLoopLifestyle in strAllowedFreeLifestyles.SplitNoAlloc(
+                                 ',', StringSplitOptions.RemoveEmptyEntries))
+                        _setAllowedFreeLifestyles.Add(strLoopLifestyle);
+                }
+
+                _strExtra = strExtra;
+                if (!string.IsNullOrEmpty(_strExtra))
+                {
+                    int intParenthesesIndex = _strExtra.IndexOf('(');
+                    if (intParenthesesIndex != -1)
+                        _strExtra = intParenthesesIndex + 1 < strExtra.Length
+                            ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')')
+                            : string.Empty;
+                }
+
+                // If the item grants a bonus, pass the information to the Improvement Manager.
+                XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
+                if (xmlBonus != null)
+                {
+                    string strOldForced = ImprovementManager.ForcedValue;
+                    if (!string.IsNullOrEmpty(_strExtra))
+                        ImprovementManager.ForcedValue = _strExtra;
+                    if (!await ImprovementManager.CreateImprovementsAsync(objCharacter, Improvement.ImprovementSource.Quality,
+                            InternalId, xmlBonus, 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    {
+                        _guiID = Guid.Empty;
+                        ImprovementManager.ForcedValue = strOldForced;
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        _strExtra = ImprovementManager.SelectedValue;
+                    ImprovementManager.ForcedValue = strOldForced;
+                }
+
+                // Built-In Qualities appear as grey text to show that they cannot be removed.
+                if (objLifestyleQualitySource == QualitySource.BuiltIn)
+                    _blnFree = true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -498,7 +612,7 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token)
+                            "cost", (await GetCostAsync(token).ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture), token)
                         .ConfigureAwait(false);
                     string strLifestyleQualityType = Type.ToString();
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -521,10 +635,10 @@ namespace Chummer.Backend.Equipment
                         .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString(), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("free", Free.ToString(), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("free", (await GetFreeAsync(token).ConfigureAwait(false)).ToString(), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("freebylifestyle", CanBeFreeByLifestyle.ToString(), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString(), token)
+                    await objWriter.WriteElementStringAsync("isfreegrid", (await GetIsFreeGridAsync(token).ConfigureAwait(false)).ToString(), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
@@ -802,11 +916,51 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
+                using (LockObject.EnterReadLock())
+                {
+                    if (_eOriginSource == value)
+                        return;
+                }
+
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (InterlockedExtensions.Exchange(ref _eOriginSource, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        public async Task<QualitySource> GetOriginSourceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _eOriginSource;
+            }
+        }
+
+        public async Task SetOriginSourceAsync(QualitySource value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_eOriginSource == value)
+                    return;
+            }
+
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (InterlockedExtensions.Exchange(ref _eOriginSource, value) != value)
+                    await OnPropertyChangedAsync(nameof(OriginSource), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -827,6 +981,16 @@ namespace Chummer.Backend.Equipment
                     if (Interlocked.Exchange(ref _intLP, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        public async Task<int> GetLPAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetFreeAsync(token).ConfigureAwait(false) || !await GetUseLPCostAsync(token).ConfigureAwait(false) ? 0 : _intLP;
             }
         }
 
@@ -913,16 +1077,18 @@ namespace Chummer.Backend.Equipment
                 string strReturn = DisplayName(strLanguage);
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
 
-                if (Multiplier > 0)
-                    strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
-                else if (Multiplier < 0)
-                    strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
+                int intMultiplier = Multiplier;
+                if (intMultiplier > 0)
+                    strReturn += strSpace + "[+" + intMultiplier.ToString(objCulture) + "%]";
+                else if (intMultiplier < 0)
+                    strReturn += strSpace + '[' + intMultiplier.ToString(objCulture) + "%]";
 
-                if (Cost > 0)
-                    strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
+                decimal decCost = Cost;
+                if (decCost > 0)
+                    strReturn += strSpace + "[+" + decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
                                  + LanguageManager.GetString("String_NuyenSymbol") + ']';
-                else if (Cost < 0)
-                    strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
+                else if (decCost < 0)
+                    strReturn += strSpace + '[' + decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
                                  + LanguageManager.GetString("String_NuyenSymbol") + ']';
                 return strReturn;
             }
@@ -937,17 +1103,19 @@ namespace Chummer.Backend.Equipment
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                        .ConfigureAwait(false);
 
-                if (Multiplier > 0)
-                    strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
-                else if (Multiplier < 0)
-                    strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
+                int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
+                if (intMultiplier > 0)
+                    strReturn += strSpace + "[+" + intMultiplier.ToString(objCulture) + "%]";
+                else if (intMultiplier < 0)
+                    strReturn += strSpace + '[' + intMultiplier.ToString(objCulture) + "%]";
 
-                if (Cost > 0)
-                    strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
+                decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
+                if (decCost > 0)
+                    strReturn += strSpace + "[+" + decCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture)
                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                         .ConfigureAwait(false) + ']';
-                else if (Cost < 0)
-                    strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
+                else if (decCost < 0)
+                    strReturn += strSpace + '[' + decCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture)
                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
                                                         .ConfigureAwait(false) + ']';
                 return strReturn;
@@ -1061,6 +1229,26 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<decimal> GetCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetFreeAsync(token).ConfigureAwait(false) || await GetUseLPCostAsync(token).ConfigureAwait(false))
+                    return 0;
+                if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                        out decimal decReturn))
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(CostString, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        return Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                }
+
+                return decReturn;
+            }
+        }
+
         /// <summary>
         ///     String for the nuyen cost of the Quality.
         /// </summary>
@@ -1112,6 +1300,52 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task<bool> GetFreeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnFree || await GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn;
+            }
+        }
+
+        public async Task SetFreeAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnFree == value)
+                    return;
+            }
+
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnFree == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnFree = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Free), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool IsFreeGrid
         {
             get
@@ -1147,6 +1381,63 @@ namespace Chummer.Backend.Equipment
                     }
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public async Task<bool> GetIsFreeGridAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnIsFreeGrid;
+            }
+        }
+
+        public async Task SetIsFreeGridAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnIsFreeGrid == value)
+                    return;
+            }
+
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnIsFreeGrid == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnIsFreeGrid = value;
+                    QualitySource eOriginSource = await GetOriginSourceAsync(token).ConfigureAwait(false);
+                    switch (value)
+                    {
+                        case true when eOriginSource == QualitySource.Selected:
+                            await SetOriginSourceAsync(QualitySource.BuiltIn, token).ConfigureAwait(false);
+                            break;
+
+                        case false when eOriginSource == QualitySource.BuiltIn:
+                            await SetOriginSourceAsync(QualitySource.Selected, token).ConfigureAwait(false);
+                            break;
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(IsFreeGrid), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1193,6 +1484,50 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 return _blnUseLPCost && await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether or not this Quality costs LP.
+        /// </summary>
+        public async Task SetUseLPCostAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!value && !await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false))
+                    return;
+                if (_blnUseLPCost == value)
+                    return;
+            }
+
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!value && !await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false))
+                    return;
+                if (_blnUseLPCost == value)
+                    return;
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnUseLPCost = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(UseLPCost), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1344,6 +1679,20 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        ///     Percentage by which the quality increases the overall Lifestyle Cost.
+        /// </summary>
+        public async Task<int> GetMultiplierAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetFreeAsync(token).ConfigureAwait(false)
+                       || await GetUseLPCostAsync(token).ConfigureAwait(false) ? 0 : _intMultiplier;
+            }
+        }
+
+        /// <summary>
         ///     Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
         /// </summary>
         public int BaseMultiplier
@@ -1360,6 +1709,20 @@ namespace Chummer.Backend.Equipment
                     if (Interlocked.Exchange(ref _intBaseMultiplier, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Percentage by which the quality increases the Lifestyle Cost ONLY, without affecting other qualities.
+        /// </summary>
+        public async Task<int> GetBaseMultiplierAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetFreeAsync(token).ConfigureAwait(false)
+                       || await GetUseLPCostAsync(token).ConfigureAwait(false) ? 0 : _intBaseMultiplier;
             }
         }
 
@@ -1893,7 +2256,7 @@ namespace Chummer.Backend.Equipment
                                        setParentLifestyleNamesOfChangedProperties))
                         {
                             if (setNamesOfChangedProperties.Contains(nameof(LP))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
                                 && (await GetUseLPCostAsync(token).ConfigureAwait(false) ||
                                     setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
                             {
@@ -1927,7 +2290,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             if (setNamesOfChangedProperties.Contains(nameof(Cost))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
                                 && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
                                     setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
                             {
@@ -1935,7 +2298,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             if (setNamesOfChangedProperties.Contains(nameof(UseLPCost))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free))))
+                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free))))
                             {
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
@@ -1946,7 +2309,7 @@ namespace Chummer.Backend.Equipment
                             if (setNamesOfChangedProperties.Contains(nameof(IsFreeGrid)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.LifestyleQualities));
                             if (setNamesOfChangedProperties.Contains(nameof(Multiplier))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
                                 && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
                                     setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
                             {
@@ -1954,7 +2317,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
+                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
                                 && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
                                     setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
                             {

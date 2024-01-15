@@ -459,7 +459,7 @@ namespace Chummer.Backend.Equipment
                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                = ThreadSafeForm<SelectWeaponCategory>.Get(() => new SelectWeaponCategory(_objCharacter)
                                {
-                                   Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
+                                   Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo", token: token),
                                    WeaponType = strAmmoWeaponType
                                }))
                         {
@@ -468,7 +468,7 @@ namespace Chummer.Backend.Equipment
                                 frmPickWeaponCategory.MyForm.OnlyCategory = _strForcedValue;
 
                             // ReSharper disable once MethodHasAsyncOverload
-                            if (frmPickWeaponCategory.ShowDialogSafe(_objCharacter)
+                            if (frmPickWeaponCategory.ShowDialogSafe(_objCharacter, token)
                                 != DialogResult.OK)
                             {
                                 _guiID = Guid.Empty;

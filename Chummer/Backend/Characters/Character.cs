@@ -3671,7 +3671,7 @@ namespace Chummer
                         continue;
 
                     ComplexForm objComplexform = new ComplexForm(this);
-                    objComplexform.Create(xmlComplexFormData);
+                    await objComplexform.CreateAsync(xmlComplexFormData, token: token).ConfigureAwait(false);
                     if (objComplexform.InternalId.IsEmptyGuid())
                         continue;
                     objComplexform.Grade = -1;
@@ -3813,7 +3813,7 @@ namespace Chummer
                     }
 
                     AIProgram objAIProgram = new AIProgram(this);
-                    objAIProgram.Create(xmlAIProgram, strExtra, false);
+                    await objAIProgram.CreateAsync(xmlAIProgram, strExtra, false, token).ConfigureAwait(false);
                     if (objAIProgram.InternalId.IsEmptyGuid())
                         continue;
 
@@ -7973,7 +7973,7 @@ namespace Chummer
                                 // Attempt to load in the character's tradition (or equivalent for Technomancers)
                                 string strTemp = string.Empty;
                                 if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) &&
-                                    !string.IsNullOrEmpty(strTemp) && RESEnabled)
+                                    !string.IsNullOrEmpty(strTemp) && (blnSync ? RESEnabled : await GetRESEnabledAsync(token).ConfigureAwait(false)))
                                 {
                                     // Legacy load a Technomancer tradition
                                     XmlNode xmlTraditionListDataNode =
@@ -7988,14 +7988,15 @@ namespace Chummer
                                             xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                         if (xmlTraditionDataNode != null)
                                         {
-                                            if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                            if (blnSync)
                                             {
-                                                if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                if (!_objTradition.Create(xmlTraditionDataNode))
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _objTradition.ResetTradition();
-                                                else
-                                                    await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                             }
+                                            else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
+                                                await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                         }
                                         else
                                         {
@@ -8004,26 +8005,30 @@ namespace Chummer
                                                     "tradition[name = \"Default\"]");
                                             if (xmlTraditionDataNode != null)
                                             {
-                                                if (!_objTradition.Create(xmlTraditionDataNode, true))
+                                                if (blnSync)
                                                 {
-                                                    if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    if (!_objTradition.Create(xmlTraditionDataNode))
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         _objTradition.ResetTradition();
-                                                    else
-                                                        await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                 }
+                                                else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
+                                                    await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                             }
                                             else
                                             {
                                                 xmlTraditionDataNode =
                                                     xmlTraditionListDataNode["tradition"];
-                                                if (xmlTraditionDataNode != null &&
-                                                    !_objTradition.Create(xmlTraditionDataNode, true))
+                                                if (xmlTraditionDataNode != null)
                                                 {
                                                     if (blnSync)
+                                                    {
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        _objTradition.ResetTradition();
-                                                    else
+                                                        if (!_objTradition.Create(xmlTraditionDataNode))
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            _objTradition.ResetTradition();
+                                                    }
+                                                    else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
                                                         await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                 }
                                             }
@@ -8032,7 +8037,11 @@ namespace Chummer
 
                                     if (_objTradition.Type != TraditionType.None)
                                     {
-                                        _objTradition.LegacyLoad(xmlCharacterNavigator);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            _objTradition.LegacyLoad(xmlCharacterNavigator);
+                                        else
+                                            await _objTradition.LegacyLoadAsync(xmlCharacterNavigator, token).ConfigureAwait(false);
                                     }
                                 }
                                 else
@@ -8065,26 +8074,30 @@ namespace Chummer
                                                     xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                                 if (xmlTraditionDataNode != null)
                                                 {
-                                                    if (!_objTradition.Create(xmlTraditionDataNode))
+                                                    if (blnSync)
                                                     {
-                                                        if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        if (!_objTradition.Create(xmlTraditionDataNode))
                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             _objTradition.ResetTradition();
-                                                        else
-                                                            await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                     }
+                                                    else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
+                                                        await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                 }
                                                 else
                                                 {
                                                     xmlTraditionDataNode =
                                                         xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
-                                                    if (xmlTraditionDataNode != null &&
-                                                        !_objTradition.Create(xmlTraditionDataNode))
+                                                    if (xmlTraditionDataNode != null)
                                                     {
                                                         if (blnSync)
+                                                        {
                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            _objTradition.ResetTradition();
-                                                        else
+                                                            if (!_objTradition.Create(xmlTraditionDataNode))
+                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                _objTradition.ResetTradition();
+                                                        }
+                                                        else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
                                                             await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                     }
                                                 }
@@ -8092,12 +8105,16 @@ namespace Chummer
 
                                             if (_objTradition.Type != TraditionType.None)
                                             {
-                                                _objTradition.LegacyLoad(xmlCharacterNavigator);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    _objTradition.LegacyLoad(xmlCharacterNavigator);
+                                                else
+                                                    await _objTradition.LegacyLoadAsync(xmlCharacterNavigator, token).ConfigureAwait(false);
                                             }
                                         }
                                     }
                                     // Not null but doesn't have children -> legacy load a magical tradition
-                                    else if (xpathTraditionNavigator != null && MAGEnabled)
+                                    else if (xpathTraditionNavigator != null && (blnSync ? MAGEnabled : await GetMAGEnabledAsync(token).ConfigureAwait(false)))
                                     {
                                         XmlNode xmlTraditionListDataNode =
                                             (blnSync
@@ -8114,26 +8131,30 @@ namespace Chummer
                                                 xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                             if (xmlTraditionDataNode != null)
                                             {
-                                                if (!_objTradition.Create(xmlTraditionDataNode))
+                                                if (blnSync)
                                                 {
-                                                    if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    if (!_objTradition.Create(xmlTraditionDataNode))
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         _objTradition.ResetTradition();
-                                                    else
-                                                        await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                 }
+                                                else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
+                                                    await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                             }
                                             else
                                             {
                                                 xmlTraditionDataNode =
                                                     xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
-                                                if (xmlTraditionDataNode != null &&
-                                                    !_objTradition.Create(xmlTraditionDataNode))
+                                                if (xmlTraditionDataNode != null)
                                                 {
                                                     if (blnSync)
+                                                    {
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        _objTradition.ResetTradition();
-                                                    else
+                                                        if (!_objTradition.Create(xmlTraditionDataNode))
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            _objTradition.ResetTradition();
+                                                    }
+                                                    else if (!await _objTradition.CreateAsync(xmlTraditionDataNode, token: token).ConfigureAwait(false))
                                                         await _objTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                                 }
                                             }
@@ -8141,7 +8162,11 @@ namespace Chummer
 
                                         if (_objTradition.Type != TraditionType.None)
                                         {
-                                            _objTradition.LegacyLoad(xmlCharacterNavigator);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                _objTradition.LegacyLoad(xmlCharacterNavigator);
+                                            else
+                                                await _objTradition.LegacyLoadAsync(xmlCharacterNavigator, token).ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -20632,7 +20657,7 @@ namespace Chummer
                                     = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
                                 if (xmlTraditionDataNode != null)
                                 {
-                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                    if (!await MagicTradition.CreateAsync(xmlTraditionDataNode, true, token: token).ConfigureAwait(false))
                                         await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                 }
                                 else
@@ -21934,7 +21959,7 @@ namespace Chummer
                                     = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
                                 if (xmlTraditionDataNode != null)
                                 {
-                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                    if (!await MagicTradition.CreateAsync(xmlTraditionDataNode, true, token: token).ConfigureAwait(false))
                                         await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                                 }
                                 else
@@ -44437,6 +44462,7 @@ namespace Chummer
                                         {
                                             Spell objSpell = new Spell(this);
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
                                             else
                                                 await objSpell.CreateAsync(xmlSpellData, strForcedValue, blnIsLimited, token: token).ConfigureAwait(false);
@@ -44664,12 +44690,18 @@ namespace Chummer
                                         if (xmlComplexFormData != null)
                                         {
                                             ComplexForm objComplexForm = new ComplexForm(this);
-                                            objComplexForm.Create(xmlComplexFormData, strForcedValue);
                                             if (blnSync)
+                                            {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objComplexForm.Create(xmlComplexFormData, strForcedValue);
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstComplexForms.Add(objComplexForm);
+                                            }
                                             else
+                                            {
+                                                await objComplexForm.CreateAsync(xmlComplexFormData, strForcedValue, token).ConfigureAwait(false);
                                                 await _lstComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
+                                            }
                                         }
                                     }
                                 }
@@ -44772,7 +44804,7 @@ namespace Chummer
                                                     ?.ValueAsInt
                                                 ?? 1,
                                                 lstWeapons,
-                                                strIdentityName).ConfigureAwait(false);
+                                                strIdentityName, token: token).ConfigureAwait(false);
                                             foreach (XPathNavigator xmlHeroLabFakeLicenseNode in xmlHeroLabIdentity
                                                          .Select(
                                                              "license[@name = \"Fake License\"]"))
@@ -44816,7 +44848,11 @@ namespace Chummer
                                         if (xmlLifestyleDataNode != null)
                                         {
                                             Lifestyle objLifestyle = new Lifestyle(this);
-                                            objLifestyle.Create(xmlLifestyleDataNode);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objLifestyle.Create(xmlLifestyleDataNode);
+                                            else
+                                                await objLifestyle.CreateAsync(xmlLifestyleDataNode, token).ConfigureAwait(false);
                                             if (int.TryParse(
                                                     xmlHeroLabLifestyleNode.SelectSingleNodeAndCacheExpression(
                                                             "@months", token)
@@ -46298,7 +46334,7 @@ namespace Chummer
                     if (objXmlLifestyle != null)
                     {
                         Lifestyle objLifestyle = new Lifestyle(this);
-                        objLifestyle.Create(objXmlLifestyle);
+                        await objLifestyle.CreateAsync(objXmlLifestyle, token).ConfigureAwait(false);
                         await Lifestyles.AddAsync(objLifestyle, token).ConfigureAwait(false);
                     }
                 }

@@ -101,7 +101,59 @@ namespace Chummer
             if (objXmlComplexFormNode["bonus"] != null)
             {
                 ImprovementManager.ForcedValue = strExtra;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlComplexFormNode["bonus"], 1, CurrentDisplayName))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlComplexFormNode["bonus"], 1, CurrentDisplayNameShort))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                {
+                    _strExtra = ImprovementManager.SelectedValue;
+                }
+            }
+            else
+            {
+                _strExtra = strExtra;
+            }
+        }
+
+        /// <summary>
+        /// Create a Complex Form from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlComplexFormNode">XmlNode to create the object from.</param>
+        /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlComplexFormNode, string strExtra = "", CancellationToken token = default)
+        {
+            if (!objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for complex form xmlnode", objXmlComplexFormNode });
+                Utils.BreakIfDebug();
+            }
+            objXmlComplexFormNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("target", ref _strTarget);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFv);
+            if (!objXmlComplexFormNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlComplexFormNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            {
+                Notes = await CommonFunctions.GetBookNotesAsync(objXmlComplexFormNode, Name, await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+            }
+
+            if (objXmlComplexFormNode["bonus"] != null)
+            {
+                ImprovementManager.ForcedValue = strExtra;
+                if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.ComplexForm, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlComplexFormNode["bonus"], 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     _guiID = Guid.Empty;
                     return;

@@ -212,8 +212,8 @@ namespace Chummer.Backend.Uniques
                     string strOldSelectedValue = ImprovementManager.SelectedValue;
                     ImprovementManager.ForcedValue = strForcedValue;
                     if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition,
-                                                               InternalId, _nodBonus,
-                                                               strFriendlyName: CurrentDisplayNameShort))
+                            InternalId, _nodBonus,
+                            strFriendlyName: CurrentDisplayNameShort))
                     {
                         ImprovementManager.ForcedValue = strOldFocedValue;
                         return false;
@@ -231,12 +231,87 @@ namespace Chummer.Backend.Uniques
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(xmlTraditionNode, Name, CurrentDisplayName, Source, Page,
-                                                         DisplayPage(GlobalSettings.Language), _objCharacter);
+                        DisplayPage(GlobalSettings.Language), _objCharacter);
                 }
 
-                RebuildSpiritList();
-                this.OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page));
+                RebuildSpiritList(false);
+                this.OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page),
+                    nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection), nameof(SpiritHealth),
+                    nameof(SpiritIllusion), nameof(SpiritManipulation));
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Create a Tradition from an XmlNode.
+        /// </summary>
+        /// <param name="xmlTraditionNode">XmlNode to create the object from.</param>
+        /// <param name="blnIsTechnomancerTradition">Whether or not this tradition is for a technomancer.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<bool> CreateAsync(XmlNode xmlTraditionNode, bool blnIsTechnomancerTradition = false, string strForcedValue = "", CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await ResetTraditionAsync(token).ConfigureAwait(false);
+                Type = blnIsTechnomancerTradition ? TraditionType.RES : TraditionType.MAG;
+                if (xmlTraditionNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    _xmlCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
+                xmlTraditionNode.TryGetStringFieldQuickly("name", ref _strName);
+                xmlTraditionNode.TryGetStringFieldQuickly("source", ref _strSource);
+                xmlTraditionNode.TryGetStringFieldQuickly("page", ref _strPage);
+                string strTemp = string.Empty;
+                if (xmlTraditionNode.TryGetStringFieldQuickly("drain", ref strTemp))
+                    DrainExpression = strTemp;
+                if (xmlTraditionNode.TryGetStringFieldQuickly("spiritform", ref strTemp))
+                    SpiritForm = strTemp;
+                _nodBonus = xmlTraditionNode["bonus"];
+                if (_nodBonus != null)
+                {
+                    string strOldFocedValue = ImprovementManager.ForcedValue;
+                    string strOldSelectedValue = ImprovementManager.SelectedValue;
+                    ImprovementManager.ForcedValue = strForcedValue;
+                    if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.Tradition,
+                            InternalId, _nodBonus,
+                            strFriendlyName: await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    {
+                        ImprovementManager.ForcedValue = strOldFocedValue;
+                        return false;
+                    }
+
+                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    {
+                        _strExtra = ImprovementManager.SelectedValue;
+                    }
+
+                    ImprovementManager.ForcedValue = strOldFocedValue;
+                    ImprovementManager.SelectedValue = strOldSelectedValue;
+                }
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(xmlTraditionNode, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                }
+
+                await RebuildSpiritListAsync(false, token).ConfigureAwait(false);
+                await this.OnMultiplePropertyChangedAsync(token, nameof(Name), nameof(Extra), nameof(Source),
+                    nameof(Page), nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection),
+                    nameof(SpiritHealth), nameof(SpiritIllusion), nameof(SpiritManipulation)).ConfigureAwait(false);
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -290,6 +365,67 @@ namespace Chummer.Backend.Uniques
                                                    nameof(SpiritDetection), nameof(SpiritHealth),
                                                    nameof(SpiritIllusion), nameof(SpiritManipulation));
                 }
+            }
+        }
+
+        public async Task RebuildSpiritListAsync(bool blnDoOnPropertyChanged = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _lstAvailableSpirits.Clear();
+                _strSpiritCombat = string.Empty;
+                _strSpiritDetection = string.Empty;
+                _strSpiritHealth = string.Empty;
+                _strSpiritIllusion = string.Empty;
+                _strSpiritManipulation = string.Empty;
+                if (Type != TraditionType.None)
+                {
+                    XPathNavigator xmlSpiritListNode
+                        = (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("spirits", token);
+                    if (xmlSpiritListNode != null)
+                    {
+                        foreach (XPathNavigator xmlSpiritNode in xmlSpiritListNode.SelectAndCacheExpression("spirit",
+                                     token))
+                        {
+                            _lstAvailableSpirits.Add(xmlSpiritNode.Value);
+                        }
+
+                        XPathNavigator xmlCombatSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritcombat", token);
+                        if (xmlCombatSpiritNode != null)
+                            _strSpiritCombat = xmlCombatSpiritNode.Value;
+                        XPathNavigator xmlDetectionSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritdetection", token);
+                        if (xmlDetectionSpiritNode != null)
+                            _strSpiritDetection = xmlDetectionSpiritNode.Value;
+                        XPathNavigator xmlHealthSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spirithealth", token);
+                        if (xmlHealthSpiritNode != null)
+                            _strSpiritHealth = xmlHealthSpiritNode.Value;
+                        XPathNavigator xmlIllusionSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritillusion", token);
+                        if (xmlIllusionSpiritNode != null)
+                            _strSpiritIllusion = xmlIllusionSpiritNode.Value;
+                        XPathNavigator xmlManipulationSpiritNode
+                            = xmlSpiritListNode.SelectSingleNodeAndCacheExpression("spiritmanipulation", token);
+                        if (xmlManipulationSpiritNode != null)
+                            _strSpiritManipulation = xmlManipulationSpiritNode.Value;
+                    }
+                }
+
+                if (blnDoOnPropertyChanged)
+                {
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(AvailableSpirits), nameof(SpiritCombat),
+                        nameof(SpiritDetection), nameof(SpiritHealth),
+                        nameof(SpiritIllusion), nameof(SpiritManipulation)).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -444,6 +580,56 @@ namespace Chummer.Backend.Uniques
                         _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
                     _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Load the Tradition from the XmlNode using old data saved before traditions had their own class.
+        /// </summary>
+        /// <param name="xpathCharacterNode">XPathNavigator of the Character from which to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LegacyLoadAsync(XPathNavigator xpathCharacterNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                bool blnDoDrainSweep;
+                if (_eTraditionType == TraditionType.RES)
+                {
+                    xpathCharacterNode.TryGetStringFieldQuickly("stream", ref _strName);
+                    blnDoDrainSweep
+                        = xpathCharacterNode.TryGetStringFieldQuickly("streamfading", ref _strDrainExpression);
+                }
+                else
+                {
+                    if (await GetIsCustomTraditionAsync(token).ConfigureAwait(false))
+                    {
+                        xpathCharacterNode.TryGetStringFieldQuickly("traditionname", ref _strName);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritdetection", ref _strSpiritDetection);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spirithealth", ref _strSpiritHealth);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritillusion", ref _strSpiritIllusion);
+                        xpathCharacterNode.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
+                    }
+                    else
+                        xpathCharacterNode.TryGetStringFieldQuickly("tradition", ref _strName);
+
+                    blnDoDrainSweep
+                        = xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
+                }
+
+                if (blnDoDrainSweep)
+                {
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                        _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                    _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -5202,7 +5202,7 @@ namespace Chummer
                             continue;
 
                         ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                        objComplexForm.Create(objXmlComplexForm);
+                        await objComplexForm.CreateAsync(objXmlComplexForm, token: GenericToken).ConfigureAwait(false);
                         if (objComplexForm.InternalId.IsEmptyGuid())
                             continue;
 
@@ -5279,7 +5279,7 @@ namespace Chummer
                         }
 
                         AIProgram objProgram = new AIProgram(CharacterObject);
-                        objProgram.Create(objXmlProgram, strExtra);
+                        await objProgram.CreateAsync(objXmlProgram, strExtra, token: GenericToken).ConfigureAwait(false);
                         if (objProgram.InternalId.IsEmptyGuid())
                             continue;
 
@@ -12742,7 +12742,7 @@ namespace Chummer
                 }
                 else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
                 {
-                    if (objTradition.Create(xmlTradition))
+                    if (await objTradition.CreateAsync(xmlTradition, token: GenericToken).ConfigureAwait(false))
                     {
                         await lblTraditionName.DoThreadSafeAsync(x => x.Visible = true, GenericToken)
                                               .ConfigureAwait(false);
@@ -12799,7 +12799,7 @@ namespace Chummer
                             .ConfigureAwait(false);
                     }
                 }
-                else if (objTradition.Create(xmlTradition))
+                else if (await objTradition.CreateAsync(xmlTradition, token: GenericToken).ConfigureAwait(false))
                 {
                     await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
                                           .ConfigureAwait(false);
@@ -12910,7 +12910,7 @@ namespace Chummer
                 XmlNode xmlNewStreamNode
                     = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken).ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
-                if (xmlNewStreamNode != null && objTradition.Create(xmlNewStreamNode, true))
+                if (xmlNewStreamNode != null && await objTradition.CreateAsync(xmlNewStreamNode, true, token: GenericToken).ConfigureAwait(false))
                 {
                     await RequestCharacterUpdate().ConfigureAwait(false);
                     await SetDirty(true).ConfigureAwait(false);
@@ -15311,7 +15311,7 @@ namespace Chummer
                                     x.Checked = blnIsActiveCommlink;
                                     x.Visible = blnIsCommlink;
                                 }, token).ConfigureAwait(false);
-                                }
+                            }
 
                             token.ThrowIfCancellationRequested();
                             string strNodeText
@@ -21815,7 +21815,7 @@ namespace Chummer
                         try
                         {
                             // If the character does not have any Lifestyles, give them the Street Lifestyle.
-                            if (CharacterObject.Lifestyles.Count == 0)
+                            if (await CharacterObject.Lifestyles.GetCountAsync(token).ConfigureAwait(false) == 0)
                             {
                                 Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                                 XmlDocument objXmlDocument = await CharacterObject
@@ -21825,8 +21825,7 @@ namespace Chummer
                                     = objXmlDocument.SelectSingleNode(
                                         "/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
-                                objLifestyle.Create(objXmlLifestyle);
-
+                                await objLifestyle.CreateAsync(objXmlLifestyle, token).ConfigureAwait(false);
                                 await CharacterObject.Lifestyles.AddAsync(objLifestyle, token).ConfigureAwait(false);
                             }
 
@@ -22026,7 +22025,7 @@ namespace Chummer
             XmlElement xmlSelectMartialArt = objXmlKit["selectmartialart"];
             if (xmlSelectMartialArt != null)
             {
-                string strForcedValue = xmlSelectMartialArt.Attributes?["select"]?.InnerText ?? string.Empty;
+                string strForcedValue = xmlSelectMartialArt.Attributes["select"]?.InnerText ?? string.Empty;
 
                 using (ThreadSafeForm<SelectMartialArt> frmPickMartialArt = await ThreadSafeForm<SelectMartialArt>
                            .GetAsync(() => new SelectMartialArt(CharacterObject)
@@ -22045,7 +22044,7 @@ namespace Chummer
                         XmlNode objXmlArt = objXmlMartialArtDocument.TryGetNodeByNameOrId("/chummer/martialarts/martialart", frmPickMartialArt.MyForm.SelectedMartialArt);
 
                         MartialArt objMartialArt = new MartialArt(CharacterObject);
-                        objMartialArt.Create(objXmlArt);
+                        await objMartialArt.CreateAsync(objXmlArt, token).ConfigureAwait(false);
                         await CharacterObject.MartialArts.AddAsync(objMartialArt, token).ConfigureAwait(false);
                     }
                 }
@@ -22071,7 +22070,7 @@ namespace Chummer
                                 await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                             if (objXmlArtNode == null)
                                 continue;
-                            objArt.Create(objXmlArtNode);
+                            await objArt.CreateAsync(objXmlArtNode, token).ConfigureAwait(false);
                             await CharacterObject.MartialArts.AddAsync(objArt, token).ConfigureAwait(false);
 
                             // Check for Techniques.
@@ -22129,8 +22128,7 @@ namespace Chummer
                             if (objXmlComplexFormNode != null)
                             {
                                 ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                                objComplexForm.Create(objXmlComplexFormNode);
-
+                                await objComplexForm.CreateAsync(objXmlComplexFormNode, token: token).ConfigureAwait(false);
                                 await CharacterObject.ComplexForms.AddAsync(objComplexForm, token)
                                                      .ConfigureAwait(false);
                             }
@@ -22158,8 +22156,7 @@ namespace Chummer
                             if (objXmlProgramNode != null)
                             {
                                 AIProgram objProgram = new AIProgram(CharacterObject);
-                                objProgram.Create(objXmlProgramNode);
-
+                                await objProgram.CreateAsync(objXmlProgramNode, token: token).ConfigureAwait(false);
                                 await CharacterObject.AIPrograms.AddAsync(objProgram, token).ConfigureAwait(false);
                             }
                         }
@@ -22241,7 +22238,7 @@ namespace Chummer
                     if (objXmlLifestyleNode == null)
                         continue;
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                    objLifestyle.Create(objXmlLifestyleNode);
+                    await objLifestyle.CreateAsync(objXmlLifestyleNode, token).ConfigureAwait(false);
                     // This is an Advanced Lifestyle, so build it manually.
                     objLifestyle.CustomName = objXmlLifestyle["name"]?.InnerText ?? string.Empty;
                     objLifestyle.Comforts
@@ -22254,7 +22251,7 @@ namespace Chummer
                     foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
                     {
                         LifestyleQuality lq = new LifestyleQuality(CharacterObject);
-                        lq.Create(objXmlQuality, objLifestyle, CharacterObject, QualitySource.Selected);
+                        await lq.CreateAsync(objXmlQuality, objLifestyle, CharacterObject, QualitySource.Selected, token: token).ConfigureAwait(false);
                         await objLifestyle.LifestyleQualities.AddAsync(lq, token).ConfigureAwait(false);
                     }
 
@@ -23676,7 +23673,7 @@ namespace Chummer
 
                     Art objArt = new Art(CharacterObject);
 
-                    objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
+                    await objArt.CreateAsync(objXmlArt, Improvement.ImprovementSource.Metamagic, GenericToken).ConfigureAwait(false);
                     objArt.Grade = objGrade.Grade;
                     if (objArt.InternalId.IsEmptyGuid())
                         return;

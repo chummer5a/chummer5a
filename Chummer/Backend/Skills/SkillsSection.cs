@@ -691,7 +691,7 @@ namespace Chummer.Backend.Skills
                                               + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
                                           ?.Value
                                       != "active";
-                                lstReturn.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
+                                lstReturn.Add(await Skill.FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token).ConfigureAwait(false));
                             }
                         }
                     }
