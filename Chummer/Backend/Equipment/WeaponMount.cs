@@ -154,8 +154,26 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objXmlMod">XmlNode to create the object from.</param>
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
-        public void Create(XmlNode objXmlMod, decimal decMarkup = 0)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode objXmlMod, decimal decMarkup = 0, CancellationToken token = default)
         {
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, decMarkup, token), token);
+        }
+
+        /// <summary>
+        /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
+        /// </summary>
+        /// <param name="objXmlMod">XmlNode to create the object from.</param>
+        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task CreateAsync(XmlNode objXmlMod, decimal decMarkup = 0, CancellationToken token = default)
+        {
+            return CreateCoreAsync(false, objXmlMod, decMarkup, token);
+        }
+
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlMod, decimal decMarkup = 0, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objXmlMod == null) Utils.BreakIfDebug();
             if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -204,24 +222,52 @@ namespace Chummer.Backend.Equipment
                 {
                     if (decMax > 1000000)
                         decMax = 1000000;
-                    using (ThreadSafeForm<SelectNumber> frmPickNumber
-                           = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                           {
-                               Minimum = decMin,
-                               Maximum = decMax,
-                               Description = string.Format(
-                                   GlobalSettings.CultureInfo,
-                                   LanguageManager.GetString("String_SelectVariableCost"),
-                                   DisplayNameShort(GlobalSettings.Language)),
-                               AllowCancel = false
-                           }))
+                    if (blnSync)
                     {
-                        if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                               = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                       CurrentDisplayNameShort),
+                                   AllowCancel = false
+                               }))
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            // ReSharper disable once MethodHasAsyncOverload
+                            if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                         }
-                        _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                    }
+                    else
+                    {
+                        string strDescription = string.Format(
+                            GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = strDescription,
+                                   AllowCancel = false
+                               }, token).ConfigureAwait(false))
+                        {
+                            if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
                     }
                 }
             }
@@ -232,8 +278,15 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlMod, Name, CurrentDisplayName, Source, Page,
-                    DisplayPage(GlobalSettings.Language), _objCharacter);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    Notes = CommonFunctions.GetBookNotes(objXmlMod, Name, CurrentDisplayName, Source,
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
+                else
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlMod, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
             }
         }
 
@@ -437,60 +490,83 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint,
+            CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("mod");
-            objWriter.WriteElementString("guid", InternalId);
+            await objWriter.WriteStartElementAsync("mod", token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
-            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) &&
+                !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
             {
-                XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint, token: token).ConfigureAwait(false);
+                XPathNavigator xmlOverrideNode =
+                    await this.GetNodeXPathAsync(strLanguageToPrint, token: token).ConfigureAwait(false);
                 if (xmlOverrideNode != null)
                 {
-                    objWriter.WriteElementString(
+                    await objWriter.WriteElementStringAsync(
                         "sourceid",
-                        xmlOverrideNode.SelectSingleNodeAndCacheExpression("id", token: token)?.Value ?? SourceIDString);
-                    objWriter.WriteElementString(
+                        xmlOverrideNode.SelectSingleNodeAndCacheExpression("id", token: token)?.Value ?? SourceIDString,
+                        token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync(
                         "source",
                         await _objCharacter.LanguageBookShortAsync(
                             xmlOverrideNode.SelectSingleNodeAndCacheExpression("source", token: token)?.Value ?? Source,
-                            strLanguageToPrint, token).ConfigureAwait(false));
+                            strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
                 else
                 {
-                    objWriter.WriteElementString("sourceid", SourceIDString);
-                    objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
+                    await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("source",
+                        await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
             }
             else
             {
-                objWriter.WriteElementString("sourceid", SourceIDString);
-                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source",
+                    await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false),
+                    token: token).ConfigureAwait(false);
             }
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("limit", Limit);
-            objWriter.WriteElementString("slots", Slots.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("location", Location);
-            objWriter.WriteElementString("included", IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteStartElement("weapons");
-            await Weapons.ForEachAsync(objWeapon => objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+
+            await objWriter.WriteElementStringAsync("name",
+                await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("fullname",
+                await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("category", DisplayCategory(strLanguageToPrint), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("category_english", Category, token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("limit", Limit, token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("slots", Slots.ToString(GlobalSettings.InvariantCultureInfo),
+                token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("avail",
+                await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("cost",
+                (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat,
+                    objCulture), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("owncost",
+                (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat,
+                    objCulture), token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("location", Location, token: token).ConfigureAwait(false);
+            await objWriter.WriteElementStringAsync("included",
+                IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+            await objWriter.WriteStartElementAsync("weapons", token: token).ConfigureAwait(false);
+            await Weapons
+                .ForEachAsync(objWeapon => objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token), token)
+                .ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-            objWriter.WriteStartElement("mods");
-            await Mods.ForEachAsync(objVehicleMod => objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+            await objWriter.WriteStartElementAsync("mods", token: token).ConfigureAwait(false);
+            await Mods.ForEachAsync(
+                    objVehicleMod => objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint, token), token)
+                .ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
+                await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }
 
@@ -569,6 +645,89 @@ namespace Chummer.Backend.Equipment
                             xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
                             objMod.Load(xmlDataNode);
                             Mods.Add(objMod);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy.
+        /// </summary>
+        /// <param name="xmlNode">XmlNode to create the object from.</param>
+        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateByNameAsync(XmlNode xmlNode, decimal decMarkup = 0, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlNode == null)
+                throw new ArgumentNullException(nameof(xmlNode));
+            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("vehicles.xml", token: token).ConfigureAwait(false);
+            string strSize = xmlNode["size"]?.InnerText;
+            if (string.IsNullOrEmpty(strSize))
+                return;
+            XmlNode xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strSize, "category = \"Size\"");
+            if (xmlDataNode != null)
+            {
+                await CreateAsync(xmlDataNode, decMarkup, token).ConfigureAwait(false);
+
+                string strFlexibility = xmlNode["flexibility"]?.InnerText;
+                if (!string.IsNullOrEmpty(strFlexibility))
+                {
+                    xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strFlexibility, "category = \"Flexibility\"");
+                    if (xmlDataNode != null)
+                    {
+                        WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                        await objWeaponMountOption.CreateAsync(xmlDataNode, token).ConfigureAwait(false);
+                        objWeaponMountOption.IncludedInParent = true;
+                        WeaponMountOptions.Add(objWeaponMountOption);
+                    }
+                }
+
+                string strControl = xmlNode["control"]?.InnerText;
+                if (!string.IsNullOrEmpty(strControl))
+                {
+                    xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strControl, "category = \"Control\"");
+                    if (xmlDataNode != null)
+                    {
+                        WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                        await objWeaponMountOption.CreateAsync(xmlDataNode, token).ConfigureAwait(false);
+                        objWeaponMountOption.IncludedInParent = true;
+                        WeaponMountOptions.Add(objWeaponMountOption);
+                    }
+                }
+
+                string strVisibility = xmlNode["visibility"]?.InnerText;
+                if (!string.IsNullOrEmpty(strVisibility))
+                {
+                    xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmounts/weaponmount", strVisibility, "category = \"Visibility\"");
+                    if (xmlDataNode != null)
+                    {
+                        WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
+                        await objWeaponMountOption.CreateAsync(xmlDataNode, token).ConfigureAwait(false);
+                        objWeaponMountOption.IncludedInParent = true;
+                        WeaponMountOptions.Add(objWeaponMountOption);
+                    }
+                }
+
+                _strLocation = xmlNode["location"]?.InnerText ?? string.Empty;
+                _strAllowedWeapons = xmlNode["allowedweapons"]?.InnerText ?? string.Empty;
+                xmlDataNode = xmlNode["mods"];
+                if (xmlDataNode == null)
+                    return;
+                using (XmlNodeList xmlModList = xmlDataNode.SelectNodes("mod"))
+                {
+                    if (xmlModList != null)
+                    {
+                        foreach (XmlNode xmlModNode in xmlModList)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter)
+                            {
+                                IncludedInVehicle = true
+                            };
+                            xmlDataNode = xmlDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", xmlModNode.InnerText);
+                            objMod.Load(xmlDataNode);
+                            await Mods.AddAsync(objMod, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -760,7 +919,6 @@ namespace Chummer.Backend.Equipment
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
-        /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -775,6 +933,35 @@ namespace Chummer.Backend.Equipment
                 return Page;
             }
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
+                // we instead display them as if they were one of the CRB mounts, but give them a different name
+                if (IncludedInVehicle && !string.IsNullOrEmpty(Source) &&
+                    !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                {
+                    string strReturn = (await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
+                        ?.SelectSingleNodeAndCacheExpression("page", token)?.Value ?? Page;
+                    return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
+                }
+
+                return Page;
+            }
+
+            string s = (await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
+                ?.SelectSingleNodeAndCacheExpression("altpage", token)?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -1938,8 +2125,25 @@ namespace Chummer.Backend.Equipment
         /// Create a Weapon Mount Option from an XmlNode, returns true if creation was successful.
         /// </summary>
         /// <param name="objXmlMod">XmlNode of the option.</param>
-        public bool Create(XmlNode objXmlMod)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public bool Create(XmlNode objXmlMod, CancellationToken token = default)
         {
+            return Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, token), token);
+        }
+
+        /// <summary>
+        /// Create a Weapon Mount Option from an XmlNode, returns true if creation was successful.
+        /// </summary>
+        /// <param name="objXmlMod">XmlNode of the option.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task<bool> CreateAsync(XmlNode objXmlMod, CancellationToken token = default)
+        {
+            return CreateCoreAsync(false, objXmlMod, token);
+        }
+
+        private async Task<bool> CreateCoreAsync(bool blnSync, XmlNode objXmlMod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objXmlMod == null)
             {
                 Utils.BreakIfDebug();
@@ -1976,24 +2180,52 @@ namespace Chummer.Backend.Equipment
                 {
                     if (decMax > 1000000)
                         decMax = 1000000;
-                    using (ThreadSafeForm<SelectNumber> frmPickNumber
-                           = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                           {
-                               Minimum = decMin,
-                               Maximum = decMax,
-                               Description = string.Format(
-                                   GlobalSettings.CultureInfo,
-                                   LanguageManager.GetString("String_SelectVariableCost"),
-                                   DisplayNameShort(GlobalSettings.Language)),
-                               AllowCancel = false
-                           }))
+                    if (blnSync)
                     {
-                        if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                               = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                       CurrentDisplayNameShort),
+                                   AllowCancel = false
+                               }))
                         {
-                            _guiID = Guid.Empty;
-                            return false;
+                            // ReSharper disable once MethodHasAsyncOverload
+                            if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return false;
+                            }
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                         }
-                        _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                    }
+                    else
+                    {
+                        string strDescription = string.Format(
+                            GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = strDescription,
+                                   AllowCancel = false
+                               }, token).ConfigureAwait(false))
+                        {
+                            if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return false;
+                            }
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
                     }
                 }
             }

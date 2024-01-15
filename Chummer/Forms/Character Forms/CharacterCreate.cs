@@ -5376,7 +5376,7 @@ namespace Chummer
 
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Weapon objWeapon = new Weapon(CharacterObject);
-                    objWeapon.Create(objXmlWeapon, lstWeapons);
+                    await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
                     objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
                     if (frmPickWeapon.MyForm.FreeCost)
                     {
@@ -5530,7 +5530,7 @@ namespace Chummer
                     if (objXmlVehicle == null)
                         return frmPickVehicle.MyForm.AddAgain;
                     Vehicle objVehicle = new Vehicle(CharacterObject);
-                    objVehicle.Create(objXmlVehicle);
+                    await objVehicle.CreateAsync(objXmlVehicle, token: token).ConfigureAwait(false);
                     // Update the Used Vehicle information if applicable.
                     if (frmPickVehicle.MyForm.UsedVehicle)
                     {
@@ -5638,7 +5638,7 @@ namespace Chummer
                         XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml", token: token)
                                                                           .ConfigureAwait(false);
                         XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                        objRetrofit.Create(objXmlNode, 0, objMod.Parent);
+                        await objRetrofit.CreateAsync(objXmlNode, 0, objMod.Parent, token: token).ConfigureAwait(false);
                         objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
                         objRetrofit.IncludedInVehicle = true;
                         await objMod.Parent.Mods.AddAsync(objRetrofit, token).ConfigureAwait(false);
@@ -6786,7 +6786,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 Armor objArmor = new Armor(CharacterObject);
 
-                objArmor.Create(objXmlArmor, frmPickArmor.MyForm.Rating, lstWeapons);
+                await objArmor.CreateAsync(objXmlArmor, frmPickArmor.MyForm.Rating, lstWeapons, token: token).ConfigureAwait(false);
                 objArmor.DiscountCost = frmPickArmor.MyForm.BlackMarketDiscount;
                 if (objArmor.InternalId.IsEmptyGuid())
                     return frmPickArmor.MyForm.AddAgain;
@@ -7114,8 +7114,8 @@ namespace Chummer
                             objXmlWeapon = xmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", frmPickWeaponAccessory.MyForm.SelectedAccessory);
 
                             WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                            objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
-                                                frmPickWeaponAccessory.MyForm.SelectedRating);
+                            await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
+                                frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
                             objAccessory.Parent = objWeapon;
                             objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
 
@@ -7213,7 +7213,7 @@ namespace Chummer
                                     ? frmPickArmorMod.MyForm.SelectedRating
                                     : 0;
 
-                            objMod.Create(objXmlArmor, intRating, lstWeapons);
+                            await objMod.CreateAsync(objXmlArmor, intRating, lstWeapons, token: GenericToken).ConfigureAwait(false);
                             if (objMod.InternalId.IsEmptyGuid())
                                 continue;
 
@@ -7353,8 +7353,8 @@ namespace Chummer
                             {
                                 DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
                             };
-                            objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
-                                          frmPickVehicleMod.MyForm.Markup);
+                            await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
+                                frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
 
                             // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
                             if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
@@ -7531,7 +7531,7 @@ namespace Chummer
                                 ParentVehicleMod = objMod,
                                 ParentMount = objMod == null ? objWeaponMount : null
                             };
-                            objWeapon.Create(objXmlWeapon, lstWeapons);
+                            await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
                             objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
                             if (frmPickWeapon.MyForm.FreeCost)
@@ -7635,8 +7635,8 @@ namespace Chummer
                             objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", frmPickWeaponAccessory.MyForm.SelectedAccessory);
 
                             WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                            objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
-                                                frmPickWeaponAccessory.MyForm.SelectedRating);
+                            await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
+                                frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
                             objAccessory.Parent = objWeapon;
                             objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
 
@@ -7708,7 +7708,7 @@ namespace Chummer
                         {
                             ParentVehicle = objSelectedWeapon.ParentVehicle
                         };
-                        objWeapon.Create(objXmlWeapon, lstWeapons);
+                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
                         objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
                         if (frmPickWeapon.MyForm.FreeCost)
@@ -8241,7 +8241,7 @@ namespace Chummer
 
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         Weapon objWeapon = new Weapon(CharacterObject);
-                        objWeapon.Create(objXmlWeapon, lstWeapons);
+                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
                         objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
                         objWeapon.Parent = objSelectedWeapon;
                         objWeapon.AllowAccessory = objSelectedWeapon.AllowAccessory;
@@ -22290,10 +22290,10 @@ namespace Chummer
                     Armor objArmor = new Armor(CharacterObject);
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
-                    objArmor.Create(objXmlArmorNode,
-                                    Convert.ToInt32(objXmlArmor["rating"]?.InnerText,
-                                                    GlobalSettings.InvariantCultureInfo), lstWeapons, false,
-                                    blnCreateChildren);
+                    await objArmor.CreateAsync(objXmlArmorNode,
+                        Convert.ToInt32(objXmlArmor["rating"]?.InnerText,
+                            GlobalSettings.InvariantCultureInfo), lstWeapons, false,
+                        blnCreateChildren, token: token).ConfigureAwait(false);
                     await CharacterObject.Armor.AddAsync(objArmor, token).ConfigureAwait(false);
 
                     // Look for Armor Mods.
@@ -22308,7 +22308,7 @@ namespace Chummer
                             if (objXmlMod["rating"] != null)
                                 intRating = Convert.ToInt32(objXmlMod["rating"].InnerText,
                                                             GlobalSettings.InvariantCultureInfo);
-                            objMod.Create(objXmlModNode, intRating, lstWeapons);
+                            await objMod.CreateAsync(objXmlModNode, intRating, lstWeapons, token: token).ConfigureAwait(false);
 
                             foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
                                 await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren, token).ConfigureAwait(false);
@@ -22355,7 +22355,7 @@ namespace Chummer
                     {
                         Weapon objWeapon = new Weapon(CharacterObject);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
-                        objWeapon.Create(objXmlWeaponNode, lstWeapons, blnCreateChildren);
+                        await objWeapon.CreateAsync(objXmlWeaponNode, lstWeapons, blnCreateChildren, token: token).ConfigureAwait(false);
                         await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
 
                         // Look for Weapon Accessories.
@@ -22369,8 +22369,8 @@ namespace Chummer
                             WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                             string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
                             string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
-                            objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0,
-                                          false, blnCreateChildren);
+                            await objMod.CreateAsync(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0,
+                                false, blnCreateChildren, token: token).ConfigureAwait(false);
                             objMod.Parent = objWeapon;
 
                             await objWeapon.WeaponAccessories.AddAsync(objMod, token).ConfigureAwait(false);
@@ -22390,7 +22390,7 @@ namespace Chummer
                             {
                                 List<Weapon> lstLoopWeapons = new List<Weapon>(1);
                                 Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
-                                objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
+                                await objUnderbarrelWeapon.CreateAsync(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren, token: token).ConfigureAwait(false);
                                 await objWeapon.UnderbarrelWeapons.AddAsync(objUnderbarrelWeapon, token)
                                                .ConfigureAwait(false);
                                 if (!objWeapon.AllowAccessory)
@@ -22417,9 +22417,9 @@ namespace Chummer
                                     WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                                     string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
                                     string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
-                                    objMod.Create(objXmlAccessoryNode,
-                                                  new Tuple<string, string>(strMount, strExtraMount), 0, false,
-                                                  blnCreateChildren);
+                                    await objMod.CreateAsync(objXmlAccessoryNode,
+                                        new Tuple<string, string>(strMount, strExtraMount), 0, false,
+                                        blnCreateChildren, token: token).ConfigureAwait(false);
                                     objMod.Parent = objWeapon;
 
                                     await objUnderbarrelWeapon.WeaponAccessories.AddAsync(objMod, token)
@@ -22548,7 +22548,7 @@ namespace Chummer
                     if (objXmlVehicleNode == null)
                         continue;
                     Vehicle objVehicle = new Vehicle(CharacterObject);
-                    objVehicle.Create(objXmlVehicleNode, blnCreateChildren: blnCreateChildren);
+                    await objVehicle.CreateAsync(objXmlVehicleNode, blnCreateChildren: blnCreateChildren, token: token).ConfigureAwait(false);
                     await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
 
                     // Grab the default Sensor that comes with the Vehicle.
@@ -22574,7 +22574,7 @@ namespace Chummer
                         int intMarkup = 0;
                         objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
                         VehicleMod objMod = new VehicleMod(CharacterObject);
-                        objMod.Create(objXmlModNode, intRating, objVehicle, intMarkup);
+                        await objMod.CreateAsync(objXmlModNode, intRating, objVehicle, intMarkup, token: token).ConfigureAwait(false);
                         await objVehicle.Mods.AddAsync(objMod, token).ConfigureAwait(false);
 
                         foreach (XmlNode objXmlCyberware in objXmlMod.SelectNodes("cyberwares/cyberware"))
@@ -22612,10 +22612,10 @@ namespace Chummer
                             if (objXmlWeaponNode == null)
                                 continue;
                             objWeapon.ParentVehicle = objVehicle;
-                            objWeapon.Create(objXmlWeaponNode, lstSubWeapons, blnCreateChildren);
+                            await objWeapon.CreateAsync(objXmlWeaponNode, lstSubWeapons, blnCreateChildren, token: token).ConfigureAwait(false);
 
                             // Find the first Weapon Mount in the Vehicle.
-                            foreach (VehicleMod objMod in objVehicle.Mods)
+                            await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
                             {
                                 if (objMod.Name.Contains("Weapon Mount")
                                     || !string.IsNullOrEmpty(objMod.WeaponMountCategories)
@@ -22624,9 +22624,11 @@ namespace Chummer
                                     await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
                                     foreach (Weapon objSubWeapon in lstSubWeapons)
                                         await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
-                                    break;
+                                    return false;
                                 }
-                            }
+
+                                return true;
+                            }, token).ConfigureAwait(false);
 
                             // Look for Weapon Accessories.
                             foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
@@ -22641,8 +22643,8 @@ namespace Chummer
                                 WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                                 string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
                                 string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
-                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount),
-                                              0, false, blnCreateChildren);
+                                await objMod.CreateAsync(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount),
+                                    0, false, blnCreateChildren, token: token).ConfigureAwait(false);
                                 objMod.Parent = objWeapon;
 
                                 await objWeapon.WeaponAccessories.AddAsync(objMod, token).ConfigureAwait(false);
@@ -22661,8 +22663,8 @@ namespace Chummer
                                 {
                                     List<Weapon> lstLoopWeapons = new List<Weapon>(1);
                                     Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
-                                    objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons,
-                                                                blnCreateChildren);
+                                    await objUnderbarrelWeapon.CreateAsync(objXmlUnderbarrelNode, lstLoopWeapons,
+                                        blnCreateChildren, token: token).ConfigureAwait(false);
                                     await objWeapon.UnderbarrelWeapons.AddAsync(objUnderbarrelWeapon, token)
                                                    .ConfigureAwait(false);
                                     if (!objWeapon.AllowAccessory)
@@ -22688,9 +22690,9 @@ namespace Chummer
                                         WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
                                         string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
                                         string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
-                                        objMod.Create(objXmlAccessoryNode,
-                                                      new Tuple<string, string>(strMount, strExtraMount), 0, false,
-                                                      blnCreateChildren);
+                                        await objMod.CreateAsync(objXmlAccessoryNode,
+                                            new Tuple<string, string>(strMount, strExtraMount), 0, false,
+                                            blnCreateChildren, token: token).ConfigureAwait(false);
                                         objMod.Parent = objWeapon;
 
                                         await objUnderbarrelWeapon.WeaponAccessories.AddAsync(objMod, token)

@@ -143,8 +143,33 @@ namespace Chummer.Backend.Equipment
         /// <param name="lstWeapons">List of Weapons that are created by the Armor.</param>
         /// <param name="blnSkipCost">Whether or not creating the ArmorMod should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
         /// <param name="blnSkipSelectForms">Whether or not to skip selection forms (related to improvements) when creating this ArmorMod.</param>
-        public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false, bool blnSkipSelectForms = false)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
+            bool blnSkipSelectForms = false, CancellationToken token = default)
         {
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlArmorNode, intRating, lstWeapons,
+                blnSkipCost, blnSkipSelectForms, token), token);
+        }
+
+        /// <summary>
+        /// Create a Armor Modification from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
+        /// <param name="intRating">Rating of the selected ArmorMod.</param>
+        /// <param name="lstWeapons">List of Weapons that are created by the Armor.</param>
+        /// <param name="blnSkipCost">Whether or not creating the ArmorMod should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
+        /// <param name="blnSkipSelectForms">Whether or not to skip selection forms (related to improvements) when creating this ArmorMod.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task CreateAsync(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
+            bool blnSkipSelectForms = false, CancellationToken token = default)
+        {
+            return CreateCoreAsync(false, objXmlArmorNode, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms,
+                token);
+        }
+
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false, bool blnSkipSelectForms = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (!objXmlArmorNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for armor mod xmlnode", objXmlArmorNode });
@@ -177,8 +202,15 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlArmorNode, Name, CurrentDisplayName, Source, Page,
-                    DisplayPage(GlobalSettings.Language), _objCharacter);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    Notes = CommonFunctions.GetBookNotes(objXmlArmorNode, Name, CurrentDisplayName, Source,
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
+                else
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
             }
 
             objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
@@ -219,24 +251,52 @@ namespace Chummer.Backend.Equipment
                         if (decMax > 1000000)
                             decMax = 1000000;
 
-                        using (ThreadSafeForm<SelectNumber> frmPickNumber
-                               = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                               {
-                                   Minimum = decMin,
-                                   Maximum = decMax,
-                                   Description = string.Format(
-                                       GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_SelectVariableCost"),
-                                       CurrentDisplayNameShort),
-                                   AllowCancel = false
-                               }))
+                        if (blnSync)
                         {
-                            if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                            using (ThreadSafeForm<SelectNumber> frmPickNumber
+                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                   = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                           CurrentDisplayNameShort),
+                                       AllowCancel = false
+                                   }))
                             {
-                                _guiID = Guid.Empty;
-                                return;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
+                                {
+                                    _guiID = Guid.Empty;
+                                    return;
+                                }
+                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             }
-                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
+                        else
+                        {
+                            string strDescription = string.Format(
+                                GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                            using (ThreadSafeForm<SelectNumber> frmPickNumber
+                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = strDescription,
+                                       AllowCancel = false
+                                   }, token).ConfigureAwait(false))
+                            {
+                                if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                                {
+                                    _guiID = Guid.Empty;
+                                    return;
+                                }
+                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                            }
                         }
                     }
                     else
@@ -248,7 +308,20 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlArmorNode["bonus"], intRating, CurrentDisplayNameShort))
+                if (blnSync)
+                {
+                    // ReSharper disable once MethodHasAsyncOverload
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod,
+                            _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlArmorNode["bonus"], intRating,
+                            CurrentDisplayNameShort, token: token))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                }
+                else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.ArmorMod,
+                             _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlArmorNode["bonus"], intRating,
+                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -263,7 +336,10 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlChildrenNode = objXmlArmorNode["gears"];
             if (xmlChildrenNode != null)
             {
-                XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
+                XmlDocument objXmlGearDocument = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("gear.xml", token: token)
+                    : await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
                 using (XmlNodeList xmlUseGearList = xmlChildrenNode.SelectNodes("usegear"))
                 {
                     if (xmlUseGearList != null)
@@ -271,7 +347,12 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode objXmlArmorGear in xmlUseGearList)
                         {
                             Gear objGear = new Gear(_objCharacter);
-                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstWeapons, !blnSkipSelectForms))
+                            if (blnSync
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    ? !objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstWeapons,
+                                        !blnSkipSelectForms)
+                                    : !await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlArmorGear, lstWeapons,
+                                        !blnSkipSelectForms, token: token).ConfigureAwait(false))
                                 continue;
                             foreach (Weapon objWeapon in lstWeapons)
                             {
@@ -279,7 +360,11 @@ namespace Chummer.Backend.Equipment
                             }
                             objGear.Parent = this;
                             objGear.ParentID = InternalId;
-                            GearChildren.Add(objGear);
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                GearChildren.Add(objGear);
+                            else
+                                await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -291,7 +376,10 @@ namespace Chummer.Backend.Equipment
             {
                 if (xmlAddWeaponList != null)
                 {
-                    XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
+                    XmlDocument objXmlWeaponDocument = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadData("weapons.xml", token: token)
+                        : await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
 
                     foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
@@ -304,17 +392,30 @@ namespace Chummer.Backend.Equipment
                             string strLoopRating = objXmlAddWeapon.Attributes?["rating"]?.InnerText;
                             if (!string.IsNullOrEmpty(strLoopRating))
                             {
-                                strLoopRating = strLoopRating.CheapReplace("{Rating}",
-                                                                           () => Rating.ToString(
-                                                                               GlobalSettings
-                                                                                   .InvariantCultureInfo));
+                                strLoopRating = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    ? strLoopRating.CheapReplace("{Rating}",
+                                        () => Rating.ToString(
+                                            GlobalSettings
+                                                .InvariantCultureInfo))
+                                    : await strLoopRating.CheapReplaceAsync("{Rating}",
+                                        () => Rating.ToString(
+                                            GlobalSettings
+                                                .InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                              out intAddWeaponRating);
                             }
 
                             Weapon objGearWeapon = new Weapon(_objCharacter);
-                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost,
-                                                 intAddWeaponRating);
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objGearWeapon.Create(objXmlWeapon, lstWeapons, true,
+                                    !blnSkipSelectForms,
+                                    blnSkipSelectForms, intAddWeaponRating, token);
+                            else
+                                await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, true,
+                                    !blnSkipSelectForms,
+                                    blnSkipSelectForms, intAddWeaponRating, token).ConfigureAwait(false);
                             objGearWeapon.ParentID = InternalId;
                             objGearWeapon.Cost = "0";
                             if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))

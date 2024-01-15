@@ -1120,8 +1120,15 @@ namespace Chummer.Backend.Equipment
                                         out intAddWeaponRating);
                                 }
 
-                                objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
-                                    blnSkipSelectForms, intAddWeaponRating);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren,
+                                        blnCreateImprovements,
+                                        blnSkipSelectForms, intAddWeaponRating, token);
+                                else
+                                    await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, blnCreateChildren,
+                                        blnCreateImprovements,
+                                        blnSkipSelectForms, intAddWeaponRating, token).ConfigureAwait(false);
                                 objGearWeapon.ParentID = InternalId;
                                 objGearWeapon.Cost = "0";
 
@@ -1166,10 +1173,17 @@ namespace Chummer.Backend.Equipment
                                             out intAddWeaponRating);
                                     }
 
-                                    objGearWeapon.Create(objXmlAccessory,
-                                        new Tuple<string, string>(string.Empty, string.Empty),
-                                        intAddWeaponRating,
-                                        blnSkipSelectForms, true, blnCreateImprovements);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objGearWeapon.Create(objXmlAccessory,
+                                            new Tuple<string, string>(string.Empty, string.Empty),
+                                            intAddWeaponRating,
+                                            blnSkipSelectForms, true, blnCreateImprovements, token);
+                                    else
+                                        await objGearWeapon.CreateAsync(objXmlAccessory,
+                                            new Tuple<string, string>(string.Empty, string.Empty),
+                                            intAddWeaponRating,
+                                            blnSkipSelectForms, true, blnCreateImprovements, token).ConfigureAwait(false);
                                     objGearWeapon.Cost = "0";
                                     objGearWeapon.ParentID = InternalId;
                                     objGearWeapon.Parent = objWeapon;
@@ -1202,8 +1216,14 @@ namespace Chummer.Backend.Equipment
                             if (xmlVehicle != null)
                             {
                                 Vehicle objVehicle = new Vehicle(_objCharacter);
-                                objVehicle.Create(xmlVehicle, blnSkipSelectForms, true, blnCreateImprovements,
-                                    blnSkipSelectForms);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objVehicle.Create(xmlVehicle, blnSkipSelectForms, true, blnCreateImprovements,
+                                        blnSkipSelectForms, token);
+                                else
+                                    await objVehicle.CreateAsync(xmlVehicle, blnSkipSelectForms, true,
+                                        blnCreateImprovements,
+                                        blnSkipSelectForms, token).ConfigureAwait(false);
                                 objVehicle.ParentID = InternalId;
 
                                 if (Guid.TryParse(objVehicle.InternalId, out _guiVehicleID))

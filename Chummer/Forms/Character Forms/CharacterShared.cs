@@ -921,7 +921,7 @@ namespace Chummer
                 TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
                 if (objNode == null)
                     return;
-                TreeNode objParentNode = null;
+                TreeNode objParentNode;
                 switch (objSpell.Category)
                 {
                     case "Combat":

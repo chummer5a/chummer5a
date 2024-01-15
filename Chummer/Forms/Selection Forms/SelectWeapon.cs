@@ -238,7 +238,7 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(_objCharacter);
                         try
                         {
-                            objWeapon.Create(xmlWeapon, null, true, false, true);
+                            await objWeapon.CreateAsync(xmlWeapon, null, true, false, true, token: token).ConfigureAwait(false);
                             objWeapon.Parent = ParentWeapon;
                             Weapon objOldWeapon = Interlocked.Exchange(ref _objSelectedWeapon, objWeapon);
                             if (objOldWeapon != null)
@@ -531,7 +531,7 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(_objCharacter);
                         try
                         {
-                            objWeapon.Create(objXmlWeapon, null, true, false, true);
+                            await objWeapon.CreateAsync(objXmlWeapon, null, true, false, true, token: token).ConfigureAwait(false);
                             objWeapon.Parent = ParentWeapon;
                             if (objWeapon.RangeType == "Ranged")
                                 blnAnyRanged = true;

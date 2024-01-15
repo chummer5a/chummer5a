@@ -308,7 +308,11 @@ namespace Chummer
                                 }
 
                                 Weapon objGearWeapon = new Weapon(_objCharacter);
-                                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, true, true, intAddWeaponRating);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, true, true, intAddWeaponRating, token);
+                                else
+                                    await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, true, true, true, intAddWeaponRating, token).ConfigureAwait(false);
                                 objGearWeapon.ParentID = InternalId;
                                 objGearWeapon.Cost = "0";
 

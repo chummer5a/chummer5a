@@ -6625,7 +6625,7 @@ namespace Chummer
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(CharacterObject);
-                objWeapon.Create(objXmlWeapon, lstWeapons);
+                await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
                 objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -6829,7 +6829,7 @@ namespace Chummer
 
                 XmlNode objXmlVehicle = objXmlDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", frmPickVehicle.MyForm.SelectedVehicle);
                 Vehicle objVehicle = new Vehicle(CharacterObject);
-                objVehicle.Create(objXmlVehicle);
+                await objVehicle.CreateAsync(objXmlVehicle, token: token).ConfigureAwait(false);
                 // Update the Used Vehicle information if applicable.
                 if (frmPickVehicle.MyForm.UsedVehicle)
                 {
@@ -6983,7 +6983,7 @@ namespace Chummer
                         XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml", token: token)
                                                                           .ConfigureAwait(false);
                         XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                        objRetrofit.Create(objXmlNode, 0, objMod.Parent);
+                        await objRetrofit.CreateAsync(objXmlNode, 0, objMod.Parent, token: token).ConfigureAwait(false);
                         objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
                         objRetrofit.IncludedInVehicle = true;
                         await objMod.Parent.Mods.AddAsync(objRetrofit, token).ConfigureAwait(false);
@@ -10581,8 +10581,8 @@ namespace Chummer
                         objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", frmPickWeaponAccessory.MyForm.SelectedAccessory);
 
                         WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                        objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
-                                            frmPickWeaponAccessory.MyForm.SelectedRating);
+                        await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
+                            frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
                         objAccessory.Parent = objWeapon;
                         objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
 
@@ -10671,7 +10671,7 @@ namespace Chummer
 
                 Armor objArmor = new Armor(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                objArmor.Create(objXmlArmor, frmPickArmor.MyForm.Rating, lstWeapons);
+                await objArmor.CreateAsync(objXmlArmor, frmPickArmor.MyForm.Rating, lstWeapons, token: token).ConfigureAwait(false);
                 objArmor.DiscountCost = frmPickArmor.MyForm.BlackMarketDiscount;
 
                 if (objArmor.InternalId.IsEmptyGuid())
@@ -10843,7 +10843,7 @@ namespace Chummer
                                 ? frmPickArmorMod.MyForm.SelectedRating
                                 : 0;
 
-                        objMod.Create(objXmlArmor, intRating, lstWeapons);
+                        await objMod.CreateAsync(objXmlArmor, intRating, lstWeapons, token: GenericToken).ConfigureAwait(false);
                         if (objMod.InternalId.IsEmptyGuid())
                             continue;
 
@@ -11011,8 +11011,8 @@ namespace Chummer
                         {
                             DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
                         };
-                        objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
-                                      frmPickVehicleMod.MyForm.Markup);
+                        await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
+                            frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
                         // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
                         if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
                         {
@@ -11258,7 +11258,7 @@ namespace Chummer
                     ParentVehicleMod = objMod,
                     ParentMount = objMod == null ? objWeaponMount : null
                 };
-                objWeapon.Create(objXmlWeapon, lstWeapons);
+                await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
 
                 if (!frmPickWeapon.MyForm.FreeCost)
                 {
@@ -11458,8 +11458,8 @@ namespace Chummer
                         objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", frmPickWeaponAccessory.MyForm.SelectedAccessory);
 
                         WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                        objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
-                                            frmPickWeaponAccessory.MyForm.SelectedRating);
+                        await objAccessory.CreateAsync(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
+                            frmPickWeaponAccessory.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
                         objAccessory.Parent = objWeapon;
 
                         // Check the item's Cost and make sure the character can afford it.
@@ -11555,7 +11555,7 @@ namespace Chummer
                 {
                     ParentVehicle = objSelectedWeapon.ParentVehicle
                 };
-                objWeapon.Create(objXmlWeapon, lstWeapons);
+                await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
                 objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
                 objWeapon.Parent = objSelectedWeapon;
                 if (!objSelectedWeapon.AllowAccessory)

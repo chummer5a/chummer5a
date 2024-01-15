@@ -2768,7 +2768,7 @@ namespace Chummer
                     if (objXmlWeapon != null)
                     {
                         Weapon objWeapon = new Weapon(this);
-                        objWeapon.Create(objXmlWeapon, lstWeapons);
+                        objWeapon.Create(objXmlWeapon, lstWeapons, token: token);
                         objWeapon.ParentID =
                             Guid.NewGuid()
                                 .ToString("D",
@@ -3471,7 +3471,7 @@ namespace Chummer
                     if (objXmlWeapon != null)
                     {
                         Weapon objWeapon = new Weapon(this);
-                        objWeapon.Create(objXmlWeapon, lstWeapons);
+                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
                         objWeapon.ParentID =
                             Guid.NewGuid()
                                 .ToString("D",
@@ -9788,7 +9788,11 @@ namespace Chummer
                                     if (objXmlWeapon != null)
                                     {
                                         Weapon objWeapon = new Weapon(this);
-                                        objWeapon.Create(objXmlWeapon, _lstWeapons);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objWeapon.Create(objXmlWeapon, _lstWeapons, token: token);
+                                        else
+                                            await objWeapon.CreateAsync(objXmlWeapon, _lstWeapons, token: token).ConfigureAwait(false);
                                         objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -43666,12 +43670,21 @@ namespace Chummer
                                         if (xmlArmorData != null)
                                         {
                                             Armor objArmor = new Armor(this);
-                                            objArmor.Create(xmlArmorData,
-                                                xmlArmorToImport.SelectSingleNodeAndCacheExpression(
-                                                        "@rating", token)
-                                                            ?.ValueAsInt
-                                                            ?? 0,
-                                                            lstWeapons);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                objArmor.Create(xmlArmorData,
+                                                    xmlArmorToImport.SelectSingleNodeAndCacheExpression(
+                                                            "@rating", token)
+                                                        ?.ValueAsInt
+                                                    ?? 0,
+                                                    lstWeapons, token: token);
+                                            else
+                                                await objArmor.CreateAsync(xmlArmorData,
+                                                    xmlArmorToImport.SelectSingleNodeAndCacheExpression(
+                                                            "@rating", token)
+                                                        ?.ValueAsInt
+                                                    ?? 0,
+                                                    lstWeapons, token: token).ConfigureAwait(false);
                                             objArmor.Notes = xmlArmorToImport.SelectSingleNodeAndCacheExpression(
                                                     "description", token)
                                                 ?.Value;
@@ -43698,11 +43711,19 @@ namespace Chummer
                                                         if (xmlArmorModData != null)
                                                         {
                                                             ArmorMod objArmorMod = new ArmorMod(this);
-                                                            objArmorMod.Create(xmlArmorModData,
-                                                                xmlArmorModToImport
-                                                                    .SelectSingleNodeAndCacheExpression(
-                                                                        "@rating", token)
-                                                                               ?.ValueAsInt ?? 0, lstWeapons);
+                                                            if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                objArmorMod.Create(xmlArmorModData,
+                                                                    xmlArmorModToImport
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "@rating", token)
+                                                                                   ?.ValueAsInt ?? 0, lstWeapons, token: token);
+                                                            else
+                                                                await objArmorMod.CreateAsync(xmlArmorModData,
+                                                                    xmlArmorModToImport
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "@rating", token)
+                                                                        ?.ValueAsInt ?? 0, lstWeapons, token: token).ConfigureAwait(false);
                                                             objArmorMod.Notes = xmlArmorModToImport
                                                                 .SelectSingleNodeAndCacheExpression(
                                                                     "description", token)
@@ -45107,7 +45128,11 @@ namespace Chummer
                                     if (objXmlWeapon != null)
                                     {
                                         Weapon objWeapon = new Weapon(this);
-                                        objWeapon.Create(objXmlWeapon, _lstWeapons);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objWeapon.Create(objXmlWeapon, _lstWeapons, token: token);
+                                        else
+                                            await objWeapon.CreateAsync(objXmlWeapon, _lstWeapons, token: token).ConfigureAwait(false);
                                         objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation

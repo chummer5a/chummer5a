@@ -152,8 +152,35 @@ namespace Chummer.Backend.Equipment
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnSkipSelectForms">Whether or not bonuses should be created.</param>
-        public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0, string strForcedValue = "", bool blnSkipSelectForms = false)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
+            string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, intRating, objParent, decMarkup,
+                strForcedValue, blnSkipSelectForms, token), token);
+        }
+
+        /// <summary>
+        /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
+        /// </summary>
+        /// <param name="objXmlMod">XmlNode to create the object from.</param>
+        /// <param name="intRating">Selected Rating for the Gear.</param>
+        /// <param name="objParent">Vehicle that the mod will be attached to.</param>
+        /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="blnSkipSelectForms">Whether or not bonuses should be created.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task CreateAsync(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
+            string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
+        {
+            return CreateCoreAsync(false, objXmlMod, intRating, objParent, decMarkup, strForcedValue,
+                blnSkipSelectForms, token);
+        }
+
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
+            string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
             if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
@@ -247,24 +274,52 @@ namespace Chummer.Backend.Equipment
                 {
                     if (decMax > 1000000)
                         decMax = 1000000;
-                    using (ThreadSafeForm<SelectNumber> frmPickNumber
-                           = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                           {
-                               Minimum = decMin,
-                               Maximum = decMax,
-                               Description = string.Format(
-                                   GlobalSettings.CultureInfo,
-                                   LanguageManager.GetString("String_SelectVariableCost"),
-                                   CurrentDisplayNameShort),
-                               AllowCancel = false
-                           }))
+                    if (blnSync)
                     {
-                        if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                               = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                       CurrentDisplayNameShort),
+                                   AllowCancel = false
+                               }))
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            // ReSharper disable once MethodHasAsyncOverload
+                            if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                         }
-                        _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                    }
+                    else
+                    {
+                        string strDescription = string.Format(
+                            GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = strDescription,
+                                   AllowCancel = false
+                               }, token).ConfigureAwait(false))
+                        {
+                            if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
                     }
                 }
             }
@@ -275,8 +330,15 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlMod, Name, CurrentDisplayName, Source, Page,
-                    DisplayPage(GlobalSettings.Language), _objCharacter);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    Notes = CommonFunctions.GetBookNotes(objXmlMod, Name, CurrentDisplayName, Source,
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
+                else
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlMod, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
             }
             _nodBonus = objXmlMod?["bonus"];
             _nodWirelessBonus = objXmlMod?["wirelessbonus"];
@@ -285,9 +347,20 @@ namespace Chummer.Backend.Equipment
             if (Bonus != null && !blnSkipSelectForms)
             {
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.VehicleMod,
-                                                           InternalId, Bonus, intRating,
-                                                           CurrentDisplayNameShort, false))
+                if (blnSync)
+                {
+                    // ReSharper disable once MethodHasAsyncOverload
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.VehicleMod,
+                            _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, intRating,
+                            CurrentDisplayNameShort, false, token))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
+                }
+                else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.VehicleMod,
+                             _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, intRating,
+                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), false, token).ConfigureAwait(false))
                 {
                     _guiID = Guid.Empty;
                     return;

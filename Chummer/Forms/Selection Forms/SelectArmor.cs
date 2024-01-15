@@ -243,7 +243,7 @@ namespace Chummer
                         try
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
-                            objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
+                            await objArmor.CreateAsync(xmlArmor, 0, lstWeapons, true, true, true, token).ConfigureAwait(false);
 
                             Armor objOldArmor = Interlocked.Exchange(ref _objSelectedArmor, objArmor);
                             if (objOldArmor != null)
@@ -609,7 +609,7 @@ namespace Chummer
                             try
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                                objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
+                                await objArmor.CreateAsync(objXmlArmor, 0, lstWeapons, true, true, true, token).ConfigureAwait(false);
 
                                 string strArmorGuid = objArmor.SourceIDString;
                                 string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);

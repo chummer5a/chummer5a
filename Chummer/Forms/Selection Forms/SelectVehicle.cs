@@ -680,7 +680,7 @@ namespace Chummer
                         Vehicle objVehicle = new Vehicle(_objCharacter);
                         try
                         {
-                            objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, true, false, true);
+                            await objVehicle.CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, token).ConfigureAwait(false);
                             string strID = objVehicle.SourceIDString;
                             string strVehicleName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             string strAccel = objVehicle.TotalAccel;
@@ -736,7 +736,7 @@ namespace Chummer
                                             AvailabilityValue objAvail = await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                             SourceString strSource = await SourceString.GetSourceStringAsync(
                                                 objVehicle.Source,
-                                                objVehicle.DisplayPage(GlobalSettings.Language),
+                                                await objVehicle.DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
                                                 GlobalSettings.Language, GlobalSettings.CultureInfo,
                                                 _objCharacter, token).ConfigureAwait(false);
                                             NuyenString strCost =

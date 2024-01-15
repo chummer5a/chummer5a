@@ -397,31 +397,31 @@ namespace Chummer
                     if (_objMount == null)
                     {
                         _objMount = new WeaponMount(_objCharacter, _objVehicle);
-                        _objMount.Create(xmlSelectedMount, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false));
+                        await _objMount.CreateAsync(xmlSelectedMount, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false), _objGenericToken).ConfigureAwait(false);
                     }
                     else if (_objMount.SourceIDString != strSelectedMount)
                     {
-                        _objMount.Create(xmlSelectedMount, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false));
+                        await _objMount.CreateAsync(xmlSelectedMount, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, _objGenericToken).ConfigureAwait(false), _objGenericToken).ConfigureAwait(false);
                     }
 
                     _objMount.DiscountCost = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
 
                     WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
-                    if (objControlOption.Create(xmlSelectedControl))
+                    if (await objControlOption.CreateAsync(xmlSelectedControl, _objGenericToken).ConfigureAwait(false))
                     {
                         _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Control");
                         _objMount.WeaponMountOptions.Add(objControlOption);
                     }
 
                     WeaponMountOption objFlexibilityOption = new WeaponMountOption(_objCharacter);
-                    if (objFlexibilityOption.Create(xmlSelectedFlexibility))
+                    if (await objFlexibilityOption.CreateAsync(xmlSelectedFlexibility, _objGenericToken).ConfigureAwait(false))
                     {
                         _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Flexibility");
                         _objMount.WeaponMountOptions.Add(objFlexibilityOption);
                     }
 
                     WeaponMountOption objVisibilityOption = new WeaponMountOption(_objCharacter);
-                    if (objVisibilityOption.Create(xmlSelectedVisibility))
+                    if (await objVisibilityOption.CreateAsync(xmlSelectedVisibility, _objGenericToken).ConfigureAwait(false))
                     {
                         _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Visibility");
                         _objMount.WeaponMountOptions.Add(objVisibilityOption);
@@ -937,7 +937,7 @@ namespace Chummer
                             {
                                 DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
                             };
-                            objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, _objVehicle, frmPickVehicleMod.MyForm.Markup);
+                            await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, _objVehicle, frmPickVehicleMod.MyForm.Markup, token: token).ConfigureAwait(false);
                             if (frmPickVehicleMod.MyForm.FreeCost)
                                 objMod.Cost = "0";
                             if (_objMount != null)
