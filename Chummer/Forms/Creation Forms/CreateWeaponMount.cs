@@ -270,7 +270,7 @@ namespace Chummer
                 if (xmlSelectedVisibility == null)
                     return;
 
-                XmlNode xmlForbiddenNode = xmlSelectedMount["forbidden"];
+                XmlElement xmlForbiddenNode = xmlSelectedMount["forbidden"];
                 if (xmlForbiddenNode != null)
                 {
                     string strStringToCheck = xmlSelectedControl["name"]?.InnerText;
@@ -321,7 +321,7 @@ namespace Chummer
                         }
                     }
                 }
-                XmlNode xmlRequiredNode = xmlSelectedMount["required"];
+                XmlElement xmlRequiredNode = xmlSelectedMount["required"];
                 if (xmlRequiredNode != null)
                 {
                     bool blnRequirementsMet = true;

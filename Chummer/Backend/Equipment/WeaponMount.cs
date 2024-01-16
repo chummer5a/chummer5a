@@ -301,19 +301,44 @@ namespace Chummer.Backend.Equipment
                 // we instead display them as if they were one of the CRB mounts, but give them a different name
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 {
-                    if (_objCachedBackupSourceDetail == default)
-                        _objCachedBackupSourceDetail = SourceString.GetSourceString(
+                    return _objCachedBackupSourceDetail == default
+                        ? _objCachedBackupSourceDetail = SourceString.GetSourceString(
                             this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
                             DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
-                            _objCharacter);
-                    return _objCachedBackupSourceDetail;
+                            _objCharacter)
+                        : _objCachedBackupSourceDetail;
                 }
-                if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
-                        _objCharacter);
-                return _objCachedSourceDetail;
+                return _objCachedSourceDetail == default
+                    ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                        DisplayPage(GlobalSettings.Language),
+                        GlobalSettings.Language,
+                        GlobalSettings.CultureInfo,
+                        _objCharacter)
+                    : _objCachedSourceDetail;
             }
+        }
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
+            // we instead display them as if they were one of the CRB mounts, but give them a different name
+            if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+            {
+                return _objCachedBackupSourceDetail == default
+                    ? _objCachedBackupSourceDetail = await SourceString.GetSourceStringAsync(
+                        (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), GlobalSettings.Language, GlobalSettings.CultureInfo,
+                        _objCharacter, token).ConfigureAwait(false)
+                    : _objCachedBackupSourceDetail;
+            }
+            return _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter, token).ConfigureAwait(false)
+                : _objCachedSourceDetail;
         }
 
         /// <summary>
@@ -413,7 +438,7 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetInt32FieldQuickly("weaponcapacity", ref _intWeaponCapacity);
 
-            XmlNode xmlChildrenNode = objNode["weaponmountoptions"];
+            XmlElement xmlChildrenNode = objNode["weaponmountoptions"];
             using (XmlNodeList xmlWeaponMountOptionList = xmlChildrenNode?.SelectNodes("weaponmountoption"))
             {
                 if (xmlWeaponMountOptionList != null)
@@ -1696,7 +1721,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
@@ -2026,11 +2051,11 @@ namespace Chummer.Backend.Equipment
             SourceDetail.SetControl(sourceControl);
         }
 
-        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
-            return SourceDetail.SetControlAsync(sourceControl, token);
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
 
         public bool AllowPasteXml
@@ -2611,7 +2636,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token)

@@ -942,7 +942,7 @@ namespace Chummer.Backend.Skills
                                                         .GetCachedImprovementListForValueOf(
                                                             _objCharacter,
                                                             Improvement.ImprovementType.SkillGroupCategoryDisable)
-                                                        .Any(
+                                                        .Exists(
                                                             x => GetRelevantSkillCategories
                                                                 .Contains(x.ImprovedName))).ToInt32();
                         }
@@ -988,7 +988,7 @@ namespace Chummer.Backend.Skills
                                                         _objCharacter,
                                                         Improvement.ImprovementType.SkillGroupCategoryDisable,
                                                         token: token).ConfigureAwait(false))
-                                                .Any(
+                                                .Exists(
                                                     x => GetRelevantSkillCategories.Contains(x.ImprovedName)))
                             .ToInt32();
                     }

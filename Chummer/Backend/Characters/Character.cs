@@ -46016,32 +46016,65 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                    using (_objCachedSourceDetailLock.EnterReadLock())
                     {
-                        return _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                            DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
-                            GlobalSettings.CultureInfo,
-                            this);
+                        if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                            return _objCachedSourceDetail;
+
                     }
 
                     using (_objCachedSourceDetailLock.EnterUpgradeableReadLock())
                     {
-                        if (_objCachedSourceDetail == default)
+                        if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                            return _objCachedSourceDetail;
+                        using (_objCachedSourceDetailLock.EnterWriteLock())
                         {
-                            using (_objCachedSourceDetailLock.EnterWriteLock())
-                            {
-                                if (_objCachedSourceDetail == default)
-                                {
-                                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
-                                        GlobalSettings.CultureInfo,
-                                        this);
-                                }
-                            }
+                            return _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                                DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
+                                GlobalSettings.CultureInfo,
+                                this);
                         }
-
-                        return _objCachedSourceDetail;
                     }
+                }
+            }
+        }
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                using (await _objCachedSourceDetailLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                {
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
+
+                }
+
+                IAsyncDisposable objLocker = await _objCachedSourceDetailLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
+                    IAsyncDisposable objLocker2 = await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        return _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                            await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            this, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -46167,6 +46200,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns></returns>
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    return Page;
+                string s = (await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("altpage", token)?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            }
+        }
+
+        /// <summary>
         /// Alias map for SourceDetail control text and tooltip assignation.
         /// </summary>
         /// <param name="sourceControl"></param>
@@ -46175,9 +46228,9 @@ namespace Chummer
             SourceDetail.SetControl(sourceControl);
         }
 
-        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
-            return SourceDetail.SetControlAsync(sourceControl, token);
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
 
         #endregion Source

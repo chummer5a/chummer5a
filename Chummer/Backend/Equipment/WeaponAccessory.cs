@@ -95,7 +95,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoBonus = string.Empty;
         private int _intSortOrder;
         private bool _blnWirelessOn = true;
-        private XmlNode _nodWirelessBonus;
+        private XmlElement _nodWirelessBonus;
         private bool _blnStolen;
         private string _strParentID;
 
@@ -356,7 +356,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
 
             // Add any Gear that comes with the Weapon Accessory.
-            XmlNode xmlGearsNode = objXmlAccessory["gears"];
+            XmlElement xmlGearsNode = objXmlAccessory["gears"];
             if (xmlGearsNode != null && blnCreateChildren)
             {
                 XmlDocument objXmlGearDocument = blnSync
@@ -369,8 +369,8 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode objXmlAccessoryGear in xmlGearsList)
                         {
-                            XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                            XmlNode objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
+                            XmlElement objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                            XmlElement objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
                             XmlAttributeCollection objXmlAccessoryGearNameAttributes =
                                 objXmlAccessoryGearName?.Attributes;
                             int intGearRating = 0;
@@ -448,16 +448,25 @@ namespace Chummer.Backend.Equipment
 
         private SourceString _objCachedSourceDetail;
 
-        public SourceString SourceDetail
+        public SourceString SourceDetail =>
+            _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                    DisplayPage(GlobalSettings.Language),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter)
+                : _objCachedSourceDetail;
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
         {
-            get
-            {
-                if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
-                        _objCharacter);
-                return _objCachedSourceDetail;
-            }
+            token.ThrowIfCancellationRequested();
+            return _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter, token).ConfigureAwait(false)
+                : _objCachedSourceDetail;
         }
 
         /// <summary>
@@ -604,7 +613,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
             objNode.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
 
-            XmlNode xmlGearsNode = objNode["gears"];
+            XmlElement xmlGearsNode = objNode["gears"];
             if (xmlGearsNode != null)
             {
                 using (XmlNodeList nodChildren = xmlGearsNode.SelectNodes("gear"))
@@ -1893,7 +1902,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlNode objDoc = blnSync
+            XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("weapons.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
@@ -2288,11 +2297,11 @@ namespace Chummer.Backend.Equipment
             SourceDetail.SetControl(sourceControl);
         }
 
-        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
-            return SourceDetail.SetControlAsync(sourceControl, token);
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
 
         public bool AllowPasteXml

@@ -605,7 +605,7 @@ namespace Chummer.UI.Powers
 
                         async Task ValueUpdater(Power p, decimal newRating)
                         {
-                            IAsyncDisposable objCursorWait =
+                            CursorWait objCursorWait =
                                 await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
                             try
                             {

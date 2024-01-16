@@ -282,6 +282,7 @@ namespace Chummer
 
         public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
@@ -2898,7 +2899,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
-                await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);
+                await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
             }
         }
 

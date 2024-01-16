@@ -197,7 +197,7 @@ namespace Chummer
 
                             _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
                                                                        .FirstOrDefault(
-                                                                           y => lstMethods.Any(
+                                                                           y => lstMethods.Exists(
                                                                                x => y.Equals(
                                                                                    x.Value.ToString(),
                                                                                    StringComparison.OrdinalIgnoreCase)));
