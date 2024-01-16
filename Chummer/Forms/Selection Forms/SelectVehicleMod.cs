@@ -358,7 +358,7 @@ namespace Chummer
                         //Used for Metahuman Adjustments.
                         else if (strRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                         {
-                            intMinRating = Math.Min(intMinRating, _objVehicle.TotalSeats);
+                            intMinRating = Math.Min(intMinRating, await _objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false));
                         }
                         else if (int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                               out int intMaxRating))
@@ -542,9 +542,10 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
                         await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token: token)
                                             .ConfigureAwait(false);
+                        int intTotalSeats = await _objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false);
                         await nudRating.DoThreadSafeAsync(x =>
                         {
-                            x.Maximum = _objVehicle.TotalSeats;
+                            x.Maximum = intTotalSeats;
                             x.Visible = true;
                         }, token: token).ConfigureAwait(false);
                         await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token: token)
@@ -674,12 +675,9 @@ namespace Chummer
                     decimal decItemCost = 0;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                     {
-                        await lblCost
-                              .DoThreadSafeAsync(
-                                  x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                GlobalSettings.CultureInfo)
-                                                + strNuyen, token: token)
-                              .ConfigureAwait(false);
+                        string strCost = 0.0m.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                            GlobalSettings.CultureInfo) + strNuyen;
+                        await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -704,26 +702,23 @@ namespace Chummer
 
                             if (decMax == decimal.MaxValue)
                             {
-                                await lblCost.DoThreadSafeAsync(
-                                                 x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                               GlobalSettings.CultureInfo)
-                                                               + strNuyen + '+',
-                                                 token: token)
-                                             .ConfigureAwait(false);
+                                string strText =
+                                    decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.CultureInfo) + strNuyen + '+';
+                                await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
+                                    .ConfigureAwait(false);
                             }
                             else
                             {
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                                       .ConfigureAwait(false);
-                                await lblCost.DoThreadSafeAsync(
-                                                 x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                               GlobalSettings.CultureInfo)
-                                                               + strSpace + '-' + strSpace
-                                                               + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                   GlobalSettings.CultureInfo)
-                                                               + strNuyen,
-                                                 token: token)
-                                             .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
+                                string strText =
+                                    decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.CultureInfo) + strSpace + '-' + strSpace +
+                                    decMax.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.CultureInfo) + strNuyen;
+                                await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
+                                    .ConfigureAwait(false);
                             }
 
                             strCost = decMin.ToString(GlobalSettings.InvariantCultureInfo);
@@ -785,10 +780,11 @@ namespace Chummer
                             await lblVehicleCapacityLabel.DoThreadSafeAsync(x => x.Visible = true, token: token)
                                                          .ConfigureAwait(false);
                             int.TryParse(strSlots, NumberStyles.Any, GlobalSettings.CultureInfo, out int intSlots);
+                            string strCapacity = await GetRemainingModCapacity(strCategory, intSlots, token).ConfigureAwait(false);
                             await lblVehicleCapacity.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = GetRemainingModCapacity(strCategory, intSlots);
+                                x.Text = strCapacity;
                             }, token: token).ConfigureAwait(false);
                             await lblVehicleCapacityLabel
                                   .SetToolTipAsync(
@@ -917,30 +913,32 @@ namespace Chummer
             }
         }
 
-        private string GetRemainingModCapacity(string strCategory, int intModSlots)
+        private Task<string> GetRemainingModCapacity(string strCategory, int intModSlots, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             switch (strCategory)
             {
                 case "Powertrain":
-                    return _objVehicle.PowertrainModSlotsUsed(intModSlots);
+                    return _objVehicle.PowertrainModSlotsUsedAsync(intModSlots, token);
 
                 case "Protection":
-                    return _objVehicle.ProtectionModSlotsUsed(intModSlots);
+                    return _objVehicle.ProtectionModSlotsUsedAsync(intModSlots, token);
 
                 case "Weapons":
-                    return _objVehicle.WeaponModSlotsUsed(intModSlots);
+                    return _objVehicle.WeaponModSlotsUsedAsync(intModSlots, token);
 
                 case "Body":
-                    return _objVehicle.BodyModSlotsUsed(intModSlots);
+                    return _objVehicle.BodyModSlotsUsedAsync(intModSlots, token);
 
                 case "Electromagnetic":
-                    return _objVehicle.ElectromagneticModSlotsUsed(intModSlots);
+                    return _objVehicle.ElectromagneticModSlotsUsedAsync(intModSlots, token);
 
                 case "Cosmetic":
-                    return _objVehicle.CosmeticModSlotsUsed(intModSlots);
+                    return _objVehicle.CosmeticModSlotsUsedAsync(intModSlots, token);
 
                 default:
-                    return string.Empty;
+                    return Task.FromResult(string.Empty);
             }
         }
 

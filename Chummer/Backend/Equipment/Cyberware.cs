@@ -8512,17 +8512,23 @@ namespace Chummer.Backend.Equipment
                 {
                     List<Cyberware> lstCustomizationWare
                         = new List<Cyberware>(await Children.GetCountAsync(token).ConfigureAwait(false));
-                    foreach (Cyberware objChild in Children)
+                    await Children.ForEachAsync(objChild =>
                     {
                         if (setNamesToCheck.Contains(objChild.Name))
                             lstCustomizationWare.Add(objChild);
-                    }
+                    }, token).ConfigureAwait(false);
 
                     if (lstCustomizationWare.Count > 0)
                     {
-                        intValue = lstCustomizationWare.Count > 1
-                            ? lstCustomizationWare.Max(s => s.Rating)
-                            : lstCustomizationWare[0].Rating;
+                        if (lstCustomizationWare.Count > 1)
+                        {
+                            foreach (Cyberware objCyberware in lstCustomizationWare)
+                            {
+                                intValue = Math.Max(intValue, await objCyberware.GetRatingAsync(token).ConfigureAwait(false));
+                            }
+                        }
+                        else
+                            intValue = await lstCustomizationWare[0].GetRatingAsync(token).ConfigureAwait(false);
                     }
                 }
 

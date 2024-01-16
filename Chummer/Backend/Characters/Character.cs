@@ -24439,7 +24439,7 @@ namespace Chummer
                         int intHomeNodeDP = await objHomeNode.GetTotalMatrixAttributeAsync("Data Processing", token).ConfigureAwait(false);
                         if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
-                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            int intHomeNodePilot = await objHomeNodeVehicle.GetPilotAsync(token).ConfigureAwait(false);
                             if (intHomeNodePilot > intHomeNodeDP)
                                 intHomeNodeDP = intHomeNodePilot;
                         }
@@ -24526,7 +24526,7 @@ namespace Chummer
                             .ConfigureAwait(false);
                         if (objHomeNode is Vehicle objHomeNodeVehicle)
                         {
-                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            int intHomeNodePilot = await objHomeNodeVehicle.GetPilotAsync(token).ConfigureAwait(false);
                             if (intHomeNodePilot > intHomeNodeDP)
                                 intHomeNodeDP = intHomeNodePilot;
                         }
@@ -30462,13 +30462,13 @@ namespace Chummer
                 int intBonus;
                 if (await GetIsAIAsync(token).ConfigureAwait(false))
                 {
-                    if (HomeNode is Vehicle objVehicleHomeNode)
+                    if (await GetHomeNodeAsync(token).ConfigureAwait(false) is Vehicle objVehicleHomeNode)
                     {
                         strCM = objVehicleHomeNode.BasePhysicalBoxes.ToString(GlobalSettings.CultureInfo) + strSpace +
                                 '+' + strSpace + '(' + await BOD.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
                                     .ConfigureAwait(false) +
                                 '÷' + 2.ToString(GlobalSettings.CultureInfo) + ')' + strSpace + '(' +
-                                ((objVehicleHomeNode.TotalBody + 1) / 2).ToString(GlobalSettings.CultureInfo) + ')';
+                                ((await objVehicleHomeNode.GetTotalBodyAsync(token).ConfigureAwait(false) + 1) / 2).ToString(GlobalSettings.CultureInfo) + ')';
 
                         intBonus = await objVehicleHomeNode.Mods.SumAsync(objMod => objMod.ConditionMonitor,
                             token: token).ConfigureAwait(false);
@@ -31727,7 +31727,7 @@ namespace Chummer
                 {
                     if (objHomeNode is Vehicle objHomeNodeVehicle)
                     {
-                        int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                        int intHomeNodeSensor = await objHomeNodeVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
                         if (intHomeNodeSensor > intLimit)
                         {
                             intLimit = intHomeNodeSensor;
@@ -31843,7 +31843,7 @@ namespace Chummer
                         int intLimit = (intLog * 2 + intInt + intWil + 2) / 3;
                         if (objHomeNode is Vehicle objHomeNodeVehicle)
                         {
-                            int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                            int intHomeNodeSensor = await objHomeNodeVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
                             if (intHomeNodeSensor > intLimit)
                             {
                                 intLimit = intHomeNodeSensor;
@@ -31934,7 +31934,7 @@ namespace Chummer
 
                     if (objHomeNode is Vehicle objHomeNodeVehicle)
                     {
-                        int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                        int intHomeNodePilot = await objHomeNodeVehicle.GetPilotAsync(token).ConfigureAwait(false);
                         if (intHomeNodePilot > intHomeNodeDP)
                             intHomeNodeDP = intHomeNodePilot;
                     }
@@ -32035,7 +32035,7 @@ namespace Chummer
                         string strDPString = await LanguageManager.GetStringAsync("String_DataProcessing", token: token).ConfigureAwait(false);
                         if (objHomeNode is Vehicle objHomeNodeVehicle)
                         {
-                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            int intHomeNodePilot = await objHomeNodeVehicle.GetPilotAsync(token).ConfigureAwait(false);
                             if (intHomeNodePilot > intHomeNodeDP)
                             {
                                 intHomeNodeDP = intHomeNodePilot;
@@ -34024,6 +34024,17 @@ namespace Chummer
                                                 .GetCachedImprovementListForValueOf(
                                                     this, Improvement.ImprovementType.DealerConnection).Count > 0;
 
+        /// <summary>
+        /// Whether or not Black Market Discount is enabled.
+        /// </summary>
+        public async Task<bool> GetDealerConnectionDiscountAsync(CancellationToken token = default)
+        {
+            return (await ImprovementManager
+                       .GetCachedImprovementListForValueOfAsync(
+                           this, Improvement.ImprovementType.DealerConnection, token: token).ConfigureAwait(false)).Count
+                   > 0;
+        }
+
         public void RefreshDealerConnectionDiscounts(CancellationToken token = default)
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
@@ -34071,7 +34082,7 @@ namespace Chummer
                 if (await GetCreatedAsync(token).ConfigureAwait(false))
                     return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
 
-                if (DealerConnectionDiscount)
+                if (await GetDealerConnectionDiscountAsync(token).ConfigureAwait(false))
                     return;
 
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,

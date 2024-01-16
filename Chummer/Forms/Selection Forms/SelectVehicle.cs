@@ -100,28 +100,33 @@ namespace Chummer
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode));
-
-            if (_objCharacter.DealerConnectionDiscount)
-            {
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DealerConnection))
-                {
-                    _setDealerConnectionMaps.Add(objImprovement.UniqueName);
-                }
-            }
         }
 
         private async void SelectVehicle_Load(object sender, EventArgs e)
         {
             try
             {
+                if (await _objCharacter.GetDealerConnectionDiscountAsync(_objGenericToken).ConfigureAwait(false))
+                {
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                     Improvement.ImprovementType.DealerConnection, token: _objGenericToken)
+                                 .ConfigureAwait(false))
+                    {
+                        _setDealerConnectionMaps.Add(objImprovement.UniqueName);
+                    }
+                }
+
                 DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.TopRight,
-                    Format = _objCharacter.Settings.NuyenFormat + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: _objGenericToken).ConfigureAwait(false),
+                    Format = await _objCharacter.Settings.GetNuyenFormatAsync(_objGenericToken).ConfigureAwait(false) +
+                             await LanguageManager.GetStringAsync("String_NuyenSymbol", token: _objGenericToken)
+                                 .ConfigureAwait(false),
                     NullValue = null
                 };
                 dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
-                if (_objCharacter.Created)
+                if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
                 {
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
@@ -140,7 +145,8 @@ namespace Chummer
                     }, _objGenericToken).ConfigureAwait(false);
                 }
 
-                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
+                bool blnBlackMarketDiscount = await _objCharacter.GetBlackMarketDiscountAsync(_objGenericToken).ConfigureAwait(false);
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = blnBlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
 
                 // Populate the Vehicle Category list.
                 string strFilterPrefix = "vehicles/vehicle[(" + await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + ") and category = ";
@@ -683,14 +689,14 @@ namespace Chummer
                             await objVehicle.CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, token).ConfigureAwait(false);
                             string strID = objVehicle.SourceIDString;
                             string strVehicleName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            string strAccel = objVehicle.TotalAccel;
-                            string strArmor = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
-                            string strBody = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
-                            string strHandling = objVehicle.TotalHandling;
-                            string strPilot = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo);
-                            string strSensor = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo);
-                            string strSpeed = objVehicle.TotalSpeed;
-                            string strSeats = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
+                            string strAccel = await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false);
+                            string strArmor = (await objVehicle.GetTotalArmorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                            string strBody = (await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                            string strHandling = await objVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
+                            string strPilot = (await objVehicle.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                            string strSensor = (await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                            string strSpeed = await objVehicle.GetTotalSpeedAsync(token).ConfigureAwait(false);
+                            string strSeats = (await objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdGear))
                             {

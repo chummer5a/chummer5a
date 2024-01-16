@@ -1525,8 +1525,9 @@ namespace Chummer.Backend.Equipment
                                                 () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
                                                       ?? "0", token: token).ConfigureAwait(false);
                 await sbdCost.CheapReplaceAsync(strCost, "Pilot",
-                                                () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo)
-                                                      ?? "0", token: token).ConfigureAwait(false);
+                    async () => Parent != null
+                        ? (await Parent.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)
+                        : "0", token: token).ConfigureAwait(false);
 
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);

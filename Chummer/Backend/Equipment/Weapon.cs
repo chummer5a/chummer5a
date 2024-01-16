@@ -5498,13 +5498,13 @@ namespace Chummer.Backend.Equipment
                 sbdAccuracy.Append(strAccuracy);
                 await sbdAccuracy.CheapReplaceAsync(strAccuracy, "{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 await ProcessAttributesInXPathAsync(sbdAccuracy, strAccuracy, token: token).ConfigureAwait(false);
-                Func<string> funcPhysicalLimitString = () =>
-                    _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
+                Func<Task<string>> funcPhysicalLimitString = async () =>
+                    (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
                 if (ParentVehicle != null)
                 {
-                    funcPhysicalLimitString = () =>
+                    funcPhysicalLimitString = async () =>
                     {
-                        string strHandling = ParentVehicle.TotalHandling;
+                        string strHandling = await ParentVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
                         int intSlashIndex = strHandling.IndexOf('/');
                         if (intSlashIndex != -1)
                             strHandling = strHandling.Substring(0, intSlashIndex);
@@ -6604,11 +6604,12 @@ namespace Chummer.Backend.Equipment
             switch (FireMode)
             {
                 case FiringMode.DogBrain:
-                    {
-                        intDicePool = ParentVehicle.Pilot;
+                {
+                    string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        intDicePool = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
                         Gear objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(
                             x => x.Children,
-                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName), token).ConfigureAwait(false);
+                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == strDisplayName), token).ConfigureAwait(false);
 
                         intDicePool += objAutosoft?.Rating ?? -1;
 
@@ -6656,7 +6657,7 @@ namespace Chummer.Backend.Equipment
                         if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute)
                                       && _objMountedVehicle == null)
                         {
-                            Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID);
+                            Cyberware objAttributeSource = await _objCharacter.Cyberware.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
                             while (objAttributeSource != null
                                    && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token).ConfigureAwait(false) == 0)
                             {

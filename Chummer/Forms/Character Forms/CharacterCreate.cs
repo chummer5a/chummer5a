@@ -7359,9 +7359,10 @@ namespace Chummer
                             // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
                             if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
                             {
-                                if (objMod.Rating > objVehicle.MaxArmor)
+                                int intMaxArmor = await objVehicle.GetMaxArmorAsync(GenericToken).ConfigureAwait(false);
+                                if (objMod.Rating > intMaxArmor)
                                 {
-                                    objMod.Rating = objVehicle.MaxArmor;
+                                    objMod.Rating = intMaxArmor;
                                 }
                             }
                             else
@@ -7370,46 +7371,53 @@ namespace Chummer
                                 {
                                     case "Handling":
                                     {
-                                        if (objMod.Rating > objVehicle.MaxHandling)
+                                        int intMaxHandling = await objVehicle.GetMaxHandlingAsync(GenericToken).ConfigureAwait(false);
+                                        if (objMod.Rating > intMaxHandling)
                                         {
-                                            objMod.Rating = objVehicle.MaxHandling;
+                                            objMod.Rating = intMaxHandling;
                                         }
 
                                         break;
                                     }
                                     case "Speed":
                                     {
-                                        if (objMod.Rating > objVehicle.MaxSpeed)
+                                        int intMaxSpeed = await objVehicle.GetMaxSpeedAsync(GenericToken).ConfigureAwait(false);
+                                        if (objMod.Rating > intMaxSpeed)
                                         {
-                                            objMod.Rating = objVehicle.MaxSpeed;
+                                            objMod.Rating = intMaxSpeed;
                                         }
 
                                         break;
                                     }
                                     case "Acceleration":
                                     {
-                                        if (objMod.Rating > objVehicle.MaxAcceleration)
+                                        int intMaxAcceleration = await objVehicle.GetMaxAccelerationAsync(GenericToken).ConfigureAwait(false);
+                                        if (objMod.Rating > intMaxAcceleration)
                                         {
-                                            objMod.Rating = objVehicle.MaxAcceleration;
+                                            objMod.Rating = intMaxAcceleration;
                                         }
 
                                         break;
                                     }
                                     case "Sensor":
                                     {
-                                        if (objMod.Rating > objVehicle.MaxSensor)
+                                        int intMaxSensor = await objVehicle.GetMaxSensorAsync(GenericToken).ConfigureAwait(false);
+                                        if (objMod.Rating > intMaxSensor)
                                         {
-                                            objMod.Rating = objVehicle.MaxSensor;
+                                            objMod.Rating = intMaxSensor;
                                         }
 
                                         break;
                                     }
                                     default:
                                     {
-                                        if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal)
-                                            && objMod.Rating > objVehicle.MaxPilot)
+                                        if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal))
                                         {
-                                            objMod.Rating = objVehicle.MaxPilot;
+                                            int intMaxPilot = await objVehicle.GetMaxPilotAsync(GenericToken).ConfigureAwait(false);
+                                            if (objMod.Rating > intMaxPilot)
+                                            {
+                                                objMod.Rating = intMaxPilot;
+                                            }
                                         }
 
                                         break;
@@ -18630,32 +18638,40 @@ namespace Chummer
 
                             token.ThrowIfCancellationRequested();
                             // gpbVehiclesVehicle
-                            await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = objVehicle.TotalHandling, token)
+                            string strHandling = await objVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
+                            await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = strHandling, token)
                                                     .ConfigureAwait(false);
-                            await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = objVehicle.TotalAccel, token)
+                            string strAccel = await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false);
+                            await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = strAccel, token)
                                                  .ConfigureAwait(false);
-                            await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = objVehicle.TotalSpeed, token)
-                                                 .ConfigureAwait(false);
+                            string strSpeed = await objVehicle.GetTotalSpeedAsync(token).ConfigureAwait(false);
+                            await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = strSpeed, token)
+                                .ConfigureAwait(false);
+                            string strPilot =
+                                (await objVehicle.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehiclePilot
                                   .DoThreadSafeAsync(
-                                      x => x.Text = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo), token)
+                                      x => x.Text = strPilot, token)
                                   .ConfigureAwait(false);
+                            string strBody =
+                                (await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleBody
-                                  .DoThreadSafeAsync(
-                                      x => x.Text = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo), token)
-                                  .ConfigureAwait(false);
+                                .DoThreadSafeAsync(
+                                    x => x.Text = strBody, token)
+                                .ConfigureAwait(false);
+                            string strArmor = (await objVehicle.GetTotalArmorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             await lblVehicleArmor
-                                  .DoThreadSafeAsync(
-                                      x => x.Text = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo), token)
-                                  .ConfigureAwait(false);
-                            await lblVehicleSeats
-                                  .DoThreadSafeAsync(
-                                      x => x.Text = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo), token)
-                                  .ConfigureAwait(false);
-                            await lblVehicleSensor
-                                  .DoThreadSafeAsync(
-                                      x => x.Text = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo),
-                                      token).ConfigureAwait(false);
+                                .DoThreadSafeAsync(
+                                    x => x.Text = strArmor, token)
+                                .ConfigureAwait(false);
+                            string strSeats =
+                                (await objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(
+                                    GlobalSettings.CultureInfo);
+                            await lblVehicleSeats.DoThreadSafeAsync(x => x.Text = strSeats, token)
+                                .ConfigureAwait(false);
+                            string strSensor = (await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                            await lblVehicleSensor.DoThreadSafeAsync(x => x.Text = strSensor, token)
+                                .ConfigureAwait(false);
                             if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
                             {
                                 if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(token)
@@ -18703,45 +18719,51 @@ namespace Chummer
                                 {
                                     await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                    .ConfigureAwait(false);
+                                    string strPowertrain = await objVehicle.PowertrainModSlotsUsedAsync(token: token).ConfigureAwait(false);
                                     await lblVehiclePowertrain.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objVehicle.PowertrainModSlotsUsed();
+                                        x.Text = strPowertrain;
                                     }, token).ConfigureAwait(false);
                                     await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                  .ConfigureAwait(false);
+                                    string strCosmetic = await objVehicle.CosmeticModSlotsUsedAsync(token: token).ConfigureAwait(false);
                                     await lblVehicleCosmetic.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objVehicle.CosmeticModSlotsUsed();
+                                        x.Text = strCosmetic;
                                     }, token).ConfigureAwait(false);
                                     await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                         .ConfigureAwait(false);
+                                    string strElectromagnetic = await objVehicle.ElectromagneticModSlotsUsedAsync(token: token).ConfigureAwait(false);
                                     await lblVehicleElectromagnetic.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objVehicle.ElectromagneticModSlotsUsed();
+                                        x.Text = strElectromagnetic;
                                     }, token).ConfigureAwait(false);
                                     await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
+                                    string strBodyMods = await objVehicle.BodyModSlotsUsedAsync(token: token).ConfigureAwait(false);
                                     await lblVehicleBodymod.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objVehicle.BodyModSlotsUsed();
+                                        x.Text = strBodyMods;
                                     }, token).ConfigureAwait(false);
                                     await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                    .ConfigureAwait(false);
+                                    string strWeapon = await objVehicle.WeaponModSlotsUsedAsync(token: token).ConfigureAwait(false);
                                     await lblVehicleWeaponsmod.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objVehicle.WeaponModSlotsUsed();
+                                        x.Text = strWeapon;
                                     }, token).ConfigureAwait(false);
                                     await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                    .ConfigureAwait(false);
+                                    string strProtection = await objVehicle.ProtectionModSlotsUsedAsync(token: token).ConfigureAwait(false);
                                     await lblVehicleProtection.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text = objVehicle.ProtectionModSlotsUsed();
+                                        x.Text = strProtection;
                                     }, token).ConfigureAwait(false);
                                     await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                       .ConfigureAwait(false);
@@ -18940,11 +18962,11 @@ namespace Chummer
                             {
                                 if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    objMod.MaxRating = objMod.Parent.TotalSeats.ToString(GlobalSettings.CultureInfo);
+                                    objMod.MaxRating = (await objMod.Parent.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                                 }
                                 else if (objMod.MaxRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalSettings.CultureInfo);
+                                    objMod.MaxRating = (await objMod.Parent.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                                 }
 
                                 token.ThrowIfCancellationRequested();
@@ -18954,12 +18976,12 @@ namespace Chummer
                                 {
                                     await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                .ConfigureAwait(false);
+                                    if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
+                                        intMaxRating = Math.Min(intMaxRating, await objMod.Parent.GetMaxArmorAsync(token).ConfigureAwait(false));
                                     // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
                                     await nudVehicleRating.DoThreadSafeAsync(x =>
                                     {
-                                        x.Maximum = objMod.Name.StartsWith("Armor", StringComparison.Ordinal)
-                                            ? Math.Min(intMaxRating, objMod.Parent.MaxArmor)
-                                            : intMaxRating;
+                                        x.Maximum = intMaxRating;
                                         x.Minimum = 1;
                                         x.Visible = true;
                                         x.Value = objMod.Rating;
@@ -21239,12 +21261,12 @@ namespace Chummer
                     {
                         List<string> lstDronesIllegalDowngrades = new List<string>(1);
                         bool blnIllegalDowngrades = false;
-                        int intIllegalDowngrades = 0;
-                        await CharacterObject.Vehicles.ForEachAsync(async objVehicle =>
+                        int intIllegalDowngrades = await CharacterObject.Vehicles.SumAsync(async objVehicle =>
                         {
                             if (!objVehicle.IsDrone || !await CharacterObjectSettings.GetDroneModsAsync(token)
                                     .ConfigureAwait(false))
-                                return;
+                                return 0;
+                            int intReturn = 0;
                             foreach (string strModCategory in objVehicle.Mods
                                                                         .Where(objMod => !objMod.IncludedInVehicle
                                                                                    && objMod.Equipped
@@ -21252,25 +21274,30 @@ namespace Chummer
                                                                         .Select(x => x.Category))
                             {
                                 //Downgrades can't reduce a attribute to less than 1 (except Speed which can go to 0)
-                                if (strModCategory == "Handling"
-                                    && Convert.ToInt32(objVehicle.TotalHandling, GlobalSettings.InvariantCultureInfo)
-                                    < 1 ||
-                                    strModCategory == "Speed"
-                                    && Convert.ToInt32(objVehicle.TotalSpeed, GlobalSettings.InvariantCultureInfo) < 0
-                                    ||
-                                    strModCategory == "Acceleration"
-                                    && Convert.ToInt32(objVehicle.TotalAccel, GlobalSettings.InvariantCultureInfo) < 1
-                                    ||
-                                    strModCategory == "Body" && objVehicle.TotalBody < 1 ||
-                                    strModCategory == "Armor" && objVehicle.TotalArmor < 1 ||
-                                    strModCategory == "Sensor" && objVehicle.CalculatedSensor < 1)
+                                if (strModCategory == "Handling" &&
+                                    Convert.ToInt32(await objVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.InvariantCultureInfo) < 1
+                                    || strModCategory == "Speed" &&
+                                    Convert.ToInt32(await objVehicle.GetTotalSpeedAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.InvariantCultureInfo) < 0
+                                    || strModCategory == "Acceleration" &&
+                                    Convert.ToInt32(await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false),
+                                        GlobalSettings.InvariantCultureInfo) < 1
+                                    || strModCategory == "Body" &&
+                                    await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) < 1
+                                    || strModCategory == "Armor" &&
+                                    await objVehicle.GetTotalArmorAsync(token).ConfigureAwait(false) < 1
+                                    || strModCategory == "Sensor" &&
+                                    await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false) < 1)
                                 {
                                     blnIllegalDowngrades = true;
-                                    intIllegalDowngrades++;
+                                    intReturn++;
                                     lstDronesIllegalDowngrades.Add(objVehicle.Name);
                                     break;
                                 }
                             }
+
+                            return intReturn;
                         }, token).ConfigureAwait(false);
 
                         if (blnIllegalDowngrades)

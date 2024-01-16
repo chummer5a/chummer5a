@@ -1274,7 +1274,7 @@ namespace Chummer.Backend.Equipment
                                                      () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
                                                            ?? "0", token: token).ConfigureAwait(false);
                     await sbdAvail.CheapReplaceAsync(strAvail, "Pilot",
-                                                     () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                                                     async () => Parent != null ? (await Parent.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo) : "0", token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -1553,11 +1553,14 @@ namespace Chummer.Backend.Equipment
                                                     () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
                                                           ?? "0", token: token).ConfigureAwait(false);
                     await sbdCost.CheapReplaceAsync(strCostExpr, "Pilot",
-                                                    () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo)
-                                                          ?? "0", token: token).ConfigureAwait(false);
+                        async () => Parent != null
+                            ? (await Parent.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)
+                            : "0", token: token).ConfigureAwait(false);
                     await sbdCost.CheapReplaceAsync(strCostExpr, "Slots",
-                                                    () => WeaponMountParent?.CalculatedSlots.ToString(
-                                                        GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                        async () => WeaponMountParent != null
+                            ? (await WeaponMountParent.GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(
+                                GlobalSettings.InvariantCultureInfo)
+                            : "0", token: token).ConfigureAwait(false);
                     sbdCost.Replace("Slots", intSlots.ToString(GlobalSettings.InvariantCultureInfo));
 
                     (bool blnIsSuccess, object objProcess)
@@ -1742,11 +1745,15 @@ namespace Chummer.Backend.Equipment
                                                 () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
                                                       ?? "0", token: token).ConfigureAwait(false);
                 await sbdCost.CheapReplaceAsync(strCostExpr, "Pilot",
-                                                () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo)
-                                                      ?? "0", token: token).ConfigureAwait(false);
+                    async () => Parent != null
+                        ? (await Parent.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)
+                        : "0", token: token).ConfigureAwait(false);
                 await sbdCost.CheapReplaceAsync(strCostExpr, "Slots",
-                                                () => WeaponMountParent?.CalculatedSlots.ToString(
-                                                    GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                    async () => WeaponMountParent != null
+                        ? (await WeaponMountParent
+                            .GetCalculatedSlotsAsync(token).ConfigureAwait(false)).ToString(
+                            GlobalSettings.InvariantCultureInfo)
+                        : "0", token: token).ConfigureAwait(false);
 
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
@@ -1898,8 +1905,9 @@ namespace Chummer.Backend.Equipment
                                                   () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
                                                         ?? "0", token: token).ConfigureAwait(false);
                 await sbdReturn.CheapReplaceAsync(strSlotsExpression, "Pilot",
-                                                  () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo)
-                                                        ?? "0", token: token).ConfigureAwait(false);
+                    async () => Parent != null
+                        ? (await Parent.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo)
+                        : "0", token: token).ConfigureAwait(false);
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdReturn.ToString(), token).ConfigureAwait(false);
                 return blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
@@ -1979,10 +1987,10 @@ namespace Chummer.Backend.Equipment
                 if (!Name.ContainsAny(s_astrLimbStrings, StringComparison.OrdinalIgnoreCase))
                     return 0;
                 int intAttribute = 0;
-                int bod = 1;
+                int intBody = 1;
                 if (Parent != null)
                 {
-                    bod = Parent.TotalBody * 2;
+                    intBody = Parent.TotalBody * 2;
                     intAttribute = Math.Max(Parent.TotalBody, 0);
                 }
                 int intBonus = 0;
@@ -2001,7 +2009,7 @@ namespace Chummer.Backend.Equipment
                             break;
                     }
                 }
-                return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
+                return Math.Min(intAttribute + intBonus, Math.Max(intBody, 1));
             }
         }
 
@@ -2016,10 +2024,10 @@ namespace Chummer.Backend.Equipment
                     return 0;
 
                 int intAttribute = 0;
-                int pilot = 1;
+                int intBody = 1;
                 if (Parent != null)
                 {
-                    pilot = Parent.TotalBody * 2;
+                    intBody = Parent.TotalBody * 2;
                     intAttribute = Math.Max(Parent.Pilot, 0);
                 }
                 int intBonus = 0;
@@ -2039,7 +2047,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                return Math.Min(intAttribute + intBonus, Math.Max(pilot, 1));
+                return Math.Min(intAttribute + intBonus, Math.Max(intBody, 1));
             }
         }
 
@@ -2052,10 +2060,10 @@ namespace Chummer.Backend.Equipment
             if (!Name.ContainsAny(s_astrLimbStrings, StringComparison.OrdinalIgnoreCase))
                 return 0;
             int intAttribute = 0;
-            int bod = 1;
+            int intBody = 1;
             if (Parent != null)
             {
-                bod = await Parent.GetTotalBodyAsync(token).ConfigureAwait(false) * 2;
+                intBody = await Parent.GetTotalBodyAsync(token).ConfigureAwait(false) * 2;
                 intAttribute = Math.Max(await Parent.GetTotalBodyAsync(token).ConfigureAwait(false), 0);
             }
 
@@ -2076,7 +2084,7 @@ namespace Chummer.Backend.Equipment
                 }
             }, token: token).ConfigureAwait(false);
 
-            return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
+            return Math.Min(intAttribute + intBonus, Math.Max(intBody, 1));
         }
 
         /// <summary>
@@ -2089,10 +2097,10 @@ namespace Chummer.Backend.Equipment
                 return 0;
 
             int intAttribute = 0;
-            int pilot = 1;
+            int intBody = 1;
             if (Parent != null)
             {
-                pilot = await Parent.GetTotalBodyAsync(token).ConfigureAwait(false) * 2;
+                intBody = await Parent.GetTotalBodyAsync(token).ConfigureAwait(false) * 2;
                 intAttribute = Math.Max(await Parent.GetPilotAsync(token).ConfigureAwait(false), 0);
             }
 
@@ -2113,7 +2121,7 @@ namespace Chummer.Backend.Equipment
                 }
             }, token: token).ConfigureAwait(false);
 
-            return Math.Min(intAttribute + intBonus, Math.Max(pilot, 1));
+            return Math.Min(intAttribute + intBonus, Math.Max(intBody, 1));
         }
 
         /// <summary>
