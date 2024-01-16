@@ -3315,7 +3315,7 @@ namespace Chummer
                     strSelectedMetatypeCategory == "Shapeshifter" || strMetavariantId == Guid.Empty.ToString()
                         ? objXmlMetatype
                         : objXmlMetavariant ?? objXmlMetatype;
-                AttributeSection.Create(charNode, intForce, token: token);
+                await AttributeSection.CreateAsync(charNode, intForce, token: token).ConfigureAwait(false);
                 MetatypeGuid = new Guid(strMetatypeId);
                 Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
                 MetatypeCategory = strSelectedMetatypeCategory;
