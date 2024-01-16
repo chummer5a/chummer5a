@@ -166,6 +166,15 @@ namespace Chummer.Backend.Attributes
                     _eMetatypeCategory =
                         ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
                 }
+
+                if (!_objCharacter.Created)
+                {
+                    while (KarmaMaximum < 0 && Base > 0)
+                        --Base;
+                    // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                    if (Karma > KarmaMaximum)
+                        Karma = KarmaMaximum;
+                }
             }
         }
 

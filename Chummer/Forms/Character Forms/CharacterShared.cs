@@ -548,7 +548,7 @@ namespace Chummer
                                 for (int i = 0; i < intAttributeCount; ++i)
                                 {
                                     AttributeControl objControl =
-                                        new AttributeControl(lstAttributes[i]);
+                                        new AttributeControl(lstAttributes[i], GenericToken);
                                     objControl.MinimumSize
                                         = new Size(x.ClientSize.Width, objControl.MinimumSize.Height);
                                     objControl.MaximumSize
@@ -562,7 +562,7 @@ namespace Chummer
                                     lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
                                 foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                     objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth,
-                                        intLimitsWidth);
+                                        intLimitsWidth, token);
                                 x.Controls.AddRange(aobjControls);
                             }
                             finally
@@ -586,7 +586,7 @@ namespace Chummer
                                 {
                                     AttributeControl objControl =
                                         new AttributeControl(
-                                            e.NewItems[i] as CharacterAttrib);
+                                            e.NewItems[i] as CharacterAttrib, GenericToken);
                                     objControl.MinimumSize = new Size(x.ClientSize.Width,
                                                                       objControl.MinimumSize.Height);
                                     objControl.MaximumSize = new Size(x.ClientSize.Width,
@@ -618,13 +618,13 @@ namespace Chummer
                                     x.Controls.AddRange(aobjControls);
                                     foreach (AttributeControl objControl in x.Controls)
                                         objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth);
+                                                                intLimitsWidth, token);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                         objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth);
+                                                                intLimitsWidth, token);
                                     x.Controls.AddRange(aobjControls);
                                 }
                             }, token).ConfigureAwait(false);
@@ -710,7 +710,7 @@ namespace Chummer
                                 {
                                     AttributeControl objControl =
                                         new AttributeControl(
-                                            e.NewItems[i] as CharacterAttrib);
+                                            e.NewItems[i] as CharacterAttrib, GenericToken);
                                     objControl.MinimumSize = new Size(x.ClientSize.Width,
                                                                       objControl.MinimumSize.Height);
                                     objControl.MaximumSize = new Size(x.ClientSize.Width,
@@ -742,13 +742,13 @@ namespace Chummer
                                     x.Controls.AddRange(aobjControls);
                                     foreach (AttributeControl objControl in x.Controls)
                                         objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth);
+                                                                intLimitsWidth, token);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                         objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth);
+                                                                intLimitsWidth, token);
                                     x.Controls.AddRange(aobjControls);
                                 }
                             }, token).ConfigureAwait(false);

@@ -618,7 +618,7 @@ namespace Chummer.Backend.Attributes
                             {
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         break;
                 }
@@ -718,7 +718,7 @@ namespace Chummer.Backend.Attributes
                             {
                                 objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
 
                         break;
                 }
