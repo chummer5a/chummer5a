@@ -77,33 +77,50 @@ namespace Chummer
             //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
-            if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
-                && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.CyberadeptDaemon, token: token).Count > 0)
+            if (intGrade > 0 && blnTechnomancer)
             {
-                decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
-                int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
-                    Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
-                        ? Math.Ceiling(_objCharacter.CyberwareEssence)
-                        : Math.Floor(_objCharacter.CyberwareEssence)));
-                // Cannot increase RES to be more than what it would be without any Essence loss.
-                intResonanceRecovered = _objCharacter.Settings.ESSLossReducesMaximumOnly
-                    ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
-                    // +1 compared to normal because this Grade's effect has not been processed yet.
-                    : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
-                try
+                token.ThrowIfCancellationRequested();
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock(token))
                 {
-                    ImprovementManager.CreateImprovement(_objCharacter, "RESBase",
-                                                         Improvement.ImprovementSource.CyberadeptDaemon,
-                                                         InternalId, Improvement.ImprovementType.Attribute,
-                                                         string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token);
-                }
-                catch
-                {
-                    ImprovementManager.Rollback(_objCharacter, CancellationToken.None);
-                    throw;
-                }
+                    token.ThrowIfCancellationRequested();
+                    if (_objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
+                                                 && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                                     Improvement.ImprovementType.CyberadeptDaemon, token: token).Count >
+                                                 0)
+                    {
+                        decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
+                        int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
+                            Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
+                                ? Math.Ceiling(_objCharacter.CyberwareEssence)
+                                : Math.Floor(_objCharacter.CyberwareEssence)));
+                        // Cannot increase RES to be more than what it would be without any Essence loss.
+                        intResonanceRecovered = _objCharacter.Settings.ESSLossReducesMaximumOnly
+                            ? Math.Min(intResonanceRecovered,
+                                _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
+                            // +1 compared to normal because this Grade's effect has not been processed yet.
+                            : Math.Min(intResonanceRecovered,
+                                _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
+                        token.ThrowIfCancellationRequested();
+                        using (_objCharacter.LockObject.EnterWriteLock(token))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            try
+                            {
+                                ImprovementManager.CreateImprovement(_objCharacter, "RESBase",
+                                    Improvement.ImprovementSource.CyberadeptDaemon,
+                                    InternalId, Improvement.ImprovementType.Attribute,
+                                    string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token);
+                            }
+                            catch
+                            {
+                                ImprovementManager.Rollback(_objCharacter, CancellationToken.None);
+                                throw;
+                            }
 
-                ImprovementManager.Commit(_objCharacter);
+                            ImprovementManager.Commit(_objCharacter);
+                        }
+                    }
+                }
             }
         }
 
@@ -159,20 +176,32 @@ namespace Chummer
                             : Math.Min(intResonanceRecovered,
                                 await objRes.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false) - intGrade + 1 -
                                 await objRes.GetValueAsync(token).ConfigureAwait(false));
+                        token.ThrowIfCancellationRequested();
+                        IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
-                            await ImprovementManager.CreateImprovementAsync(_objCharacter, "RESBase",
-                                Improvement.ImprovementSource.CyberadeptDaemon,
-                                InternalId, Improvement.ImprovementType.Attribute,
-                                string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None).ConfigureAwait(false);
-                            throw;
-                        }
+                            token.ThrowIfCancellationRequested();
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(_objCharacter, "RESBase",
+                                        Improvement.ImprovementSource.CyberadeptDaemon,
+                                        InternalId, Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token)
+                                    .ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
 
-                        await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                            await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
                 finally
@@ -484,46 +513,49 @@ namespace Chummer
                 else
                     return false;
 
-                _objCharacter.InitiationGrades.Remove(this);
-                // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-                // Arts
-                for (int i = _objCharacter.Arts.Count - 1; i > 0; --i)
+                using (_objCharacter.LockObject.EnterWriteLock())
                 {
-                    Art objLoop = _objCharacter.Arts[i];
-                    if (objLoop.Grade == Grade)
-                        objLoop.Remove(false);
-                }
+                    _objCharacter.InitiationGrades.Remove(this);
+                    // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+                    // Arts
+                    for (int i = _objCharacter.Arts.Count - 1; i > 0; --i)
+                    {
+                        Art objLoop = _objCharacter.Arts[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
 
-                // Metamagics
-                for (int i = _objCharacter.Metamagics.Count - 1; i > 0; --i)
-                {
-                    Metamagic objLoop = _objCharacter.Metamagics[i];
-                    if (objLoop.Grade == Grade)
-                        objLoop.Remove(false);
-                }
+                    // Metamagics
+                    for (int i = _objCharacter.Metamagics.Count - 1; i > 0; --i)
+                    {
+                        Metamagic objLoop = _objCharacter.Metamagics[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
 
-                // Enhancements
-                for (int i = _objCharacter.Enhancements.Count - 1; i > 0; --i)
-                {
-                    Enhancement objLoop = _objCharacter.Enhancements[i];
-                    if (objLoop.Grade == Grade)
-                        objLoop.Remove(false);
-                }
+                    // Enhancements
+                    for (int i = _objCharacter.Enhancements.Count - 1; i > 0; --i)
+                    {
+                        Enhancement objLoop = _objCharacter.Enhancements[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
 
-                // Spells
-                for (int i = _objCharacter.Spells.Count - 1; i > 0; --i)
-                {
-                    Spell objLoop = _objCharacter.Spells[i];
-                    if (objLoop.Grade == Grade)
-                        objLoop.Remove(false);
-                }
+                    // Spells
+                    for (int i = _objCharacter.Spells.Count - 1; i > 0; --i)
+                    {
+                        Spell objLoop = _objCharacter.Spells[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
 
-                // Complex Forms
-                for (int i = _objCharacter.ComplexForms.Count - 1; i > 0; --i)
-                {
-                    ComplexForm objLoop = _objCharacter.ComplexForms[i];
-                    if (objLoop.Grade == Grade)
-                        objLoop.Remove(false);
+                    // Complex Forms
+                    for (int i = _objCharacter.ComplexForms.Count - 1; i > 0; --i)
+                    {
+                        ComplexForm objLoop = _objCharacter.ComplexForms[i];
+                        if (objLoop.Grade == Grade)
+                            objLoop.Remove(false);
+                    }
                 }
             }
 
@@ -593,52 +625,65 @@ namespace Chummer
                 else
                     return false;
 
-                await _objCharacter.InitiationGrades.RemoveAsync(this, token).ConfigureAwait(false);
-                // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-                // Arts
-                for (int i = await _objCharacter.Arts.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    Art objLoop = await _objCharacter.Arts.GetValueAtAsync(i, token).ConfigureAwait(false);
-                    if (objLoop.Grade == Grade)
-                        await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
-                }
+                    token.ThrowIfCancellationRequested();
+                    await _objCharacter.InitiationGrades.RemoveAsync(this, token).ConfigureAwait(false);
+                    // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+                    // Arts
+                    for (int i = await _objCharacter.Arts.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+                    {
+                        Art objLoop = await _objCharacter.Arts.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-                // Metamagics
-                for (int i = await _objCharacter.Metamagics.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
-                {
-                    Metamagic objLoop = await _objCharacter.Metamagics.GetValueAtAsync(i, token).ConfigureAwait(false);
-                    if (objLoop.Grade == Grade)
-                        await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
-                }
+                    // Metamagics
+                    for (int i = await _objCharacter.Metamagics.GetCountAsync(token).ConfigureAwait(false) - 1;
+                         i > 0;
+                         --i)
+                    {
+                        Metamagic objLoop =
+                            await _objCharacter.Metamagics.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-                // Enhancements
-                for (int i = await _objCharacter.Enhancements.GetCountAsync(token).ConfigureAwait(false) - 1;
-                     i > 0;
-                     --i)
-                {
-                    Enhancement objLoop =
-                        await _objCharacter.Enhancements.GetValueAtAsync(i, token).ConfigureAwait(false);
-                    if (objLoop.Grade == Grade)
-                        await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
-                }
+                    // Enhancements
+                    for (int i = await _objCharacter.Enhancements.GetCountAsync(token).ConfigureAwait(false) - 1;
+                         i > 0;
+                         --i)
+                    {
+                        Enhancement objLoop =
+                            await _objCharacter.Enhancements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-                // Spells
-                for (int i = await _objCharacter.Spells.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
-                {
-                    Spell objLoop = await _objCharacter.Spells.GetValueAtAsync(i, token).ConfigureAwait(false);
-                    if (objLoop.Grade == Grade)
-                        await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
-                }
+                    // Spells
+                    for (int i = await _objCharacter.Spells.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+                    {
+                        Spell objLoop = await _objCharacter.Spells.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
 
-                // Complex Forms
-                for (int i = await _objCharacter.ComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1;
-                     i > 0;
-                     --i)
+                    // Complex Forms
+                    for (int i = await _objCharacter.ComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1;
+                         i > 0;
+                         --i)
+                    {
+                        ComplexForm objLoop =
+                            await _objCharacter.ComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objLoop.Grade == Grade)
+                            await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
+                }
+                finally
                 {
-                    ComplexForm objLoop =
-                        await _objCharacter.ComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                    if (objLoop.Grade == Grade)
-                        await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally

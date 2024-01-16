@@ -808,12 +808,12 @@ namespace Chummer
                         // Override the defaults for the setting.
                         objCharacter.IgnoreRules = true;
                         objCharacter.IsCritter = true;
-                        objCharacter.Alias = strCritterName;
+                        await objCharacter.SetAliasAsync(strCritterName, token).ConfigureAwait(false);
                         await objCharacter.SetCreatedAsync(true, token: token).ConfigureAwait(false);
                         string strCritterCharacterName = await txtCritterName
                             .DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strCritterCharacterName))
-                            objCharacter.Name = strCritterCharacterName;
+                            await objCharacter.SetNameAsync(strCritterCharacterName, token).ConfigureAwait(false);
 
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                             .ConfigureAwait(false);
@@ -855,7 +855,7 @@ namespace Chummer
                         if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                             && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                             strFileName += ".chum5";
-                        objCharacter.FileName = strFileName;
+                        await objCharacter.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
 
                         await objCharacter.CreateAsync(objXmlMetatype["category"]?.InnerText,
                             objXmlMetatype["id"]?.InnerText,

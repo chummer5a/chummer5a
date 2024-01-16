@@ -254,6 +254,63 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async Task ModifyBaseAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await GetBaseUnbrokenAsync(token).ConfigureAwait(false))
+                    return;
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await GetBaseUnbrokenAsync(token).ConfigureAwait(false))
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    //Calculate how far above maximum we are.
+                    int intOverMax = value + await GetKarmaPointsAsync(token).ConfigureAwait(false) +
+                                     await GetFreeLevelsAsync(token).ConfigureAwait(false) -
+                                     await GetRatingMaximumAsync(token).ConfigureAwait(false);
+
+                    //reduce value by max or 0
+                    value -= Math.Max(0, intOverMax);
+
+                    //and save back, cannot go under 0
+                    int intValue = Math.Max(0, value - await GetFreeBaseAsync(token).ConfigureAwait(false));
+                    if (Interlocked.Add(ref _intSkillFromSp, intValue) != intValue)
+                        await OnPropertyChangedAsync(nameof(BasePoints), token).ConfigureAwait(false);
+
+                    CharacterSettings objSettings =
+                        await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                        && ((await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                             && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                            || !await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false)))
+                    {
+                        foreach (Skill skill in SkillList)
+                        {
+                            await skill.SetBasePointsAsync(0, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public int Karma
         {
             get
@@ -355,6 +412,74 @@ namespace Chummer.Backend.Skills
                     //and save back, cannot go under 0
                     int intValue = Math.Max(0, value - await GetFreeLevelsAsync(token).ConfigureAwait(false));
                     if (Interlocked.Exchange(ref _intSkillFromKarma, intValue) != intValue)
+                        await OnPropertyChangedAsync(nameof(KarmaPoints), token).ConfigureAwait(false);
+
+                    int intGroupKarma = await GetKarmaAsync(token).ConfigureAwait(false);
+                    if (intGroupKarma > 0
+                        && await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                            .GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                        && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                        && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                    {
+                        foreach (Skill skill in SkillList)
+                        {
+                            await skill.SetKarmaPointsAsync(0, token).ConfigureAwait(false);
+                            ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
+                                = await skill.GetSpecializationsAsync(token).ConfigureAwait(false);
+                            foreach (SkillSpecialization objSpecialization in await lstSpecs.ToListAsync(
+                                             async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token)
+                                         .ConfigureAwait(false))
+                            {
+                                await lstSpecs.RemoveAsync(objSpecialization, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Amount of skill points bought with karma and bonuses to the skills rating
+        /// </summary>
+        public async Task ModifyKarmaAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false))
+                    return;
+            }
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await GetKarmaUnbrokenAsync(token).ConfigureAwait(false))
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    //Calculate how far above maximum we are.
+                    int intOverMax = value + await GetBasePointsAsync(token).ConfigureAwait(false) +
+                                     await GetFreeBaseAsync(token).ConfigureAwait(false) -
+                                     await GetRatingMaximumAsync(token).ConfigureAwait(false);
+
+                    //reduce value by max or 0
+                    value -= Math.Max(0, intOverMax);
+
+                    //and save back, cannot go under 0
+                    int intValue = Math.Max(0, value - await GetFreeLevelsAsync(token).ConfigureAwait(false));
+                    if (Interlocked.Add(ref _intSkillFromKarma, intValue) != intValue)
                         await OnPropertyChangedAsync(nameof(KarmaPoints), token).ConfigureAwait(false);
 
                     int intGroupKarma = await GetKarmaAsync(token).ConfigureAwait(false);

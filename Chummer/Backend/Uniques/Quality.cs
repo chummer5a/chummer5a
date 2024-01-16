@@ -2346,7 +2346,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         bool blnAddItem = true;
                         intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels)
-                                       * _objCharacter.Settings.KarmaQuality;
+                                       * await _objCharacter.Settings.GetKarmaQualityAsync(token).ConfigureAwait(false);
 
                         string strOldQualityName = await objOldQuality.GetCurrentDisplayNameShortAsync(token)
                             .ConfigureAwait(false);

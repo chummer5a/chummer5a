@@ -1344,7 +1344,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                if (await _objCharacter.GetEffectiveBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                 {
                     int intSumToTen = await SumToTen(false, token).ConfigureAwait(false);
                     if (intSumToTen != _objCharacter.Settings.SumtoTen)
@@ -1534,11 +1534,12 @@ namespace Chummer
                             new List<Quality>(await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false));
                         await _objCharacter.Qualities.ForEachAsync(async objQuality =>
                         {
-                            if (objQuality.OriginSource == QualitySource.Improvement
-                                || objQuality.OriginSource == QualitySource.Heritage
-                                || objQuality.OriginSource == QualitySource.Metatype
-                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                            QualitySource eSource = await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false);
+                            if (eSource == QualitySource.Improvement
+                                || eSource == QualitySource.Heritage
+                                || eSource == QualitySource.Metatype
+                                || eSource == QualitySource.MetatypeRemovable
+                                || eSource == QualitySource.MetatypeRemovedAtChargen)
                                 return;
                             XPathNavigator xmlBaseNode
                                 = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
@@ -1582,7 +1583,7 @@ namespace Chummer
                             // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
                             if (objLoopNode != null && !await objLoopNode
                                     .RequirementsMetAsync(
-                                        _objCharacter, strIgnoreQuality: objQuality.Name,
+                                        _objCharacter, strIgnoreQuality: await objQuality.GetNameAsync(token).ConfigureAwait(false),
                                         token: token).ConfigureAwait(false))
                                 await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         }
@@ -1774,9 +1775,12 @@ namespace Chummer
                                             // selection's requirements checking to work properly) to undo it at this point.
                                             // The safe thing would probably be to operate on a duplicate of the character and copy over all data after we know it's final, but that needs
                                             // a lot of backend stuff.
-                                            objExistingQuality = lstOldPriorityQualities.Find(
-                                                x => x.SourceID == objQuality.SourceID
-                                                     && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
+                                            QualityType eQualityType = await objQuality.GetTypeAsync(token).ConfigureAwait(false);
+                                            objExistingQuality = await lstOldPriorityQualities.FirstOrDefaultAsync(
+                                                async x => x.SourceID == objQuality.SourceID
+                                                           && x.Extra == objQuality.Extra &&
+                                                           await x.GetTypeAsync(token).ConfigureAwait(false) ==
+                                                           eQualityType, token: token).ConfigureAwait(false);
                                             if (objExistingQuality == null)
                                                 await _objCharacter.Qualities.AddAsync(objQuality, token: token)
                                                     .ConfigureAwait(false);
@@ -2010,15 +2014,15 @@ namespace Chummer
 
                     // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
                     bool blnDoSwitch = false;
-                    await _objCharacter.AttributeSection.AttributeList.ForEachWithBreakAsync(objAttribute =>
+                    await _objCharacter.AttributeSection.AttributeList.ForEachWithBreakAsync(async objAttribute =>
                     {
-                        if (objAttribute.Base > 0)
+                        if (await objAttribute.GetBaseAsync(token).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
                             return false;
                         }
 
-                        if (objAttribute.Karma > 0)
+                        if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
                         return true;
                     }, token).ConfigureAwait(false);
@@ -2029,10 +2033,11 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.TotalAttributes)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            await _objCharacter.AttributeSection.AttributeList.ForEachAsync(objAttribute =>
+                            await _objCharacter.AttributeSection.AttributeList.ForEachAsync(async objAttribute =>
                             {
-                                if (objAttribute.Karma > 0 && (objAttributeToShift == null
-                                                               || objAttributeToShift.Value < objAttribute.Value))
+                                if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0
+                                    && (objAttributeToShift == null
+                                        || await objAttributeToShift.GetValueAsync(token).ConfigureAwait(false) < await objAttribute.GetValueAsync(token).ConfigureAwait(false)))
                                 {
                                     objAttributeToShift = objAttribute;
                                 }
@@ -2040,24 +2045,24 @@ namespace Chummer
 
                             if (objAttributeToShift == null)
                                 break;
-                            int intKarma = Math.Min(objAttributeToShift.Karma,
+                            int intKarma = Math.Min(await objAttributeToShift.GetKarmaAsync(token).ConfigureAwait(false),
                                 _objCharacter.TotalAttributes - intPointsSpent);
-                            objAttributeToShift.Karma -= intKarma;
-                            objAttributeToShift.Base += intKarma;
+                            await objAttributeToShift.ModifyKarmaAsync(-intKarma, token).ConfigureAwait(false);
+                            await objAttributeToShift.ModifyBaseAsync(intKarma, token).ConfigureAwait(false);
                             intPointsSpent += intKarma;
                         }
                     }
 
                     blnDoSwitch = false;
-                    await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithBreakAsync(objAttribute =>
+                    await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithBreakAsync(async objAttribute =>
                     {
-                        if (objAttribute.Base > 0)
+                        if (await objAttribute.GetBaseAsync(token).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
                             return false;
                         }
 
-                        if (objAttribute.Karma > 0)
+                        if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
                         return true;
                     }, token).ConfigureAwait(false);
@@ -2068,10 +2073,11 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.TotalSpecial)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            await _objCharacter.AttributeSection.SpecialAttributeList.ForEachAsync(objAttribute =>
+                            await _objCharacter.AttributeSection.SpecialAttributeList.ForEachAsync(async objAttribute =>
                             {
-                                if (objAttribute.Karma > 0 && (objAttributeToShift == null
-                                                               || objAttributeToShift.Value < objAttribute.Value))
+                                if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0
+                                    && (objAttributeToShift == null
+                                        || await objAttributeToShift.GetValueAsync(token).ConfigureAwait(false) < await objAttribute.GetValueAsync(token).ConfigureAwait(false)))
                                 {
                                     objAttributeToShift = objAttribute;
                                 }
@@ -2079,24 +2085,24 @@ namespace Chummer
 
                             if (objAttributeToShift == null)
                                 break;
-                            int intKarma = Math.Min(objAttributeToShift.Karma,
-                                _objCharacter.TotalSpecial - intPointsSpent);
-                            objAttributeToShift.Karma -= intKarma;
-                            objAttributeToShift.Base += intKarma;
+                            int intKarma = Math.Min(await objAttributeToShift.GetKarmaAsync(token).ConfigureAwait(false),
+                                _objCharacter.TotalAttributes - intPointsSpent);
+                            await objAttributeToShift.ModifyKarmaAsync(-intKarma, token).ConfigureAwait(false);
+                            await objAttributeToShift.ModifyBaseAsync(intKarma, token).ConfigureAwait(false);
                             intPointsSpent += intKarma;
                         }
                     }
 
                     blnDoSwitch = false;
-                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(objGroup =>
+                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(async objGroup =>
                     {
-                        if (objGroup.Base > 0)
+                        if (await objGroup.GetBaseAsync(token).ConfigureAwait(false) > 0)
                         {
                             blnDoSwitch = false;
                             return false;
                         }
 
-                        if (objGroup.Karma > 0)
+                        if (await objGroup.GetKarmaAsync(token).ConfigureAwait(false) > 0)
                             blnDoSwitch = true;
                         return true;
                     }, token).ConfigureAwait(false);
@@ -2107,10 +2113,10 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
                         {
                             SkillGroup objGroupToShift = null;
-                            await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objGroup =>
+                            await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objGroup =>
                             {
-                                if (objGroup.Karma > 0
-                                    && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
+                                if (await objGroup.GetKarmaAsync(token).ConfigureAwait(false) > 0
+                                    && (objGroupToShift == null || await objGroupToShift.GetRatingAsync(token).ConfigureAwait(false) < await objGroup.GetRatingAsync(token).ConfigureAwait(false)))
                                 {
                                     objGroupToShift = objGroup;
                                 }
@@ -2118,11 +2124,11 @@ namespace Chummer
 
                             if (objGroupToShift == null)
                                 break;
-                            int intKarma = Math.Min(objGroupToShift.Karma,
+                            int intKarma = Math.Min(await objGroupToShift.GetKarmaAsync(token).ConfigureAwait(false),
                                 _objCharacter.SkillsSection.SkillGroupPointsMaximum
                                 - intPointsSpent);
-                            objGroupToShift.Karma -= intKarma;
-                            objGroupToShift.Base += intKarma;
+                            await objGroupToShift.ModifyKarmaAsync(-intKarma, token).ConfigureAwait(false);
+                            await objGroupToShift.ModifyBaseAsync(intKarma, token).ConfigureAwait(false);
                             intPointsSpent += intKarma;
                         }
                     }

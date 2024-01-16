@@ -444,7 +444,7 @@ namespace Chummer
                         if (i >= await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false))
                             continue;
                         Quality objQuality = await _objCharacter.Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objQuality.OriginSource == QualitySource.Heritage)
+                        if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Heritage)
                             await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                     }
 
