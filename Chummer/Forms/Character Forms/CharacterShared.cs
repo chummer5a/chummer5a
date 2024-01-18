@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -10064,120 +10065,78 @@ namespace Chummer
             }
         }
 
-        public async Task RequestCharacterUpdate(CancellationToken token = default)
+        private System.Timers.Timer _tmrCharacterUpdateRequestTimer = new System.Timers.Timer();
+
+        public Task RequestCharacterUpdate(CancellationToken token = default)
         {
+            return RequestCharacterUpdate(false, token);
+        }
+
+        public Task RequestCharacterUpdate(bool blnAlsoProcessUpdate, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (GenericToken.IsCancellationRequested)
+                return Task.FromCanceled(GenericToken);
             if (IsLoading)
-                return;
-            token.ThrowIfCancellationRequested();
-            GenericToken.ThrowIfCancellationRequested();
-            CancellationTokenSource objSource = null;
-            if (token == CancellationToken.None)
+                return Task.CompletedTask;
+            // This sort of roundabout method using a timer is necessary to prevent hammered requests from overloading the program
+            // What this approach does is makes sure that an update request is only followed through with if no new requests come in for a short delay
+            System.Timers.Timer tmrCurrentRequestTimer = _tmrCharacterUpdateRequestTimer;
+            if (tmrCurrentRequestTimer.Enabled)
             {
-                token = GenericToken;
-            }
-            else if (token != GenericToken)
-            {
-                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
-                token = objSource.Token;
+                tmrCurrentRequestTimer.Stop();
+                tmrCurrentRequestTimer.Start();
+                return Task.CompletedTask;
             }
 
-            try
+            // Obtuse stuff around creating a new request and interlocking with the current one is to keep things thread-safe if multiple requests just happen to be timed poorly
+            System.Timers.Timer tmrNewRequestTimer = new System.Timers.Timer(500)
             {
-                // Local for thread safety
-                DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
-                if (objCharacterUpdateStartingSemaphore == null || !await objCharacterUpdateStartingSemaphore.WaitAsync(0, token).ConfigureAwait(false))
-                    return; // Update request already starting and awaiting locks
+                AutoReset = false
+            };
+            TaskCompletionSource<bool> objReturnSource = new TaskCompletionSource<bool>();
+            tmrNewRequestTimer.Elapsed += OnTmrNewRequestTimerOnElapsed;
+            System.Timers.Timer tmrOldRequestTimer = Interlocked.CompareExchange(ref _tmrCharacterUpdateRequestTimer, tmrNewRequestTimer, tmrCurrentRequestTimer);
+            if (tmrOldRequestTimer != tmrCurrentRequestTimer)
+            {
+                tmrNewRequestTimer.Dispose();
+                if (tmrOldRequestTimer.Enabled)
+                {
+                    tmrOldRequestTimer.Stop();
+                    tmrOldRequestTimer.Start();
+                }
+                return Task.CompletedTask;
+            }
+
+            tmrOldRequestTimer.Dispose();
+            tmrNewRequestTimer.Start();
+            return objReturnSource.Task;
+
+            async void OnTmrNewRequestTimerOnElapsed(object sender, ElapsedEventArgs e)
+            {
                 try
                 {
-                    await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
+                    await ActuallyRequestCharacterUpdate(true, token).ConfigureAwait(false);
+                    objReturnSource.TrySetResult(true);
                 }
-                catch
+                catch (OperationCanceledException)
                 {
-                    CharacterUpdateStartingSemaphore?.Release();
-                    throw;
+                    objReturnSource.TrySetCanceled(token);
                 }
-                Task tskTemp = Task.CompletedTask;
-                CancellationTokenSource objNewSource = new CancellationTokenSource();
-                CancellationToken objNewToken = objNewSource.Token;
-                try
+                catch (Exception exception)
                 {
-                    CancellationTokenSource objOldSource
-                        = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
-                    if (objOldSource != null)
-                    {
-                        if (!objOldSource.IsCancellationRequested)
-                        {
-                            try
-                            {
-                                objOldSource.Cancel(false);
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                //swallow this
-                            }
-                        }
-
-                        objOldSource.Dispose();
-                    }
-
-                    token.ThrowIfCancellationRequested();
-                    Task tskOld = Interlocked.Exchange(ref _tskUpdateCharacterInfo, tskTemp);
-                    if (tskOld?.IsCompleted == false)
-                    {
-                        try
-                        {
-                            await tskOld.ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            //swallow this
-                        }
-                    }
+                    objReturnSource.TrySetException(exception);
                 }
-                catch
-                {
-                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource)?.Dispose();
-                    CharacterUpdateStartingSemaphore?.Release();
-                    throw;
-                }
-
-                Task tskNew =
-                    Utils.RunInEmptyExecutionContext(
-                        () => Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken));
-
-                if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
-                {
-                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
-                    try
-                    {
-                        objNewSource.Cancel(false);
-                    }
-                    finally
-                    {
-                        objNewSource.Dispose();
-                    }
-                    try
-                    {
-                        await tskNew.ConfigureAwait(false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        //swallow this
-                    }
-                }
-            }
-            finally
-            {
-                objSource?.Dispose();
             }
         }
 
-        public async Task RequestAndProcessCharacterUpdate(CancellationToken token = default)
+        private async Task ActuallyRequestCharacterUpdate(bool blnAlsoProcessUpdate, CancellationToken token = default)
         {
-            if (IsLoading)
-                return;
             token.ThrowIfCancellationRequested();
             GenericToken.ThrowIfCancellationRequested();
+            if (IsLoading)
+                return;
             CancellationTokenSource objSource = null;
             if (token == CancellationToken.None)
             {
@@ -10195,15 +10154,6 @@ namespace Chummer
                 DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
                 if (objCharacterUpdateStartingSemaphore == null || !await objCharacterUpdateStartingSemaphore.WaitAsync(0, token).ConfigureAwait(false))
                     return; // Update request already starting and awaiting locks
-                try
-                {
-                    await Utils.SafeSleepAsync(500, token).ConfigureAwait(false); // Small delay to allow other locks through in case we trigger our request too early
-                }
-                catch
-                {
-                    CharacterUpdateStartingSemaphore?.Release();
-                    throw;
-                }
                 Task tskTemp = Task.CompletedTask;
                 CancellationTokenSource objNewSource = new CancellationTokenSource();
                 CancellationToken objNewToken = objNewSource.Token;
@@ -10280,13 +10230,16 @@ namespace Chummer
                 objSource?.Dispose();
             }
 
-            try
+            if (blnAlsoProcessUpdate)
             {
-                await tskNew.ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
+                try
+                {
+                    await tskNew.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
@@ -10596,6 +10549,7 @@ namespace Chummer
                     }
                 }
                 dlgSaveFile?.Dispose();
+                Interlocked.Exchange(ref _tmrCharacterUpdateRequestTimer, null)?.Dispose();
                 Interlocked.Exchange(ref _objCharacterUpdateStartingSemaphore, null)?.Dispose();
                 Interlocked.Exchange(ref _objAutosaveSemaphore, null)?.Dispose();
                 if (_stpAutosaveStopwatch != null)

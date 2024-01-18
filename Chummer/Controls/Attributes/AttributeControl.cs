@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Properties;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer.UI.Attributes
 {
@@ -41,6 +42,8 @@ namespace Chummer.UI.Attributes
 
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudBase;
+        private readonly Timer _tmrKarmaChangeTimer;
+        private readonly Timer _tmrBaseChangeTimer;
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdBurnEdge;
@@ -120,6 +123,8 @@ namespace Chummer.UI.Attributes
                     };
                     nudKarma.BeforeValueIncrement += nudKarma_BeforeValueIncrement;
                     nudKarma.ValueChanged += nudKarma_ValueChanged;
+                    _tmrKarmaChangeTimer = new Timer { Interval = 250 };
+                    _tmrKarmaChangeTimer.Tick += KarmaChangeTimer_Tick;
                     nudBase = new NumericUpDownEx
                     {
                         Anchor = AnchorStyles.Right,
@@ -132,6 +137,8 @@ namespace Chummer.UI.Attributes
                     };
                     nudBase.BeforeValueIncrement += nudBase_BeforeValueIncrement;
                     nudBase.ValueChanged += nudBase_ValueChanged;
+                    _tmrBaseChangeTimer = new Timer { Interval = 250 };
+                    _tmrBaseChangeTimer.Tick += BaseChangeTimer_Tick;
 
                     flpRight.Controls.Add(nudKarma);
                     flpRight.Controls.Add(nudBase);
@@ -153,83 +160,103 @@ namespace Chummer.UI.Attributes
             switch (e.PropertyName)
             {
                 case nameof(CharacterAttrib.DisplayNameFormatted):
-                    string strName = await AttributeObject.GetDisplayNameFormattedAsync(token).ConfigureAwait(false);
+                    string strName = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                        .GetDisplayNameFormattedAsync(token).ConfigureAwait(false);
                     await lblName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                     break;
                 case nameof(CharacterAttrib.DisplayValue):
-                    string strValue = await AttributeObject.GetDisplayValueAsync(token).ConfigureAwait(false);
+                    string strValue = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                        .GetDisplayValueAsync(token).ConfigureAwait(false);
                     await lblValue.DoThreadSafeAsync(x => x.Text = strValue, token).ConfigureAwait(false);
                     break;
                 case nameof(CharacterAttrib.AugmentedMetatypeLimits):
-                    string strAugmentedMetatypeLimits = await AttributeObject.GetAugmentedMetatypeLimitsAsync(token).ConfigureAwait(false);
-                    await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits, token).ConfigureAwait(false);
+                    string strAugmentedMetatypeLimits =
+                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                            .GetAugmentedMetatypeLimitsAsync(token).ConfigureAwait(false);
+                    await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits, token)
+                        .ConfigureAwait(false);
                     break;
                 case nameof(CharacterAttrib.ToolTip):
-                    string strToolTip = await AttributeObject.GetToolTipAsync(token).ConfigureAwait(false);
+                    string strToolTip = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                        .GetToolTipAsync(token).ConfigureAwait(false);
                     await lblValue.DoThreadSafeAsync(x => x.ToolTipText = strToolTip, token).ConfigureAwait(false);
                     break;
                 case nameof(CharacterAttrib.UpgradeToolTip):
                     if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         string strUpgradeToolTip =
-                            await AttributeObject.GetUpgradeToolTipAsync(token).ConfigureAwait(false);
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                                .GetUpgradeToolTipAsync(token).ConfigureAwait(false);
                         await cmdImproveATT.DoThreadSafeAsync(x => x.ToolTipText = strUpgradeToolTip, token)
                             .ConfigureAwait(false);
                     }
+
                     break;
                 case nameof(CharacterAttrib.CanUpgradeCareer):
                     if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         bool blnCanUpgradeCareer =
-                            await AttributeObject.GetCanUpgradeCareerAsync(token).ConfigureAwait(false);
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                                .GetCanUpgradeCareerAsync(token).ConfigureAwait(false);
                         await cmdImproveATT.DoThreadSafeAsync(x => x.Enabled = blnCanUpgradeCareer, token)
                             .ConfigureAwait(false);
                     }
+
                     break;
                 case nameof(CharacterAttrib.PriorityMaximum):
                     if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         int intPriorityMaximum =
-                            await AttributeObject.GetPriorityMaximumAsync(token).ConfigureAwait(false);
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                                .GetPriorityMaximumAsync(token).ConfigureAwait(false);
                         await nudBase.DoThreadSafeAsync(x => x.Maximum = intPriorityMaximum, token)
                             .ConfigureAwait(false);
                     }
+
                     break;
                 case nameof(CharacterAttrib.BaseUnlocked):
                     if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         bool blnBaseUnlocked =
-                            await AttributeObject.GetBaseUnlockedAsync(token).ConfigureAwait(false);
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                                .GetBaseUnlockedAsync(token).ConfigureAwait(false);
                         await nudBase.DoThreadSafeAsync(x => x.Enabled = blnBaseUnlocked, token)
                             .ConfigureAwait(false);
                     }
+
                     break;
                 case nameof(CharacterAttrib.KarmaMaximum):
                     if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         int intKarmaMaximum =
-                            await AttributeObject.GetKarmaMaximumAsync(token).ConfigureAwait(false);
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                                .GetKarmaMaximumAsync(token).ConfigureAwait(false);
                         await nudKarma.DoThreadSafeAsync(x => x.Maximum = intKarmaMaximum, token)
                             .ConfigureAwait(false);
                     }
+
                     break;
                 case nameof(CharacterAttrib.Base):
                     if (_intChangingBase == 0 && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         int intBase =
-                            await AttributeObject.GetBaseAsync(token).ConfigureAwait(false);
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                                .ConfigureAwait(false);
                         await nudBase.DoThreadSafeAsync(x => x.Value = intBase, token)
                             .ConfigureAwait(false);
                     }
+
                     break;
                 case nameof(CharacterAttrib.Karma):
                     if (_intChangingKarma == 0 && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         int intKarma =
-                            await AttributeObject.GetBaseAsync(token).ConfigureAwait(false);
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                                .ConfigureAwait(false);
                         await nudKarma.DoThreadSafeAsync(x => x.Value = intKarma, token)
                             .ConfigureAwait(false);
                     }
+
                     break;
             }
         }
@@ -405,6 +432,8 @@ namespace Chummer.UI.Attributes
 
         private void UnbindAttributeControl()
         {
+            _tmrKarmaChangeTimer?.Dispose();
+            _tmrBaseChangeTimer?.Dispose();
             _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(AttributeName, OnAttributePropertyChanged);
         }
 
@@ -472,13 +501,25 @@ namespace Chummer.UI.Attributes
         private int _intChangingBase = 1;
         private int _intChangingKarma = 1;
 
-        private async void nudBase_ValueChanged(object sender, EventArgs e)
+        private void nudBase_ValueChanged(object sender, EventArgs e)
         {
+            if (_tmrBaseChangeTimer == null)
+                return;
+            if (_tmrBaseChangeTimer.Enabled)
+                _tmrBaseChangeTimer.Stop();
+            if (_intChangingBase > 0)
+                return;
+            _tmrBaseChangeTimer.Start();
+        }
+
+        private async void BaseChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrBaseChangeTimer.Stop();
             if (_blnLoading)
                 return;
             try
             {
-                int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
+                int intValue = await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
                     .ConfigureAwait(false);
                 if (Interlocked.Exchange(ref _oldBase, intValue) == intValue)
                     return;
@@ -544,13 +585,25 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private async void nudKarma_ValueChanged(object sender, EventArgs e)
+        private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
+            if (_tmrKarmaChangeTimer == null)
+                return;
+            if (_tmrKarmaChangeTimer.Enabled)
+                _tmrKarmaChangeTimer.Stop();
+            if (_intChangingKarma > 0)
+                return;
+            _tmrKarmaChangeTimer.Start();
+        }
+
+        private async void KarmaChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrKarmaChangeTimer.Stop();
             if (_blnLoading)
                 return;
             try
             {
-                int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
+                int intValue = await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
                     .ConfigureAwait(false);
                 int intOldKarma = Interlocked.Exchange(ref _oldKarma, intValue);
                 if (intOldKarma == intValue)
@@ -678,8 +731,11 @@ namespace Chummer.UI.Attributes
 
         public CharacterAttrib AttributeObject => _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
 
-        public Task<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default) =>
-            _objCharacter.AttributeSection.GetAttributeByNameAsync(AttributeName, token);
+        public async Task<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await (await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributeByNameAsync(AttributeName, token).ConfigureAwait(false);
+        }
 
         [UsedImplicitly]
         public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth);
@@ -744,35 +800,77 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
+        private async void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
             if (_blnLoading)
                 return;
-            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != AttributeObject.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
-                return;
-            if (nudKarma.Value - nudBase.Increment >= 0)
+            try
             {
-                nudKarma.Value -= nudBase.Increment;
+                int intKarmaValue = await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
+                    .ConfigureAwait(false);
+                if (intKarmaValue == await nudKarma.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: _objMyToken)
+                        .ConfigureAwait(false))
+                {
+                    return;
+                }
+
+                if (intKarmaValue + await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
+                        .ConfigureAwait(false) !=
+                    await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetTotalMaximumAsync(_objMyToken).ConfigureAwait(false))
+                {
+                    return;
+                }
+
+                int intIncrement = (await nudBase.DoThreadSafeFuncAsync(x => x.Increment, token: _objMyToken)
+                    .ConfigureAwait(false)).ToInt32();
+                await nudKarma.DoThreadSafeAsync(x =>
+                {
+                    if (x.ValueAsInt >= intIncrement)
+                        x.ValueAsInt -= intIncrement;
+                    else
+                        e.Cancel = true;
+                }, token: _objMyToken).ConfigureAwait(false);
             }
-            else
+            catch (OperationCanceledException)
             {
-                e.Cancel = true;
+                // swallow this
             }
         }
 
-        private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
+        private async void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
             if (_blnLoading)
                 return;
-            if (nudBase.Value + nudKarma.Value != AttributeObject.TotalMaximum || nudBase.Value == nudBase.Minimum)
-                return;
-            if (nudBase.Value - nudKarma.Increment >= 0)
+            try
             {
-                nudBase.Value -= nudKarma.Increment;
+                int intBaseValue = await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
+                    .ConfigureAwait(false);
+                if (intBaseValue == await nudBase.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: _objMyToken)
+                        .ConfigureAwait(false))
+                {
+                    return;
+                }
+
+                if (intBaseValue + await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
+                        .ConfigureAwait(false) !=
+                    await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetTotalMaximumAsync(_objMyToken).ConfigureAwait(false))
+                {
+                    return;
+                }
+
+                int intIncrement = (await nudKarma.DoThreadSafeFuncAsync(x => x.Increment, token: _objMyToken)
+                    .ConfigureAwait(false)).ToInt32();
+                await nudBase.DoThreadSafeAsync(x =>
+                {
+                    if (x.ValueAsInt >= intIncrement)
+                        x.ValueAsInt -= intIncrement;
+                    else
+                        e.Cancel = true;
+                }, token: _objMyToken).ConfigureAwait(false);
             }
-            else
+            catch (OperationCanceledException)
             {
-                e.Cancel = true;
+                // swallow this
             }
         }
 

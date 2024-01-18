@@ -1770,7 +1770,7 @@ namespace Chummer
                                 using (Timekeeper.StartSyncron("load_frm_create_finish", op_load_frm_create))
                                 {
                                     // Directly awaiting here so that we can properly unset the dirty flag after the update
-                                    await RequestAndProcessCharacterUpdate().ConfigureAwait(false);
+                                    await RequestCharacterUpdate(true).ConfigureAwait(false);
                                     // Clear the Dirty flag which gets set when creating a new Character.
                                     if (!await CharacterObject.GetLoadAsDirtyAsync(GenericToken).ConfigureAwait(false))
                                         IsDirty = false;
@@ -4526,7 +4526,7 @@ namespace Chummer
                         // Immediately await character update because it re-applies essence loss improvements
                         try
                         {
-                            await RequestAndProcessCharacterUpdate(token).ConfigureAwait(false);
+                            await RequestCharacterUpdate(true, token).ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -13954,7 +13954,7 @@ namespace Chummer
                         int intMasteryQualityKarmaUsed = await lstQualities.SumAsync(
                                 objQuality =>
                                     objQuality.CanBuyWithSpellPoints,
-                                objQuality => objQuality.BP, token)
+                                objQuality => objQuality.GetBPAsync(token), token)
                             .ConfigureAwait(false);
                         if (intMasteryQualityKarmaUsed != 0)
                         {
@@ -14763,7 +14763,7 @@ namespace Chummer
                     // Immediately call character update because we know it's necessary
                     try
                     {
-                        await RequestAndProcessCharacterUpdate().ConfigureAwait(false);
+                        await RequestCharacterUpdate(true).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

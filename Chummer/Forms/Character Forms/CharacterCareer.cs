@@ -1825,7 +1825,7 @@ namespace Chummer
                                        Timekeeper.StartSyncron("load_frm_career_finishingStuff", op_load_frm_career))
                                 {
                                     // Directly awaiting here so that we can properly unset the dirty flag after the update
-                                    await RequestAndProcessCharacterUpdate().ConfigureAwait(false);
+                                    await RequestCharacterUpdate(true).ConfigureAwait(false);
 
                                     // Clear the Dirty flag which gets set when creating a new Character.
                                     if (!await CharacterObject.GetLoadAsDirtyAsync(GenericToken).ConfigureAwait(false))
@@ -5329,7 +5329,7 @@ namespace Chummer
                         // Immediately await character update because it re-applies essence loss improvements
                         try
                         {
-                            await RequestAndProcessCharacterUpdate(token).ConfigureAwait(false);
+                            await RequestCharacterUpdate(true, token).ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -20722,7 +20722,7 @@ namespace Chummer
                     // Immediately await character update because we know it's necessary
                     try
                     {
-                        await RequestAndProcessCharacterUpdate().ConfigureAwait(false);
+                        await RequestCharacterUpdate(true, GenericToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
