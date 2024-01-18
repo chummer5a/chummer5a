@@ -103,20 +103,22 @@ namespace Chummer
                             ? x.GetMaxSpiritForceAsync(_objMyToken)
                             : x.GetMaxSpriteLevelAsync(_objMyToken), _objMyToken)
                     .ConfigureAwait(false);
-                await nudServices.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                await nudServices.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                     _objSpirit,
                     nameof(Spirit.ServicesOwed),
                     (x, y) => x.ValueChanged += y,
                     x => x.GetServicesOwedAsync(_objMyToken),
                     (x, y) => x.SetServicesOwedAsync(y, _objMyToken),
+                    250,
                     _objMyToken,
                     _objMyToken).ConfigureAwait(false);
-                await nudForce.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                await nudForce.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                     _objSpirit,
                     nameof(Spirit.Force),
                     (x, y) => x.ValueChanged += y,
                     x => x.GetForceAsync(_objMyToken),
                     (x, y) => x.SetForceAsync(y, _objMyToken),
+                    250,
                     _objMyToken,
                     _objMyToken).ConfigureAwait(false);
                 await chkFettered.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSpirit,

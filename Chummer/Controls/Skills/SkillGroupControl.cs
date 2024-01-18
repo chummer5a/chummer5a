@@ -182,18 +182,20 @@ namespace Chummer.UI.Skills
                         x => x.GetRatingMaximumAsync(_objMyToken),
                         _objMyToken);
 
-                    nudKarma.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
+                    nudKarma.RegisterAsyncDataBindingWithDelay(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
                         nameof(SkillGroup.Karma),
                         (x, y) => x.ValueChanged += y,
                         x => x.GetKarmaAsync(_objMyToken),
                         (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                        250,
                         _objMyToken,
                         _objMyToken);
-                    nudSkill.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
+                    nudSkill.RegisterAsyncDataBindingWithDelay(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
                         nameof(SkillGroup.Base),
                         (x, y) => x.ValueChanged += y,
                         x => x.GetBaseAsync(_objMyToken),
                         (x, y) => x.SetBaseAsync(y, _objMyToken),
+                        250,
                         _objMyToken,
                         _objMyToken);
                 }
@@ -255,18 +257,20 @@ namespace Chummer.UI.Skills
                     x => x.GetKarmaUnbrokenAsync(_objMyToken)
                     , token).ConfigureAwait(false);
 
-                await nudKarma.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
+                await nudKarma.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
                     nameof(SkillGroup.Karma),
                     (x, y) => x.ValueChanged += y,
                     x => x.GetKarmaAsync(_objMyToken),
                     (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                    250,
                     _objMyToken,
                     _objMyToken).ConfigureAwait(false);
-                await nudSkill.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
+                await nudSkill.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _skillGroup,
                     nameof(SkillGroup.Base),
                     (x, y) => x.ValueChanged += y,
                     x => x.GetBaseAsync(_objMyToken),
                     (x, y) => x.SetBaseAsync(y, _objMyToken),
+                    250,
                     _objMyToken,
                     _objMyToken).ConfigureAwait(false);
             }

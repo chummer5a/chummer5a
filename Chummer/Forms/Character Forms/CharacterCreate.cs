@@ -920,13 +920,13 @@ namespace Chummer
                                                 nameof(CharacterAttrib.Value),
                                                 x => x.GetValueAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
-                                        await nudMysticAdeptMAGMagician.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudMysticAdeptMAGMagician.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.MysticAdeptPowerPoints),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetMysticAdeptPowerPointsAsync(GenericToken),
-                                            (x, y) => x.SetMysticAdeptPowerPointsAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetMysticAdeptPowerPointsAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
 
                                         TraditionType eTraditionType = await objTradition.GetTypeAsync(GenericToken)
@@ -987,13 +987,13 @@ namespace Chummer
                                                 nameof(Character.TotalNuyenMaximumBP),
                                                 x => x.GetTotalNuyenMaximumBPAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
-                                        await nudNuyen.RegisterAsyncDataBindingAsync(x => x.Value,
+                                        await nudNuyen.RegisterAsyncDataBindingWithDelayAsync(x => x.Value,
                                             (x, y) => x.Value = y,
                                             CharacterObject,
                                             nameof(Character.NuyenBP),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetNuyenBPAsync(GenericToken),
-                                            (x, y) => x.SetNuyenBPAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetNuyenBPAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
 
                                         await lblCMPhysical.RegisterOneWayAsyncDataBindingAsync(
@@ -1268,22 +1268,22 @@ namespace Chummer
                                                     .SpellDefenseManipulationPhysicalToolTip),
                                                 GenericToken)
                                             .ConfigureAwait(false);
-                                        await nudCounterspellingDice.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudCounterspellingDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.CurrentCounterspellingDice),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetCurrentCounterspellingDiceAsync(GenericToken),
-                                            (x, y) => x.SetCurrentCounterspellingDiceAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetCurrentCounterspellingDiceAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
 
-                                        await nudLiftCarryHits.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudLiftCarryHits.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.CurrentLiftCarryHits),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetCurrentLiftCarryHitsAsync(GenericToken),
-                                            (x, y) => x.SetCurrentLiftCarryHitsAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetCurrentLiftCarryHitsAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
 
                                         await lblMovement.RegisterOneWayAsyncDataBindingAsync(

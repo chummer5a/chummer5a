@@ -449,45 +449,45 @@ namespace Chummer
                                             .DoThreadSafeAsync(x => x.Text = strNumMugshots, GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await nudStreetCred.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudStreetCred.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.StreetCred),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetStreetCredAsync(GenericToken),
-                                            (x, y) => x.SetStreetCredAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetStreetCredAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
-                                        await nudNotoriety.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudNotoriety.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.Notoriety),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetNotorietyAsync(GenericToken),
-                                            (x, y) => x.SetNotorietyAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetNotorietyAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
-                                        await nudPublicAware.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudPublicAware.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.PublicAwareness),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetPublicAwarenessAsync(GenericToken),
-                                            (x, y) => x.SetPublicAwarenessAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetPublicAwarenessAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
-                                        await nudAstralReputation.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudAstralReputation.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.AstralReputation),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetAstralReputationAsync(GenericToken),
-                                            (x, y) => x.SetAstralReputationAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetAstralReputationAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
-                                        await nudWildReputation.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudWildReputation.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.WildReputation),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetWildReputationAsync(GenericToken),
-                                            (x, y) => x.SetWildReputationAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetWildReputationAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
                                         await cmdAddMetamagic.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Enabled = y, CharacterObject,
@@ -1290,22 +1290,22 @@ namespace Chummer
                                                 nameof(Character
                                                     .SpellDefenseManipulationPhysicalToolTip), GenericToken)
                                             .ConfigureAwait(false);
-                                        await nudCounterspellingDice.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudCounterspellingDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.CurrentCounterspellingDice),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetCurrentCounterspellingDiceAsync(GenericToken),
-                                            (x, y) => x.SetCurrentCounterspellingDiceAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetCurrentCounterspellingDiceAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
 
-                                        await nudLiftCarryHits.RegisterAsyncDataBindingAsync(x => x.ValueAsInt,
+                                        await nudLiftCarryHits.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                                             (x, y) => x.ValueAsInt = y,
                                             CharacterObject,
                                             nameof(Character.CurrentLiftCarryHits),
                                             (x, y) => x.ValueChanged += y,
                                             x => x.GetCurrentLiftCarryHitsAsync(GenericToken),
-                                            (x, y) => x.SetCurrentLiftCarryHitsAsync(y, GenericToken), GenericToken,
+                                            (x, y) => x.SetCurrentLiftCarryHitsAsync(y, GenericToken), 250, GenericToken,
                                             GenericToken).ConfigureAwait(false);
 
                                         await lblMovement.RegisterOneWayAsyncDataBindingAsync(

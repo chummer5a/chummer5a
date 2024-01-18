@@ -1194,20 +1194,22 @@ namespace Chummer
                     await chkBlackmail.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,
                             nameof(Contact.ReadOnly), x => x.GetIsEnemyAsync(_objMyToken), token)
                         .ConfigureAwait(false);
-                    await nudLoyalty.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    await nudLoyalty.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                         _objContact,
                         nameof(Contact.Loyalty),
                         (x, y) => x.ValueChanged += y,
                         x => x.GetLoyaltyAsync(_objMyToken),
                         (x, y) => x.SetLoyaltyAsync(y, _objMyToken),
+                        250,
                         _objMyToken,
                         token).ConfigureAwait(false);
-                    await nudConnection.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    await nudConnection.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                         _objContact,
                         nameof(Contact.Connection),
                         (x, y) => x.ValueChanged += y,
                         x => x.GetConnectionAsync(_objMyToken),
                         (x, y) => x.SetConnectionAsync(y, _objMyToken),
+                        250,
                         _objMyToken,
                         token).ConfigureAwait(false);
                     await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact,

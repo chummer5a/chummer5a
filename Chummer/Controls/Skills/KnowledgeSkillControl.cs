@@ -395,18 +395,20 @@ namespace Chummer.UI.Skills
                         Interlocked.Decrement(ref _intUpdatingSpec);
                     }
 
-                    nudKarma.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                    nudKarma.RegisterAsyncDataBindingWithDelay(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
                         nameof(Skill.Karma),
                         (x, y) => x.ValueChanged += y,
                         x => x.GetKarmaAsync(_objMyToken),
                         (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                        250,
                         _objMyToken,
                         _objMyToken);
-                    nudSkill.RegisterAsyncDataBinding(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                    nudSkill.RegisterAsyncDataBindingWithDelay(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
                         nameof(Skill.Base),
                         (x, y) => x.ValueChanged += y,
                         x => x.GetBaseAsync(_objMyToken),
                         (x, y) => x.SetBaseAsync(y, _objMyToken),
+                        250,
                         _objMyToken,
                         _objMyToken);
                     chkNativeLanguage.RegisterAsyncDataBinding(x => x.Checked, (x, y) => x.Checked = y, _objSkill,
@@ -618,18 +620,20 @@ namespace Chummer.UI.Skills
                     Interlocked.Decrement(ref _intUpdatingSpec);
                 }
 
-                await nudKarma.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                await nudKarma.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
                     nameof(Skill.Karma),
                     (x, y) => x.ValueChanged += y,
                     x => x.GetKarmaAsync(_objMyToken),
                     (x, y) => x.SetKarmaAsync(y, _objMyToken),
+                    250,
                     _objMyToken,
                     _objMyToken).ConfigureAwait(false);
-                await nudSkill.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
+                await nudSkill.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y, _objSkill,
                     nameof(Skill.Base),
                     (x, y) => x.ValueChanged += y,
                     x => x.GetBaseAsync(_objMyToken),
                     (x, y) => x.SetBaseAsync(y, _objMyToken),
+                    250,
                     _objMyToken,
                     _objMyToken).ConfigureAwait(false);
                 await chkNativeLanguage.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,

@@ -458,12 +458,12 @@ namespace Chummer
                     (x, y) => x.CheckedChanged += y,
                     async x => !await x.GetAllowBonusLPAsync().ConfigureAwait(false),
                     (x, y) => x.SetAllowBonusLPAsync(!y)).ConfigureAwait(false);
-                await nudBonusLP.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                await nudBonusLP.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                     _objLifestyle,
                     nameof(Lifestyle.BonusLP),
                     (x, y) => x.ValueChanged += y,
                     x => x.GetBonusLPAsync(),
-                    (x, y) => x.SetBonusLPAsync(y)).ConfigureAwait(false);
+                    (x, y) => x.SetBonusLPAsync(y), 250).ConfigureAwait(false);
                 await ResetLifestyleQualitiesTree().ConfigureAwait(false);
                 await cboBaseLifestyle.PopulateWithListItemsAsync(lstLifestyles).ConfigureAwait(false);
             }
@@ -474,36 +474,36 @@ namespace Chummer
                 (x, y) => x.TextChanged += y,
                 x => x.GetNameAsync(),
                 (x, y) => x.SetNameAsync(y)).ConfigureAwait(false);
-            await nudRoommates.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+            await nudRoommates.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objLifestyle,
                 nameof(Lifestyle.Percentage),
                 (x, y) => x.ValueChanged += y,
                 x => x.GetRoommatesAsync(),
-                (x, y) => x.SetRoommatesAsync(y)).ConfigureAwait(false);
-            await nudPercentage.RegisterAsyncDataBindingAsync(x => x.Value, (x, y) => x.Value = y,
+                (x, y) => x.SetRoommatesAsync(y), 250).ConfigureAwait(false);
+            await nudPercentage.RegisterAsyncDataBindingWithDelayAsync(x => x.Value, (x, y) => x.Value = y,
                 _objLifestyle,
                 nameof(Lifestyle.Percentage),
                 (x, y) => x.ValueChanged += y,
                 x => x.GetPercentageAsync(),
-                (x, y) => x.SetPercentageAsync(y)).ConfigureAwait(false);
-            await nudComforts.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                (x, y) => x.SetPercentageAsync(y), 250).ConfigureAwait(false);
+            await nudArea.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objLifestyle,
                 nameof(Lifestyle.Area),
                 (x, y) => x.ValueChanged += y,
                 x => x.GetAreaAsync(),
-                (x, y) => x.SetAreaAsync(y)).ConfigureAwait(false);
-            await nudComforts.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                (x, y) => x.SetAreaAsync(y), 250).ConfigureAwait(false);
+            await nudComforts.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objLifestyle,
                 nameof(Lifestyle.Comforts),
                 (x, y) => x.ValueChanged += y,
                 x => x.GetComfortsAsync(),
-                (x, y) => x.SetComfortsAsync(y)).ConfigureAwait(false);
-            await nudSecurity.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                (x, y) => x.SetComfortsAsync(y), 250).ConfigureAwait(false);
+            await nudSecurity.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                 _objLifestyle,
                 nameof(Lifestyle.Security),
                 (x, y) => x.ValueChanged += y,
                 x => x.GetSecurityAsync(),
-                (x, y) => x.SetSecurityAsync(y)).ConfigureAwait(false);
+                (x, y) => x.SetSecurityAsync(y), 250).ConfigureAwait(false);
             await nudArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
                                                          nameof(Lifestyle.AreaDelta),
                                                          x => x.GetAreaDeltaAsync())
