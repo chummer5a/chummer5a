@@ -39057,16 +39057,28 @@ namespace Chummer
                         nameof(SpellDefenseManipulationPhysical)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{BOD}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{BOD}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39079,16 +39091,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39129,16 +39153,28 @@ namespace Chummer
                         nameof(CalculatedMovement)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{AGI}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{AGI}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39151,16 +39187,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39188,16 +39236,28 @@ namespace Chummer
                         nameof(Surprise)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("REA", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{REA}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{REA}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39210,16 +39270,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("REA", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39248,16 +39320,28 @@ namespace Chummer
                         nameof(ArmorEncumbrance)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{STR}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{STR}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39270,16 +39354,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39307,16 +39403,28 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseCHA)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{CHA}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{CHA}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39329,16 +39437,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39372,16 +39492,28 @@ namespace Chummer
                         nameof(Surprise)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{INT}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{INT}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39394,16 +39526,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39435,16 +39579,28 @@ namespace Chummer
                         nameof(SpellDefenseManipulationMental)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{LOG}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{LOG}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39457,16 +39613,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39515,16 +39683,28 @@ namespace Chummer
                         nameof(SpellDefenseManipulationMental)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{WIL}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{WIL}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39537,16 +39717,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39566,26 +39758,36 @@ namespace Chummer
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(3);
-                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        int intEdgeValue = await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
-                        if (await GetEdgeUsedAsync(token).ConfigureAwait(false) > intEdgeValue)
-                            await SetEdgeUsedAsync(intEdgeValue, token).ConfigureAwait(false);
-                        else
-                            lstProperties.Add(nameof(EdgeRemaining));
-                    }
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{EDG}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int intEdgeValue =
+                                await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                                    .GetTotalValueAsync(token).ConfigureAwait(false);
+                            if (await GetEdgeUsedAsync(token).ConfigureAwait(false) > intEdgeValue)
+                                await SetEdgeUsedAsync(intEdgeValue, token).ConfigureAwait(false);
+                            else
+                                lstProperties.Add(nameof(EdgeRemaining));
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{EDG}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39598,16 +39800,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39627,41 +39841,51 @@ namespace Chummer
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(5);
-                    using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
-                        if (!IsLoading)
-                        {
-                            int intMysticAdeptPowerPoints = await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
-                            if (intMysticAdeptPowerPoints > 0)
-                            {
-                                int intMAGTotalValue = await objMag.GetTotalValueAsync(token).ConfigureAwait(false);
-                                if (intMysticAdeptPowerPoints > intMAGTotalValue)
-                                    await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token).ConfigureAwait(false);
-                            }
-                        }
-
-                        if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false))
-                            lstProperties.Add(nameof(MaxSpiritForce));
-                        if (await GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false))
-                            lstProperties.Add(nameof(CanAffordCareerPP));
-                        if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false) && objMag == await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                            lstProperties.Add(nameof(PowerPointsTotal));
-                        if (await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
-                            lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
-                    }
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objMag.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{MAG}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (!IsLoading)
+                            {
+                                int intMysticAdeptPowerPoints =
+                                    await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
+                                if (intMysticAdeptPowerPoints > 0)
+                                {
+                                    int intMAGTotalValue = await objMag.GetTotalValueAsync(token).ConfigureAwait(false);
+                                    if (intMysticAdeptPowerPoints > intMAGTotalValue)
+                                        await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token)
+                                            .ConfigureAwait(false);
+                                }
+                            }
+
+                            if (await (await GetSettingsAsync(token).ConfigureAwait(false))
+                                .GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false))
+                                lstProperties.Add(nameof(MaxSpiritForce));
+                            if (await GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false))
+                                lstProperties.Add(nameof(CanAffordCareerPP));
+                            if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false) && objMag ==
+                                await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                                lstProperties.Add(nameof(PowerPointsTotal));
+                            if (await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
+                                lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{MAG}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39674,16 +39898,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39698,7 +39934,8 @@ namespace Chummer
         public async Task RefreshMAGAdeptDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false) == await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+            CharacterAttrib objMagAdept = await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false);
+            if (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false) == objMagAdept)
                 return;
 
             switch (e?.PropertyName)
@@ -39706,19 +39943,29 @@ namespace Chummer
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(2);
-                    if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
-                        lstProperties.Add(nameof(MaxSpiritForce));
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objMagAdept.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                                lstProperties.Add(nameof(MaxSpiritForce));
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39731,16 +39978,26 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objMagAdept.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39764,16 +40021,28 @@ namespace Chummer
                         nameof(MaxSpriteLevel)
                     };
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("RES", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{RES}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{RES}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39786,16 +40055,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("RES", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39814,20 +40095,34 @@ namespace Chummer
             {
                 case nameof(CharacterAttrib.TotalValue):
                 {
-                    if (await GetIsAIAsync(token).ConfigureAwait(false))
-                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token).ConfigureAwait(false);
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("DEP", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{DEP}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (await GetIsAIAsync(token).ConfigureAwait(false))
+                                await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
+                                    .ConfigureAwait(false);
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{DEP}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39840,16 +40135,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("DEP", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39874,16 +40181,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("ESS", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{ESS}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{ESS}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -39896,16 +40215,28 @@ namespace Chummer
                 {
                     List<string> lstProperties = new List<string>(4);
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}", token).ConfigureAwait(false);
-                    await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await (await GetAttributeAsync("ESS", token: token).ConfigureAwait(false)).LockObject
+                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                            Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
-                            await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                .ConfigureAwait(false);
+                        IAsyncDisposable objLocker2 =
+                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
+                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                                Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
+                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                                    .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
