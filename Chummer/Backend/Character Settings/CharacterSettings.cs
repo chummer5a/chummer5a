@@ -4758,6 +4758,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The total value of priorities used in Sum-to-Ten mode.
+        /// </summary>
+        public async Task<int> GetSumtoTenAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSumtoTen;
+            }
+        }
+
+        /// <summary>
+        /// The total value of priorities used in Sum-to-Ten mode.
+        /// </summary>
+        public async Task SetSumtoTenAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intSumtoTen == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intSumtoTen, value) != value)
+                    await OnPropertyChangedAsync(nameof(SumtoTen), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Amount of Karma that is used to create the character.
         /// </summary>
         public int BuildKarma
@@ -4782,10 +4821,37 @@ namespace Chummer
         /// </summary>
         public async Task<int> GetBuildKarmaAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _intBuildPoints;
+            }
+        }
+
+        /// <summary>
+        /// Amount of Karma that is used to create the character.
+        /// </summary>
+        public async Task SetBuildKarmaAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intBuildPoints == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intBuildPoints, value) != value)
+                    await OnPropertyChangedAsync(nameof(BuildKarma), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4814,10 +4880,37 @@ namespace Chummer
         /// </summary>
         public async Task<int> GetQualityKarmaLimitAsync(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _intQualityKarmaLimit;
+            }
+        }
+
+        /// <summary>
+        /// Limit on the amount of karma that can be spent at creation on qualities
+        /// </summary>
+        public async Task SetQualityKarmaLimitAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intQualityKarmaLimit == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intQualityKarmaLimit, value) != value)
+                    await OnPropertyChangedAsync(nameof(QualityKarmaLimit), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4842,6 +4935,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Limit on the amount of karma that can be spent at creation on qualities
+        /// </summary>
+        public async Task<int> GetMaximumAvailabilityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intAvailability;
+            }
+        }
+
+        /// <summary>
+        /// Limit on the amount of karma that can be spent at creation on qualities
+        /// </summary>
+        public async Task SetMaximumAvailabilityAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intAvailability == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intAvailability, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaximumAvailability), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum number of martial arts that for new characters.
         /// </summary>
         public int MaximumMartialArts
@@ -4862,6 +4994,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum number of martial arts that for new characters.
+        /// </summary>
+        public async Task<int> GetMaximumMartialArtsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxMartialArts;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of martial arts that for new characters.
+        /// </summary>
+        public async Task SetMaximumMartialArtsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxMartialArts == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxMartialArts, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaximumAvailability), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum number of martial techniques on a martial art for new characters.
         /// </summary>
         public int MaximumMartialTechniques
@@ -4878,6 +5049,45 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intMaxMartialTechniques, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of martial arts that for new characters.
+        /// </summary>
+        public async Task<int> GetMaximumMartialTechniquesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxMartialTechniques;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of martial arts that for new characters.
+        /// </summary>
+        public async Task SetMaximumMartialTechniquesAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxMartialTechniques == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxMartialTechniques, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaximumAvailability), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4913,6 +5123,44 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _decNuyenMaximumBP;
+            }
+        }
+
+        /// <summary>
+        /// Maximum amount of remaining Nuyen that is carried over to the character once they are created.
+        /// </summary>
+        public async Task SetNuyenMaximumBPAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenMaximumBP == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenMaximumBP == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyenMaximumBP = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(NuyenMaximumBP), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5931,6 +6179,57 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Amount of Nuyen gained per BP spent when Working for the Man.
+        /// </summary>
+        public async Task<decimal> GetNuyenPerBPWftMAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _decNuyenPerBPWftM;
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nuyen gained per BP spent when Working for the Man.
+        /// </summary>
+        public async Task SetNuyenPerBPWftMAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenPerBPWftM == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenPerBPWftM == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyenPerBPWftM = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(NuyenPerBPWftM), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Amount of Nuyen spent per BP gained when Working for the People.
         /// </summary>
         public decimal NuyenPerBPWftP
@@ -5950,6 +6249,57 @@ namespace Chummer
                         _decNuyenPerBPWftP = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nuyen gained per BP spent when Working for the People.
+        /// </summary>
+        public async Task<decimal> GetNuyenPerBPWftPAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _decNuyenPerBPWftP;
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nuyen gained per BP spent when Working for the People.
+        /// </summary>
+        public async Task SetNuyenPerBPWftPAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenPerBPWftP == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenPerBPWftP == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyenPerBPWftP = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(NuyenPerBPWftP), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6694,6 +7044,44 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Drone Body multiplier for maximal Armor
+        /// </summary>
+        public async Task<int> GetDroneArmorMultiplierAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intDroneArmorMultiplier;
+            }
+        }
+
+        /// <summary>
+        /// The Drone Body multiplier for maximal Armor
+        /// </summary>
+        public async Task SetDroneArmorMultiplierAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intDroneArmorMultiplier == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intDroneArmorMultiplier, value) != value)
+                    await OnPropertyChangedAsync(nameof(DroneArmorMultiplier), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether or not Armor
         /// </summary>
         public bool DroneArmorMultiplierEnabled
@@ -6977,6 +7365,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Setting name.
+        /// </summary>
+        public async Task SetNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strName == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Setting name to display in the UI.
         /// </summary>
         public string CurrentDisplayName
@@ -7077,12 +7491,41 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Multiplier for Metatype Karma Costs when converting from BP to Karma.
+        /// </summary>
         public async Task<int> GetMetatypeCostsKarmaMultiplierAsync(CancellationToken token = default)
         {
             using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _intMetatypeCostMultiplier;
+            }
+        }
+
+        /// <summary>
+        /// Multiplier for Metatype Karma Costs when converting from BP to Karma.
+        /// </summary>
+        public async Task SetMetatypeCostsKarmaMultiplierAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMetatypeCostMultiplier == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMetatypeCostMultiplier, value) != value)
+                    await OnPropertyChangedAsync(nameof(MetatypeCostsKarmaMultiplier), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7525,6 +7968,78 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Maximum number of decimal places to round to when displaying nuyen values.
+        /// </summary>
+        public async Task<int> GetMaxNuyenDecimalsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedMaxNuyenDecimals >= 0)
+                    return _intCachedMaxNuyenDecimals;
+                string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
+                int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                if (intDecimalPlaces == -1)
+                    intDecimalPlaces = 0;
+                else
+                    intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                Interlocked.CompareExchange(ref _intCachedMaxNuyenDecimals, intDecimalPlaces, int.MinValue);
+                return _intCachedMaxNuyenDecimals = intDecimalPlaces;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of decimal places to round to when displaying nuyen values.
+        /// </summary>
+        public async Task SetMaxNuyenDecimalsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intNewNuyenDecimals = Math.Max(value, 0);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetMinNuyenDecimalsAsync(token).ConfigureAwait(false) > intNewNuyenDecimals)
+                    await SetMinNuyenDecimalsAsync(intNewNuyenDecimals, token).ConfigureAwait(false);
+                if (intNewNuyenDecimals == 0)
+                    return; // Already taken care of by MinNuyenDecimals
+                int intCurrentNuyenDecimals = await GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
+                if (intNewNuyenDecimals < intCurrentNuyenDecimals)
+                {
+                    string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
+                    await SetNuyenFormatAsync(
+                        strNuyenFormat.Substring(0,
+                            strNuyenFormat.Length - (intNewNuyenDecimals - intCurrentNuyenDecimals)), token).ConfigureAwait(false);
+                }
+                else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdNuyenFormat))
+                    {
+                        string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
+                        sbdNuyenFormat.Append(string.IsNullOrEmpty(strNuyenFormat) ? "#,0" : strNuyenFormat);
+                        if (intCurrentNuyenDecimals == 0)
+                        {
+                            sbdNuyenFormat.Append('.');
+                        }
+
+                        for (int i = intCurrentNuyenDecimals; i < intNewNuyenDecimals; ++i)
+                        {
+                            sbdNuyenFormat.Append('#');
+                        }
+
+                        await SetNuyenFormatAsync(sbdNuyenFormat.ToString(), token).ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private int _intCachedMinNuyenDecimals = int.MinValue;
 
         /// <summary>
@@ -7588,6 +8103,77 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of decimal places to round to when displaying nuyen values.
+        /// </summary>
+        public async Task<int> GetMinNuyenDecimalsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedMinNuyenDecimals >= 0)
+                    return _intCachedMinNuyenDecimals;
+                string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
+                int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                if (intDecimalPlaces == -1)
+                    intDecimalPlaces = 0;
+                else
+                {
+                    int intStartOptionalDecimalPlaces = strNuyenFormat.IndexOf('#', intDecimalPlaces);
+                    if (intStartOptionalDecimalPlaces < 0)
+                        intStartOptionalDecimalPlaces = strNuyenFormat.Length;
+                    intDecimalPlaces = intStartOptionalDecimalPlaces - intDecimalPlaces - 1;
+                }
+                Interlocked.CompareExchange(ref _intCachedMinNuyenDecimals, intDecimalPlaces, int.MinValue);
+                return _intCachedMinNuyenDecimals;
+            }
+        }
+
+        /// <summary>
+        /// Minimum number of decimal places to round to when displaying nuyen values.
+        /// </summary>
+        public async Task SetMinNuyenDecimalsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intNewNuyenDecimals = Math.Max(value, 0);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false) < intNewNuyenDecimals)
+                    await SetMaxNuyenDecimalsAsync(intNewNuyenDecimals, token).ConfigureAwait(false);
+                string strNuyenFormat = await GetNuyenFormatAsync(token).ConfigureAwait(false);
+                int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                if (intNewNuyenDecimals == 0)
+                {
+                    if (intDecimalPlaces != -1)
+                        await SetNuyenFormatAsync(strNuyenFormat.Substring(0, intDecimalPlaces), token).ConfigureAwait(false);
+                    return;
+                }
+
+                int intCurrentNuyenDecimals = await GetMinNuyenDecimalsAsync(token).ConfigureAwait(false);
+                if (intNewNuyenDecimals < intCurrentNuyenDecimals)
+                {
+                    char[] achrNuyenFormat = strNuyenFormat.ToCharArray();
+                    for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
+                        achrNuyenFormat[i] = '0';
+                    await SetNuyenFormatAsync(new string(achrNuyenFormat), token).ConfigureAwait(false);
+                }
+                else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
+                {
+                    char[] achrNuyenFormat = strNuyenFormat.ToCharArray();
+                    for (int i = 1; i < intNewNuyenDecimals; ++i)
+                        achrNuyenFormat[intDecimalPlaces + i] = '0';
+                    await SetNuyenFormatAsync(new string(achrNuyenFormat), token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Format in which nuyen values should be displayed (does not include nuyen symbol).
         /// </summary>
         public string NuyenFormat
@@ -7617,6 +8203,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strNuyenFormat;
+            }
+        }
+
+        /// <summary>
+        /// Format in which nuyen values should be displayed (does not include nuyen symbol).
+        /// </summary>
+        public async Task SetNuyenFormatAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strNuyenFormat == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strNuyenFormat, value) != value)
+                    await OnPropertyChangedAsync(nameof(NuyenFormat), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7653,6 +8265,32 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Format in which weight values should be displayed (does not include kg units).
+        /// </summary>
+        public async Task SetWeightFormatAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strWeightFormat == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strWeightFormat, value) != value)
+                    await OnPropertyChangedAsync(nameof(WeightFormat), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private int _intCachedWeightDecimals = int.MinValue;
 
         /// <summary>
@@ -7683,14 +8321,12 @@ namespace Chummer
                     int intCurrentWeightDecimals = WeightDecimals;
                     if (intNewWeightDecimals < intCurrentWeightDecimals)
                     {
-                        using (LockObject.EnterWriteLock())
-                            WeightFormat
+                        WeightFormat
                                 = WeightFormat.Substring(
                                     0, WeightFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
                     }
                     else if (intNewWeightDecimals > intCurrentWeightDecimals)
                     {
-                        using (LockObject.EnterWriteLock())
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdWeightFormat))
                         {
@@ -7709,6 +8345,72 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        public async Task<int> GetWeightDecimalsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedWeightDecimals >= 0)
+                    return _intCachedWeightDecimals;
+                string strWeightFormat = await GetWeightFormatAsync(token).ConfigureAwait(false);
+                int intDecimalPlaces = strWeightFormat.IndexOf('.');
+                intDecimalPlaces = strWeightFormat.Length - intDecimalPlaces - 1;
+                Interlocked.CompareExchange(ref _intCachedWeightDecimals, intDecimalPlaces, int.MinValue);
+                return _intCachedWeightDecimals;
+            }
+        }
+
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        public async Task SetWeightDecimalsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intNewWeightDecimals = Math.Max(value, 0);
+            if (intNewWeightDecimals == await GetWeightDecimalsAsync(token).ConfigureAwait(false))
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intCurrentWeightDecimals = await GetWeightDecimalsAsync(token).ConfigureAwait(false);
+                if (intNewWeightDecimals < intCurrentWeightDecimals)
+                {
+                    string strWeightFormat = await GetWeightFormatAsync(token).ConfigureAwait(false);
+                    await SetWeightFormatAsync(strWeightFormat.Substring(
+                        0, strWeightFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals)), token).ConfigureAwait(false);
+                }
+                else if (intNewWeightDecimals > intCurrentWeightDecimals)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdWeightFormat))
+                    {
+                        string strWeightFormat = await GetWeightFormatAsync(token).ConfigureAwait(false);
+                        sbdWeightFormat.Append(string.IsNullOrEmpty(strWeightFormat) ? "#,0" : strWeightFormat);
+                        if (intCurrentWeightDecimals == 0)
+                        {
+                            sbdWeightFormat.Append('.');
+                        }
+
+                        for (int i = intCurrentWeightDecimals; i < intNewWeightDecimals; ++i)
+                        {
+                            sbdWeightFormat.Append('#');
+                        }
+
+                        await SetWeightFormatAsync(sbdWeightFormat.ToString(), token).ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7921,6 +8623,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The penalty to Physical Limit that should come from one encumbrance tick
+        /// </summary>
+        public async Task<int> GetEncumbrancePenaltyPhysicalLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intEncumbrancePenaltyPhysicalLimit;
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Physical Limit that should come from one encumbrance tick
+        /// </summary>
+        public async Task SetEncumbrancePenaltyPhysicalLimitAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intEncumbrancePenaltyPhysicalLimit == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intEncumbrancePenaltyPhysicalLimit, value) != value)
+                    await OnPropertyChangedAsync(nameof(EncumbrancePenaltyPhysicalLimit), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Should we apply a penalty to Movement Speeds from encumbrance?
         /// </summary>
         public bool DoEncumbrancePenaltyMovementSpeed
@@ -7960,6 +8701,45 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyMovementSpeed, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Movement Speeds that should come from one encumbrance tick
+        /// </summary>
+        public async Task<int> GetEncumbrancePenaltyMovementSpeedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intEncumbrancePenaltyMovementSpeed;
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Movement Speeds that should come from one encumbrance tick
+        /// </summary>
+        public async Task SetEncumbrancePenaltyMovementSpeedAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intEncumbrancePenaltyMovementSpeed == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intEncumbrancePenaltyMovementSpeed, value) != value)
+                    await OnPropertyChangedAsync(nameof(EncumbrancePenaltyMovementSpeed), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8007,6 +8787,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The penalty to Agility that should come from one encumbrance tick
+        /// </summary>
+        public async Task<int> GetEncumbrancePenaltyAgilityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intEncumbrancePenaltyAgility;
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Agility that should come from one encumbrance tick
+        /// </summary>
+        public async Task SetEncumbrancePenaltyAgilityAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intEncumbrancePenaltyAgility == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intEncumbrancePenaltyAgility, value) != value)
+                    await OnPropertyChangedAsync(nameof(EncumbrancePenaltyAgility), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Should we apply a penalty to Reaction from encumbrance?
         /// </summary>
         public bool DoEncumbrancePenaltyReaction
@@ -8050,6 +8869,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The penalty to Reaction that should come from one encumbrance tick
+        /// </summary>
+        public async Task<int> GetEncumbrancePenaltyReactionAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intEncumbrancePenaltyReaction;
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Reaction that should come from one encumbrance tick
+        /// </summary>
+        public async Task SetEncumbrancePenaltyReactionAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intEncumbrancePenaltyReaction == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intEncumbrancePenaltyReaction, value) != value)
+                    await OnPropertyChangedAsync(nameof(EncumbrancePenaltyReaction), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Should we apply a penalty to Physical Active and Weapon skills from encumbrance?
         /// </summary>
         public bool DoEncumbrancePenaltyWoundModifier
@@ -8073,7 +8931,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// The penalty to Reaction that should come from one encumbrance tick
+        /// The penalty to Physical Active and Weapon skills that should come from one encumbrance tick
         /// </summary>
         public int EncumbrancePenaltyWoundModifier
         {
@@ -8089,6 +8947,45 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intEncumbrancePenaltyWoundModifier, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Physical Active and Weapon skills that should come from one encumbrance tick
+        /// </summary>
+        public async Task<int> GetEncumbrancePenaltyWoundModifierAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intEncumbrancePenaltyWoundModifier;
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Physical Active and Weapon skills that should come from one encumbrance tick
+        /// </summary>
+        public async Task SetEncumbrancePenaltyWoundModifierAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intEncumbrancePenaltyWoundModifier == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intEncumbrancePenaltyWoundModifier, value) != value)
+                    await OnPropertyChangedAsync(nameof(EncumbrancePenaltyWoundModifier), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8122,14 +9019,12 @@ namespace Chummer
                     int intCurrentEssenceDecimals = EssenceDecimals;
                     if (intNewEssenceDecimals < intCurrentEssenceDecimals)
                     {
-                        using (LockObject.EnterWriteLock())
-                            EssenceFormat
-                                = EssenceFormat.Substring(
-                                    0, EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals));
+                        EssenceFormat
+                            = EssenceFormat.Substring(
+                                0, EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals));
                     }
                     else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
                     {
-                        using (LockObject.EnterWriteLock())
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdEssenceFormat))
                         {
@@ -8148,6 +9043,72 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        public async Task<int> GetEssenceDecimalsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedEssenceDecimals >= 0)
+                    return _intCachedEssenceDecimals;
+                string strEssenceFormat = await GetEssenceFormatAsync(token);
+                int intDecimalPlaces = strEssenceFormat.IndexOf('.');
+                intDecimalPlaces = strEssenceFormat.Length - intDecimalPlaces - 1;
+                Interlocked.CompareExchange(ref _intCachedEssenceDecimals, intDecimalPlaces, int.MinValue);
+                return _intCachedEssenceDecimals;
+            }
+        }
+
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        public async Task SetEssenceDecimalsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intNewEssenceDecimals = Math.Max(value, 2);
+            if (intNewEssenceDecimals == await GetEssenceDecimalsAsync(token))
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intCurrentEssenceDecimals = await GetEssenceDecimalsAsync(token);
+                if (intNewEssenceDecimals < intCurrentEssenceDecimals)
+                {
+                    string strEssenceFormat = await GetEssenceFormatAsync(token);
+                    await SetEssenceFormatAsync(strEssenceFormat.Substring(
+                        0, strEssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals)), token);
+                }
+                else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdEssenceFormat))
+                    {
+                        string strEssenceFormat = await GetEssenceFormatAsync(token);
+                        sbdEssenceFormat.Append(string.IsNullOrEmpty(strEssenceFormat) ? "#,0" : strEssenceFormat);
+                        if (intCurrentEssenceDecimals == 0)
+                        {
+                            sbdEssenceFormat.Append('.');
+                        }
+
+                        for (int i = intCurrentEssenceDecimals; i < intNewEssenceDecimals; ++i)
+                        {
+                            sbdEssenceFormat.Append('0');
+                        }
+
+                        await SetEssenceFormatAsync(sbdEssenceFormat.ToString(), token);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -8199,6 +9160,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strEssenceFormat;
+            }
+        }
+
+        /// <summary>
+        /// Display format for Essence.
+        /// </summary>
+        public async Task SetEssenceFormatAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strEssenceFormat == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strEssenceFormat, value) != value)
+                    await OnPropertyChangedAsync(nameof(EssenceFormat), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8781,6 +9768,44 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum number of attributes at metatype maximum in character creation
+        /// </summary>
+        public async Task<int> GetMaxNumberMaxAttributesCreateAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMaxNumberMaxAttributesCreate;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of attributes at metatype maximum in character creation
+        /// </summary>
+        public async Task SetMaxNumberMaxAttributesCreateAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxNumberMaxAttributesCreate == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxNumberMaxAttributesCreate, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaxNumberMaxAttributesCreate), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum skill rating in character creation
         /// </summary>
         public int MaxSkillRatingCreate
@@ -8813,6 +9838,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum skill rating in character creation
+        /// </summary>
+        public async Task SetMaxSkillRatingCreateAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxSkillRatingCreate == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxSkillRatingCreate, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaxSkillRatingCreate), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum knowledge skill rating in character creation
         /// </summary>
         public int MaxKnowledgeSkillRatingCreate
@@ -8841,6 +9892,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intMaxKnowledgeSkillRatingCreate;
+            }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating in character creation
+        /// </summary>
+        public async Task SetMaxKnowledgeSkillRatingCreateAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxKnowledgeSkillRatingCreate == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRatingCreate, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaxKnowledgeSkillRatingCreate), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8886,6 +9963,41 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum skill rating
+        /// </summary>
+        public async Task SetMaxSkillRatingAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxSkillRating == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxSkillRating, value) == value)
+                    return;
+                if (await GetMaxSkillRatingCreateAsync(token).ConfigureAwait(false) > value)
+                {
+                    if (Interlocked.Exchange(ref _intMaxSkillRatingCreate, value) != value)
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(MaxSkillRating), nameof(MaxSkillRatingCreate)).ConfigureAwait(false);
+                    else
+                        await OnPropertyChangedAsync(nameof(MaxSkillRating), token).ConfigureAwait(false);
+                }
+                else
+                    await OnPropertyChangedAsync(nameof(MaxSkillRating), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum knowledge skill rating
         /// </summary>
         public int MaxKnowledgeSkillRating
@@ -8924,6 +10036,41 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intMaxKnowledgeSkillRating;
+            }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating
+        /// </summary>
+        public async Task SetMaxKnowledgeSkillRatingAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxKnowledgeSkillRating == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRating, value) == value)
+                    return;
+                if (await GetMaxSkillRatingCreateAsync(token).ConfigureAwait(false) > value)
+                {
+                    if (Interlocked.Exchange(ref _intMaxKnowledgeSkillRatingCreate, value) != value)
+                        await this.OnMultiplePropertyChangedAsync(token, nameof(MaxKnowledgeSkillRating), nameof(MaxKnowledgeSkillRatingCreate)).ConfigureAwait(false);
+                    else
+                        await OnPropertyChangedAsync(nameof(MaxKnowledgeSkillRating), token).ConfigureAwait(false);
+                }
+                else
+                    await OnPropertyChangedAsync(nameof(MaxKnowledgeSkillRating), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9244,6 +10391,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public async Task<int> GetCyberlimbAttributeBonusCapAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intCyberlimbAttributeBonusCap;
+            }
+        }
+
+        /// <summary>
+        /// Maximum value of bonuses that can affect cyberlimbs.
+        /// </summary>
+        public async Task SetCyberlimbAttributeBonusCapAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCyberlimbAttributeBonusCap == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intCyberlimbAttributeBonusCap, value) != value)
+                    await OnPropertyChangedAsync(nameof(CyberlimbAttributeBonusCap), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The Dice Penalty per Spell
         /// </summary>
         public int DicePenaltySustaining
@@ -9301,6 +10487,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice
+        /// </summary>
+        public async Task SetMinInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMinInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMinInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MinInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice
         /// </summary>
         public int MaxInitiativeDice
@@ -9330,6 +10542,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intMaxInitiativeDice;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice
+        /// </summary>
+        public async Task SetMaxInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaxInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9367,6 +10605,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice in Astral
+        /// </summary>
+        public async Task SetMinAstralInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMinAstralInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMinAstralInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MinAstralInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice in Astral
         /// </summary>
         public int MaxAstralInitiativeDice
@@ -9396,6 +10660,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intMaxAstralInitiativeDice;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in Astral
+        /// </summary>
+        public async Task SetMaxAstralInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxAstralInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxAstralInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaxAstralInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9433,6 +10723,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice in cold sim VR
+        /// </summary>
+        public async Task SetMinColdSimInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMinColdSimInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMinColdSimInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MinColdSimInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice in cold sim VR
         /// </summary>
         public int MaxColdSimInitiativeDice
@@ -9462,6 +10778,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intMaxColdSimInitiativeDice;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in cold sim VR
+        /// </summary>
+        public async Task SetMaxColdSimInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxColdSimInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxColdSimInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaxColdSimInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9499,6 +10841,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Minimum number of initiative dice in hot sim VR
+        /// </summary>
+        public async Task SetMinHotSimInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMinHotSimInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMinHotSimInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MinHotSimInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum number of initiative dice in hot sim VR
         /// </summary>
         public int MaxHotSimInitiativeDice
@@ -9528,6 +10896,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intMaxHotSimInitiativeDice;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in hot sim VR
+        /// </summary>
+        public async Task SetMaxHotSimInitiativeDiceAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intMaxHotSimInitiativeDice == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intMaxHotSimInitiativeDice, value) != value)
+                    await OnPropertyChangedAsync(nameof(MaxHotSimInitiativeDice), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9568,6 +10962,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to improve an Attribute = New Rating X this value.
+        /// </summary>
+        public async Task SetKarmaAttributeAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaAttribute == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaAttribute, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaAttribute), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost to purchase a Quality = BP Cost x this value.
         /// </summary>
         public int KarmaQuality
@@ -9596,6 +11016,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaQuality;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to purchase a Quality = BP Cost x this value.
+        /// </summary>
+        public async Task SetKarmaQualityAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaQuality == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaQuality, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaQuality), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9632,6 +11078,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to purchase a Specialization for an active skill = this value.
+        /// </summary>
+        public async Task SetKarmaSpecializationAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSpecialization == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSpecialization, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSpecialization), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost to purchase a Specialization for a knowledge skill = this value.
         /// </summary>
         public int KarmaKnowledgeSpecialization
@@ -9660,6 +11132,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaKnoSpecialization;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to purchase a Specialization for a knowledge skill = this value.
+        /// </summary>
+        public async Task SetKarmaKnowledgeSpecializationAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaKnoSpecialization == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaKnoSpecialization, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaKnowledgeSpecialization), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9696,6 +11194,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to purchase a new Knowledge Skill = this value.
+        /// </summary>
+        public async Task SetKarmaNewKnowledgeSkillAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaNewKnowledgeSkill == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaNewKnowledgeSkill, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaNewKnowledgeSkill), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost to purchase a new Active Skill = this value.
         /// </summary>
         public int KarmaNewActiveSkill
@@ -9724,6 +11248,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaNewActiveSkill;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to purchase a new Active Skill = this value.
+        /// </summary>
+        public async Task SetKarmaNewActiveSkillAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaNewActiveSkill == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaNewActiveSkill, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaNewActiveSkill), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9760,6 +11310,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to purchase a new Skill Group = this value.
+        /// </summary>
+        public async Task SetKarmaNewSkillGroupAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaNewSkillGroup == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaNewSkillGroup, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaNewSkillGroup), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost to improve a Knowledge Skill = New Rating x this value.
         /// </summary>
         public int KarmaImproveKnowledgeSkill
@@ -9788,6 +11364,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaImproveKnowledgeSkill;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to improve a Knowledge Skill = New Rating x this value.
+        /// </summary>
+        public async Task SetKarmaImproveKnowledgeSkillAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaImproveKnowledgeSkill == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaImproveKnowledgeSkill, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaImproveKnowledgeSkill), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9824,6 +11426,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to improve an Active Skill = New Rating x this value.
+        /// </summary>
+        public async Task SetKarmaImproveActiveSkillAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaImproveActiveSkill == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaImproveActiveSkill, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaImproveActiveSkill), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost to improve a Skill Group = New Rating x this value.
         /// </summary>
         public int KarmaImproveSkillGroup
@@ -9852,6 +11480,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaImproveSkillGroup;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to improve a Skill Group = New Rating x this value.
+        /// </summary>
+        public async Task SetKarmaImproveSkillGroupAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaImproveSkillGroup == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaImproveSkillGroup, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaImproveActiveSkill), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9888,6 +11542,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for each Spell = this value.
+        /// </summary>
+        public async Task SetKarmaSpellAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSpell == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSpell, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSpell), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for each Enhancement = this value.
         /// </summary>
         public int KarmaEnhancement
@@ -9904,6 +11584,44 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _intKarmaEnhancement, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for each Enhancement = this value.
+        /// </summary>
+        public async Task<int> GetKarmaEnhancementAsync(CancellationToken token = default)
+        {
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                return _intKarmaEnhancement;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for each Enhancement = this value.
+        /// </summary>
+        public async Task SetKarmaEnhancementAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaEnhancement == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaEnhancement, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaEnhancement), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -9940,6 +11658,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a new Complex Form = this value.
+        /// </summary>
+        public async Task SetKarmaNewComplexFormAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaNewComplexForm == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaNewComplexForm, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaNewComplexForm), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for a new AI Program
         /// </summary>
         public int KarmaNewAIProgram
@@ -9968,6 +11712,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaNewAIProgram;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for a new AI Program
+        /// </summary>
+        public async Task SetKarmaNewAIProgramAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaNewAIProgram == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaNewAIProgram, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaNewAIProgram), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10004,6 +11774,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a new AI Advanced Program
+        /// </summary>
+        public async Task SetKarmaNewAIAdvancedProgramAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaNewAIAdvancedProgram == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaNewAIAdvancedProgram, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaNewAIAdvancedProgram), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for a Contact = (Connection + Loyalty) x this value.
         /// </summary>
         public int KarmaContact
@@ -10032,6 +11828,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaContact;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for a Contact = (Connection + Loyalty) x this value.
+        /// </summary>
+        public async Task SetKarmaContactAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaContact == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaContact, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaContact), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10068,6 +11890,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a Enemy = (Connection + Loyalty) x this value.
+        /// </summary>
+        public async Task SetKarmaEnemyAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaEnemy == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaEnemy, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaEnemy), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum amount of remaining Karma that is carried over to the character once they are created.
         /// </summary>
         public int KarmaCarryover
@@ -10096,6 +11944,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaCarryover;
+            }
+        }
+
+        /// <summary>
+        /// Maximum amount of remaining Karma that is carried over to the character once they are created.
+        /// </summary>
+        public async Task SetKarmaCarryoverAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaCarryover == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaCarryover, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaCarryover), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10135,6 +12009,44 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum amount of remaining Nuyen that is carried over to the character once they are created.
+        /// </summary>
+        public async Task SetNuyenCarryoverAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenCarryover == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decNuyenCarryover == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyenCarryover = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(NuyenCarryover), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for a Spirit = this value.
         /// </summary>
         public int KarmaSpirit
@@ -10163,6 +12075,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaSpirit;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for a Spirit = this value.
+        /// </summary>
+        public async Task SetKarmaSpiritAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSpirit == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSpirit, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSpirit), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10199,6 +12137,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a Martial Arts Technique = this value.
+        /// </summary>
+        public async Task SetKarmaTechniqueAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaTechnique == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaTechnique, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaTechnique), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
         /// </summary>
         public int KarmaInitiation
@@ -10227,6 +12191,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaInitiation;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for an Initiation = KarmaInitiationFlat + (New Rating x this value).
+        /// </summary>
+        public async Task SetKarmaInitiationAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaInitiation == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaInitiation, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaInitiation), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10263,6 +12253,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for an Initiation = this value + (New Rating x KarmaInitiation).
+        /// </summary>
+        public async Task SetKarmaInitiationFlatAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaInitiationFlat == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaInitiationFlat, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaInitiationFlat), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for a Metamagic = this value.
         /// </summary>
         public int KarmaMetamagic
@@ -10291,6 +12307,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaMetamagic;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for a Metamagic = this value.
+        /// </summary>
+        public async Task SetKarmaMetamagicAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaMetamagic == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaMetamagic, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaMetamagic), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10327,6 +12369,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to join a Group = this value.
+        /// </summary>
+        public async Task SetKarmaJoinGroupAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaJoinGroup == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaJoinGroup, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaJoinGroup), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost to leave a Group = this value.
         /// </summary>
         public int KarmaLeaveGroup
@@ -10355,6 +12423,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaLeaveGroup;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost to leave a Group = this value.
+        /// </summary>
+        public async Task SetKarmaLeaveGroupAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaLeaveGroup == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaLeaveGroup, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaLeaveGroup), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10391,6 +12485,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Alchemical Foci.
+        /// </summary>
+        public async Task SetKarmaAlchemicalFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaAlchemicalFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaAlchemicalFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaAlchemicalFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Banishing Foci.
         /// </summary>
         public int KarmaBanishingFocus
@@ -10419,6 +12539,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaBanishingFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Banishing Foci.
+        /// </summary>
+        public async Task SetKarmaBanishingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaBanishingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaBanishingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaBanishingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10455,6 +12601,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Binding Foci.
+        /// </summary>
+        public async Task SetKarmaBindingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaBindingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaBindingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaBindingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Centering Foci.
         /// </summary>
         public int KarmaCenteringFocus
@@ -10483,6 +12655,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaCenteringFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Centering Foci.
+        /// </summary>
+        public async Task SetKarmaCenteringFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaCenteringFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaCenteringFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaCenteringFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10519,6 +12717,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Counterspelling Foci.
+        /// </summary>
+        public async Task SetKarmaCounterspellingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaCounterspellingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaCounterspellingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaCounterspellingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Disenchanting Foci.
         /// </summary>
         public int KarmaDisenchantingFocus
@@ -10547,6 +12771,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaDisenchantingFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Disenchanting Foci.
+        /// </summary>
+        public async Task SetKarmaDisenchantingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaDisenchantingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaDisenchantingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaDisenchantingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10583,6 +12833,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Flexible Signature Foci.
+        /// </summary>
+        public async Task SetKarmaFlexibleSignatureFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaFlexibleSignatureFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaFlexibleSignatureFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaFlexibleSignatureFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Masking Foci.
         /// </summary>
         public int KarmaMaskingFocus
@@ -10611,6 +12887,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaMaskingFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Masking Foci.
+        /// </summary>
+        public async Task SetKarmaMaskingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaMaskingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaMaskingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaMaskingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10644,6 +12946,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Power Foci.
+        /// </summary>
+        public async Task SetKarmaPowerFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaPowerFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaPowerFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaPowerFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Qi Foci.
         /// </summary>
         public int KarmaQiFocus
@@ -10669,6 +12997,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaQiFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Power Foci.
+        /// </summary>
+        public async Task SetKarmaQiFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaQiFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaQiFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaQiFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10705,6 +13059,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Ritual Spellcasting Foci.
+        /// </summary>
+        public async Task SetKarmaRitualSpellcastingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaRitualSpellcastingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaRitualSpellcastingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaRitualSpellcastingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Spellcasting Foci.
         /// </summary>
         public int KarmaSpellcastingFocus
@@ -10733,6 +13113,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaSpellcastingFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Spellcasting Foci.
+        /// </summary>
+        public async Task SetKarmaSpellcastingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSpellcastingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSpellcastingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSpellcastingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10769,6 +13175,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Spell Shaping Foci.
+        /// </summary>
+        public async Task SetKarmaSpellShapingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSpellShapingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSpellShapingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSpellShapingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Summoning Foci.
         /// </summary>
         public int KarmaSummoningFocus
@@ -10797,6 +13229,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaSummoningFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Summoning Foci.
+        /// </summary>
+        public async Task SetKarmaSummoningFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSummoningFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSummoningFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSummoningFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10833,6 +13291,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Sustaining Foci.
+        /// </summary>
+        public async Task SetKarmaSustainingFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSustainingFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSustainingFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSustainingFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for Weapon Foci.
         /// </summary>
         public int KarmaWeaponFocus
@@ -10861,6 +13345,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaWeaponFocus;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for Weapon Foci.
+        /// </summary>
+        public async Task SetKarmaWeaponFocusAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaWeaponFocus == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaWeaponFocus, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaWeaponFocus), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10897,6 +13407,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// How much Karma a single Power Point costs for a Mystic Adept.
+        /// </summary>
+        public async Task SetKarmaMysticAdeptPowerPointAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaMysticAdeptPowerPoint == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaMysticAdeptPowerPoint, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaMysticAdeptPowerPoint), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Karma cost for fetting a spirit (gets multiplied by Force).
         /// </summary>
         public int KarmaSpiritFettering
@@ -10925,6 +13461,32 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarmaSpiritFettering;
+            }
+        }
+
+        /// <summary>
+        /// Karma cost for fetting a spirit (gets multiplied by Force).
+        /// </summary>
+        public async Task SetKarmaSpiritFetteringAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intKarmaSpiritFettering == value)
+                    return;
+            }
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intKarmaSpiritFettering, value) != value)
+                    await OnPropertyChangedAsync(nameof(KarmaSpiritFettering), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
