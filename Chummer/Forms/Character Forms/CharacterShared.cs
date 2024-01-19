@@ -6074,9 +6074,13 @@ namespace Chummer
                             bool blnWarned = false;
                             int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                                 .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) && await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)))
-                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
+                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
+                                await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
+                                    .ConfigureAwait(false))
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal,
+                                    await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
+                                            .ConfigureAwait(false))
+                                        .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in e.NewItems)
@@ -6287,7 +6291,9 @@ namespace Chummer
                             bool blnWarned = false;
                             int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                                 .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) && await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)))
+                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
+                                await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token)
+                                    .ConfigureAwait(false))
                                 intMaxFocusTotal = Math.Min(intMaxFocusTotal,
                                     await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
                                             .ConfigureAwait(false))
