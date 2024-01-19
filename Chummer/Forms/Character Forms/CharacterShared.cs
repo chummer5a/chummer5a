@@ -10080,14 +10080,12 @@ namespace Chummer
             return RequestCharacterUpdate(false, token);
         }
 
-        public Task RequestCharacterUpdate(bool blnAlsoProcessUpdate, CancellationToken token = default)
+        public async Task RequestCharacterUpdate(bool blnAlsoProcessUpdate, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            if (GenericToken.IsCancellationRequested)
-                return Task.FromCanceled(GenericToken);
+            token.ThrowIfCancellationRequested();
+            GenericToken.ThrowIfCancellationRequested();
             if (IsLoading)
-                return Task.CompletedTask;
+                return;
             // This sort of roundabout method using a timer is necessary to prevent hammered requests from overloading the program
             // What this approach does is makes sure that an update request is only followed through with if no new requests come in for a short delay
             System.Timers.Timer tmrCurrentRequestTimer = _tmrCharacterUpdateRequestTimer;
@@ -10095,7 +10093,14 @@ namespace Chummer
             {
                 tmrCurrentRequestTimer.Stop();
                 tmrCurrentRequestTimer.Start();
-                return Task.CompletedTask;
+                if (!blnAlsoProcessUpdate)
+                    return;
+                DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
+                if (objCharacterUpdateStartingSemaphore == null)
+                    return;
+                await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
+                objCharacterUpdateStartingSemaphore.Release();
+                await _tskUpdateCharacterInfo.ConfigureAwait(false);
             }
 
             // Obtuse stuff around creating a new request and interlocking with the current one is to keep things thread-safe if multiple requests just happen to be timed poorly
@@ -10104,7 +10109,10 @@ namespace Chummer
                 AutoReset = false
             };
             TaskCompletionSource<bool> objReturnSource = new TaskCompletionSource<bool>();
-            tmrNewRequestTimer.Elapsed += OnTmrNewRequestTimerOnElapsed;
+            if (blnAlsoProcessUpdate)
+                tmrNewRequestTimer.Elapsed += OnTmrNewRequestTimerOnElapsedTrue;
+            else
+                tmrNewRequestTimer.Elapsed += OnTmrNewRequestTimerOnElapsedFalse;
             System.Timers.Timer tmrOldRequestTimer = Interlocked.CompareExchange(ref _tmrCharacterUpdateRequestTimer, tmrNewRequestTimer, tmrCurrentRequestTimer);
             if (tmrOldRequestTimer != tmrCurrentRequestTimer)
             {
@@ -10113,19 +10121,44 @@ namespace Chummer
                 {
                     tmrOldRequestTimer.Stop();
                     tmrOldRequestTimer.Start();
+                    if (!blnAlsoProcessUpdate)
+                        return;
+                    DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
+                    if (objCharacterUpdateStartingSemaphore == null)
+                        return;
+                    await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    objCharacterUpdateStartingSemaphore.Release();
+                    await _tskUpdateCharacterInfo.ConfigureAwait(false);
                 }
-                return Task.CompletedTask;
+                return;
             }
 
             tmrOldRequestTimer.Dispose();
             tmrNewRequestTimer.Start();
-            return objReturnSource.Task;
+            await objReturnSource.Task.ConfigureAwait(false);
 
-            async void OnTmrNewRequestTimerOnElapsed(object sender, ElapsedEventArgs e)
+            async void OnTmrNewRequestTimerOnElapsedTrue(object sender, ElapsedEventArgs e)
             {
                 try
                 {
                     await ActuallyRequestCharacterUpdate(true, token).ConfigureAwait(false);
+                    objReturnSource.TrySetResult(true);
+                }
+                catch (OperationCanceledException)
+                {
+                    objReturnSource.TrySetCanceled(token);
+                }
+                catch (Exception exception)
+                {
+                    objReturnSource.TrySetException(exception);
+                }
+            }
+
+            async void OnTmrNewRequestTimerOnElapsedFalse(object sender, ElapsedEventArgs e)
+            {
+                try
+                {
+                    await ActuallyRequestCharacterUpdate(false, token).ConfigureAwait(false);
                     objReturnSource.TrySetResult(true);
                 }
                 catch (OperationCanceledException)
