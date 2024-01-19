@@ -10100,7 +10100,9 @@ namespace Chummer
                     return;
                 await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
                 objCharacterUpdateStartingSemaphore.Release();
-                await _tskUpdateCharacterInfo.ConfigureAwait(false);
+                Task tskTemp = _tskUpdateCharacterInfo;
+                if (tskTemp != null)
+                    await tskTemp.ConfigureAwait(false);
             }
 
             // Obtuse stuff around creating a new request and interlocking with the current one is to keep things thread-safe if multiple requests just happen to be timed poorly
@@ -10128,7 +10130,9 @@ namespace Chummer
                         return;
                     await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
                     objCharacterUpdateStartingSemaphore.Release();
-                    await _tskUpdateCharacterInfo.ConfigureAwait(false);
+                    Task tskTemp = _tskUpdateCharacterInfo;
+                    if (tskTemp != null)
+                        await tskTemp.ConfigureAwait(false);
                 }
                 return;
             }
