@@ -151,7 +151,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        /// <param name="blnSkipSelectForms">Whether or not bonuses should be created.</param>
+        /// <param name="blnSkipSelectForms">Whether bonuses should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -168,7 +168,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        /// <param name="blnSkipSelectForms">Whether or not bonuses should be created.</param>
+        /// <param name="blnSkipSelectForms">Whether bonuses should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlMod, int intRating, Vehicle objParent, decimal decMarkup = 0,
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -894,7 +894,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Mod included with the Vehicle by default.
+        /// Whether the Mod included with the Vehicle by default.
         /// </summary>
         public bool IncludedInVehicle
         {
@@ -903,7 +903,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Mod is installed and contributing towards the Vehicle's stats.
+        /// Whether this Mod is installed and contributing towards the Vehicle's stats.
         /// </summary>
         public bool Equipped
         {
@@ -930,7 +930,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Vehicle Mod allows Cyberware Plugins.
+        /// Whether the Vehicle Mod allows Cyberware Plugins.
         /// </summary>
         public bool AllowCyberware => !string.IsNullOrEmpty(_strSubsystems);
 
@@ -953,7 +953,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Vehicle Mod's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Vehicle Mod's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {
@@ -962,7 +962,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Vehicle Mod is a downgrade for drone attributes
+        /// Whether the Vehicle Mod is a downgrade for drone attributes
         /// </summary>
         public bool Downgrade => _blnDowngrade;
 
@@ -2134,7 +2134,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Mod is allowed to accept Cyberware Modular Plugins.
+        /// Whether the Mod is allowed to accept Cyberware Modular Plugins.
         /// </summary>
         public bool AllowModularPlugins
         {

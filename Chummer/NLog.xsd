@@ -1586,7 +1586,7 @@
         </xs:attribute>
         <xs:attribute name="discardAll" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether or not this target should just discard all data that its asked to write. Mostly used for when testing NLog Stack except final write</xs:documentation>
+            <xs:documentation>Whether this target should just discard all data that its asked to write. Mostly used for when testing NLog Stack except final write</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="openFileCacheSize" type="xs:integer">
@@ -2991,7 +2991,7 @@
         </xs:attribute>
         <xs:attribute name="elementEncode" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
+            <xs:documentation>Determines whether this attribute will be Xml encoded.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeProperties" type="xs:string">

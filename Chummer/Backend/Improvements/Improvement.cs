@@ -604,7 +604,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not this is a custom-made (manually created) Improvement.
+        /// Whether this is a custom-made (manually created) Improvement.
         /// </summary>
         public bool Custom
         {
@@ -871,7 +871,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the bonus applies directly to a Skill's Rating
+        /// Whether the bonus applies directly to a Skill's Rating
         /// </summary>
         public bool AddToRating
         {
@@ -902,7 +902,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Improvement is enabled and provided its bonus.
+        /// Whether the Improvement is enabled and provided its bonus.
         /// </summary>
         public bool Enabled
         {
@@ -918,7 +918,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not we have completed our first setup. Needed to skip superfluous event updates at startup
+        /// Whether we have completed our first setup. Needed to skip superfluous event updates at startup
         /// </summary>
         public bool SetupComplete
         {

@@ -278,7 +278,7 @@ namespace Chummer
         /// <param name="strReason">Reason for the Karma/Nuyen change.</param>
         /// <param name="objExpenseType">Type of expense, either Karma or Nuyen.</param>
         /// <param name="datDate">Date and time of the Expense.</param>
-        /// <param name="blnRefund">Whether or not this expense is a Karma refund.</param>
+        /// <param name="blnRefund">Whether this expense is a Karma refund.</param>
         public ExpenseLogEntry Create(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
         {
             _decAmount = decAmount;
@@ -448,7 +448,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Expense is a Karma refund.
+        /// Whether the Expense is a Karma refund.
         /// </summary>
         public bool Refund
         {

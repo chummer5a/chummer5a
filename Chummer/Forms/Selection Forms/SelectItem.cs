@@ -427,7 +427,7 @@ namespace Chummer
         public string SelectedName => cboAmmo.Text;
 
         /// <summary>
-        /// Whether or not the Form should be accepted if there is only one item left in the list.
+        /// Whether the Form should be accepted if there is only one item left in the list.
         /// </summary>
         public bool AllowAutoSelect
         {

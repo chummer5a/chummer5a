@@ -183,7 +183,7 @@ namespace Chummer.Backend.Uniques
         /// Create a Tradition from an XmlNode.
         /// </summary>
         /// <param name="xmlTraditionNode">XmlNode to create the object from.</param>
-        /// <param name="blnIsTechnomancerTradition">Whether or not this tradition is for a technomancer.</param>
+        /// <param name="blnIsTechnomancerTradition">Whether this tradition is for a technomancer.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public bool Create(XmlNode xmlTraditionNode, bool blnIsTechnomancerTradition = false, string strForcedValue = "")
         {
@@ -246,7 +246,7 @@ namespace Chummer.Backend.Uniques
         /// Create a Tradition from an XmlNode.
         /// </summary>
         /// <param name="xmlTraditionNode">XmlNode to create the object from.</param>
-        /// <param name="blnIsTechnomancerTradition">Whether or not this tradition is for a technomancer.</param>
+        /// <param name="blnIsTechnomancerTradition">Whether this tradition is for a technomancer.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task<bool> CreateAsync(XmlNode xmlTraditionNode, bool blnIsTechnomancerTradition = false, string strForcedValue = "", CancellationToken token = default)
@@ -919,7 +919,7 @@ namespace Chummer.Backend.Uniques
         public const string CustomMagicalTraditionGuid = "616ba093-306c-45fc-8f41-0b98c8cccb46";
 
         /// <summary>
-        /// Whether or not a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
+        /// Whether a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
         /// </summary>
         public bool IsCustomTradition
         {
@@ -932,7 +932,7 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
-        /// Whether or not a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
+        /// Whether a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
         /// </summary>
         public async Task<bool> GetIsCustomTraditionAsync(CancellationToken token = default)
         {

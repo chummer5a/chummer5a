@@ -147,10 +147,10 @@ namespace Chummer.Backend.Equipment
         /// Create a Vehicle from an XmlNode.
         /// </summary>
         /// <param name="objXmlVehicle">XmlNode of the Vehicle to create.</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        /// <param name="blnSkipCost">Whether or not creating the Vehicle should skip the Variable price dialogue (should only be used by SelectVehicle form).</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether creating the Vehicle should skip the Variable price dialogue (should only be used by SelectVehicle form).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlVehicle, bool blnSkipCost = false, bool blnCreateChildren = true,
             bool blnCreateImprovements = true, bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -163,10 +163,10 @@ namespace Chummer.Backend.Equipment
         /// Create a Vehicle from an XmlNode.
         /// </summary>
         /// <param name="objXmlVehicle">XmlNode of the Vehicle to create.</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        /// <param name="blnSkipCost">Whether or not creating the Vehicle should skip the Variable price dialogue (should only be used by SelectVehicle form).</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether creating the Vehicle should skip the Variable price dialogue (should only be used by SelectVehicle form).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlVehicle, bool blnSkipCost = false, bool blnCreateChildren = true,
             bool blnCreateImprovements = true, bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -354,6 +354,7 @@ namespace Chummer.Backend.Equipment
             }
 
             DealerConnectionDiscount = blnSync
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? DoesDealerConnectionCurrentlyApply()
                 : await DoesDealerConnectionCurrentlyApplyAsync(token).ConfigureAwait(false);
 
@@ -874,7 +875,7 @@ namespace Chummer.Backend.Equipment
         /// Load the Vehicle from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Whether or not we are copying an existing vehicle.</param>
+        /// <param name="blnCopy">Whether we are copying an existing vehicle.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (objNode == null)
@@ -2285,7 +2286,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
+        /// Whether the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
         /// </summary>
         public bool DiscountCost
         {
@@ -2303,7 +2304,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
+        /// Whether the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
         /// </summary>
         public bool DealerConnectionDiscount
         {
@@ -2312,7 +2313,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Check whether or not a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
+        /// Check whether a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
         /// </summary>
         public bool DoesDealerConnectionCurrentlyApply()
         {
@@ -2357,7 +2358,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Check whether or not a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
+        /// Check whether a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
         /// </summary>
         public async Task<bool> DoesDealerConnectionCurrentlyApplyAsync(CancellationToken token = default)
         {
@@ -2402,7 +2403,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Check whether or not a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
+        /// Check whether a vehicle's cost should be discounted by 10% through the Dealer Connection quality on a character.
         /// </summary>
         /// <param name="lstUniques">Collection of DealerConnection improvement uniques.</param>
         /// <param name="strCategory">Vehicle's category.</param>

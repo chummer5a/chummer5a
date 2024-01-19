@@ -1144,7 +1144,7 @@ namespace Chummer.Backend.Equipment
             FormattedDisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
-        ///     Whether or not the LifestyleQuality appears on the printouts.
+        ///     Whether the LifestyleQuality appears on the printouts.
         /// </summary>
         public bool AllowPrint
         {
@@ -1458,7 +1458,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Quality costs LP.
+        /// Whether this Quality costs LP.
         /// </summary>
         public bool UseLPCost
         {
@@ -1491,7 +1491,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Quality costs LP.
+        /// Whether this Quality costs LP.
         /// </summary>
         public async Task<bool> GetUseLPCostAsync(CancellationToken token = default)
         {
@@ -1504,7 +1504,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Quality costs LP.
+        /// Whether this Quality costs LP.
         /// </summary>
         public async Task SetUseLPCostAsync(bool value, CancellationToken token = default)
         {

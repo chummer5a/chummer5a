@@ -592,7 +592,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain { get; private set; }
 
@@ -666,12 +666,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the item should be added for free.
+        /// Whether the item should be added for free.
         /// </summary>
         public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
-        /// Whether or not the item's cost should be cut in half for being a Do It Yourself component/upgrade.
+        /// Whether the item's cost should be cut in half for being a Do It Yourself component/upgrade.
         /// </summary>
         public bool DoItYourself => chkDoItYourself.Checked;
 
@@ -681,12 +681,12 @@ namespace Chummer
         public decimal Markup => _decMarkup;
 
         /// <summary>
-        /// Whether or not the Gear should stack with others if possible.
+        /// Whether the Gear should stack with others if possible.
         /// </summary>
         public bool Stack => chkStack.Checked;
 
         /// <summary>
-        /// Whether or not the Stack Checkbox should be shown (default true).
+        /// Whether the Stack Checkbox should be shown (default true).
         /// </summary>
         public bool EnableStack
         {
@@ -707,7 +707,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the selected Vehicle is used.
+        /// Whether the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 

@@ -536,7 +536,7 @@ namespace Chummer
         /// Wait for an open directory to be available for deletion and then delete it.
         /// </summary>
         /// <param name="strPath">Directory path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if the directory cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -549,7 +549,7 @@ namespace Chummer
         /// Wait for an open directory to be available for deletion and then delete it.
         /// </summary>
         /// <param name="strPath">Directory path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if the directory cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -565,7 +565,7 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strPath">Directory path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if the directory cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -676,7 +676,7 @@ namespace Chummer
         /// <param name="strPath">Directory path to clear.</param>
         /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
         /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if a file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -693,7 +693,7 @@ namespace Chummer
         /// <param name="strPath">Directory path to clear.</param>
         /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
         /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if a file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
@@ -712,7 +712,7 @@ namespace Chummer
         /// <param name="strPath">Directory path to clear.</param>
         /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
         /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether to show a message if a file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
         /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>

@@ -353,12 +353,12 @@ namespace Chummer
         public string IgnoreQuality { get; set; } = string.Empty;
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
         /// <summary>
-        /// Whether or not the item has no cost.
+        /// Whether the item has no cost.
         /// </summary>
         public bool FreeCost => chkFree.Checked;
 

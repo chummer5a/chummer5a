@@ -171,9 +171,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the character.</param>
         /// <param name="strForceValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
-        /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
+        /// <param name="blnAddImprovements">Whether Improvements should be added to the character.</param>
+        /// <param name="blnCreateChildren">Whether child Gear should be created.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
             bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -190,9 +190,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the character.</param>
         /// <param name="strForceValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
-        /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
+        /// <param name="blnAddImprovements">Whether Improvements should be added to the character.</param>
+        /// <param name="blnCreateChildren">Whether child Gear should be created.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
             bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -1106,7 +1106,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="xmlGearNode">XmlNode containing information about the child gear that needs to be created.</param>
         /// <param name="lstWeapons">List of weapons that this (and other children) gear creates.</param>
         /// <param name="blnAddImprovements">Whether to create improvements for the gear or not (for Selection Windows, set to False).</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         public bool CreateFromNode(XmlDocument xmlGearsDocument, XmlNode xmlGearNode, ICollection<Weapon> lstWeapons,
             bool blnAddImprovements = true, bool blnSkipSelectForms = false)
         {
@@ -1207,7 +1207,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="xmlGearNode">XmlNode containing information about the child gear that needs to be created.</param>
         /// <param name="lstWeapons">List of weapons that this (and other children) gear creates.</param>
         /// <param name="blnAddImprovements">Whether to create improvements for the gear or not (for Selection Windows, set to False).</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task<bool> CreateFromNodeAsync(XmlDocument xmlGearsDocument, XmlNode xmlGearNode, ICollection<Weapon> lstWeapons,
             bool blnAddImprovements = true, bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -1482,7 +1482,7 @@ namespace Chummer.Backend.Equipment
         /// Load the Gear from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Whether or not we are loading a copy of an existing gear.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing gear.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -2439,7 +2439,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Foci is bonded.
+        /// Whether the Foci is bonded.
         /// </summary>
         public bool Bonded
         {
@@ -2448,7 +2448,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Gear is equipped.
+        /// Whether the Gear is equipped.
         /// </summary>
         public bool Equipped
         {
@@ -2457,7 +2457,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Gear's wireless bonus is enabled.
+        /// Whether the Gear's wireless bonus is enabled.
         /// </summary>
         public bool WirelessOn
         {
@@ -2889,7 +2889,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Gear qualifies as a Program in the printout XML.
+        /// Whether the Gear qualifies as a Program in the printout XML.
         /// </summary>
         public bool IsProgram => Category.EndsWith("Programs", StringComparison.OrdinalIgnoreCase) ||
                                  Category.EndsWith("Apps", StringComparison.OrdinalIgnoreCase) ||
@@ -2932,7 +2932,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Gear's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Gear's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {
@@ -3074,12 +3074,12 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Gear is included in its parent item when purchased (currently applies to Armor only).
+        /// Whether the Gear is included in its parent item when purchased (currently applies to Armor only).
         /// </summary>
         public bool IncludedInParent => !string.IsNullOrEmpty(ParentID);
 
         /// <summary>
-        /// Whether or not the Gear's equipped status can be changed.
+        /// Whether the Gear's equipped status can be changed.
         /// </summary>
         public bool CanChangeEquip => !IncludedInParent && LoadedIntoClip == null;
 
@@ -3993,7 +3993,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objCulture">CultureInfo in which number formatting should be done.</param>
         /// <param name="blnBlankOnOneQuantity">Whether to return an empty string if there is only one of an item.</param>
-        /// <param name="blnOverrideQuantity">Whether or not to override the quantity to display.</param>
+        /// <param name="blnOverrideQuantity">Whether to override the quantity to display.</param>
         /// <param name="decQuantityToUse">If <paramref name="blnOverrideQuantity"/> is true, the override value to use for it.</param>
         /// <returns>A formatted string for the quantity of this piece of gear.</returns>
         public string DisplayQuantity(CultureInfo objCulture, bool blnBlankOnOneQuantity = false, bool blnOverrideQuantity = false,
@@ -4508,7 +4508,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Change the Equipped status of a piece of Gear and all of its children.
         /// </summary>
-        /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
+        /// <param name="blnEquipped">Whether the Gear should be marked as Equipped.</param>
         /// <param name="blnSkipEncumbranceOnPropertyChanged">Whether we should skip notifying our character that they should re-check their encumbrance. Set to `true` if this is a batch operation and there is going to be a refresh later anyway.</param>
         public void ChangeEquippedStatus(bool blnEquipped, bool blnSkipEncumbranceOnPropertyChanged = false)
         {
@@ -4584,7 +4584,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Change the Equipped status of a piece of Gear and all of its children.
         /// </summary>
-        /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
+        /// <param name="blnEquipped">Whether the Gear should be marked as Equipped.</param>
         /// <param name="blnSkipEncumbranceOnPropertyChanged">Whether we should skip notifying our character that they should re-check their encumbrance. Set to `true` if this is a batch operation and there is going to be a refresh later anyway.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task ChangeEquippedStatusAsync(bool blnEquipped,

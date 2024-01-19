@@ -918,7 +918,7 @@ namespace Chummer
                         int intLoopSlots = intSlots;
                         using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod =
                                await ThreadSafeForm<SelectVehicleMod>.GetAsync(() =>
-                                                                                   new SelectVehicleMod(_objCharacter, _objVehicle, _objMount?.Mods)
+                                                                                   new SelectVehicleMod(_objCharacter, _objVehicle)
                                                                                    {
                                                                                        // Pass the selected vehicle on to the form.
                                                                                        VehicleMountMods = true,

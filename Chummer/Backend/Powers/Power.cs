@@ -1806,7 +1806,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Levels enabled for the Power.
+        /// Whether Levels enabled for the Power.
         /// </summary>
         public bool LevelsEnabled
         {
@@ -1835,7 +1835,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Levels enabled for the Power.
+        /// Whether Levels enabled for the Power.
         /// </summary>
         public async Task<bool> GetLevelsEnabledAsync(CancellationToken token = default)
         {
@@ -1882,7 +1882,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
+        /// Whether the Power Cost is discounted by 50% from Adept Way.
         /// </summary>
         public bool DiscountedAdeptWay
         {
@@ -1911,7 +1911,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
+        /// Whether the Power Cost is discounted by 50% from Adept Way.
         /// </summary>
         public async Task<bool> GetDiscountedAdeptWayAsync(CancellationToken token = default)
         {
@@ -1924,7 +1924,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Power Cost is discounted by 50% from Adept Way.
+        /// Whether the Power Cost is discounted by 50% from Adept Way.
         /// </summary>
         public async Task SetDiscountedAdeptWayAsync(bool value, CancellationToken token = default)
         {
@@ -1954,7 +1954,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Power Cost is discounted by 25% from Geas.
+        /// Whether the Power Cost is discounted by 25% from Geas.
         /// </summary>
         public bool DiscountedGeas
         {

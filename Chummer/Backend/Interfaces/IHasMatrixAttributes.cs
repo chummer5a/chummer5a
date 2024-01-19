@@ -39,7 +39,7 @@ namespace Chummer
         Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default);
 
         /// <summary>
-        /// Whether or not the Gear qualifies as a Program in the printout XML.
+        /// Whether the Gear qualifies as a Program in the printout XML.
         /// </summary>
         bool IsProgram { get; }
         string Attack { get; set; }
@@ -120,7 +120,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
+        /// Whether this Commlink is active and counting towards the character's Matrix Initiative.
         /// </summary>
         public static bool IsActiveCommlink(this IHasMatrixAttributes objThis, Character objCharacter)
         {
@@ -130,7 +130,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
+        /// Whether this Commlink is active and counting towards the character's Matrix Initiative.
         /// </summary>
         public static async Task<bool> IsActiveCommlinkAsync(this IHasMatrixAttributes objThis,
             Character objCharacter, CancellationToken token = default)
@@ -180,7 +180,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is an A.I.'s Home Node.
+        /// Whether this is an A.I.'s Home Node.
         /// </summary>
         public static bool IsHomeNode(this IHasMatrixAttributes objThis, Character objCharacter)
         {
@@ -190,7 +190,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is an A.I.'s Home Node.
+        /// Whether this is an A.I.'s Home Node.
         /// </summary>
         public static async Task<bool> IsHomeNodeAsync(this IHasMatrixAttributes objThis, Character objCharacter,
             CancellationToken token = default)
@@ -202,7 +202,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Set whether or not this is an A.I.'s Home Node.
+        /// Set whether this is an A.I.'s Home Node.
         /// </summary>
         public static void SetHomeNode(this IHasMatrixAttributes objThis, Character objCharacter, bool blnValue)
         {

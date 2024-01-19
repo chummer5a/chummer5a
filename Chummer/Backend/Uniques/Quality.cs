@@ -1365,7 +1365,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality appears on the printouts.
+        /// Whether the Quality appears on the printouts.
         /// </summary>
         public bool AllowPrint
         {
@@ -1394,7 +1394,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Qualitie's cost is doubled in Career Mode.
+        /// Whether the Qualitie's cost is doubled in Career Mode.
         /// </summary>
         public bool DoubleCost
         {
@@ -1423,7 +1423,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the quality can be bought with free spell points instead
+        /// Whether the quality can be bought with free spell points instead
         /// </summary>
         public bool CanBuyWithSpellPoints
         {
@@ -1452,7 +1452,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality has been implemented completely, or needs additional code support.
+        /// Whether the Quality has been implemented completely, or needs additional code support.
         /// </summary>
         public bool Implemented
         {
@@ -1481,7 +1481,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// Whether the Quality contributes towards the character's Quality BP limits.
         /// </summary>
         public bool ContributeToLimit
         {
@@ -1536,7 +1536,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// Whether the Quality contributes towards the character's Quality BP limits.
         /// </summary>
         public async Task<bool> GetContributeToLimitAsync(CancellationToken token = default)
         {
@@ -1578,7 +1578,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// Whether the Quality contributes towards the character's Quality BP limits.
         /// </summary>
         public bool ContributeToMetagenicLimit
         {
@@ -1597,7 +1597,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality contributes towards the character's Quality BP limits.
+        /// Whether the Quality contributes towards the character's Quality BP limits.
         /// </summary>
         public async Task<bool> GetContributeToMetagenicLimitAsync(CancellationToken token = default)
         {
@@ -1647,7 +1647,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality contributes towards the character's Total BP.
+        /// Whether the Quality contributes towards the character's Total BP.
         /// </summary>
         public bool ContributeToBP
         {
@@ -1683,7 +1683,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Quality contributes towards the character's Total BP.
+        /// Whether the Quality contributes towards the character's Total BP.
         /// </summary>
         public async Task<bool> GetContributeToBPAsync(CancellationToken token = default)
         {

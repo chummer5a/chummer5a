@@ -7338,7 +7338,7 @@ namespace Chummer
                         using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod
                                = await ThreadSafeForm<SelectVehicleMod>.GetAsync(
                                                                            () => new SelectVehicleMod(CharacterObject,
-                                                                               objVehicle, objVehicle.Mods), GenericToken)
+                                                                               objVehicle), GenericToken)
                                                                        .ConfigureAwait(false))
                         {
                             // Make sure the dialogue window was not canceled.
@@ -18105,7 +18105,7 @@ namespace Chummer
         /// Select a piece of Gear and add it to a piece of Armor.
         /// </summary>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
-        /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
+        /// <param name="blnShowArmorCapacityOnly">Whether only items that consume capacity should be shown.</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private async Task<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false,
                                                     CancellationToken token = default)
@@ -23373,7 +23373,7 @@ namespace Chummer
         /// <param name="objXmlGearDocument">XmlDocument that contains the Gear.</param>
         /// <param name="objXmlGear">XmlNode of the Gear to add.</param>
         /// <param name="objParentObject">Object to associate the newly-created items with.</param>
-        /// <param name="blnCreateChildren">Whether or not the default plugins for the Gear should be created.</param>
+        /// <param name="blnCreateChildren">Whether the default plugins for the Gear should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         private async Task<Gear> AddPACKSGearAsync(XmlDocument objXmlGearDocument, XmlNode objXmlGear, object objParentObject,
                                   bool blnCreateChildren, CancellationToken token = default)

@@ -146,7 +146,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Stacked Focus in Bonded.
+        /// Whether the Stacked Focus in Bonded.
         /// </summary>
         public bool Bonded
         {

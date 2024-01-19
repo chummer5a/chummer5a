@@ -542,7 +542,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Metamagic was paid for with Karma.
+        /// Whether the Metamagic was paid for with Karma.
         /// </summary>
         public bool PaidWithKarma
         {

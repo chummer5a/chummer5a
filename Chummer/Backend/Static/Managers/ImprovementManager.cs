@@ -300,7 +300,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -328,7 +328,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
@@ -353,7 +353,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
@@ -378,7 +378,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -447,7 +447,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -474,7 +474,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -501,7 +501,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -529,7 +529,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="lstUsedImprovements">List of the improvements actually used for the value.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -601,7 +601,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="eImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="dicCachedValuesToUse">The caching dictionary to use. If null, values will not be cached.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -624,7 +624,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="eImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="dicCachedValuesToUse">The caching dictionary to use. If null, values will not be cached.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -651,7 +651,7 @@ namespace Chummer
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="eImprovementType">ImprovementType to retrieve the value of.</param>
         /// <param name="dicCachedValuesToUse">The caching dictionary to use. If null, values will not be cached.</param>
-        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="blnAddToRating">Whether we should only retrieve values that have AddToRating enabled.</param>
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
@@ -5250,7 +5250,7 @@ namespace Chummer
         /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
         /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
         /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="blnAddToRating">Whether the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -5348,7 +5348,7 @@ namespace Chummer
         /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
         /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
         /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="blnAddToRating">Whether the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
         /// <param name="token">Cancellation token to listen to.</param>

@@ -193,7 +193,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Form should be accepted if there is only one item left in the list.
+        /// Whether the Form should be accepted if there is only one item left in the list.
         /// </summary>
         public bool AllowAutoSelect { get; set; } = true;
 
@@ -203,7 +203,7 @@ namespace Chummer
         public string Mode { get; set; }
 
         /// <summary>
-        /// Whether or not to force the .
+        /// Whether to force the .
         /// </summary>
         public bool BuyWithKarma
         {

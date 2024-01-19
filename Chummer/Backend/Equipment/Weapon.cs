@@ -397,9 +397,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
         /// <param name="lstWeapons">List of child Weapons to generate.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="intRating">Rating of the weapon</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlWeapon, ICollection<Weapon> lstWeapons, bool blnCreateChildren = true,
@@ -414,9 +414,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
         /// <param name="lstWeapons">List of child Weapons to generate.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="intRating">Rating of the weapon</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlWeapon, ICollection<Weapon> lstWeapons, bool blnCreateChildren = true,
@@ -2896,7 +2896,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Underbarrel Weapon is part of the parent Weapon by default.
+        /// Whether the Underbarrel Weapon is part of the parent Weapon by default.
         /// </summary>
         public bool IncludedInWeapon
         {
@@ -2905,7 +2905,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Underbarrel Weapon is installed.
+        /// Whether the Underbarrel Weapon is installed.
         /// </summary>
         public bool Equipped
         {
@@ -2948,7 +2948,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {
@@ -2957,7 +2957,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Weapon requires Ammo to be reloaded.
+        /// Whether the Weapon requires Ammo to be reloaded.
         /// </summary>
         public bool RequireAmmo
         {
@@ -3051,7 +3051,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Weapon's wireless bonus is enabled
+        /// Whether the Weapon's wireless bonus is enabled
         /// </summary>
         public bool WirelessOn
         {

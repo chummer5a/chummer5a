@@ -134,11 +134,11 @@ namespace Chummer
             if (xmlNode == null || objCharacter == null)
                 return false;
             // Ignore the rules.
-            if (objCharacter.IgnoreRules)
+            if (blnSync ? objCharacter.IgnoreRules : await objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 return true;
             bool blnShowMessage = !string.IsNullOrEmpty(strLocalName);
             // See if the character is in career mode but would want to add a chargen-only Quality
-            if (objCharacter.Created)
+            if (blnSync ? objCharacter.Created : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
             {
                 if (xmlNode.SelectSingleNodeAndCacheExpression("chargenonly", token) != null)
                 {
@@ -233,7 +233,7 @@ namespace Chummer
 
             if (!blnIgnoreLimit)
             {
-                // See if the character already has this Quality and whether or not multiple copies are allowed.
+                // See if the character already has this Quality and whether multiple copies are allowed.
                 // If the limit at chargen is different from the actual limit, we need to make sure we fetch the former if the character is in Create mode
                 string strLimitString = xmlNode.SelectSingleNodeAndCacheExpression("chargenlimit", token)?.Value ?? string.Empty;
                 if (string.IsNullOrWhiteSpace(strLimitString) || objCharacter.Created)

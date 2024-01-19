@@ -895,7 +895,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not to consider this weapon mount free. Needs to be a separate thing from the Cost string because weapon mounts can be edited.
+        /// Whether to consider this weapon mount free. Needs to be a separate thing from the Cost string because weapon mounts can be edited.
         /// </summary>
         public bool FreeCost
         {
@@ -991,7 +991,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Mod included with the Vehicle by default.
+        /// Whether the Mod included with the Vehicle by default.
         /// </summary>
         public bool IncludedInVehicle
         {
@@ -1000,7 +1000,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Mod is installed and contributing towards the Vehicle's stats.
+        /// Whether this Mod is installed and contributing towards the Vehicle's stats.
         /// </summary>
         public bool Equipped
         {
@@ -1036,7 +1036,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Vehicle Mod's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Vehicle Mod's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {

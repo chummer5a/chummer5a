@@ -762,7 +762,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Critter Power counts towards their total number of Critter Powers.
+        /// Whether the Critter Power counts towards their total number of Critter Powers.
         /// </summary>
         public bool CountTowardsLimit
         {

@@ -47,11 +47,10 @@ namespace Chummer
         private readonly string _strLimitToCategories = string.Empty;
         private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-        private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 
         #region Control Events
 
-        public SelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
+        public SelectVehicleMod(Character objCharacter, Vehicle objVehicle)
         {
             Disposed += (sender, args) =>
             {
@@ -71,9 +70,6 @@ namespace Chummer
                     _objCharacter.GenerateBlackMarketMappings(
                         _xmlBaseVehicleDataNode.SelectSingleNodeAndCacheExpression("modcategories")));
             }
-
-            if (lstExistingMods != null)
-                _lstMods.AddRange(lstExistingMods);
         }
 
         private async void SelectVehicleMod_Load(object sender, EventArgs e)
@@ -235,12 +231,12 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
         /// <summary>
-        /// Whether or not the selected Vehicle is used.
+        /// Whether the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
@@ -263,7 +259,7 @@ namespace Chummer
         public int SelectedRating { get; private set; }
 
         /// <summary>
-        /// Whether or not the item should be added for free.
+        /// Whether the item should be added for free.
         /// </summary>
         public bool FreeCost => chkFreeItem.Checked;
 

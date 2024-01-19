@@ -480,7 +480,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Determine whether or not an XPathNavigator with the specified name exists within an XPathNavigator.
+        /// Determine whether an XPathNavigator with the specified name exists within an XPathNavigator.
         /// </summary>
         /// <param name="xmlNode">XPathNavigator to examine.</param>
         /// <param name="strName">Name of the XPathNavigator to look for.</param>

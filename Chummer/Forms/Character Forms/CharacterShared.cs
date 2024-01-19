@@ -9904,7 +9904,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character has changes that can be saved
+        /// Whether the character has changes that can be saved
         /// </summary>
         public bool IsDirty
         {
@@ -9931,7 +9931,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the form is currently in the middle of refreshing some UI elements
+        /// Whether the form is currently in the middle of refreshing some UI elements
         /// </summary>
         public bool IsRefreshing
         {

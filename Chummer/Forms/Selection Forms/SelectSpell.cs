@@ -204,22 +204,22 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
         /// <summary>
-        /// Whether or not a Limited version of the Spell was selected.
+        /// Whether a Limited version of the Spell was selected.
         /// </summary>
         public bool Limited => chkLimited.Checked;
 
         /// <summary>
-        /// Whether or not an Extended version of the Spell was selected.
+        /// Whether an Extended version of the Spell was selected.
         /// </summary>
         public bool Extended => chkExtended.Checked;
 
         /// <summary>
-        /// Whether or not a Alchemical version of the Spell was selected.
+        /// Whether a Alchemical version of the Spell was selected.
         /// </summary>
         public bool Alchemical => chkAlchemical.Checked;
 

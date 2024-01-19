@@ -10996,7 +10996,7 @@ namespace Chummer
                     using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod
                            = await ThreadSafeForm<SelectVehicleMod>.GetAsync(
                                                                        () => new SelectVehicleMod(CharacterObject,
-                                                                           objVehicle, objVehicle.Mods), GenericToken)
+                                                                           objVehicle), GenericToken)
                                                                    .ConfigureAwait(false))
                     {
                         // Make sure the dialogue window was not canceled.
@@ -20047,7 +20047,7 @@ namespace Chummer
         /// <param name="intThresholdOffset">Initial threshold for penalties from <paramref name="intThreshold"/> should be offset by this much.</param>
         /// <param name="intOverflow">Number of overflow boxes to show (set to 0 if none, like for the stun condition monitor).</param>
         /// <param name="button_Click">Event handler for when a CM box is clicked</param>
-        /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
+        /// <param name="check">Whether to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
         /// <param name="token">Cancellation token to use.</param>
         private async Task ProcessCharacterConditionMonitorBoxDisplays(
@@ -23680,7 +23680,7 @@ namespace Chummer
         /// </summary>
         /// <param name="iParent">Parent to which the gear should be added.</param>
         /// <param name="objLocation">Location to which the gear should be added.</param>
-        /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
+        /// <param name="objStackGear">Whether the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="objAmmoForWeapon">Gear is being bought as ammo for this weapon.</param>
         /// <param name="token">CancellationToken to listen to.</param>
@@ -23969,7 +23969,7 @@ namespace Chummer
         /// Select a piece of Gear and add it to a piece of Armor.
         /// </summary>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
-        /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
+        /// <param name="blnShowArmorCapacityOnly">Whether only items that consume capacity should be shown.</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private async Task<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false,
                                                     CancellationToken token = default)

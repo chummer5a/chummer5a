@@ -43,7 +43,7 @@ namespace Chummer
         private sealed class XmlReference : IHasLockObject
         {
             /// <summary>
-            /// Whether or not the XML content has been successfully checked for duplicate guids.
+            /// Whether the XML content has been successfully checked for duplicate guids.
             /// </summary>
             public bool GetDuplicatesChecked(CancellationToken token = default)
             {
@@ -58,7 +58,7 @@ namespace Chummer
             }
 
             /// <summary>
-            /// Whether or not the XML content has been successfully checked for duplicate guids.
+            /// Whether the XML content has been successfully checked for duplicate guids.
             /// </summary>
             public async Task<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {

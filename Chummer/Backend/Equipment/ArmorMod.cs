@@ -141,8 +141,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Rating of the selected ArmorMod.</param>
         /// <param name="lstWeapons">List of Weapons that are created by the Armor.</param>
-        /// <param name="blnSkipCost">Whether or not creating the ArmorMod should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip selection forms (related to improvements) when creating this ArmorMod.</param>
+        /// <param name="blnSkipCost">Whether creating the ArmorMod should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
+        /// <param name="blnSkipSelectForms">Whether to skip selection forms (related to improvements) when creating this ArmorMod.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
             bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -157,8 +157,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Rating of the selected ArmorMod.</param>
         /// <param name="lstWeapons">List of Weapons that are created by the Armor.</param>
-        /// <param name="blnSkipCost">Whether or not creating the ArmorMod should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip selection forms (related to improvements) when creating this ArmorMod.</param>
+        /// <param name="blnSkipCost">Whether creating the ArmorMod should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
+        /// <param name="blnSkipSelectForms">Whether to skip selection forms (related to improvements) when creating this ArmorMod.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
             bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -488,7 +488,7 @@ namespace Chummer.Backend.Equipment
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Whether or not we are copying an existing node.</param>
+        /// <param name="blnCopy">Whether we are copying an existing node.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (objNode == null)
@@ -810,7 +810,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Armor Mod contributes to Encumbrance.
+        /// Whether the Armor Mod contributes to Encumbrance.
         /// </summary>
         public bool Encumbrance => _blnEncumbrance;
 
@@ -986,7 +986,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not an Armor Mod is equipped and should be included in the Armor's totals.
+        /// Whether an Armor Mod is equipped and should be included in the Armor's totals.
         /// </summary>
         public bool Equipped
         {
@@ -1036,7 +1036,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not an Armor Mod's wireless bonus is enabled
+        /// Whether an Armor Mod's wireless bonus is enabled
         /// </summary>
         public bool WirelessOn
         {
@@ -1051,7 +1051,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Mod is part of the base Armor configuration.
+        /// Whether this Mod is part of the base Armor configuration.
         /// </summary>
         public bool IncludedInArmor
         {
@@ -1087,7 +1087,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Armor Mod's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Armor Mod's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {

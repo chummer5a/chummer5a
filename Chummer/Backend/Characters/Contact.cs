@@ -2085,7 +2085,7 @@ namespace Chummer
         private int _intCachedFreeFromImprovement = -1;
 
         /// <summary>
-        /// Whether or not this is a free contact.
+        /// Whether this is a free contact.
         /// </summary>
         public bool Free
         {
@@ -2124,7 +2124,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a free contact.
+        /// Whether this is a free contact.
         /// </summary>
         public async Task<bool> GetFreeAsync(CancellationToken token = default)
         {
@@ -2151,7 +2151,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a free contact.
+        /// Whether this is a free contact.
         /// </summary>
         public async Task SetFreeAsync(bool value, CancellationToken token = default)
         {
@@ -2253,7 +2253,7 @@ namespace Chummer
         private int _intCachedGroupEnabled = -1;
 
         /// <summary>
-        /// Whether or not the contact's group status can be modified through the UI
+        /// Whether the contact's group status can be modified through the UI
         /// </summary>
         public bool GroupEnabled
         {
@@ -2277,7 +2277,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the contact's group status can be modified through the UI
+        /// Whether the contact's group status can be modified through the UI
         /// </summary>
         public async Task<bool> GetGroupEnabledAsync(CancellationToken token = default)
         {

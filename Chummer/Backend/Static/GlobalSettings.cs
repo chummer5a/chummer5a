@@ -455,7 +455,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnLiveUpdateCleanCharacterFiles, "liveupdatecleancharacterfiles");
             LoadBoolFromRegistry(ref _lifeModuleEnabled, "lifemodule");
 
-            // Whether or not the app should use logging.
+            // Whether the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
             try
@@ -537,13 +537,13 @@ namespace Chummer
             else if (!blnFirstEverLaunch)
                 _eColorMode = ColorMode.Light;
 
-            // Whether or not dates should include the time.
+            // Whether dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
             LoadBoolFromRegistry(ref _blnHideMasterIndex, "hidemasterindex");
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
-            // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
+            // Whether printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
@@ -558,7 +558,7 @@ namespace Chummer
             // Print Notes.
             LoadBoolFromRegistry(ref _blnPrintNotes, "printnotes");
 
-            // Whether or not to insert scraped text from PDFs into the notes fields of newly added items
+            // Whether to insert scraped text from PDFs into the notes fields of newly added items
             LoadBoolFromRegistry(ref _blnInsertPdfNotesIfAvailable, "insertpdfnotesifavailable");
 
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
@@ -584,7 +584,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnAllowHoverIncrement, "allowhoverincrement");
             LoadBoolFromRegistry(ref _blnSwitchTabsOnHoverScroll, "switchtabsonhoverscroll");
             LoadBoolFromRegistry(ref _blnSearchInCategoryOnly, "searchincategoryonly");
-            // Whether or not dice rolling is allowed for Skills.
+            // Whether dice rolling is allowed for Skills.
             LoadBoolFromRegistry(ref _blnAllowSkillDiceRolling, "allowskilldicerolling");
 
             // Language.
@@ -1003,7 +1003,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not to create backups of characters before moving them to career mode. If true, a separate save file is created before marking the current character as created.
+        /// Whether to create backups of characters before moving them to career mode. If true, a separate save file is created before marking the current character as created.
         /// </summary>
         public static bool CreateBackupOnCareer
         {
@@ -1030,7 +1030,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Master Index should be shown. If true, prevents the roster from being removed or hidden.
+        /// Whether the Master Index should be shown. If true, prevents the roster from being removed or hidden.
         /// </summary>
         public static bool HideMasterIndex
         {
@@ -1039,7 +1039,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden.
+        /// Whether the Character Roster should be shown. If true, prevents the roster from being removed or hidden.
         /// </summary>
         public static bool HideCharacterRoster
         {
@@ -1057,7 +1057,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Automatic Updates are enabled.
+        /// Whether Automatic Updates are enabled.
         /// </summary>
         public static bool AutomaticUpdate
         {
@@ -1066,7 +1066,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not live updates from the customdata directory are allowed.
+        /// Whether live updates from the customdata directory are allowed.
         /// </summary>
         public static bool LiveCustomData
         {
@@ -1087,7 +1087,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not confirmation messages are shown when deleting an object.
+        /// Whether confirmation messages are shown when deleting an object.
         /// </summary>
         public static bool ConfirmDelete
         {
@@ -1096,7 +1096,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not confirmation messages are shown for Karma Expenses.
+        /// Whether confirmation messages are shown for Karma Expenses.
         /// </summary>
         public static bool ConfirmKarmaExpense
         {
@@ -1114,7 +1114,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+        /// Whether numeric updowns can increment values of numericupdown controls by hovering over the control.
         /// </summary>
         public static bool AllowHoverIncrement
         {
@@ -1123,7 +1123,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not scrolling the mouse wheel while hovering over tab page labels switches tabs
+        /// Whether scrolling the mouse wheel while hovering over tab page labels switches tabs
         /// </summary>
         public static bool SwitchTabsOnHoverScroll
         {
@@ -1145,7 +1145,7 @@ namespace Chummer
             : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
         /// <summary>
-        /// Whether or not dice rolling is allowed for Skills.
+        /// Whether dice rolling is allowed for Skills.
         /// </summary>
         public static bool AllowSkillDiceRolling
         {
@@ -1154,7 +1154,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the app should use logging.
+        /// Whether the app should use logging.
         /// </summary>
         public static bool UseLogging
         {
@@ -1207,7 +1207,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the app should use logging.
+        /// Whether the app should use logging.
         /// </summary>
         public static UseAILogging UseLoggingApplicationInsights
         {
@@ -1256,7 +1256,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not dates should include the time.
+        /// Whether dates should include the time.
         /// </summary>
         public static bool DatesIncludeTime
         {
@@ -1265,7 +1265,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
+        /// Whether printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
         /// </summary>
         public static bool PrintToFileFirst
         {
@@ -1274,7 +1274,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// Whether all Active Skills with a total score higher than 0 should be printed.
         /// </summary>
         public static bool PrintSkillsWithZeroRating
         {
@@ -1283,7 +1283,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
+        /// Whether the Karma and Nuyen Expenses should be printed on the character sheet.
         /// </summary>
         public static bool PrintExpenses
         {
@@ -1292,7 +1292,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// Whether the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
         /// </summary>
         public static bool PrintFreeExpenses
         {
@@ -1301,7 +1301,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Notes should be printed.
+        /// Whether Notes should be printed.
         /// </summary>
         public static bool PrintNotes
         {
@@ -1310,7 +1310,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to insert scraped text from PDFs into the Notes fields of newly added items.
+        /// Whether to insert scraped text from PDFs into the Notes fields of newly added items.
         /// </summary>
         public static bool InsertPdfNotesIfAvailable
         {
@@ -1458,7 +1458,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the application should start in fullscreen mode.
+        /// Whether the application should start in fullscreen mode.
         /// </summary>
         public static bool StartupFullscreen
         {
@@ -1467,7 +1467,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not only a single instance of the Dice Roller should be allowed.
+        /// Whether only a single instance of the Dice Roller should be allowed.
         /// </summary>
         public static bool SingleDiceRoller
         {
@@ -1797,7 +1797,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to show a warning that this Nightly build is special
+        /// Whether to show a warning that this Nightly build is special
         /// </summary>
         public static bool ShowCharacterCustomDataWarning
         {

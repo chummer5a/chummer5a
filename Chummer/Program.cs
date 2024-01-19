@@ -1131,7 +1131,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">File to load.</param>
         /// <param name="strNewName">New name for the character.</param>
-        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
+        /// <param name="blnClearFileName">Whether the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -1147,7 +1147,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">File to load.</param>
         /// <param name="strNewName">New name for the character.</param>
-        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
+        /// <param name="blnClearFileName">Whether the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -1164,7 +1164,7 @@ namespace Chummer
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strFileName">File to load.</param>
         /// <param name="strNewName">New name for the character.</param>
-        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
+        /// <param name="blnClearFileName">Whether the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
         /// <param name="token">Cancellation token to listen to.</param>

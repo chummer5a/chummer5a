@@ -484,7 +484,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Determine whether or not an XmlNode with the specified name exists within an XmlNode.
+        /// Determine whether an XmlNode with the specified name exists within an XmlNode.
         /// </summary>
         /// <param name="xmlNode">XmlNode to examine.</param>
         /// <param name="strName">Name of the XmlNode to look for.</param>

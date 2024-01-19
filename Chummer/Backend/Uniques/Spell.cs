@@ -84,9 +84,9 @@ namespace Chummer
         /// </summary>
         /// <param name="objXmlSpellNode">XmlNode to create the object from.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        /// <param name="blnLimited">Whether or not the Spell should be marked as Limited.</param>
-        /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
-        /// <param name="blnAlchemical">Whether or not the Spell is one for an alchemical preparation.</param>
+        /// <param name="blnLimited">Whether the Spell should be marked as Limited.</param>
+        /// <param name="blnExtended">Whether the Spell should be marked as Extended.</param>
+        /// <param name="blnAlchemical">Whether the Spell is one for an alchemical preparation.</param>
         /// <param name="eSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
         public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Spell)
         {
@@ -168,9 +168,9 @@ namespace Chummer
         /// </summary>
         /// <param name="objXmlSpellNode">XmlNode to create the object from.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        /// <param name="blnLimited">Whether or not the Spell should be marked as Limited.</param>
-        /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
-        /// <param name="blnAlchemical">Whether or not the Spell is one for an alchemical preparation.</param>
+        /// <param name="blnLimited">Whether the Spell should be marked as Limited.</param>
+        /// <param name="blnExtended">Whether the Spell should be marked as Extended.</param>
+        /// <param name="blnAlchemical">Whether the Spell is one for an alchemical preparation.</param>
         /// <param name="eSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task CreateAsync(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Spell, CancellationToken token = default)
@@ -1578,7 +1578,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Spell is Limited.
+        /// Whether the Spell is Limited.
         /// </summary>
         public bool Limited
         {
@@ -1595,7 +1595,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Spell is Extended.
+        /// Whether the Spell is Extended.
         /// </summary>
         public bool Extended
         {
@@ -1641,7 +1641,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Spell is Alchemical.
+        /// Whether the Spell is Alchemical.
         /// </summary>
         public bool Alchemical
         {

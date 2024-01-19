@@ -701,7 +701,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="xmlNode">The XML node describing the skill</param>
         /// <param name="objCharacter">The character the skill belongs to</param>
-        /// <param name="blnIsKnowledgeSkill">Whether or not this skill is a knowledge skill.</param>
+        /// <param name="blnIsKnowledgeSkill">Whether this skill is a knowledge skill.</param>
         /// <returns></returns>
         public static Skill FromData(XmlNode xmlNode, Character objCharacter, bool blnIsKnowledgeSkill)
         {
@@ -731,7 +731,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="xmlNode">The XML node describing the skill</param>
         /// <param name="objCharacter">The character the skill belongs to</param>
-        /// <param name="blnIsKnowledgeSkill">Whether or not this skill is a knowledge skill.</param>
+        /// <param name="blnIsKnowledgeSkill">Whether this skill is a knowledge skill.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
         public static async Task<Skill> FromDataAsync(XmlNode xmlNode, Character objCharacter, bool blnIsKnowledgeSkill,

@@ -60,10 +60,10 @@ namespace Chummer
         /// Create an Initiation Grade from an XmlNode.
         /// </summary>
         /// <param name="intGrade">Grade number.</param>
-        /// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
-        /// <param name="blnGroup">Whether or not a Group was used.</param>
-        /// <param name="blnOrdeal">Whether or not an Ordeal was used.</param>
-        /// <param name="blnSchooling">Whether or not Schooling was used.</param>
+        /// <param name="blnTechnomancer">Whether the character is a Technomancer.</param>
+        /// <param name="blnGroup">Whether a Group was used.</param>
+        /// <param name="blnOrdeal">Whether an Ordeal was used.</param>
+        /// <param name="blnSchooling">Whether Schooling was used.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling, CancellationToken token = default)
         {
@@ -128,10 +128,10 @@ namespace Chummer
         /// Create an Initiation Grade from an XmlNode.
         /// </summary>
         /// <param name="intGrade">Grade number.</param>
-        /// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
-        /// <param name="blnGroup">Whether or not a Group was used.</param>
-        /// <param name="blnOrdeal">Whether or not an Ordeal was used.</param>
-        /// <param name="blnSchooling">Whether or not Schooling was used.</param>
+        /// <param name="blnTechnomancer">Whether the character is a Technomancer.</param>
+        /// <param name="blnGroup">Whether a Group was used.</param>
+        /// <param name="blnOrdeal">Whether an Ordeal was used.</param>
+        /// <param name="blnSchooling">Whether Schooling was used.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task CreateAsync(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling, CancellationToken token = default)
         {
@@ -302,7 +302,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Group was used.
+        /// Whether a Group was used.
         /// </summary>
         public bool Group
         {
@@ -311,7 +311,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not an Ordeal was used.
+        /// Whether an Ordeal was used.
         /// </summary>
         public bool Ordeal
         {
@@ -320,7 +320,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Schooling was used.
+        /// Whether Schooling was used.
         /// </summary>
         public bool Schooling
         {
@@ -329,7 +329,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Initiation Grade is for a Technomancer.
+        /// Whether the Initiation Grade is for a Technomancer.
         /// </summary>
         public bool Technomancer
         {

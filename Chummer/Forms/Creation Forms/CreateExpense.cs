@@ -122,7 +122,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a Karma refund.
+        /// Whether this is a Karma refund.
         /// </summary>
         public bool Refund
         {
@@ -131,7 +131,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a Karma refund.
+        /// Whether this is a Karma refund.
         /// </summary>
         public bool ForceCareerVisible
         {

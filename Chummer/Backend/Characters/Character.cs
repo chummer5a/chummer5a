@@ -16009,7 +16009,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character has been saved as Created and can no longer be modified using the Build system.
+        /// Whether the character has been saved as Created and can no longer be modified using the Build system.
         /// </summary>
         [HubTag]
         public bool Created
@@ -18373,7 +18373,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not character creation rules should be ignored.
+        /// Whether character creation rules should be ignored.
         /// </summary>
         [HubTag]
         public bool IgnoreRules
@@ -18399,7 +18399,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not character creation rules should be ignored.
+        /// Whether character creation rules should be ignored.
         /// </summary>
         public async Task<bool> GetIgnoreRulesAsync(CancellationToken token = default)
         {
@@ -19369,7 +19369,7 @@ namespace Chummer
         }
 
             /// <summary>
-            /// Whether or not the character is a Critter.
+            /// Whether the character is a Critter.
             /// </summary>
             [HubTag]
         public bool IsCritter
@@ -19395,7 +19395,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a Critter.
+        /// Whether the character is a Critter.
         /// </summary>
         public async Task<bool> GetIsCritterAsync(CancellationToken token = default)
         {
@@ -19408,7 +19408,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a changeling.
+        /// Whether the character is a changeling.
         /// </summary>
         [HubTag]
         public bool IsChangeling
@@ -19421,7 +19421,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a changeling.
+        /// Whether the character is a changeling.
         /// </summary>
         public async Task<bool> GetIsChangelingAsync(CancellationToken token = default)
         {
@@ -19455,7 +19455,7 @@ namespace Chummer
                 .ConfigureAwait(false)).StandardRound();
 
         /// <summary>
-        /// Whether or not the character is possessed by a Spirit.
+        /// Whether the character is possessed by a Spirit.
         /// </summary>
         public bool Possessed
         {
@@ -19480,7 +19480,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is possessed by a Spirit.
+        /// Whether the character is possessed by a Spirit.
         /// </summary>
         public async Task<bool> GetPossessedAsync(CancellationToken token = default)
         {
@@ -22824,7 +22824,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a member of a Group or Network.
+        /// Whether the character is a member of a Group or Network.
         /// </summary>
         public bool GroupMember
         {
@@ -22849,7 +22849,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a member of a Group or Network.
+        /// Whether the character is a member of a Group or Network.
         /// </summary>
         public async Task<bool> GetGroupMemberAsync(CancellationToken token = default)
         {
@@ -22861,7 +22861,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a member of a Group or Network.
+        /// Whether the character is a member of a Group or Network.
         /// </summary>
         public async Task SetGroupMemberAsync(bool value, CancellationToken token = default)
         {
@@ -33620,7 +33620,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a non-Free Sprite.
+        /// Whether the character is a non-Free Sprite.
         /// </summary>
         public bool IsSprite
         {
@@ -33632,7 +33632,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a Free Sprite.
+        /// Whether the character is a Free Sprite.
         /// </summary>
         public bool IsFreeSprite
         {
@@ -33644,7 +33644,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the character is a Free Sprite.
+        /// Whether the character is a Free Sprite.
         /// </summary>
         public async Task<bool> GetIsFreeSpriteAsync(CancellationToken token = default)
         {
@@ -33660,7 +33660,7 @@ namespace Chummer
         #region Special Functions and Enabled Check Properties
 
         /// <summary>
-        /// Whether or not Adept options are enabled.
+        /// Whether Adept options are enabled.
         /// </summary>
         public bool AdeptEnabled
         {
@@ -33688,7 +33688,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Adept options are enabled.
+        /// Whether Adept options are enabled.
         /// </summary>
         public async Task<bool> GetAdeptEnabledAsync(CancellationToken token = default)
         {
@@ -33700,7 +33700,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Magician options are enabled.
+        /// Whether Magician options are enabled.
         /// </summary>
         public bool MagicianEnabled
         {
@@ -33728,7 +33728,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Magician options are enabled.
+        /// Whether Magician options are enabled.
         /// </summary>
         public async Task<bool> GetMagicianEnabledAsync(CancellationToken token = default)
         {
@@ -33740,7 +33740,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Technomancer options are enabled.
+        /// Whether Technomancer options are enabled.
         /// </summary>
         public bool TechnomancerEnabled
         {
@@ -33768,7 +33768,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Technomancer options are enabled.
+        /// Whether Technomancer options are enabled.
         /// </summary>
         public async Task<bool> GetTechnomancerEnabledAsync(CancellationToken token = default)
         {
@@ -33780,7 +33780,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Drug Psyche is active
+        /// Whether the Drug Psyche is active
         /// </summary>
         public bool PsycheActive
         {
@@ -33805,7 +33805,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Drug Psyche is active
+        /// Whether the Drug Psyche is active
         /// </summary>
         public async Task<bool> GetPsycheActiveAsync(CancellationToken token = default)
         {
@@ -33818,7 +33818,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Drug Psyche is active
+        /// Whether the Drug Psyche is active
         /// </summary>
         public async Task SetPsycheActiveAsync(bool value, CancellationToken token = default)
         {
@@ -33849,7 +33849,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Advanced Program options are enabled.
+        /// Whether Advanced Program options are enabled.
         /// </summary>
         public bool AdvancedProgramsEnabled
         {
@@ -33877,7 +33877,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Cyberware options are disabled.
+        /// Whether Cyberware options are disabled.
         /// </summary>
         public bool CyberwareDisabled
         {
@@ -33933,7 +33933,7 @@ namespace Chummer
         private int _intCachedInitiationEnabled = int.MinValue;
 
         /// <summary>
-        /// Whether or not the Initiation tab should be shown (override for BP mode).
+        /// Whether the Initiation tab should be shown (override for BP mode).
         /// </summary>
         public bool InitiationEnabled
         {
@@ -33977,7 +33977,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Critter options are enabled.
+        /// Whether Critter options are enabled.
         /// </summary>
         public bool CritterEnabled
         {
@@ -34005,7 +34005,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Critter options are enabled.
+        /// Whether Critter options are enabled.
         /// </summary>
         public async Task<bool> GetCritterEnabledAsync(CancellationToken token = default)
         {
@@ -34018,14 +34018,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Black Market Discount is enabled.
+        /// Whether Black Market Discount is enabled.
         /// </summary>
         public bool DealerConnectionDiscount => ImprovementManager
                                                 .GetCachedImprovementListForValueOf(
                                                     this, Improvement.ImprovementType.DealerConnection).Count > 0;
 
         /// <summary>
-        /// Whether or not Black Market Discount is enabled.
+        /// Whether Black Market Discount is enabled.
         /// </summary>
         public async Task<bool> GetDealerConnectionDiscountAsync(CancellationToken token = default)
         {
@@ -34112,7 +34112,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Black Market Discount is enabled.
+        /// Whether Black Market Discount is enabled.
         /// </summary>
         public bool BlackMarketDiscount => ImprovementManager
                                            .GetCachedImprovementListForValueOf(
@@ -34120,7 +34120,7 @@ namespace Chummer
                                            > 0;
 
         /// <summary>
-        /// Whether or not Black Market Discount is enabled.
+        /// Whether Black Market Discount is enabled.
         /// </summary>
         public async Task<bool> GetBlackMarketDiscountAsync(CancellationToken token = default)
         {
@@ -34928,7 +34928,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this character can quicken spells.
+        /// Whether this character can quicken spells.
         /// </summary>
         public bool QuickeningEnabled =>
             ImprovementManager
@@ -34936,7 +34936,7 @@ namespace Chummer
                     this, Improvement.ImprovementType.QuickeningMetamagic).Count > 0;
 
         /// <summary>
-        /// Whether or not user is getting free bioware from Prototype Transhuman.
+        /// Whether user is getting free bioware from Prototype Transhuman.
         /// </summary>
         public decimal PrototypeTranshuman
         {
@@ -34961,7 +34961,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not user is getting free bioware from Prototype Transhuman.
+        /// Whether user is getting free bioware from Prototype Transhuman.
         /// </summary>
         public async Task<decimal> GetPrototypeTranshumanAsync(CancellationToken token = default)
         {
@@ -34978,7 +34978,7 @@ namespace Chummer
             await GetPrototypeTranshumanAsync(token).ConfigureAwait(false) > 0;
 
         /// <summary>
-        /// Whether or not Friends in High Places is enabled.
+        /// Whether Friends in High Places is enabled.
         /// </summary>
         public bool FriendsInHighPlaces => ImprovementManager
                                            .GetCachedImprovementListForValueOf(
@@ -34992,7 +34992,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not ExCon is enabled.
+        /// Whether ExCon is enabled.
         /// </summary>
         public bool ExCon => ImprovementManager
                              .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.ExCon).Count > 0;
@@ -35090,62 +35090,62 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Overclocker is enabled.
+        /// Whether Overclocker is enabled.
         /// </summary>
         public bool Overclocker => ImprovementManager
                                    .GetCachedImprovementListForValueOf(
                                        this, Improvement.ImprovementType.Overclocker).Count > 0;
 
         /// <summary>
-        /// Whether or not Overclocker is enabled.
+        /// Whether Overclocker is enabled.
         /// </summary>
         public async Task<bool> GetOverclockerAsync(CancellationToken token = default) =>
             (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                 Improvement.ImprovementType.Overclocker, token: token).ConfigureAwait(false)).Count > 0;
 
         /// <summary>
-        /// Whether or not Made Man is enabled.
+        /// Whether Made Man is enabled.
         /// </summary>
         public bool MadeMan => ImprovementManager
                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MadeMan).Count > 0;
 
         /// <summary>
-        /// Whether or not Made Man is enabled.
+        /// Whether Made Man is enabled.
         /// </summary>
         public async Task<bool> GetMadeManAsync(CancellationToken token = default) =>
             (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                 Improvement.ImprovementType.MadeMan, token: token).ConfigureAwait(false)).Count > 0;
 
         /// <summary>
-        /// Whether or not Fame is enabled.
+        /// Whether Fame is enabled.
         /// </summary>
         public bool Fame => ImprovementManager
                             .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Fame).Count
                             > 0;
 
         /// <summary>
-        /// Whether or not Fame is enabled.
+        /// Whether Fame is enabled.
         /// </summary>
         public async Task<bool> GetFameAsync(CancellationToken token = default) =>
             (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                 Improvement.ImprovementType.Fame, token: token).ConfigureAwait(false)).Count > 0;
 
         /// <summary>
-        /// Whether or not Erased is enabled.
+        /// Whether Erased is enabled.
         /// </summary>
         public bool Erased => ImprovementManager
                               .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Erased).Count
                               > 0;
 
         /// <summary>
-        /// Whether or not Erased is enabled.
+        /// Whether Erased is enabled.
         /// </summary>
         public async Task<bool> GetErasedAsync(CancellationToken token = default) =>
             (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                 Improvement.ImprovementType.Erased, token: token).ConfigureAwait(false)).Count > 0;
 
         /// <summary>
-        /// Whether or not the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
+        /// Whether the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
         /// </summary>
         public bool AllowSpriteFettering => ImprovementManager
                                             .GetCachedImprovementListForValueOf(
@@ -35153,7 +35153,7 @@ namespace Chummer
                                             > 0;
 
         /// <summary>
-        /// Whether or not the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
+        /// Whether the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
         /// </summary>
         public async Task<bool> GetAllowSpriteFetteringAsync(CancellationToken token = default) =>
             (await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
@@ -35461,14 +35461,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Adapsin is enabled.
+        /// Whether Adapsin is enabled.
         /// </summary>
         public bool AdapsinEnabled =>
             ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Adapsin)
                               .Count > 0;
 
         /// <summary>
-        /// Whether or not Burnout's Way is enabled.
+        /// Whether Burnout's Way is enabled.
         /// </summary>
         public bool BurnoutEnabled =>
             ImprovementManager

@@ -285,7 +285,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this limit can be modified and/or deleted
+        /// Whether this limit can be modified and/or deleted
         /// </summary>
         public bool CanDelete => _blnCanDelete;
 

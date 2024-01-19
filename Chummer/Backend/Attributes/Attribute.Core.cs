@@ -1041,7 +1041,7 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Whether or not the CharacterAttribute has any modifiers from Improvements.
+        /// Whether the CharacterAttribute has any modifiers from Improvements.
         /// </summary>
         public bool HasModifiers(CancellationToken token = default)
         {
@@ -1089,7 +1089,7 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Whether or not the CharacterAttribute has any modifiers from Improvements.
+        /// Whether the CharacterAttribute has any modifiers from Improvements.
         /// </summary>
         public async Task<bool> HasModifiersAsync(CancellationToken token = default)
         {

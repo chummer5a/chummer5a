@@ -1262,7 +1262,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Spirit is Bound.
+        /// Whether the Spirit is Bound.
         /// </summary>
         public bool Bound
         {
@@ -1310,7 +1310,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Spirit is Bound.
+        /// Whether the Spirit is Bound.
         /// </summary>
         public async Task<bool> GetBoundAsync(CancellationToken token = default)
         {
@@ -1323,7 +1323,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Spirit is Bound.
+        /// Whether the Spirit is Bound.
         /// </summary>
         public async Task SetBoundAsync(bool value, CancellationToken token = default)
         {

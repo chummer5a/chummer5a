@@ -401,7 +401,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Process whether or not a character has Gremlins and at which Rating.
+        /// Process whether a character has Gremlins and at which Rating.
         /// </summary>
         /// <param name="lstQualities">Qualities that the character has.</param>
         public void ProcessGremlins(IEnumerable<Quality> lstQualities)

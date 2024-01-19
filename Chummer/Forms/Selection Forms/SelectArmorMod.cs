@@ -143,7 +143,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain { get; private set; }
 
@@ -164,7 +164,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the selected Vehicle is used.
+        /// Whether the selected Vehicle is used.
         /// </summary>
         public bool BlackMarketDiscount { get; private set; }
 
@@ -184,12 +184,12 @@ namespace Chummer
         public string AllowedCategories { get; set; } = string.Empty;
 
         /// <summary>
-        /// Whether or not the General category should be included.
+        /// Whether the General category should be included.
         /// </summary>
         public bool ExcludeGeneralCategory { get; set; }
 
         /// <summary>
-        /// Whether or not the item should be added for free.
+        /// Whether the item should be added for free.
         /// </summary>
         public bool FreeCost => chkFreeItem.Checked;
 

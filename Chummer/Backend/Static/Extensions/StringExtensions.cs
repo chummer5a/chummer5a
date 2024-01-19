@@ -1782,7 +1782,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a string is an RTF document
+        /// Whether a string is an RTF document
         /// </summary>
         /// <param name="strInput">The string to check.</param>
         /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>

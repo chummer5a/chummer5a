@@ -78,7 +78,7 @@ namespace Chummer
         /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
         /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
         /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
-        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="blnAddToRating">Whether the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
         private Improvement CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,

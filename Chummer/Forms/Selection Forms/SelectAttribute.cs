@@ -100,7 +100,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Do not affect Metatype Maximum checkbox should be shown on the form.
+        /// Whether the Do not affect Metatype Maximum checkbox should be shown on the form.
         /// </summary>
         public bool ShowMetatypeMaximum
         {
@@ -108,7 +108,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Metatype Maximum value should be affected as well.
+        /// Whether the Metatype Maximum value should be affected as well.
         /// </summary>
         public bool DoNotAffectMetatypeMaximum => chkDoNotAffectMetatypeMaximum.Checked;
 

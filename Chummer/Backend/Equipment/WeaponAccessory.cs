@@ -166,9 +166,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlAccessory">XmlNode to create the object from.</param>
         /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
         /// <param name="intRating">Rating of the Weapon Accessory.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating,
             bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
@@ -183,9 +183,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlAccessory">XmlNode to create the object from.</param>
         /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
         /// <param name="intRating">Rating of the Weapon Accessory.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating,
             bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
@@ -1203,7 +1203,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Accessory is part of the base weapon configuration.
+        /// Whether this Accessory is part of the base weapon configuration.
         /// </summary>
         public bool IncludedInWeapon
         {
@@ -1212,7 +1212,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Accessory is installed and contributing towards the Weapon's stats.
+        /// Whether this Accessory is installed and contributing towards the Weapon's stats.
         /// </summary>
         public bool Equipped
         {
@@ -1476,7 +1476,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {
@@ -1944,7 +1944,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Accessory's wireless bonus is enabled
+        /// Whether this Accessory's wireless bonus is enabled
         /// </summary>
         public bool WirelessOn
         {

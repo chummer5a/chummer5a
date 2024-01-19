@@ -262,7 +262,7 @@ namespace Chummer
         private decimal _decNuyenCarryover = 5000;
         private int _intKarmaCarryover = 7;
 
-        // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether or not it's enabled
+        // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether it's enabled
         private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>();
 
         // Cached lists that should be updated every time _dicCustomDataDirectoryKeys is updated
@@ -3032,7 +3032,7 @@ namespace Chummer
         /// Load the settings from the settings file.
         /// </summary>
         /// <param name="strFileName">Settings file to load from.</param>
-        /// <param name="blnShowDialogs">Whether or not to show message boxes on failures to load.</param>
+        /// <param name="blnShowDialogs">Whether to show message boxes on failures to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public bool Load(string strFileName, bool blnShowDialogs = true, CancellationToken token = default)
         {
@@ -3241,7 +3241,7 @@ namespace Chummer
                 objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
                 // Allow Armor Degradation.
                 objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
-                // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
+                // Whether Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
                 objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue",
                                                   ref _blnSpecialKarmaCostBasedOnShownValue);
                 // Allow more than 35 BP in Positive Qualities.
@@ -3264,9 +3264,9 @@ namespace Chummer
                 // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
                 if (!objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitiesnobonus", ref _blnExceedNegativeQualitiesNoBonus))
                     objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesNoBonus);
-                // Whether or not Restricted items have their cost multiplied.
+                // Whether Restricted items have their cost multiplied.
                 objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
-                // Whether or not Forbidden items have their cost multiplied.
+                // Whether Forbidden items have their cost multiplied.
                 objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
                 // Restricted cost multiplier.
                 objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
@@ -3316,32 +3316,32 @@ namespace Chummer
                     }
                 }
 
-                // Whether or not Capacity limits should be enforced.
+                // Whether Capacity limits should be enforced.
                 objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
-                // Whether or not Recoil modifiers are restricted (AR 148).
+                // Whether Recoil modifiers are restricted (AR 148).
                 objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
-                // Whether or not character are not restricted to the number of points they can invest in Nuyen.
+                // Whether character are not restricted to the number of points they can invest in Nuyen.
                 objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
-                // Whether or not Stacked Foci can go a combined Force higher than 6.
+                // Whether Stacked Foci can go a combined Force higher than 6.
                 objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
-                // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
+                // Whether the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
                 objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-                // Whether or not the user can break Skill Groups while in Create Mode.
+                // Whether the user can break Skill Groups while in Create Mode.
                 objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode",
                                                   ref _blnStrictSkillGroupsInCreateMode);
-                // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+                // Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
                 objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills",
                                                   ref _blnAllowPointBuySpecializationsOnKarmaSkills);
-                // Whether or not any Detection Spell can be taken as Extended range version.
+                // Whether any Detection Spell can be taken as Extended range version.
                 objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
-                // Whether or not cyberlimbs are used for augmented attribute calculation.
+                // Whether cyberlimbs are used for augmented attribute calculation.
                 objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
                 // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
                 objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
                                                   ref _blnAlternateMetatypeAttributeKarma);
-                // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
+                // Whether Obsolescent can be removed/upgrade in the same manner as Obsolete.
                 objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
-                // Whether or not Bioware Suites can be created and added.
+                // Whether Bioware Suites can be created and added.
                 objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
                 // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
                 objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
@@ -3790,7 +3790,7 @@ namespace Chummer
         /// Load the settings from the settings file.
         /// </summary>
         /// <param name="strFileName">Settings file to load from.</param>
-        /// <param name="blnShowDialogs">Whether or not to show message boxes on failures to load.</param>
+        /// <param name="blnShowDialogs">Whether to show message boxes on failures to load.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task<bool> LoadAsync(string strFileName, bool blnShowDialogs = true, CancellationToken token = default)
         {
@@ -4011,7 +4011,7 @@ namespace Chummer
                 objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
                 // Allow Armor Degradation.
                 objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
-                // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
+                // Whether Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
                 objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue",
                                                   ref _blnSpecialKarmaCostBasedOnShownValue);
                 // Allow more than 35 BP in Positive Qualities.
@@ -4036,9 +4036,9 @@ namespace Chummer
                                                        ref _blnExceedNegativeQualitiesNoBonus))
                     objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit",
                                                       ref _blnExceedNegativeQualitiesNoBonus);
-                // Whether or not Restricted items have their cost multiplied.
+                // Whether Restricted items have their cost multiplied.
                 objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
-                // Whether or not Forbidden items have their cost multiplied.
+                // Whether Forbidden items have their cost multiplied.
                 objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
                 // Restricted cost multiplier.
                 objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
@@ -4088,32 +4088,32 @@ namespace Chummer
                     }
                 }
 
-                // Whether or not Capacity limits should be enforced.
+                // Whether Capacity limits should be enforced.
                 objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
-                // Whether or not Recoil modifiers are restricted (AR 148).
+                // Whether Recoil modifiers are restricted (AR 148).
                 objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
-                // Whether or not character are not restricted to the number of points they can invest in Nuyen.
+                // Whether character are not restricted to the number of points they can invest in Nuyen.
                 objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
-                // Whether or not Stacked Foci can go a combined Force higher than 6.
+                // Whether Stacked Foci can go a combined Force higher than 6.
                 objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
-                // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
+                // Whether the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
                 objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-                // Whether or not the user can break Skill Groups while in Create Mode.
+                // Whether the user can break Skill Groups while in Create Mode.
                 objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode",
                                                   ref _blnStrictSkillGroupsInCreateMode);
-                // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+                // Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
                 objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills",
                                                   ref _blnAllowPointBuySpecializationsOnKarmaSkills);
-                // Whether or not any Detection Spell can be taken as Extended range version.
+                // Whether any Detection Spell can be taken as Extended range version.
                 objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
-                // Whether or not cyberlimbs are used for augmented attribute calculation.
+                // Whether cyberlimbs are used for augmented attribute calculation.
                 objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
                 // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
                 objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
                                                   ref _blnAlternateMetatypeAttributeKarma);
-                // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
+                // Whether Obsolescent can be removed/upgrade in the same manner as Obsolete.
                 objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
-                // Whether or not Bioware Suites can be created and added.
+                // Whether Bioware Suites can be created and added.
                 objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
                 // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
                 objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
@@ -5626,7 +5626,7 @@ namespace Chummer
         #region Properties and Methods
 
         /// <summary>
-        /// Determine whether or not a given book is in use.
+        /// Determine whether a given book is in use.
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -5637,7 +5637,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Determine whether or not a given book is in use.
+        /// Determine whether a given book is in use.
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -6074,7 +6074,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the More Lethal Gameplay optional rule is enabled.
+        /// Whether the More Lethal Gameplay optional rule is enabled.
         /// </summary>
         public bool MoreLethalGameplay
         {
@@ -6097,7 +6097,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the More Lethal Gameplay optional rule is enabled.
+        /// Whether the More Lethal Gameplay optional rule is enabled.
         /// </summary>
         public async Task<bool> GetMoreLethalGameplayAsync(CancellationToken token = default)
         {
@@ -6110,7 +6110,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the More Lethal Gameplay optional rule is enabled.
+        /// Whether the More Lethal Gameplay optional rule is enabled.
         /// </summary>
         public async Task SetMoreLethalGameplayAsync(bool value, CancellationToken token = default)
         {
@@ -6148,7 +6148,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to require licensing restricted items.
+        /// Whether to require licensing restricted items.
         /// </summary>
         public bool LicenseRestricted
         {
@@ -6171,7 +6171,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to require licensing restricted items.
+        /// Whether to require licensing restricted items.
         /// </summary>
         public async Task<bool> GetLicenseRestrictedAsync(CancellationToken token = default)
         {
@@ -6184,7 +6184,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to require licensing restricted items.
+        /// Whether to require licensing restricted items.
         /// </summary>
         public async Task SetLicenseRestrictedAsync(bool value, CancellationToken token = default)
         {
@@ -6222,7 +6222,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
+        /// Whether a Spirit's Maximum Force is based on the character's total MAG.
         /// </summary>
         public bool SpiritForceBasedOnTotalMAG
         {
@@ -6245,7 +6245,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
+        /// Whether a Spirit's Maximum Force is based on the character's total MAG.
         /// </summary>
         public async Task<bool> GetSpiritForceBasedOnTotalMAGAsync(CancellationToken token)
         {
@@ -6406,7 +6406,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// Whether UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
         /// </summary>
         public bool UnarmedImprovementsApplyToWeapons
         {
@@ -6429,7 +6429,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// Whether UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
         /// </summary>
         public async Task<bool> GetUnarmedImprovementsApplyToWeaponsAsync(CancellationToken token = default)
         {
@@ -6441,7 +6441,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
+        /// Whether UnarmedAP, UnarmedReach and UnarmedDV Improvements apply to weapons that use the Unarmed Combat skill.
         /// </summary>
         public async Task SetUnarmedImprovementsApplyToWeaponsAsync(bool value, CancellationToken token = default)
         {
@@ -6479,7 +6479,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters may use Initiation/Submersion in Create mode.
+        /// Whether characters may use Initiation/Submersion in Create mode.
         /// </summary>
         public bool AllowInitiationInCreateMode
         {
@@ -6502,7 +6502,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters may use Initiation/Submersion in Create mode.
+        /// Whether characters may use Initiation/Submersion in Create mode.
         /// </summary>
         public async Task<bool> GetAllowInitiationInCreateModeAsync(CancellationToken token = default)
         {
@@ -6515,7 +6515,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters may use Initiation/Submersion in Create mode.
+        /// Whether characters may use Initiation/Submersion in Create mode.
         /// </summary>
         public async Task SetAllowInitiationInCreateModeAsync(bool value, CancellationToken token = default)
         {
@@ -6546,7 +6546,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can spend skill points on broken groups.
+        /// Whether characters can spend skill points on broken groups.
         /// </summary>
         public bool UsePointsOnBrokenGroups
         {
@@ -6569,7 +6569,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can spend skill points on broken groups.
+        /// Whether characters can spend skill points on broken groups.
         /// </summary>
         public async Task<bool> GetUsePointsOnBrokenGroupsAsync(CancellationToken token = default)
         {
@@ -6581,7 +6581,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can spend skill points on broken groups.
+        /// Whether characters can spend skill points on broken groups.
         /// </summary>
         public async Task SetUsePointsOnBrokenGroupsAsync(bool value, CancellationToken token = default)
         {
@@ -6619,7 +6619,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters in Career Mode should pay double for qualities.
+        /// Whether characters in Career Mode should pay double for qualities.
         /// </summary>
         public bool DontDoubleQualityPurchases
         {
@@ -6642,7 +6642,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters in Career Mode should pay double for qualities.
+        /// Whether characters in Career Mode should pay double for qualities.
         /// </summary>
         public async Task<bool> GetDontDoubleQualityPurchasesAsync(CancellationToken token = default)
         {
@@ -6654,7 +6654,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters in Career Mode should pay double for qualities.
+        /// Whether characters in Career Mode should pay double for qualities.
         /// </summary>
         public async Task SetDontDoubleQualityPurchasesAsync(bool value, CancellationToken token = default)
         {
@@ -6692,7 +6692,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
+        /// Whether characters in Career Mode should pay double for removing Negative Qualities.
         /// </summary>
         public bool DontDoubleQualityRefunds
         {
@@ -6715,7 +6715,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
+        /// Whether characters in Career Mode should pay double for removing Negative Qualities.
         /// </summary>
         public async Task<bool> GetDontDoubleQualityRefundsAsync(CancellationToken token = default)
         {
@@ -6727,7 +6727,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
+        /// Whether characters in Career Mode should pay double for removing Negative Qualities.
         /// </summary>
         public async Task SetDontDoubleQualityRefundsAsync(bool value, CancellationToken token = default)
         {
@@ -6765,7 +6765,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to ignore the art requirements from street grimoire.
+        /// Whether to ignore the art requirements from street grimoire.
         /// </summary>
         public bool IgnoreArt
         {
@@ -6788,7 +6788,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to ignore the art requirements from street grimoire.
+        /// Whether to ignore the art requirements from street grimoire.
         /// </summary>
         public async Task<bool> GetIgnoreArtAsync(CancellationToken token = default)
         {
@@ -6800,7 +6800,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to ignore the art requirements from street grimoire.
+        /// Whether to ignore the art requirements from street grimoire.
         /// </summary>
         public async Task SetIgnoreArtAsync(bool value, CancellationToken token = default)
         {
@@ -6838,7 +6838,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// Whether to ignore the limit on Complex Forms in Career mode.
         /// </summary>
         public bool IgnoreComplexFormLimit
         {
@@ -6861,7 +6861,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// Whether to ignore the limit on Complex Forms in Career mode.
         /// </summary>
         public async Task<bool> GetIgnoreComplexFormLimitAsync(CancellationToken token = default)
         {
@@ -6873,7 +6873,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to ignore the limit on Complex Forms in Career mode.
+        /// Whether to ignore the limit on Complex Forms in Career mode.
         /// </summary>
         public async Task SetIgnoreComplexFormLimitAsync(bool value, CancellationToken token = default)
         {
@@ -6911,7 +6911,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to use stats from Cyberlegs when calculating movement rates
+        /// Whether to use stats from Cyberlegs when calculating movement rates
         /// </summary>
         public bool CyberlegMovement
         {
@@ -6934,7 +6934,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to use stats from Cyberlegs when calculating movement rates
+        /// Whether to use stats from Cyberlegs when calculating movement rates
         /// </summary>
         public async Task<bool> GetCyberlegMovementAsync(CancellationToken token = default)
         {
@@ -6946,7 +6946,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to use stats from Cyberlegs when calculating movement rates
+        /// Whether to use stats from Cyberlegs when calculating movement rates
         /// </summary>
         public async Task SetCyberlegMovementAsync(bool value, CancellationToken token = default)
         {
@@ -7657,7 +7657,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Armor
+        /// Whether Armor
         /// </summary>
         public bool DroneArmorMultiplierEnabled
         {
@@ -7697,7 +7697,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Armor
+        /// Whether Armor
         /// </summary>
         public async Task<bool> GetDroneArmorMultiplierEnabledAsync(CancellationToken token = default)
         {
@@ -7709,7 +7709,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Armor
+        /// Whether Armor
         /// </summary>
         public async Task SetDroneArmorMultiplierEnabledAsync(bool value, CancellationToken token = default)
         {
@@ -7920,7 +7920,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Essence loss only reduces MAG/RES maximum value, not the current value.
+        /// Whether Essence loss only reduces MAG/RES maximum value, not the current value.
         /// </summary>
         public bool ESSLossReducesMaximumOnly
         {
@@ -7943,7 +7943,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Essence loss only reduces MAG/RES maximum value, not the current value.
+        /// Whether Essence loss only reduces MAG/RES maximum value, not the current value.
         /// </summary>
         public async Task<bool> GetESSLossReducesMaximumOnlyAsync(CancellationToken token = default)
         {
@@ -7956,7 +7956,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Essence loss only reduces MAG/RES maximum value, not the current value.
+        /// Whether Essence loss only reduces MAG/RES maximum value, not the current value.
         /// </summary>
         public async Task SetESSLossReducesMaximumOnlyAsync(bool value, CancellationToken token = default)
         {
@@ -7994,7 +7994,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
+        /// Whether characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
         /// </summary>
         public bool AllowSkillRegrouping
         {
@@ -8017,7 +8017,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
+        /// Whether characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
         /// </summary>
         public async Task<bool> GetAllowSkillRegroupingAsync(CancellationToken token = default)
         {
@@ -8030,7 +8030,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
+        /// Whether characters are allowed to put points into a Skill Group again once it is broken and all Ratings are the same.
         /// </summary>
         public async Task SetAllowSkillRegroupingAsync(bool value, CancellationToken token = default)
         {
@@ -8068,7 +8068,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not specializations in an active skill (permanently) break a skill group.
+        /// Whether specializations in an active skill (permanently) break a skill group.
         /// </summary>
         public bool SpecializationsBreakSkillGroups
         {
@@ -8091,7 +8091,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not specializations in an active skill (permanently) break a skill group.
+        /// Whether specializations in an active skill (permanently) break a skill group.
         /// </summary>
         public async Task<bool> GetSpecializationsBreakSkillGroupsAsync(CancellationToken token = default)
         {
@@ -8103,7 +8103,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not specializations in an active skill (permanently) break a skill group.
+        /// Whether specializations in an active skill (permanently) break a skill group.
         /// </summary>
         public async Task SetSpecializationsBreakSkillGroupsAsync(bool value, CancellationToken token = default)
         {
@@ -8329,7 +8329,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Metatypes cost Karma equal to their BP when creating a character with Karma.
+        /// Whether Metatypes cost Karma equal to their BP when creating a character with Karma.
         /// </summary>
         public bool MetatypeCostsKarma
         {
@@ -8523,7 +8523,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Armor Degradation is allowed.
+        /// Whether Armor Degradation is allowed.
         /// </summary>
         public bool ArmorDegradation
         {
@@ -8546,7 +8546,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Armor Degradation is allowed.
+        /// Whether Armor Degradation is allowed.
         /// </summary>
         public async Task<bool> GetArmorDegradationAsync(CancellationToken token = default)
         {
@@ -8558,7 +8558,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Armor Degradation is allowed.
+        /// Whether Armor Degradation is allowed.
         /// </summary>
         public async Task SetArmorDegradationAsync(bool value, CancellationToken token = default)
         {
@@ -8669,7 +8669,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can have more than 25 BP in Positive Qualities.
+        /// Whether characters can have more than 25 BP in Positive Qualities.
         /// </summary>
         public bool ExceedPositiveQualities
         {
@@ -8714,7 +8714,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can have more than 25 BP in Positive Qualities.
+        /// Whether characters can have more than 25 BP in Positive Qualities.
         /// </summary>
         public async Task<bool> GetExceedPositiveQualitiesAsync(CancellationToken token = default)
         {
@@ -8726,7 +8726,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can have more than 25 BP in Positive Qualities.
+        /// Whether characters can have more than 25 BP in Positive Qualities.
         /// </summary>
         public async Task SetExceedPositiveQualitiesAsync(bool value, CancellationToken token = default)
         {
@@ -8866,7 +8866,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can have more than 25 BP in Negative Qualities.
+        /// Whether characters can have more than 25 BP in Negative Qualities.
         /// </summary>
         public bool ExceedNegativeQualities
         {
@@ -8911,7 +8911,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can have more than 25 BP in Negative Qualities.
+        /// Whether characters can have more than 25 BP in Negative Qualities.
         /// </summary>
         public async Task<bool> GetExceedNegativeQualitiesAsync(CancellationToken token = default)
         {
@@ -8923,7 +8923,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters can have more than 25 BP in Negative Qualities.
+        /// Whether characters can have more than 25 BP in Negative Qualities.
         /// </summary>
         public async Task SetExceedNegativeQualitiesAsync(bool value, CancellationToken token = default)
         {
@@ -9063,7 +9063,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Restricted items have their cost multiplied.
+        /// Whether Restricted items have their cost multiplied.
         /// </summary>
         public bool MultiplyRestrictedCost
         {
@@ -9086,7 +9086,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Forbidden items have their cost multiplied.
+        /// Whether Forbidden items have their cost multiplied.
         /// </summary>
         public bool MultiplyForbiddenCost
         {
@@ -10905,7 +10905,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Capacity limits should be enforced.
+        /// Whether Capacity limits should be enforced.
         /// </summary>
         public bool EnforceCapacity
         {
@@ -10928,7 +10928,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Capacity limits should be enforced.
+        /// Whether Capacity limits should be enforced.
         /// </summary>
         public async Task<bool> GetEnforceCapacityAsync(CancellationToken token = default)
         {
@@ -10941,7 +10941,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Capacity limits should be enforced.
+        /// Whether Capacity limits should be enforced.
         /// </summary>
         public async Task SetEnforceCapacityAsync(bool value, CancellationToken token = default)
         {
@@ -10979,7 +10979,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Recoil modifiers are restricted (AR 148).
+        /// Whether Recoil modifiers are restricted (AR 148).
         /// </summary>
         public bool RestrictRecoil
         {
@@ -11002,7 +11002,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Recoil modifiers are restricted (AR 148).
+        /// Whether Recoil modifiers are restricted (AR 148).
         /// </summary>
         public async Task<bool> GetRestrictRecoilAsync(CancellationToken token = default)
         {
@@ -11015,7 +11015,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Recoil modifiers are restricted (AR 148).
+        /// Whether Recoil modifiers are restricted (AR 148).
         /// </summary>
         public async Task SetRestrictRecoilAsync(bool value, CancellationToken token = default)
         {
@@ -11053,7 +11053,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters are unrestricted in the number of points they can invest in Nuyen.
+        /// Whether characters are unrestricted in the number of points they can invest in Nuyen.
         /// </summary>
         public bool UnrestrictedNuyen
         {
@@ -11076,7 +11076,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters are unrestricted in the number of points they can invest in Nuyen.
+        /// Whether characters are unrestricted in the number of points they can invest in Nuyen.
         /// </summary>
         public async Task<bool> GetUnrestrictedNuyenAsync(CancellationToken token = default)
         {
@@ -11088,7 +11088,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not characters are unrestricted in the number of points they can invest in Nuyen.
+        /// Whether characters are unrestricted in the number of points they can invest in Nuyen.
         /// </summary>
         public async Task SetUnrestrictedNuyenAsync(bool value, CancellationToken token = default)
         {
@@ -11126,7 +11126,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Stacked Foci can have a combined Force higher than 6.
+        /// Whether Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowHigherStackedFoci
         {
@@ -11149,7 +11149,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user can change the Part of Base Weapon flag for a Weapon Accessory or Mod.
+        /// Whether the user can change the Part of Base Weapon flag for a Weapon Accessory or Mod.
         /// </summary>
         public bool AllowEditPartOfBaseWeapon
         {
@@ -11172,7 +11172,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user is allowed to break Skill Groups while in Create Mode.
+        /// Whether the user is allowed to break Skill Groups while in Create Mode.
         /// </summary>
         public bool StrictSkillGroupsInCreateMode
         {
@@ -11195,7 +11195,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user is allowed to break Skill Groups while in Create Mode.
+        /// Whether the user is allowed to break Skill Groups while in Create Mode.
         /// </summary>
         public async Task<bool> GetStrictSkillGroupsInCreateModeAsync(CancellationToken token = default)
         {
@@ -11207,7 +11207,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user is allowed to break Skill Groups while in Create Mode.
+        /// Whether the user is allowed to break Skill Groups while in Create Mode.
         /// </summary>
         public async Task SetStrictSkillGroupsInCreateModeAsync(bool value, CancellationToken token = default)
         {
@@ -11245,7 +11245,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
         /// </summary>
         public bool AllowPointBuySpecializationsOnKarmaSkills
         {
@@ -11268,7 +11268,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
         /// </summary>
         public async Task<bool> GetAllowPointBuySpecializationsOnKarmaSkillsAsync(
             CancellationToken token = default)
@@ -11281,7 +11281,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+        /// Whether the user is allowed to buy specializations with skill points for skills only bought with karma.
         /// </summary>
         public async Task SetAllowPointBuySpecializationsOnKarmaSkillsAsync(bool value, CancellationToken token = default)
         {
@@ -11319,7 +11319,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not any Detection Spell can be taken as Extended range version.
+        /// Whether any Detection Spell can be taken as Extended range version.
         /// </summary>
         public bool ExtendAnyDetectionSpell
         {
@@ -11342,7 +11342,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not any Detection Spell can be taken as Extended range version.
+        /// Whether any Detection Spell can be taken as Extended range version.
         /// </summary>
         public async Task<bool> GetExtendAnyDetectionSpellAsync(CancellationToken token = default)
         {
@@ -11354,7 +11354,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not any Detection Spell can be taken as Extended range version.
+        /// Whether any Detection Spell can be taken as Extended range version.
         /// </summary>
         public async Task SetExtendAnyDetectionSpellAsync(bool value, CancellationToken token = default)
         {
@@ -11392,7 +11392,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not cyberlimbs stats are used in attribute calculation
+        /// Whether cyberlimbs stats are used in attribute calculation
         /// </summary>
         public bool DontUseCyberlimbCalculation
         {
@@ -11415,7 +11415,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not cyberlimbs stats are used in attribute calculation
+        /// Whether cyberlimbs stats are used in attribute calculation
         /// </summary>
         public async Task<bool> GetDontUseCyberlimbCalculationAsync(CancellationToken token = default)
         {
@@ -11427,7 +11427,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not cyberlimbs stats are used in attribute calculation
+        /// Whether cyberlimbs stats are used in attribute calculation
         /// </summary>
         public async Task SetDontUseCyberlimbCalculationAsync(bool value, CancellationToken token = default)
         {
@@ -11611,7 +11611,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Obsolescent can be removed/upgraded in the same way as Obsolete.
+        /// Whether Obsolescent can be removed/upgraded in the same way as Obsolete.
         /// </summary>
         public bool AllowObsolescentUpgrade
         {
@@ -11634,7 +11634,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Bioware Suites can be added and created.
+        /// Whether Bioware Suites can be added and created.
         /// </summary>
         public bool AllowBiowareSuites
         {

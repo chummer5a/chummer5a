@@ -575,7 +575,7 @@ namespace Chummer.Backend.Equipment
                     {
                         try
                         {
-                            // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
+                            // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether we use cyberleg movement
                             foreach (string strAbbrev in setAttributesToRefresh)
                             {
                                 foreach (CharacterAttrib objCharacterAttrib in
@@ -763,12 +763,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Selected Rating of the piece of Cyberware.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="lstVehicles">List of Vehicles that should be added to the Character.</param>
-        /// <param name="blnCreateImprovements">Whether or not Improvements should be created.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether Improvements should be created.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
         /// <param name="objParent">Cyberware to which this new cyberware should be added (needed in creation method for selecting a side).</param>
         /// <param name="objParentVehicle">Vehicle to which this new cyberware will be added (needed in creation method for selecting a side and improvements).</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlCyberware, Grade objGrade, Improvement.ImprovementSource objSource,
             int intRating, IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles, bool blnCreateImprovements = true,
@@ -790,12 +790,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="intRating">Selected Rating of the piece of Cyberware.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="lstVehicles">List of Vehicles that should be added to the Character.</param>
-        /// <param name="blnCreateImprovements">Whether or not Improvements should be created.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether Improvements should be created.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
         /// <param name="strForced">Force a particular value to be selected by an Improvement prompts.</param>
         /// <param name="objParent">Cyberware to which this new cyberware should be added (needed in creation method for selecting a side).</param>
         /// <param name="objParentVehicle">Vehicle to which this new cyberware will be added (needed in creation method for selecting a side and improvements).</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses. Use only when creating Gear for previews in selection forms.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlCyberware, Grade objGrade, Improvement.ImprovementSource objSource,
             int intRating, IList<Weapon> lstWeapons, IList<Vehicle> lstVehicles, bool blnCreateImprovements = true,
@@ -3144,7 +3144,7 @@ namespace Chummer.Backend.Equipment
                         || _objCharacter.Settings.DontUseCyberlimbCalculation
                         || _objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                         return;
-                    // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether or not we use cyberleg movement
+                    // Note: Movement is always handled whenever AGI or STR is changed, regardless of whether we use cyberleg movement
                     foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
                              s_AttributeAffectingCyberwares)
                     {
@@ -5715,7 +5715,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the piece of Cyberware is part of a Cyberware Suite.
+        /// Whether the piece of Cyberware is part of a Cyberware Suite.
         /// </summary>
         public bool Suite
         {
@@ -6134,7 +6134,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Cyberware's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Cyberware's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {
@@ -6151,7 +6151,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Cyberware's ESS cost increases that of its parent when added as a subsystem (usually no).
+        /// Whether the Cyberware's ESS cost increases that of its parent when added as a subsystem (usually no).
         /// </summary>
         public bool AddToParentESS
         {
@@ -6177,7 +6177,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Cyberware's ESS cost increases that of its parent when added as a subsystem (usually no).
+        /// Whether the Cyberware's ESS cost increases that of its parent when added as a subsystem (usually no).
         /// </summary>
         public bool AddToParentCapacity
         {

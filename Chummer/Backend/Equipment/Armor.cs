@@ -308,9 +308,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Rating of the item.</param>
         /// <param name="lstWeapons">List of Weapons that added to the character's weapons.</param>
-        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
+        /// <param name="blnSkipCost">Whether creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses like Custom Fit (Stack).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
             bool blnCreateChildren = true, bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -325,9 +325,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Rating of the item.</param>
         /// <param name="lstWeapons">List of Weapons that added to the character's weapons.</param>
-        /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
+        /// <param name="blnSkipCost">Whether creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses like Custom Fit (Stack).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
             bool blnCreateChildren = true, bool blnSkipSelectForms = false, CancellationToken token = default)
@@ -1251,7 +1251,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Armor contributes to Encumbrance.
+        /// Whether the Armor contributes to Encumbrance.
         /// </summary>
         public bool Encumbrance => _blnEncumbrance;
 
@@ -1570,7 +1570,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Armor is equipped and should be considered for highest Armor Rating or Armor Encumbrance.
+        /// Whether the Armor is equipped and should be considered for highest Armor Rating or Armor Encumbrance.
         /// </summary>
         public bool Equipped
         {
@@ -1646,7 +1646,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not Wireless is turned on for this armor
+        /// Whether Wireless is turned on for this armor
         /// </summary>
         public bool WirelessOn
         {
@@ -2018,7 +2018,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {

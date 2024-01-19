@@ -260,7 +260,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a free contact.
+        /// Whether this is a free contact.
         /// </summary>
         public bool Free
         {

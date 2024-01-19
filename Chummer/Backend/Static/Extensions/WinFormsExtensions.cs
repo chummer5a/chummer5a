@@ -2253,7 +2253,7 @@ namespace Chummer
         /// ICanSorts in the tree
         /// </summary>
         /// <param name="treView">The tree to sort</param>
-        /// <param name="blnRetainTopLevelOrder">Whether or not to retain the order of the top level nodes.</param>
+        /// <param name="blnRetainTopLevelOrder">Whether to retain the order of the top level nodes.</param>
         public static void SortCustomOrder(this TreeView treView, bool blnRetainTopLevelOrder = false)
         {
             if (treView == null)
@@ -2485,7 +2485,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
+        /// Automatically (un)set vertical scrollbars for a TextBox based on whether it needs them.
         /// </summary>
         /// <param name="txtTextBox">Control to analyze and potentially (un)set scrollbars</param>
         public static void AutoSetScrollbars(this TextBox txtTextBox)

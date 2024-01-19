@@ -267,12 +267,12 @@ namespace Chummer.Backend.Equipment
         public string Source => _strSource;
 
         /// <summary>
-        /// Whether or not the Grade is for Adapsin.
+        /// Whether the Grade is for Adapsin.
         /// </summary>
         public bool Adapsin => _strName.Contains("(Adapsin)");
 
         /// <summary>
-        /// Whether or not the Grade is for the Burnout's Way.
+        /// Whether the Grade is for the Burnout's Way.
         /// </summary>
         public bool Burnout => _strName.Contains("Burnout's Way");
 

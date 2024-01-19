@@ -1305,7 +1305,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not the Lifestyle has been Purchased and no longer rented.
+        /// Whether the Lifestyle has been Purchased and no longer rented.
         /// </summary>
         public bool Purchased
         {
