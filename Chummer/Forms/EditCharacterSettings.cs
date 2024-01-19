@@ -2002,26 +2002,41 @@ namespace Chummer
                 x => x.GetWeightDecimalsAsync(token),
                 (x, y) => x.SetWeightDecimalsAsync(y, token), 250, token, token).ConfigureAwait(false);
 
-            await chkEncumbrancePenaltyPhysicalLimit
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit), token)
-                  .ConfigureAwait(false);
-            await chkEncumbrancePenaltyMovementSpeed
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed), token)
-                  .ConfigureAwait(false);
-            await chkEncumbrancePenaltyAgility
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DoEncumbrancePenaltyAgility), token)
-                  .ConfigureAwait(false);
-            await chkEncumbrancePenaltyReaction
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DoEncumbrancePenaltyReaction), token)
-                  .ConfigureAwait(false);
-            await chkEncumbrancePenaltyWoundModifier
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier), token)
-                  .ConfigureAwait(false);
+            await chkEncumbrancePenaltyPhysicalLimit.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDoEncumbrancePenaltyPhysicalLimitAsync(token),
+                (x, y) => x.SetDoEncumbrancePenaltyPhysicalLimitAsync(y, token), token).ConfigureAwait(false);
+            await chkEncumbrancePenaltyMovementSpeed.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDoEncumbrancePenaltyMovementSpeedAsync(token),
+                (x, y) => x.SetDoEncumbrancePenaltyMovementSpeedAsync(y, token), token).ConfigureAwait(false);
+            await chkEncumbrancePenaltyAgility.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DoEncumbrancePenaltyAgility),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDoEncumbrancePenaltyAgilityAsync(token),
+                (x, y) => x.SetDoEncumbrancePenaltyAgilityAsync(y, token), token).ConfigureAwait(false);
+            await chkEncumbrancePenaltyReaction.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DoEncumbrancePenaltyReaction),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDoEncumbrancePenaltyReactionAsync(token),
+                (x, y) => x.SetDoEncumbrancePenaltyReactionAsync(y, token), token).ConfigureAwait(false);
+            await chkEncumbrancePenaltyReaction.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDoEncumbrancePenaltyWoundModifierAsync(token),
+                (x, y) => x.SetDoEncumbrancePenaltyWoundModifierAsync(y, token), token).ConfigureAwait(false);
 
             await nudEncumbrancePenaltyPhysicalLimit.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
@@ -2059,48 +2074,91 @@ namespace Chummer
                 x => x.GetEncumbrancePenaltyWoundModifierAsync(token),
                 (x, y) => x.SetEncumbrancePenaltyWoundModifierAsync(y, token), 250, token, token).ConfigureAwait(false);
 
-            await chkEnforceCapacity
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.EnforceCapacity),
-                                      token).ConfigureAwait(false);
-            await chkLicenseEachRestrictedItem
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.LicenseRestricted),
-                                      token).ConfigureAwait(false);
-            await chkReverseAttributePriorityOrder
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.ReverseAttributePriorityOrder), token)
-                  .ConfigureAwait(false);
-            await chkDronemods
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.DroneMods), token)
-                  .ConfigureAwait(false);
-            await chkDronemodsMaximumPilot
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.DroneModsMaximumPilot),
-                                      token).ConfigureAwait(false);
-            await chkRestrictRecoil
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.RestrictRecoil), token)
-                  .ConfigureAwait(false);
-            await chkStrictSkillGroups
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.StrictSkillGroupsInCreateMode), token)
-                  .ConfigureAwait(false);
-            await chkAllowPointBuySpecializationsOnKarmaSkills
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.AllowPointBuySpecializationsOnKarmaSkills), token)
-                  .ConfigureAwait(false);
-            await chkAllowFreeGrids
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowFreeGrids), token)
-                  .ConfigureAwait(false);
+            await chkEnforceCapacity.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.EnforceCapacity),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetEnforceCapacityAsync(token),
+                (x, y) => x.SetEnforceCapacityAsync(y, token), token).ConfigureAwait(false);
+            await chkLicenseEachRestrictedItem.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.LicenseRestricted),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetLicenseRestrictedAsync(token),
+                (x, y) => x.SetLicenseRestrictedAsync(y, token), token).ConfigureAwait(false);
+            await chkReverseAttributePriorityOrder.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.ReverseAttributePriorityOrder),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetReverseAttributePriorityOrderAsync(token),
+                (x, y) => x.SetReverseAttributePriorityOrderAsync(y, token), token).ConfigureAwait(false);
+            await chkDronemods.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DroneMods),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDroneModsAsync(token),
+                (x, y) => x.SetDroneModsAsync(y, token), token).ConfigureAwait(false);
+            await chkDronemodsMaximumPilot.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DroneModsMaximumPilot),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDroneModsMaximumPilotAsync(token),
+                (x, y) => x.SetDroneModsMaximumPilotAsync(y, token), token).ConfigureAwait(false);
+            await chkRestrictRecoil.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.RestrictRecoil),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetRestrictRecoilAsync(token),
+                (x, y) => x.SetRestrictRecoilAsync(y, token), token).ConfigureAwait(false);
+            await chkStrictSkillGroups.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.StrictSkillGroupsInCreateMode),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetStrictSkillGroupsInCreateModeAsync(token),
+                (x, y) => x.SetStrictSkillGroupsInCreateModeAsync(y, token), token).ConfigureAwait(false);
+            await chkAllowPointBuySpecializationsOnKarmaSkills.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AllowPointBuySpecializationsOnKarmaSkills),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token),
+                (x, y) => x.SetAllowPointBuySpecializationsOnKarmaSkillsAsync(y, token), token).ConfigureAwait(false);
+            await chkAllowFreeGrids.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AllowFreeGrids),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAllowFreeGridsAsync(token),
+                (x, y) => x.SetAllowFreeGridsAsync(y, token), token).ConfigureAwait(false);
 
-            await chkDontUseCyberlimbCalculation
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DontUseCyberlimbCalculation), token)
-                  .ConfigureAwait(false);
-            await chkCyberlegMovement
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.CyberlegMovement),
-                                      token).ConfigureAwait(false);
-            await chkCyberlimbAttributeBonusCap
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride), token)
-                  .ConfigureAwait(false);
+            await chkDontUseCyberlimbCalculation.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DontUseCyberlimbCalculation),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDontUseCyberlimbCalculationAsync(token),
+                (x, y) => x.SetDontUseCyberlimbCalculationAsync(y, token), token).ConfigureAwait(false);
+            await chkCyberlegMovement.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.CyberlegMovement),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetCyberlegMovementAsync(token),
+                (x, y) => x.SetCyberlegMovementAsync(y, token), token).ConfigureAwait(false);
+            await chkCyberlimbAttributeBonusCap.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetCyberlimbAttributeBonusCapOverrideAsync(token),
+                (x, y) => x.SetCyberlimbAttributeBonusCapOverrideAsync(y, token), token).ConfigureAwait(false);
             await nudCyberlimbAttributeBonusCap.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.CyberlimbAttributeBonusCapOverride),
@@ -2158,10 +2216,13 @@ namespace Chummer
                 (x, y) => x.ValueChanged += y,
                 x => x.GetEssenceDecimalsAsync(token),
                 (x, y) => x.SetEssenceDecimalsAsync(y, token), 250, token, token).ConfigureAwait(false);
-            await chkDontRoundEssenceInternally
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DontRoundEssenceInternally), token)
-                  .ConfigureAwait(false);
+            await chkDontRoundEssenceInternally.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DontRoundEssenceInternally),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDontRoundEssenceInternallyAsync(token),
+                (x, y) => x.SetDontRoundEssenceInternallyAsync(y, token), token).ConfigureAwait(false);
 
             await nudMinInitiativeDice.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
                 (x, y) => x.ValueAsInt = y,
@@ -2236,9 +2297,13 @@ namespace Chummer
                 x => x.GetMaxHotSimInitiativeDiceAsync(token),
                 (x, y) => x.SetMaxHotSimInitiativeDiceAsync(y, token), 250, token, token).ConfigureAwait(false);
 
-            await chkEnable4eStyleEnemyTracking
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.EnableEnemyTracking),
-                                      token).ConfigureAwait(false);
+            await chkEnable4eStyleEnemyTracking.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.EnableEnemyTracking),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetEnableEnemyTrackingAsync(token),
+                (x, y) => x.SetEnableEnemyTrackingAsync(y, token), token).ConfigureAwait(false);
             await flpKarmaGainedFromEnemies.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
@@ -2254,102 +2319,180 @@ namespace Chummer
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.EnableEnemyTracking),
                 x => x.GetEnableEnemyTrackingAsync(token), token: token).ConfigureAwait(false);
-            await chkEnemyKarmaQualityLimit
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.EnemyKarmaQualityLimit), token).ConfigureAwait(false);
-            await chkMoreLethalGameplay
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.MoreLethalGameplay),
-                                      token).ConfigureAwait(false);
+            await chkEnemyKarmaQualityLimit.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.EnemyKarmaQualityLimit),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetEnemyKarmaQualityLimitAsync(token),
+                (x, y) => x.SetEnemyKarmaQualityLimitAsync(y, token), token).ConfigureAwait(false);
+            await chkMoreLethalGameplay.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.MoreLethalGameplay),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetMoreLethalGameplayAsync(token),
+                (x, y) => x.SetMoreLethalGameplayAsync(y, token), token).ConfigureAwait(false);
 
-            await chkNoArmorEncumbrance
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.NoArmorEncumbrance),
-                                      token).ConfigureAwait(false);
-            await chkUncappedArmorAccessoryBonuses
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.UncappedArmorAccessoryBonuses), token)
-                  .ConfigureAwait(false);
-            await chkIgnoreArt
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.IgnoreArt), token)
-                  .ConfigureAwait(false);
-            await chkIgnoreComplexFormLimit
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.IgnoreComplexFormLimit), token).ConfigureAwait(false);
-            await chkUnarmedSkillImprovements
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.UnarmedImprovementsApplyToWeapons), token)
-                  .ConfigureAwait(false);
-            await chkMysAdPp
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.MysAdeptAllowPpCareer),
-                                      token).ConfigureAwait(false);
+            await chkNoArmorEncumbrance.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.NoArmorEncumbrance),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetNoArmorEncumbranceAsync(token),
+                (x, y) => x.SetNoArmorEncumbranceAsync(y, token), token).ConfigureAwait(false);
+            await chkUncappedArmorAccessoryBonuses.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.UncappedArmorAccessoryBonuses),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetUncappedArmorAccessoryBonusesAsync(token),
+                (x, y) => x.SetUncappedArmorAccessoryBonusesAsync(y, token), token).ConfigureAwait(false);
+            await chkIgnoreArt.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.IgnoreArt),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetIgnoreArtAsync(token),
+                (x, y) => x.SetIgnoreArtAsync(y, token), token).ConfigureAwait(false);
+            await chkIgnoreComplexFormLimit.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.IgnoreComplexFormLimit),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetIgnoreComplexFormLimitAsync(token),
+                (x, y) => x.SetIgnoreComplexFormLimitAsync(y, token), token).ConfigureAwait(false);
+            await chkUnarmedSkillImprovements.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.UnarmedImprovementsApplyToWeapons),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetUnarmedImprovementsApplyToWeaponsAsync(token),
+                (x, y) => x.SetUnarmedImprovementsApplyToWeaponsAsync(y, token), token).ConfigureAwait(false);
+            await chkMysAdPp.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.MysAdeptAllowPpCareer),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetMysAdeptAllowPpCareerAsync(token),
+                (x, y) => x.SetMysAdeptAllowPpCareerAsync(y, token), token).ConfigureAwait(false);
             await chkMysAdPp.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
                 x => x.GetMysAdeptSecondMAGAttributeAsync(token), token: token).ConfigureAwait(false);
-            await chkPrioritySpellsAsAdeptPowers
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.PrioritySpellsAsAdeptPowers), token)
-                  .ConfigureAwait(false);
+            await chkPrioritySpellsAsAdeptPowers.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.PrioritySpellsAsAdeptPowers),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetPrioritySpellsAsAdeptPowersAsync(token),
+                (x, y) => x.SetPrioritySpellsAsAdeptPowersAsync(y, token), token).ConfigureAwait(false);
             await chkPrioritySpellsAsAdeptPowers.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = !y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
                 x => x.GetMysAdeptSecondMAGAttributeAsync(token), token: token).ConfigureAwait(false);
-            await chkMysAdeptSecondMAGAttribute
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.MysAdeptSecondMAGAttribute), token)
-                  .ConfigureAwait(false);
+            await chkMysAdeptSecondMAGAttribute.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.MysAdeptSecondMAGAttribute),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetMysAdeptSecondMAGAttributeAsync(token),
+                (x, y) => x.SetMysAdeptSecondMAGAttributeAsync(y, token), token).ConfigureAwait(false);
             await chkMysAdeptSecondMAGAttribute.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.MysAdeptSecondMAGAttributeEnabled),
                 x => x.GetMysAdeptSecondMAGAttributeEnabledAsync(token), token: token).ConfigureAwait(false);
-            await chkUsePointsOnBrokenGroups
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.UsePointsOnBrokenGroups), token).ConfigureAwait(false);
-            await chkSpecialKarmaCost
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue), token)
-                  .ConfigureAwait(false);
-            await chkUseCalculatedPublicAwareness
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.UseCalculatedPublicAwareness), token)
-                  .ConfigureAwait(false);
-            await chkAlternateMetatypeAttributeKarma
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.AlternateMetatypeAttributeKarma), token)
-                  .ConfigureAwait(false);
-            await chkCompensateSkillGroupKarmaDifference
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.CompensateSkillGroupKarmaDifference), token)
-                  .ConfigureAwait(false);
-            await chkFreeMartialArtSpecialization
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.FreeMartialArtSpecialization), token)
-                  .ConfigureAwait(false);
-            await chkIncreasedImprovedAbilityModifier
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier), token)
-                  .ConfigureAwait(false);
-            await chkAllowTechnomancerSchooling
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.AllowTechnomancerSchooling), token)
-                  .ConfigureAwait(false);
-            await chkAllowSkillRegrouping
-                  .DoDataBindingAsync("Checked", _objCharacterSettings, nameof(CharacterSettings.AllowSkillRegrouping),
-                                      token).ConfigureAwait(false);
-            await chkSpecializationsBreakSkillGroups
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.SpecializationsBreakSkillGroups), token)
-                  .ConfigureAwait(false);
-            await chkDontDoubleQualityPurchases
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DontDoubleQualityPurchases), token)
-                  .ConfigureAwait(false);
-            await chkDontDoubleQualityRefunds
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DontDoubleQualityRefunds), token).ConfigureAwait(false);
-            await chkDroneArmorMultiplier
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.DroneArmorMultiplierEnabled), token)
-                  .ConfigureAwait(false);
+            await chkUsePointsOnBrokenGroups.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.UsePointsOnBrokenGroups),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetUsePointsOnBrokenGroupsAsync(token),
+                (x, y) => x.SetUsePointsOnBrokenGroupsAsync(y, token), token).ConfigureAwait(false);
+            await chkSpecialKarmaCost.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetSpecialKarmaCostBasedOnShownValueAsync(token),
+                (x, y) => x.SetSpecialKarmaCostBasedOnShownValueAsync(y, token), token).ConfigureAwait(false);
+            await chkUseCalculatedPublicAwareness.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.UseCalculatedPublicAwareness),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetUseCalculatedPublicAwarenessAsync(token),
+                (x, y) => x.SetUseCalculatedPublicAwarenessAsync(y, token), token).ConfigureAwait(false);
+            await chkAlternateMetatypeAttributeKarma.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AlternateMetatypeAttributeKarma),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAlternateMetatypeAttributeKarmaAsync(token),
+                (x, y) => x.SetAlternateMetatypeAttributeKarmaAsync(y, token), token).ConfigureAwait(false);
+            await chkCompensateSkillGroupKarmaDifference.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.CompensateSkillGroupKarmaDifference),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetCompensateSkillGroupKarmaDifferenceAsync(token),
+                (x, y) => x.SetCompensateSkillGroupKarmaDifferenceAsync(y, token), token).ConfigureAwait(false);
+            await chkFreeMartialArtSpecialization.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.FreeMartialArtSpecialization),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetFreeMartialArtSpecializationAsync(token),
+                (x, y) => x.SetFreeMartialArtSpecializationAsync(y, token), token).ConfigureAwait(false);
+            await chkIncreasedImprovedAbilityModifier.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetIncreasedImprovedAbilityMultiplierAsync(token),
+                (x, y) => x.SetIncreasedImprovedAbilityMultiplierAsync(y, token), token).ConfigureAwait(false);
+            await chkAllowTechnomancerSchooling.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AllowTechnomancerSchooling),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAllowTechnomancerSchoolingAsync(token),
+                (x, y) => x.SetAllowTechnomancerSchoolingAsync(y, token), token).ConfigureAwait(false);
+            await chkAllowSkillRegrouping.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AllowSkillRegrouping),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAllowSkillRegroupingAsync(token),
+                (x, y) => x.SetAllowSkillRegroupingAsync(y, token), token).ConfigureAwait(false);
+            await chkSpecializationsBreakSkillGroups.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.SpecializationsBreakSkillGroups),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetSpecializationsBreakSkillGroupsAsync(token),
+                (x, y) => x.SetSpecializationsBreakSkillGroupsAsync(y, token), token).ConfigureAwait(false);
+            await chkDontDoubleQualityPurchases.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DontDoubleQualityPurchases),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDontDoubleQualityPurchasesAsync(token),
+                (x, y) => x.SetDontDoubleQualityPurchasesAsync(y, token), token).ConfigureAwait(false);
+            await chkDontDoubleQualityRefunds.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DontDoubleQualityRefunds),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDontDoubleQualityRefundsAsync(token),
+                (x, y) => x.SetDontDoubleQualityRefundsAsync(y, token), token).ConfigureAwait(false);
+            await chkDroneArmorMultiplier.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.DroneArmorMultiplierEnabled),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetDroneArmorMultiplierEnabledAsync(token),
+                (x, y) => x.SetDroneArmorMultiplierEnabledAsync(y, token), token).ConfigureAwait(false);
             await nudDroneArmorMultiplier.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.DroneArmorMultiplierEnabled),
@@ -2361,38 +2504,63 @@ namespace Chummer
                 (x, y) => x.ValueChanged += y,
                 x => x.GetDroneArmorMultiplierAsync(token),
                 (x, y) => x.SetDroneArmorMultiplierAsync(y, token), 250, token, token).ConfigureAwait(false);
-            await chkESSLossReducesMaximumOnly
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.ESSLossReducesMaximumOnly), token).ConfigureAwait(false);
-            await chkExceedNegativeQualities
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.ExceedNegativeQualities), token).ConfigureAwait(false);
+            await chkESSLossReducesMaximumOnly.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.ESSLossReducesMaximumOnly),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetESSLossReducesMaximumOnlyAsync(token),
+                (x, y) => x.SetESSLossReducesMaximumOnlyAsync(y, token), token).ConfigureAwait(false);
+            await chkExceedNegativeQualities.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.ExceedNegativeQualities),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetExceedNegativeQualitiesAsync(token),
+                (x, y) => x.SetExceedNegativeQualitiesAsync(y, token), token).ConfigureAwait(false);
             await chkExceedNegativeQualitiesNoBonus.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedNegativeQualities),
                 x => x.GetExceedNegativeQualitiesAsync(token), token: token).ConfigureAwait(false);
-            await chkExceedNegativeQualitiesNoBonus
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus), token)
-                  .ConfigureAwait(false);
-            await chkExceedPositiveQualities
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.ExceedPositiveQualities), token).ConfigureAwait(false);
+            await chkExceedNegativeQualitiesNoBonus.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetExceedNegativeQualitiesNoBonusAsync(token),
+                (x, y) => x.SetExceedNegativeQualitiesNoBonusAsync(y, token), token).ConfigureAwait(false);
+            await chkExceedPositiveQualities.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.ExceedPositiveQualities),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetExceedPositiveQualitiesAsync(token),
+                (x, y) => x.SetExceedPositiveQualitiesAsync(y, token), token).ConfigureAwait(false);
             await chkExceedPositiveQualitiesCostDoubled.RegisterOneWayAsyncDataBindingAsync(
                 (x, y) => x.Enabled = y, _objCharacterSettings,
                 nameof(CharacterSettings.ExceedPositiveQualities),
                 x => x.GetExceedPositiveQualitiesAsync(token), token: token).ConfigureAwait(false);
-            await chkExceedPositiveQualitiesCostDoubled
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled), token)
-                  .ConfigureAwait(false);
-            await chkExtendAnyDetectionSpell
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.ExtendAnyDetectionSpell), token).ConfigureAwait(false);
-            await chkAllowCyberwareESSDiscounts
-                  .DoDataBindingAsync("Checked", _objCharacterSettings,
-                                      nameof(CharacterSettings.AllowCyberwareESSDiscounts), token)
-                  .ConfigureAwait(false);
+            await chkExceedPositiveQualitiesCostDoubled.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetExceedPositiveQualitiesCostDoubledAsync(token),
+                (x, y) => x.SetExceedPositiveQualitiesCostDoubledAsync(y, token), token).ConfigureAwait(false);
+            await chkExtendAnyDetectionSpell.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.ExtendAnyDetectionSpell),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetExtendAnyDetectionSpellAsync(token),
+                (x, y) => x.SetExtendAnyDetectionSpellAsync(y, token), token).ConfigureAwait(false);
+            await chkAllowCyberwareESSDiscounts.RegisterAsyncDataBindingAsync(x => x.Checked,
+                (x, y) => x.Checked = y,
+                _objCharacterSettings,
+                nameof(CharacterSettings.AllowCyberwareESSDiscounts),
+                (x, y) => x.CheckedChanged += y,
+                x => x.GetAllowCyberwareESSDiscountsAsync(token),
+                (x, y) => x.SetAllowCyberwareESSDiscountsAsync(y, token), token).ConfigureAwait(false);
             await chkAllowInitiation.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                 _objCharacterSettings,
                 nameof(CharacterSettings.AllowInitiationInCreateMode),

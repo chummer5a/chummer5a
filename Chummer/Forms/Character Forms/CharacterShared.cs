@@ -5969,7 +5969,7 @@ namespace Chummer
 
                         int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                             .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                        if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                        if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) && await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                             intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
                                 .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
@@ -6074,8 +6074,8 @@ namespace Chummer
                             bool blnWarned = false;
                             int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                                 .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) && await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)))
+                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
                                     .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
@@ -6287,9 +6287,11 @@ namespace Chummer
                             bool blnWarned = false;
                             int intMaxFocusTotal = await (await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                                 .GetTotalValueAsync(token).ConfigureAwait(false) * 5;
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                    .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
+                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) && await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)))
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal,
+                                    await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token)
+                                            .ConfigureAwait(false))
+                                        .GetTotalValueAsync(token).ConfigureAwait(false) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in e.NewItems)
@@ -8139,7 +8141,7 @@ namespace Chummer
 
                             int intSustainedObjects = x.Controls.Count;
 
-                            SustainedObjectControl objSustainedObjectControl = new SustainedObjectControl(objSustained);
+                            SustainedObjectControl objSustainedObjectControl = new SustainedObjectControl(objSustained, GenericToken);
 
                             objSustainedObjectControl.SustainedObjectDetailChanged += MakeDirtyWithCharacterUpdate;
                             objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
@@ -8189,7 +8191,7 @@ namespace Chummer
                                     int intSustainedObjects = x.Controls.Count;
 
                                     SustainedObjectControl objSustainedObjectControl
-                                        = new SustainedObjectControl(objSustained);
+                                        = new SustainedObjectControl(objSustained, GenericToken);
 
                                     objSustainedObjectControl.SustainedObjectDetailChanged
                                         += MakeDirtyWithCharacterUpdate;
@@ -8361,7 +8363,7 @@ namespace Chummer
                                     int intSustainedObjects = x.Controls.Count;
 
                                     SustainedObjectControl objSustainedObjectControl
-                                        = new SustainedObjectControl(objSustained);
+                                        = new SustainedObjectControl(objSustained, GenericToken);
 
                                     objSustainedObjectControl.SustainedObjectDetailChanged
                                         += MakeDirtyWithCharacterUpdate;

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -25,6 +26,7 @@ namespace Chummer
     public partial class SustainedObjectControl : UserControl
     {
         private readonly SustainedObject _objLinkedSustainedObject;
+        private readonly CancellationToken _objMyToken;
         private bool _blnLoading = true;
 
         //Events
@@ -32,12 +34,13 @@ namespace Chummer
 
         public event EventHandlerExtensions.SafeAsyncEventHandler UnsustainObject;
 
-        public SustainedObjectControl(SustainedObject objLinkedSustainedObject)
+        public SustainedObjectControl(SustainedObject objLinkedSustainedObject, CancellationToken objMyToken = default)
         {
             _objLinkedSustainedObject = objLinkedSustainedObject;
+            _objMyToken = objMyToken;
             InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(token: objMyToken);
+            this.TranslateWinForm(token: objMyToken);
 
             if (objLinkedSustainedObject.LinkedObjectType != Improvement.ImprovementSource.CritterPower)
             {
@@ -50,22 +53,27 @@ namespace Chummer
         {
             try
             {
-                await lblSustainedSpell.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLinkedSustainedObject,
-                                                                       nameof(SustainedObject.CurrentDisplayName),
-                                                                       x => x.GetCurrentDisplayNameAsync())
-                                       .ConfigureAwait(false);
-                await nudForce.DoDataBindingAsync("Value", _objLinkedSustainedObject, nameof(SustainedObject.Force))
-                              .ConfigureAwait(false);
+                await lblSustainedSpell.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y,
+                        _objLinkedSustainedObject,
+                        nameof(SustainedObject.CurrentDisplayName),
+                        x => x.GetCurrentDisplayNameAsync(_objMyToken), token: _objMyToken)
+                    .ConfigureAwait(false);
+                await nudForce.DoDataBindingAsync("Value", _objLinkedSustainedObject, nameof(SustainedObject.Force), token: _objMyToken)
+                    .ConfigureAwait(false);
                 await nudNetHits.DoDataBindingAsync("Value", _objLinkedSustainedObject,
-                                                    nameof(SustainedObject.NetHits)).ConfigureAwait(false);
+                    nameof(SustainedObject.NetHits), token: _objMyToken).ConfigureAwait(false);
 
                 //Only do  the binding if it's actually needed
                 if (_objLinkedSustainedObject.LinkedObjectType != Improvement.ImprovementSource.CritterPower)
                 {
                     await chkSelfSustained.DoDataBindingAsync("Checked", _objLinkedSustainedObject,
-                            nameof(SustainedObject.SelfSustained))
+                            nameof(SustainedObject.SelfSustained), token: _objMyToken)
                         .ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
             }
             finally
             {
@@ -83,7 +91,7 @@ namespace Chummer
             {
                 try
                 {
-                    await UnsustainObject.Invoke(this, e).ConfigureAwait(false);
+                    await UnsustainObject.Invoke(this, e, _objMyToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -100,7 +108,7 @@ namespace Chummer
             {
                 try
                 {
-                    await SustainedObjectDetailChanged.Invoke(this, e).ConfigureAwait(false);
+                    await SustainedObjectDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {

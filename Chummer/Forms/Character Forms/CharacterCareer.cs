@@ -3116,7 +3116,7 @@ namespace Chummer
                                                   .ConfigureAwait(false);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, token)
                                              .ConfigureAwait(false);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
+                            if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                             {
                                 CharacterAttrib objMAGAdept =
                                     await CharacterObject.AttributeSection
@@ -4145,24 +4145,24 @@ namespace Chummer
 
         private async void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
         {
-            List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings);
-
-            lstAbbrevs.Remove("ESS");
-            if (!CharacterObject.MAGEnabled)
-            {
-                lstAbbrevs.Remove("MAG");
-                lstAbbrevs.Remove("MAGAdept");
-            }
-            else if (!CharacterObject.IsMysticAdept || !CharacterObjectSettings.MysAdeptSecondMAGAttribute)
-                lstAbbrevs.Remove("MAGAdept");
-
-            if (!CharacterObject.RESEnabled)
-                lstAbbrevs.Remove("RES");
-            if (!CharacterObject.DEPEnabled)
-                lstAbbrevs.Remove("DEP");
-
             try
             {
+                List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings);
+                lstAbbrevs.Remove("ESS");
+
+                if (!await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false))
+                {
+                    lstAbbrevs.Remove("MAG");
+                    lstAbbrevs.Remove("MAGAdept");
+                }
+                else if (!await CharacterObject.GetIsMysticAdeptAsync(GenericToken).ConfigureAwait(false) || !await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken).ConfigureAwait(false))
+                    lstAbbrevs.Remove("MAGAdept");
+
+                if (!await CharacterObject.GetRESEnabledAsync(GenericToken).ConfigureAwait(false))
+                    lstAbbrevs.Remove("RES");
+                if (!await CharacterObject.GetDEPEnabledAsync(GenericToken).ConfigureAwait(false))
+                    lstAbbrevs.Remove("DEP");
+
                 string strDescription
                     = await LanguageManager.GetStringAsync("String_CyberzombieReduceAttribute", token: GenericToken)
                                            .ConfigureAwait(false);

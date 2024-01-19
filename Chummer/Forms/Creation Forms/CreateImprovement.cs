@@ -251,16 +251,16 @@ namespace Chummer
                         List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
 
                         lstAbbrevs.Remove("ESS");
-                        if (!_objCharacter.MAGEnabled)
+                        if (!await _objCharacter.GetMAGEnabledAsync().ConfigureAwait(false))
                         {
                             lstAbbrevs.Remove("MAG");
                             lstAbbrevs.Remove("MAGAdept");
                         }
-                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Settings.MysAdeptSecondMAGAttribute)
+                        else if (!await _objCharacter.GetIsMysticAdeptAsync().ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("MAGAdept");
-                        if (!_objCharacter.RESEnabled)
+                        if (!await _objCharacter.GetRESEnabledAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("RES");
-                        if (!_objCharacter.DEPEnabled)
+                        if (!await _objCharacter.GetDEPEnabledAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("DEP");
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute").ConfigureAwait(false);

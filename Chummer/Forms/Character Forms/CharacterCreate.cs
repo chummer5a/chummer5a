@@ -2474,7 +2474,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
                                              .ConfigureAwait(false);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) && await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                                 && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
@@ -2491,7 +2491,7 @@ namespace Chummer
                                                   .ConfigureAwait(false);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, token)
                                              .ConfigureAwait(false);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute
+                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                                 && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
@@ -2522,15 +2522,16 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, token)
                                              .ConfigureAwait(false);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                            if (await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
+                                await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                                 && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
                                     await CharacterObject.AttributeSection
-                                                         .GetAttributeByNameAsync("MAGAdept", token)
-                                                         .ConfigureAwait(false);
+                                        .GetAttributeByNameAsync("MAGAdept", token)
+                                        .ConfigureAwait(false);
                                 await CharacterObject.AttributeSection.Attributes.TryAddAsync(objMAGAdept, token)
-                                                     .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             }
 
                             await tabCharacterTabs.DoThreadSafeAsync(x =>
@@ -2548,7 +2549,7 @@ namespace Chummer
                                       .ConfigureAwait(false);
                                 await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, token)
                                                  .ConfigureAwait(false);
-                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute
+                                if (await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                                     && CharacterObject.AttributeSection.Attributes != null)
                                 {
                                     CharacterAttrib objMAGAdept =
@@ -5826,7 +5827,7 @@ namespace Chummer
                                 > await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
                                         .ConfigureAwait(false))
                                     .GetTotalValueAsync(GenericToken).ConfigureAwait(false) ||
-                                CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                                await CharacterObject.GetIsMysticAdeptAsync(GenericToken).ConfigureAwait(false) && await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken).ConfigureAwait(false)
                                 && intGrade + 1
                                 > await (await CharacterObject
                                         .GetAttributeAsync(

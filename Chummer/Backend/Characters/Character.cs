@@ -38805,9 +38805,9 @@ namespace Chummer
                                 // If the CharacterAttribute reaches 0, the character has burned out.
                                 if (await GetMAGEnabledAsync(token).ConfigureAwait(false))
                                 {
-                                    if (Settings.SpecialKarmaCostBasedOnShownValue)
+                                    if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetSpecialKarmaCostBasedOnShownValueAsync(token).ConfigureAwait(false))
                                     {
-                                        if (Settings.MysAdeptSecondMAGAttribute && IsMysticAdept)
+                                        if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) && await GetIsMysticAdeptAsync(token).ConfigureAwait(false))
                                         {
                                             if (intMagMaxReduction
                                                 >= await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false))
@@ -38847,7 +38847,7 @@ namespace Chummer
                                             await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                         }
                                     }
-                                    else if (Settings.MysAdeptSecondMAGAttribute && IsMysticAdept)
+                                    else if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) && await GetIsMysticAdeptAsync(token).ConfigureAwait(false))
                                     {
                                         if (await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
                                         {

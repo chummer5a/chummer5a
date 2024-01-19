@@ -145,7 +145,7 @@ namespace Chummer
                 // <pack>
                 await objWriter.WriteStartElementAsync("pack").ConfigureAwait(false);
                 // <name />
-                await objWriter.WriteElementStringAsync("name", txtName.Text).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", strName).ConfigureAwait(false);
                 // <category />
                 await objWriter.WriteElementStringAsync("category", "Custom").ConfigureAwait(false);
 
@@ -176,16 +176,16 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("log", intLOG.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("wil", intWIL.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("edg", intEDG.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                    if (_objCharacter.MAGEnabled)
+                    if (await _objCharacter.GetMAGEnabledAsync().ConfigureAwait(false))
                     {
                         await objWriter.WriteElementStringAsync("mag", intMAG.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                        if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                        if (await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync().ConfigureAwait(false) && await _objCharacter.GetIsMysticAdeptAsync().ConfigureAwait(false))
                             await objWriter.WriteElementStringAsync("magadept", intMAGAdept.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     }
 
-                    if (_objCharacter.RESEnabled)
+                    if (await _objCharacter.GetRESEnabledAsync().ConfigureAwait(false))
                         await objWriter.WriteElementStringAsync("res", intRES.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
-                    if (_objCharacter.DEPEnabled)
+                    if (await _objCharacter.GetDEPEnabledAsync().ConfigureAwait(false))
                         await objWriter.WriteElementStringAsync("dep", intDEP.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                     // </attributes>
                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -230,7 +230,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(objQuality.Extra))
                                     await objWriter.WriteAttributeStringAsync("select", objQuality.Extra)
                                         .ConfigureAwait(false);
-                                objWriter.WriteValue(objQuality.Name);
+                                objWriter.WriteValue(await objQuality.GetNameAsync().ConfigureAwait(false));
                                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                 // ReSharper restore AccessToDisposedClosure
                             }
@@ -271,8 +271,8 @@ namespace Chummer
                 // Export Starting Nuyen.
                 if (await chkStartingNuyen.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                 {
-                    decimal decNuyenBP = _objCharacter.NuyenBP;
-                    if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                    decimal decNuyenBP = await _objCharacter.GetNuyenBPAsync().ConfigureAwait(false);
+                    if (!await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync().ConfigureAwait(false))
                         decNuyenBP /= 2.0m;
                     await objWriter.WriteElementStringAsync("nuyenbp", decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                 }
