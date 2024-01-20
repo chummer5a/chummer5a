@@ -199,44 +199,39 @@ namespace Chummer
         private readonly ThreadSafeList<string> _lstPrioritySkills;
 
         // Lists.
-        private readonly ThreadSafeObservableCollection<Improvement> _lstImprovements = new ThreadSafeObservableCollection<Improvement>();
-        private readonly ThreadSafeObservableCollection<MentorSpirit>
-            _lstMentorSpirits = new ThreadSafeObservableCollection<MentorSpirit>();
-        private readonly ThreadSafeObservableCollection<Contact> _lstContacts = new ThreadSafeObservableCollection<Contact>();
-        private readonly ThreadSafeObservableCollection<Spirit> _lstSpirits = new ThreadSafeObservableCollection<Spirit>();
-        private readonly ThreadSafeObservableCollection<Spell> _lstSpells = new ThreadSafeObservableCollection<Spell>();
-        private readonly ThreadSafeObservableCollection<SustainedObject> _lstSustainedObjects = new ThreadSafeObservableCollection<SustainedObject>();
+        private readonly ThreadSafeObservableCollection<Improvement> _lstImprovements;
+        private readonly ThreadSafeObservableCollection<MentorSpirit> _lstMentorSpirits;
+        private readonly ThreadSafeObservableCollection<Contact> _lstContacts;
+        private readonly ThreadSafeObservableCollection<Spirit> _lstSpirits;
+        private readonly ThreadSafeObservableCollection<Spell> _lstSpells;
+        private readonly ThreadSafeObservableCollection<SustainedObject> _lstSustainedObjects;
         private readonly ThreadSafeList<Focus> _lstFoci;
         private readonly ThreadSafeList<StackedFocus> _lstStackedFoci;
         private readonly ThreadSafeBindingList<Power> _lstPowers;
-        private readonly ThreadSafeObservableCollection<ComplexForm> _lstComplexForms = new ThreadSafeObservableCollection<ComplexForm>();
-        private readonly ThreadSafeObservableCollection<AIProgram> _lstAIPrograms = new ThreadSafeObservableCollection<AIProgram>();
-        private readonly ThreadSafeObservableCollection<MartialArt> _lstMartialArts = new ThreadSafeObservableCollection<MartialArt>();
-        private readonly ThreadSafeObservableCollection<LimitModifier> _lstLimitModifiers =
-            new ThreadSafeObservableCollection<LimitModifier>();
-        private readonly ThreadSafeObservableCollection<Armor> _lstArmor = new ThreadSafeObservableCollection<Armor>();
-        private readonly ThreadSafeObservableCollection<Cyberware> _lstCyberware = new ThreadSafeObservableCollection<Cyberware>();
-        private readonly ThreadSafeObservableCollection<Weapon> _lstWeapons = new ThreadSafeObservableCollection<Weapon>();
-        private readonly ThreadSafeObservableCollection<Quality> _lstQualities = new ThreadSafeObservableCollection<Quality>();
-        private readonly ThreadSafeObservableCollection<Lifestyle> _lstLifestyles = new ThreadSafeObservableCollection<Lifestyle>();
-        private readonly ThreadSafeObservableCollection<Gear> _lstGear = new ThreadSafeObservableCollection<Gear>();
-        private readonly ThreadSafeObservableCollection<Vehicle> _lstVehicles = new ThreadSafeObservableCollection<Vehicle>();
-        private readonly ThreadSafeObservableCollection<Metamagic> _lstMetamagics = new ThreadSafeObservableCollection<Metamagic>();
-        private readonly ThreadSafeObservableCollection<Art> _lstArts = new ThreadSafeObservableCollection<Art>();
-        private readonly ThreadSafeObservableCollection<Enhancement> _lstEnhancements = new ThreadSafeObservableCollection<Enhancement>();
-        private readonly ThreadSafeObservableCollection<ExpenseLogEntry> _lstExpenseLog =
-            new ThreadSafeObservableCollection<ExpenseLogEntry>();
-        private readonly ThreadSafeObservableCollection<CritterPower>
-            _lstCritterPowers = new ThreadSafeObservableCollection<CritterPower>();
-        private readonly ThreadSafeObservableCollection<InitiationGrade> _lstInitiationGrades =
-            new ThreadSafeObservableCollection<InitiationGrade>();
-        private readonly ThreadSafeObservableCollection<Location> _lstGearLocations = new ThreadSafeObservableCollection<Location>();
-        private readonly ThreadSafeObservableCollection<Location> _lstArmorLocations = new ThreadSafeObservableCollection<Location>();
-        private readonly ThreadSafeObservableCollection<Location> _lstVehicleLocations = new ThreadSafeObservableCollection<Location>();
-        private readonly ThreadSafeObservableCollection<Location> _lstWeaponLocations = new ThreadSafeObservableCollection<Location>();
-        private readonly ThreadSafeObservableCollection<string> _lstImprovementGroups = new ThreadSafeObservableCollection<string>();
+        private readonly ThreadSafeObservableCollection<ComplexForm> _lstComplexForms;
+        private readonly ThreadSafeObservableCollection<AIProgram> _lstAIPrograms;
+        private readonly ThreadSafeObservableCollection<MartialArt> _lstMartialArts;
+        private readonly ThreadSafeObservableCollection<LimitModifier> _lstLimitModifiers;
+        private readonly ThreadSafeObservableCollection<Armor> _lstArmor;
+        private readonly ThreadSafeObservableCollection<Cyberware> _lstCyberware;
+        private readonly ThreadSafeObservableCollection<Weapon> _lstWeapons;
+        private readonly ThreadSafeObservableCollection<Quality> _lstQualities;
+        private readonly ThreadSafeObservableCollection<Lifestyle> _lstLifestyles;
+        private readonly ThreadSafeObservableCollection<Gear> _lstGear;
+        private readonly ThreadSafeObservableCollection<Vehicle> _lstVehicles;
+        private readonly ThreadSafeObservableCollection<Metamagic> _lstMetamagics;
+        private readonly ThreadSafeObservableCollection<Art> _lstArts;
+        private readonly ThreadSafeObservableCollection<Enhancement> _lstEnhancements;
+        private readonly ThreadSafeObservableCollection<ExpenseLogEntry> _lstExpenseLog;
+        private readonly ThreadSafeObservableCollection<CritterPower> _lstCritterPowers;
+        private readonly ThreadSafeObservableCollection<InitiationGrade> _lstInitiationGrades;
+        private readonly ThreadSafeObservableCollection<Location> _lstGearLocations;
+        private readonly ThreadSafeObservableCollection<Location> _lstArmorLocations;
+        private readonly ThreadSafeObservableCollection<Location> _lstVehicleLocations;
+        private readonly ThreadSafeObservableCollection<Location> _lstWeaponLocations;
+        private readonly ThreadSafeObservableCollection<string> _lstImprovementGroups;
         private readonly ThreadSafeBindingList<CalendarWeek> _lstCalendar;
-        private readonly ThreadSafeObservableCollection<Drug> _lstDrugs = new ThreadSafeObservableCollection<Drug>();
+        private readonly ThreadSafeObservableCollection<Drug> _lstDrugs;
 
         private SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap;
 
@@ -293,9 +288,12 @@ namespace Chummer
         public Character()
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
-                _objSettings = new CharacterSettings(); // Need this because ExpenseCharts is WPF and needs a Character in design mode.
-            else if (!SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out _objSettings)
-                     && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSettingDefaultValue, out _objSettings))
+                _objSettings =
+                    new CharacterSettings(); // Need this because ExpenseCharts is WPF and needs a Character in design mode.
+            else if (!SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting,
+                         out _objSettings)
+                     && !SettingsManager.LoadedCharacterSettings.TryGetValue(
+                         GlobalSettings.DefaultCharacterSettingDefaultValue, out _objSettings))
                 _objSettings = SettingsManager.LoadedCharacterSettings.First().Value;
 
             LockObject = new AsyncFriendlyReaderWriterLock();
@@ -305,7 +303,8 @@ namespace Chummer
             _objAvailabilityMapLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
 
             _setDoOnSaveCompleted = new LockingOrderedSet<Func<Character, bool>>(LockObject);
-            _setDoOnSaveCompletedAsync = new LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>>(LockObject);
+            _setDoOnSaveCompletedAsync =
+                new LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>>(LockObject);
 
             _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
             _lstPrioritySkills = new ThreadSafeList<string>(3, LockObject);
@@ -313,6 +312,35 @@ namespace Chummer
             _lstStackedFoci = new ThreadSafeList<StackedFocus>(1, LockObject);
             _lstPowers = new ThreadSafeBindingList<Power>(LockObject);
             _lstCalendar = new ThreadSafeBindingList<CalendarWeek>(LockObject);
+            _lstImprovements = new ThreadSafeObservableCollection<Improvement>(LockObject);
+            _lstMentorSpirits = new ThreadSafeObservableCollection<MentorSpirit>(LockObject);
+            _lstContacts = new ThreadSafeObservableCollection<Contact>(LockObject);
+            _lstSpirits = new ThreadSafeObservableCollection<Spirit>(LockObject);
+            _lstSpells = new ThreadSafeObservableCollection<Spell>(LockObject);
+            _lstSustainedObjects = new ThreadSafeObservableCollection<SustainedObject>(LockObject);
+            _lstComplexForms = new ThreadSafeObservableCollection<ComplexForm>(LockObject);
+            _lstAIPrograms = new ThreadSafeObservableCollection<AIProgram>(LockObject);
+            _lstMartialArts = new ThreadSafeObservableCollection<MartialArt>(LockObject);
+            _lstLimitModifiers = new ThreadSafeObservableCollection<LimitModifier>(LockObject);
+            _lstArmor = new ThreadSafeObservableCollection<Armor>(LockObject);
+            _lstCyberware = new ThreadSafeObservableCollection<Cyberware>(LockObject);
+            _lstWeapons = new ThreadSafeObservableCollection<Weapon>(LockObject);
+            _lstQualities = new ThreadSafeObservableCollection<Quality>(LockObject);
+            _lstLifestyles = new ThreadSafeObservableCollection<Lifestyle>(LockObject);
+            _lstGear = new ThreadSafeObservableCollection<Gear>(LockObject);
+            _lstVehicles = new ThreadSafeObservableCollection<Vehicle>(LockObject);
+            _lstMetamagics = new ThreadSafeObservableCollection<Metamagic>(LockObject);
+            _lstArts = new ThreadSafeObservableCollection<Art>(LockObject);
+            _lstEnhancements = new ThreadSafeObservableCollection<Enhancement>(LockObject);
+            _lstExpenseLog = new ThreadSafeObservableCollection<ExpenseLogEntry>(LockObject);
+            _lstCritterPowers = new ThreadSafeObservableCollection<CritterPower>(LockObject);
+            _lstInitiationGrades = new ThreadSafeObservableCollection<InitiationGrade>(LockObject);
+            _lstGearLocations = new ThreadSafeObservableCollection<Location>(LockObject);
+            _lstArmorLocations = new ThreadSafeObservableCollection<Location>(LockObject);
+            _lstVehicleLocations = new ThreadSafeObservableCollection<Location>(LockObject);
+            _lstWeaponLocations = new ThreadSafeObservableCollection<Location>(LockObject);
+            _lstImprovementGroups = new ThreadSafeObservableCollection<string>(LockObject);
+            _lstDrugs = new ThreadSafeObservableCollection<Drug>(LockObject);
 
             _objSettings.PropertyChangedAsync += OptionsOnPropertyChanged;
             _objAttributeSection = new AttributeSection(this);

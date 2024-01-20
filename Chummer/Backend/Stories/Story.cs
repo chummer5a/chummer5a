@@ -32,7 +32,7 @@ namespace Chummer
     {
         private readonly ConcurrentDictionary<string, StoryModule> _dicPersistentModules = new ConcurrentDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
-        private readonly ThreadSafeObservableCollection<StoryModule> _lstStoryModules = new ThreadSafeObservableCollection<StoryModule>();
+        private readonly ThreadSafeObservableCollection<StoryModule> _lstStoryModules;
         private bool _blnNeedToRegeneratePersistents = true;
 
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
@@ -42,7 +42,8 @@ namespace Chummer
         public Story(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            _lstStoryModules = new ThreadSafeObservableCollection<StoryModule>(LockObject);
             _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstStoryModules.CollectionChangedAsync += StoryModulesOnCollectionChanged;
         }

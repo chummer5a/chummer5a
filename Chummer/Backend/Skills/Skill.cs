@@ -835,6 +835,7 @@ namespace Chummer.Backend.Skills
             LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);
             objCharacter.PropertyChangedAsync += OnCharacterChanged;
             objCharacter.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
             objCharacter.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
@@ -3749,7 +3750,7 @@ namespace Chummer.Backend.Skills
 
         public Task<string> GetCurrentDisplaySpecializationAsync(CancellationToken token = default) => DisplaySpecializationAsync(GlobalSettings.Language, token);
 
-        private readonly ThreadSafeObservableCollection<SkillSpecialization> _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>();
+        private readonly ThreadSafeObservableCollection<SkillSpecialization> _lstSpecializations;
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
         //Or just ignore support for multiple specializations even if the rules say it is possible?

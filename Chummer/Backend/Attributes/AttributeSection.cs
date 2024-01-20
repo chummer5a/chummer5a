@@ -233,7 +233,7 @@ namespace Chummer.Backend.Attributes
 
         private bool _blnAttributesInitialized;
         private readonly AsyncFriendlyReaderWriterLock _objAttributesInitializerLock;
-        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
+        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstAttributes;
 
         public ThreadSafeObservableCollection<CharacterAttrib> Attributes
         {
@@ -447,8 +447,8 @@ namespace Chummer.Backend.Attributes
             _dicAttributes = new ConcurrentDictionary<Tuple<string, CharacterAttrib.AttributeCategory>, CharacterAttrib>();
         private readonly Character _objCharacter;
         private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
-        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
-        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstSpecialAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
+        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstNormalAttributes;
+        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstSpecialAttributes;
 
         private readonly
             ConcurrentDictionary<string, UiPropertyChangerTracker>
@@ -476,6 +476,9 @@ namespace Chummer.Backend.Attributes
             _objCharacter = objCharacter;
             LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             _objAttributesInitializerLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
+            _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
+            _lstSpecialAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             AttributeList.CollectionChangedAsync += AttributeListOnCollectionChanged;
             AttributeList.BeforeClearCollectionChangedAsync += AttributeListOnBeforeClearCollectionChanged;
             SpecialAttributeList.CollectionChangedAsync += SpecialAttributeListOnCollectionChanged;

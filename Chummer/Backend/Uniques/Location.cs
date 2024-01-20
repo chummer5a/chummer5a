@@ -42,7 +42,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
-        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren = new ThreadSafeObservableCollection<IHasLocation>();
+        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -52,6 +52,7 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
             LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _lstChildren = new ThreadSafeObservableCollection<IHasLocation>(LockObject);
             _strName = strName;
             Parent = objParent;
             Children.CollectionChanged += ChildrenOnCollectionChanged;

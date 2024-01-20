@@ -156,6 +156,7 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
             LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>(LockObject);
             LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChangedAsync += LifestyleQualitiesOnBeforeClearCollectionChanged;
         }
@@ -2021,7 +2022,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private readonly ThreadSafeObservableCollection<LifestyleQuality> _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>();
+        private readonly ThreadSafeObservableCollection<LifestyleQuality> _lstLifestyleQualities;
 
         /// <summary>
         /// Advanced Lifestyle Qualities.

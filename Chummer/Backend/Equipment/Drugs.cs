@@ -73,6 +73,7 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
             // Create the GUID for the new Drug.
             _guiID = Guid.NewGuid();
+            _lstComponents = new ThreadSafeObservableCollection<DrugComponent>(objCharacter.LockObject);
             Components.CollectionChanged += ComponentsChanged;
         }
 
@@ -1552,7 +1553,7 @@ namespace Chummer.Backend.Equipment
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
-        private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents = new ThreadSafeObservableCollection<DrugComponent>();
+        private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents;
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
