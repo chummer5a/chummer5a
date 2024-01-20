@@ -517,7 +517,13 @@ namespace Chummer
                                                              x => x.GetSecurityDeltaAsync())
                              .ConfigureAwait(false);
             await cboBaseLifestyle.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
-                (x, y) => x.SelectedValue = y,
+                (x, y) =>
+                {
+                    if (!string.IsNullOrEmpty(y))
+                        x.SelectedValue = y;
+                    else
+                        x.SelectedIndex = -1;
+                },
                 _objLifestyle,
                 nameof(Lifestyle.BaseLifestyle),
                 (x, y) => x.SelectedValueChanged += y,
@@ -599,7 +605,13 @@ namespace Chummer
                 lstCity.Sort();
                 await cboCity.PopulateWithListItemsAsync(lstCity).ConfigureAwait(false);
                 await cboCity.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
-                    (x, y) => x.SelectedValue = y,
+                    (x, y) =>
+                    {
+                        if (!string.IsNullOrEmpty(y))
+                            x.SelectedValue = y;
+                        else
+                            x.SelectedIndex = -1;
+                    },
                     _objLifestyle,
                     nameof(Lifestyle.City),
                     (x, y) => x.SelectedValueChanged += y,
@@ -610,7 +622,13 @@ namespace Chummer
             //Populate District and Borough ComboBox for the first time
             await RefreshDistrictList().ConfigureAwait(false);
             await cboDistrict.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
-                (x, y) => x.SelectedValue = y,
+                (x, y) =>
+                {
+                    if (!string.IsNullOrEmpty(y))
+                        x.SelectedValue = y;
+                    else
+                        x.SelectedIndex = -1;
+                },
                 _objLifestyle,
                 nameof(Lifestyle.District),
                 (x, y) => x.SelectedValueChanged += y,
@@ -618,7 +636,13 @@ namespace Chummer
                 (x, y) => x.SetDistrictAsync(y)).ConfigureAwait(false);
             await RefreshBoroughList().ConfigureAwait(false);
             await cboBorough.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
-                (x, y) => x.SelectedValue = y,
+                (x, y) =>
+                {
+                    if (!string.IsNullOrEmpty(y))
+                        x.SelectedValue = y;
+                    else
+                        x.SelectedIndex = -1;
+                },
                 _objLifestyle,
                 nameof(Lifestyle.Borough),
                 (x, y) => x.SelectedValueChanged += y,

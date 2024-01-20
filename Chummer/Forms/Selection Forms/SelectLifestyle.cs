@@ -231,21 +231,39 @@ namespace Chummer
             Interlocked.Decrement(ref _intUpdatingBorough);
 
             await cboCity.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
-                (x, y) => x.SelectedValue = y,
+                (x, y) =>
+                {
+                    if (!string.IsNullOrEmpty(y))
+                        x.SelectedValue = y;
+                    else
+                        x.SelectedIndex = -1;
+                },
                 _objLifestyle,
                 nameof(Lifestyle.City),
                 (x, y) => x.SelectedValueChanged += y,
                 x => x.GetCityAsync(),
                 (x, y) => x.SetCityAsync(y)).ConfigureAwait(false);
             await cboDistrict.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
-                (x, y) => x.SelectedValue = y,
+                (x, y) =>
+                {
+                    if (!string.IsNullOrEmpty(y))
+                        x.SelectedValue = y;
+                    else
+                        x.SelectedIndex = -1;
+                },
                 _objLifestyle,
                 nameof(Lifestyle.District),
                 (x, y) => x.SelectedValueChanged += y,
                 x => x.GetDistrictAsync(),
                 (x, y) => x.SetDistrictAsync(y)).ConfigureAwait(false);
             await cboBorough.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
-                (x, y) => x.SelectedValue = y,
+                (x, y) =>
+                {
+                    if (!string.IsNullOrEmpty(y))
+                        x.SelectedValue = y;
+                    else
+                        x.SelectedIndex = -1;
+                },
                 _objLifestyle,
                 nameof(Lifestyle.Borough),
                 (x, y) => x.SelectedValueChanged += y,

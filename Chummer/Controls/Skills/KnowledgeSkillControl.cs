@@ -240,7 +240,13 @@ namespace Chummer.UI.Skills
                                                              x => x.GetAllowTypeChangeAsync(_objMyToken),
                                                              _objMyToken);
                 cboType.RegisterAsyncDataBindingWithDelay(x => x.SelectedValue?.ToString() ?? string.Empty,
-                    (x, y) => x.SelectedValue = y, _objSkill,
+                    (x, y) =>
+                    {
+                        if (!string.IsNullOrEmpty(y))
+                            x.SelectedValue = y;
+                        else
+                            x.SelectedIndex = -1;
+                    }, _objSkill,
                     nameof(KnowledgeSkill.Type),
                     (x, y) => x.SelectedValueChanged += y,
                     x => x.GetTypeAsync(_objMyToken),
@@ -467,7 +473,13 @@ namespace Chummer.UI.Skills
                                                          x => x.GetAllowTypeChangeAsync(_objMyToken),
                                                          token).ConfigureAwait(false);
             await cboType.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString() ?? string.Empty,
-                (x, y) => x.SelectedValue = y, _objSkill,
+                (x, y) =>
+                {
+                    if (!string.IsNullOrEmpty(y))
+                        x.SelectedValue = y;
+                    else
+                        x.SelectedIndex = -1;
+                }, _objSkill,
                 nameof(KnowledgeSkill.Type),
                 (x, y) => x.SelectedValueChanged += y,
                 x => x.GetTypeAsync(_objMyToken),

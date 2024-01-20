@@ -699,7 +699,13 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                                             await cboDrain.RegisterAsyncDataBindingWithDelayAsync(
                                                 x => x.SelectedValue?.ToString() ?? string.Empty,
-                                                (x, y) => x.SelectedValue = y, objTradition,
+                                                (x, y) =>
+                                                {
+                                                    if (!string.IsNullOrEmpty(y))
+                                                        x.SelectedValue = y;
+                                                    else
+                                                        x.SelectedIndex = -1;
+                                                }, objTradition,
                                                 nameof(Tradition.DrainExpression),
                                                 (x, y) => x.SelectedValueChanged += y,
                                                 x => x.GetDrainExpressionAsync(GenericToken),
@@ -807,7 +813,13 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                                                     await cboBox.RegisterAsyncDataBindingWithDelayAsync(
                                                         x => x.SelectedValue?.ToString() ?? string.Empty,
-                                                        (x, y) => x.SelectedValue = y, objTradition,
+                                                        (x, y) =>
+                                                        {
+                                                            if (!string.IsNullOrEmpty(y))
+                                                                x.SelectedValue = y;
+                                                            else
+                                                                x.SelectedIndex = -1;
+                                                        }, objTradition,
                                                         strSpirit,
                                                         (x, y) => x.SelectedValueChanged += y,
                                                         funcSpiritGetter,
