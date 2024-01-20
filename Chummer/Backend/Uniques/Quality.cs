@@ -364,7 +364,7 @@ namespace Chummer
                 }
 
                 _nodFirstLevelBonus = objXmlQuality["firstlevelbonus"];
-                if (_nodFirstLevelBonus?.ChildNodes.Count > 0 && Levels == 0)
+                if (_nodFirstLevelBonus?.ChildNodes.Count > 0 && (blnSync ? Levels : await GetLevelsAsync(token).ConfigureAwait(false)) == 0)
                 {
                     ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
                     if (blnSync)
@@ -1308,7 +1308,7 @@ namespace Chummer
                                                         .ConfigureAwait(false) + ')';
                 }
 
-                int intLevels = Levels;
+                int intLevels = await GetLevelsAsync(token).ConfigureAwait(false);
                 if (intLevels > 1)
                 {
                     strReturn += strSpace + intLevels.ToString(objCulture);
@@ -1362,6 +1362,27 @@ namespace Chummer
                                                              objExistingQuality.SourceName == SourceName
                                                              && objExistingQuality.Type == Type);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns how many instances of this quality there are in the character's quality list
+        /// TODO: Actually implement a proper rating system for qualities that plays nice with the Improvements Manager.
+        /// </summary>
+        public async Task<int> GetLevelsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                Guid guiMyId = SourceID;
+                string strMyExtra = Extra;
+                string strMySourceName = SourceName;
+                QualityType eMyType = await GetTypeAsync(token).ConfigureAwait(false);
+                return await _objCharacter.Qualities.CountAsync(async objExistingQuality =>
+                    objExistingQuality.SourceID == guiMyId
+                    && objExistingQuality.Extra == strMyExtra &&
+                    objExistingQuality.SourceName == strMySourceName
+                    && await objExistingQuality.GetTypeAsync(token).ConfigureAwait(false) == eMyType, token: token).ConfigureAwait(false);
             }
         }
 
@@ -2364,7 +2385,9 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         bool blnAddItem = true;
-                        intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels)
+                        intKarmaCost = (await GetBPAsync(token).ConfigureAwait(false) * intNewQualityRating -
+                                        await objOldQuality.GetBPAsync(token).ConfigureAwait(false) *
+                                        await objOldQuality.GetLevelsAsync(token).ConfigureAwait(false))
                                        * await _objCharacter.Settings.GetKarmaQualityAsync(token).ConfigureAwait(false);
 
                         string strOldQualityName = await objOldQuality.GetCurrentDisplayNameShortAsync(token)

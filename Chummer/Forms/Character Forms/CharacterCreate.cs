@@ -6342,7 +6342,7 @@ namespace Chummer
                                                     bool blnCompleteDelete = true, CancellationToken token = default)
         {
             XmlNode objXmlDeleteQuality = await objSelectedQuality.GetNodeAsync(token: token).ConfigureAwait(false);
-            switch (objSelectedQuality.OriginSource)
+            switch (await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false))
             {
                 // Qualities that come from a Metatype cannot be removed.
                 case QualitySource.Metatype:
@@ -6375,19 +6375,19 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
+                    if (await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.MetatypeRemovable)
                     {
                         int intBP = 0;
-                        if (objSelectedQuality.Type == QualityType.Negative
+                        if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative
                             && objXmlDeleteQuality.TryGetInt32FieldQuickly("karma", ref intBP))
                         {
                             intBP = -intBP;
                         }
 
-                        intBP *= CharacterObjectSettings.KarmaQuality;
+                        intBP *= await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                         int intShowBP = intBP;
                         if (blnCompleteDelete)
-                            intShowBP *= objSelectedQuality.Levels;
+                            intShowBP *= await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
                         string strBP = intShowBP.ToString(GlobalSettings.CultureInfo)
                                        + await LanguageManager.GetStringAsync("String_Space", token: token)
                                            .ConfigureAwait(false)
@@ -6420,7 +6420,7 @@ namespace Chummer
                                 lstWeapons, token: token).ConfigureAwait(false);
                             objReplaceQuality.BP *= -1;
                             // If a Negative Quality is being bought off, the replacement one is Positive.
-                            if (objSelectedQuality.Type == QualityType.Positive)
+                            if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive)
                             {
                                 objReplaceQuality.Type = QualityType.Negative;
                                 if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
@@ -6466,7 +6466,7 @@ namespace Chummer
                                         .ConfigureAwait(false), token).ConfigureAwait(false))
                             return false;
 
-                        if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                        if (await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.MetatypeRemovedAtChargen)
                         {
                             XPathNavigator xmlCharacterNode
                                 = await CharacterObject.GetNodeXPathAsync(token: token).ConfigureAwait(false);
@@ -6477,7 +6477,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
                                 // Create the Qualities that come with the Metatype.
                                 foreach (XPathNavigator objXmlQualityItem in xmlCharacterNode.Select(
-                                             "qualities/*/quality[. = " + objSelectedQuality.Name.CleanXPath() + ']'))
+                                             "qualities/*/quality[. = " + (await objSelectedQuality.GetNameAsync(token).ConfigureAwait(false)).CleanXPath() + ']'))
                                 {
                                     XmlNode objXmlQuality
                                         = xmlQualitiesDoc.TryGetNodeByNameOrId(
@@ -6491,7 +6491,7 @@ namespace Chummer
                                               == bool.TrueString
                                                 ? QualitySource.MetatypeRemovable
                                                 : QualitySource.Metatype;
-                                        await objQuality.CreateAsync(objXmlQuality, objSource, CharacterObject.Weapons,
+                                        await objQuality.CreateAsync(objXmlQuality, objSource, await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false),
                                             strForceValue, token: token).ConfigureAwait(false);
                                         await CharacterObject.Qualities.AddAsync(objQuality, token)
                                             .ConfigureAwait(false);
@@ -6505,7 +6505,7 @@ namespace Chummer
                         }
                     }
 
-                    if (objSelectedQuality.Type == QualityType.LifeModule)
+                    if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.LifeModule)
                     {
                         objXmlDeleteQuality
                             = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString,
@@ -6563,17 +6563,18 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
+                for (int i = await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                 {
-                    Quality objLoopQuality = CharacterObject.Qualities[i];
+                    Quality objLoopQuality = await CharacterObject.Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
                     if (objLoopQuality.InternalId != strInternalIDToRemove)
                         continue;
                     if (!await RemoveQuality(objLoopQuality, blnFirstRemoval, token: token).ConfigureAwait(false))
                         break;
                     blnFirstRemoval = false;
-                    if (i > CharacterObject.Qualities.Count)
+                    int intCount = await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false);
+                    if (i > intCount)
                     {
-                        i = CharacterObject.Qualities.Count;
+                        i = intCount;
                     }
                 }
             }
@@ -10131,7 +10132,7 @@ namespace Chummer
                     await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await objQuality.SetSourceDetailAsync(lblQualitySource, token).ConfigureAwait(false);
                     string strText
-                        = (objQuality.BP * objQuality.Levels * CharacterObjectSettings.KarmaQuality).ToString(
+                        = (await objQuality.GetBPAsync(token).ConfigureAwait(false) * await objQuality.GetLevelsAsync(token).ConfigureAwait(false) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false)).ToString(
                               GlobalSettings.CultureInfo) +
                           await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
                           + await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
@@ -10149,10 +10150,10 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (objSelectedQuality == null
-                || objSelectedQuality.OriginSource == QualitySource.Improvement
-                || objSelectedQuality.OriginSource == QualitySource.Metatype
-                || objSelectedQuality.OriginSource == QualitySource.Heritage
-                || objSelectedQuality.Levels == 0)
+                || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Improvement
+                || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Metatype
+                || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Heritage
+                || await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false) == 0)
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
                 {
@@ -10174,10 +10175,11 @@ namespace Chummer
                 && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels", token: token) == null
                 && int.TryParse(strLimitString, out int intMaxRating))
             {
+                int intLevels = await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
                 await nudQualityLevel.DoThreadSafeAsync(x =>
                 {
                     x.Maximum = intMaxRating;
-                    x.Value = objSelectedQuality.Levels;
+                    x.Value = intLevels;
                     x.Enabled = true;
                 }, token).ConfigureAwait(false);
             }
@@ -10208,7 +10210,7 @@ namespace Chummer
                 try
                 {
                     GenericToken.ThrowIfCancellationRequested();
-                    int intCurrentLevels = objSelectedQuality.Levels;
+                    int intCurrentLevels = await objSelectedQuality.GetLevelsAsync(GenericToken).ConfigureAwait(false);
                     int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
                         .ConfigureAwait(false);
                     // Helps to capture a write lock here for performance purposes
@@ -10245,12 +10247,12 @@ namespace Chummer
                                 break;
                             }
 
-                            objQuality.BP = objSelectedQuality.BP;
-                            objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
+                            objQuality.BP = await objSelectedQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
+                            objQuality.ContributeToLimit = await objSelectedQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false);
 
                             // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                             bool blnAddItem = true;
-                            if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                            if (await objQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false) && !await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                             {
                                 // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
                                 string strAmount
@@ -10259,17 +10261,17 @@ namespace Chummer
                                           .ConfigureAwait(false)
                                       + await LanguageManager.GetStringAsync("String_Karma", token: GenericToken)
                                           .ConfigureAwait(false);
-                                int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
+                                int intMaxQualityAmount = await CharacterObjectSettings.GetQualityKarmaLimitAsync(GenericToken).ConfigureAwait(false);
 
                                 // Add the cost of the Quality that is being added.
-                                int intBP = objQuality.BP;
+                                int intBP = await objQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
 
-                                if (objQuality.Type == QualityType.Negative)
+                                if (await objQuality.GetTypeAsync(GenericToken).ConfigureAwait(false) == QualityType.Negative)
                                 {
                                     // Check if adding this Quality would put the character over their limit.
-                                    if (!CharacterObjectSettings.ExceedNegativeQualities)
+                                    if (!await CharacterObjectSettings.GetExceedNegativeQualitiesAsync(GenericToken).ConfigureAwait(false))
                                     {
-                                        intBP += CharacterObject.NegativeQualityLimitKarma;
+                                        intBP += await CharacterObject.GetNegativeQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                         if (intBP < intMaxQualityAmount * -1)
                                         {
                                             Program.ShowScrollableMessageBox(
@@ -10286,8 +10288,8 @@ namespace Chummer
                                                 MessageBoxIcon.Information);
                                             blnAddItem = false;
                                         }
-                                        else if (CharacterObject.MetatypeBP < 0
-                                                 && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
+                                        else if (await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < 0
+                                                 && intBP + await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < intMaxQualityAmount * -1)
                                         {
                                             Program.ShowScrollableMessageBox(
                                                 this,
@@ -10307,9 +10309,9 @@ namespace Chummer
                                     }
                                 }
                                 // Check if adding this Quality would put the character over their limit.
-                                else if (!CharacterObjectSettings.ExceedPositiveQualities)
+                                else if (!await CharacterObjectSettings.GetExceedPositiveQualitiesAsync(GenericToken).ConfigureAwait(false))
                                 {
-                                    intBP += CharacterObject.PositiveQualityLimitKarma;
+                                    intBP += await CharacterObject.GetPositiveQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                     if (intBP > intMaxQualityAmount)
                                     {
                                         Program.ShowScrollableMessageBox(this,

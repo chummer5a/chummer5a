@@ -9046,15 +9046,15 @@ namespace Chummer
                     {
                         // Look up the cost of the Quality.
                         int intBP = 0;
-                        if (objSelectedQuality.Type == QualityType.Negative || objXmlDeleteQuality
-                                .SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
+                        if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative
+                            || objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
                         {
                             intBP = Convert.ToInt32(
                                 objXmlDeleteQuality
                                     .SelectSingleNodeAndCacheExpression("karma", token: token)?.Value,
-                                GlobalSettings.InvariantCultureInfo) * CharacterObjectSettings.KarmaQuality;
+                                GlobalSettings.InvariantCultureInfo) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                             if (blnCompleteDelete)
-                                intBP *= objSelectedQuality.Levels;
+                                intBP *= await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
                             if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
                             {
                                 intBP *= 2;
@@ -9145,7 +9145,7 @@ namespace Chummer
 
                         int intTotalKarmaCost = intKarmaCost;
                         if (blnCompleteDelete)
-                            intTotalKarmaCost *= objSelectedQuality.Levels;
+                            intTotalKarmaCost *= await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
                         if (intTotalKarmaCost > await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
                         {
                             Program.ShowScrollableMessageBox(
@@ -9266,9 +9266,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (objSelectedQuality.OriginSource == QualitySource.Improvement
-                    || objSelectedQuality.OriginSource == QualitySource.Metatype
-                    || objSelectedQuality.Levels == 0)
+                if (await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Improvement
+                    || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Metatype
+                    || await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false) == 0)
                 {
                     await nudQualityLevel.DoThreadSafeAsync(x =>
                     {
@@ -9286,10 +9286,11 @@ namespace Chummer
                     && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels", token: token) == null
                     && int.TryParse(strLimitString, out int intMaxRating))
                 {
+                    int intLevels = await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
                     await nudQualityLevel.DoThreadSafeAsync(x =>
                     {
                         x.Maximum = intMaxRating;
-                        x.Value = objSelectedQuality.Levels;
+                        x.Value = intLevels;
                         x.Enabled = true;
                     }, token).ConfigureAwait(false);
                 }
@@ -9323,7 +9324,7 @@ namespace Chummer
                 try
                 {
                     GenericToken.ThrowIfCancellationRequested();
-                    int intCurrentLevels = objSelectedQuality.Levels;
+                    int intCurrentLevels = await objSelectedQuality.GetLevelsAsync(GenericToken).ConfigureAwait(false);
                     int intSelectedLevels
                         = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
                             .ConfigureAwait(false);
@@ -9348,9 +9349,9 @@ namespace Chummer
                                 break;
                             }
 
-                            bool blnFreeCost = objSelectedQuality.BP == 0 || !objSelectedQuality.ContributeToBP;
+                            bool blnFreeCost = await objSelectedQuality.GetBPAsync(GenericToken).ConfigureAwait(false) == 0 || !await objSelectedQuality.GetContributeToBPAsync(GenericToken).ConfigureAwait(false);
 
-                            QualityType eQualityType = objSelectedQuality.Type;
+                            QualityType eQualityType = await objSelectedQuality.GetTypeAsync(GenericToken).ConfigureAwait(false);
 
                             int intQualityBP = 0;
                             if (!blnFreeCost)
@@ -9378,8 +9379,8 @@ namespace Chummer
                                 }
                             }
 
-                            int intKarmaCost = intQualityBP * CharacterObjectSettings.KarmaQuality;
-                            if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                            int intKarmaCost = intQualityBP * await CharacterObjectSettings.GetKarmaQualityAsync(GenericToken).ConfigureAwait(false);
+                            if (!await CharacterObjectSettings.GetDontDoubleQualityPurchasesAsync(GenericToken).ConfigureAwait(false) && objSelectedQuality.DoubleCost)
                                 intKarmaCost *= 2;
 
                             // Make sure the character has enough Karma to pay for the Quality.
@@ -9467,11 +9468,11 @@ namespace Chummer
                                     break;
                                 }
 
-                                objQuality.BP = objSelectedQuality.BP;
-                                objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
+                                objQuality.BP = await objSelectedQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
+                                objQuality.ContributeToLimit = await objSelectedQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false);
 
                                 // Make sure the character has enough Karma to pay for the Quality.
-                                if (objQuality.Type == QualityType.Positive)
+                                if (await objQuality.GetTypeAsync(GenericToken).ConfigureAwait(false) == QualityType.Positive)
                                 {
                                     // Create the Karma expense.
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -9535,14 +9536,18 @@ namespace Chummer
                         }
 
                         // Removing a level
+                        Guid guiSourceID = objSelectedQuality.SourceID;
+                        string strExtra = objSelectedQuality.Extra;
+                        string strSourceName = objSelectedQuality.SourceName;
+                        string strInternalId = objSelectedQuality.InternalId;
                         for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
                         {
-                            Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(
-                                x => x.SourceID == objSelectedQuality.SourceID
-                                     && x.Extra == objSelectedQuality.Extra
-                                     && x.SourceName == objSelectedQuality.SourceName
-                                     && x.InternalId != objSelectedQuality.InternalId
-                                     && !ReferenceEquals(x, objSelectedQuality));
+                            Quality objInvisibleQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(
+                                x => x.SourceID == guiSourceID
+                                     && x.Extra == strExtra
+                                     && x.SourceName == strSourceName
+                                     && x.InternalId != strInternalId
+                                     && !ReferenceEquals(x, objSelectedQuality), GenericToken).ConfigureAwait(false);
                             if (objInvisibleQuality == null
                                 || !await RemoveQuality(objInvisibleQuality, false, false, GenericToken)
                                     .ConfigureAwait(false))
@@ -15922,7 +15927,7 @@ namespace Chummer
                         await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await objQuality.SetSourceDetailAsync(lblQualitySource, token).ConfigureAwait(false);
                         string strText
-                            = (objQuality.BP * objQuality.Levels * CharacterObjectSettings.KarmaQuality).ToString(
+                            = (await objQuality.GetBPAsync(token).ConfigureAwait(false) * await objQuality.GetLevelsAsync(token).ConfigureAwait(false) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false)).ToString(
                                   GlobalSettings.CultureInfo) +
                               await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
                               + await LanguageManager.GetStringAsync("String_Karma", token: token)

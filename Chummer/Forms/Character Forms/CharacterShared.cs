@@ -2419,7 +2419,7 @@ namespace Chummer
                         {
                             foreach (Quality objQuality in e.NewItems)
                             {
-                                if (objQuality.Levels > 1)
+                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 1)
                                     blnDoNameRefresh = true;
                                 else
                                     await AddToTree(objQuality).ConfigureAwait(false);
@@ -2431,7 +2431,7 @@ namespace Chummer
                         {
                             foreach (Quality objQuality in e.OldItems)
                             {
-                                if (objQuality.Levels > 0)
+                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 0)
                                     blnDoNameRefresh = true;
                                 else
                                 {
@@ -2458,7 +2458,7 @@ namespace Chummer
                                 new List<TreeNode>(e.OldItems.Count);
                             foreach (Quality objQuality in e.OldItems)
                             {
-                                if (objQuality.Levels > 0)
+                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 0)
                                     blnDoNameRefresh = true;
                                 else
                                 {
@@ -2484,7 +2484,7 @@ namespace Chummer
 
                             foreach (Quality objQuality in e.NewItems)
                             {
-                                if (objQuality.Levels > 1)
+                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 1)
                                     blnDoNameRefresh = true;
                                 else
                                     await AddToTree(objQuality).ConfigureAwait(false);

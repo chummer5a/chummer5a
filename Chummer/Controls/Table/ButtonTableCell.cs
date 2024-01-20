@@ -68,6 +68,10 @@ namespace Chummer.UI.Table
                         _objUpdateSemaphore.Release();
                     }
                 }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
                 catch (OperationCanceledException)
                 {
                     //swallow this
