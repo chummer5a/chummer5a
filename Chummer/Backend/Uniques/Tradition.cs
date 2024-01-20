@@ -74,6 +74,7 @@ namespace Chummer.Backend.Uniques
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             if (objCharacter != null)
             {
                 objCharacter.PropertyChangedAsync += RefreshDrainExpression;
@@ -2471,6 +2472,6 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

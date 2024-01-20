@@ -30,20 +30,23 @@ namespace Chummer
         private readonly Queue<T> _queData;
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
-        public ThreadSafeQueue()
+        public ThreadSafeQueue(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _queData = new Queue<T>();
         }
 
-        public ThreadSafeQueue(IEnumerable<T> collection)
+        public ThreadSafeQueue(IEnumerable<T> collection, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _queData = new Queue<T>(collection);
         }
 
-        public ThreadSafeQueue(int capacity)
+        public ThreadSafeQueue(int capacity, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _queData = new Queue<T>(capacity);
         }
 

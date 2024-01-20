@@ -61,25 +61,24 @@ namespace Chummer.Backend.Attributes
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
         #region Constructor, Save, Load, and Print Methods
 
         /// <summary>
         /// Character CharacterAttribute.
         /// </summary>
-        /// <param name="character"></param>
-        /// <param name="abbrev"></param>
-        /// <param name="enumCategory"></param>
-        public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory)
+        public CharacterAttrib(Character objCharacter, string abbrev, AttributeCategory enumCategory)
         {
             _strAbbrev = abbrev;
             _eMetatypeCategory = enumCategory;
-            _objCharacter = character;
-            if (character != null)
+            _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.AttributeSection.LockObject);
+            _objCachedTotalValueLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            if (objCharacter != null)
             {
-                character.PropertyChangedAsync += OnCharacterChanged;
-                character.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
+                objCharacter.PropertyChangedAsync += OnCharacterChanged;
+                objCharacter.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
             }
         }
 
@@ -1511,7 +1510,7 @@ namespace Chummer.Backend.Attributes
 
         private int _intCachedTotalValue = int.MinValue;
 
-        private readonly AsyncFriendlyReaderWriterLock _objCachedTotalValueLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedTotalValueLock;
 
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
@@ -1521,23 +1520,21 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedTotalValueLock.EnterReadLock())
                 {
-                    using (_objCachedTotalValueLock.EnterReadLock())
+                    // intReturn for thread safety
+                    if (_intCachedTotalValue != int.MinValue)
+                        return _intCachedTotalValue;
+                }
+
+                using (_objCachedTotalValueLock.EnterUpgradeableReadLock())
+                {
+                    // intReturn for thread safety
+                    if (_intCachedTotalValue != int.MinValue)
+                        return _intCachedTotalValue;
+                    using (_objCachedTotalValueLock.EnterWriteLock())
                     {
-                        // intReturn for thread safety
-                        if (_intCachedTotalValue != int.MinValue)
-                            return _intCachedTotalValue;
-                    }
-                    using (_objCachedTotalValueLock.EnterUpgradeableReadLock())
-                    {
-                        // intReturn for thread safety
-                        if (_intCachedTotalValue != int.MinValue)
-                            return _intCachedTotalValue;
-                        using (_objCachedTotalValueLock.EnterWriteLock())
-                        {
-                            return _intCachedTotalValue = CalculatedTotalValue();
-                        }
+                        return _intCachedTotalValue = CalculatedTotalValue();
                     }
                 }
             }
@@ -1548,39 +1545,38 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async Task<int> GetTotalValueAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await _objCachedTotalValueLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedTotalValueLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (_intCachedTotalValue != int.MinValue)
-                        return _intCachedTotalValue;
-                }
-                IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                if (_intCachedTotalValue != int.MinValue)
+                    return _intCachedTotalValue;
+            }
+
+            IAsyncDisposable objLocker =
+                await _objCachedTotalValueLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedTotalValue != int.MinValue)
+                    return _intCachedTotalValue;
+                IAsyncDisposable objLocker2 =
+                    await _objCachedTotalValueLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_intCachedTotalValue != int.MinValue)
-                        return _intCachedTotalValue;
-                    IAsyncDisposable objLocker2 =
-                        await _objCachedTotalValueLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        return _intCachedTotalValue = await Task
-                            .Run(() => CalculatedTotalValueAsync(token: token), token)
-                            .ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    return _intCachedTotalValue = await Task
+                        .Run(() => CalculatedTotalValueAsync(token: token), token)
+                        .ConfigureAwait(false);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

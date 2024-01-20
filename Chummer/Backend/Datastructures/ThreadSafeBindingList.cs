@@ -35,20 +35,22 @@ namespace Chummer
     public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
         private readonly CachedBindingList<T> _lstData;
 
-        public ThreadSafeBindingList()
+        public ThreadSafeBindingList(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _lstData = new CachedBindingList<T>
             {
                 BindingListLock = LockObject
             };
         }
 
-        public ThreadSafeBindingList(IList<T> list)
+        public ThreadSafeBindingList(IList<T> list, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _lstData = new CachedBindingList<T>(list)
             {
                 BindingListLock = LockObject

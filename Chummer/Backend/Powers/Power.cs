@@ -77,6 +77,10 @@ namespace Chummer
             // Create the GUID for the new Power.
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCachedFreeLevelsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             if (objCharacter != null)
             {
                 objCharacter.PropertyChangedAsync += OnCharacterChanged;
@@ -1222,7 +1226,7 @@ namespace Chummer
 
         private int _intCachedTotalRating = int.MinValue;
 
-        private readonly AsyncFriendlyReaderWriterLock _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedTotalRatingLock;
 
         /// <summary>
         /// The current Rating of the Power, including any Free Levels.
@@ -1231,23 +1235,20 @@ namespace Chummer
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedTotalRatingLock.EnterReadLock())
                 {
-                    using (_objCachedTotalRatingLock.EnterReadLock())
-                    {
-                        if (_intCachedTotalRating != int.MinValue)
-                            return _intCachedTotalRating;
-                    }
+                    if (_intCachedTotalRating != int.MinValue)
+                        return _intCachedTotalRating;
+                }
 
-                    using (_objCachedTotalRatingLock.EnterUpgradeableReadLock())
-                    {
-                        if (_intCachedTotalRating != int.MinValue)
-                            return _intCachedTotalRating;
+                using (_objCachedTotalRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedTotalRating != int.MinValue)
+                        return _intCachedTotalRating;
 
-                        using (_objCachedTotalRatingLock.EnterWriteLock())
-                        {
-                            return _intCachedTotalRating = Math.Min(Rating + FreeLevels, TotalMaximumLevels);
-                        }
+                    using (_objCachedTotalRatingLock.EnterWriteLock())
+                    {
+                        return _intCachedTotalRating = Math.Min(Rating + FreeLevels, TotalMaximumLevels);
                     }
                 }
             }
@@ -1264,43 +1265,39 @@ namespace Chummer
         public async Task<int> GetTotalRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedTotalRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedTotalRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (_intCachedTotalRating != int.MinValue)
-                        return _intCachedTotalRating;
-                }
+                if (_intCachedTotalRating != int.MinValue)
+                    return _intCachedTotalRating;
+            }
 
-                IAsyncDisposable objLocker = await _objCachedTotalRatingLock.EnterUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _objCachedTotalRatingLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedTotalRating != int.MinValue)
+                    return _intCachedTotalRating;
+
+                IAsyncDisposable objLocker2 =
+                    await _objCachedTotalRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_intCachedTotalRating != int.MinValue)
-                        return _intCachedTotalRating;
-
-                    IAsyncDisposable objLocker2 =
-                        await _objCachedTotalRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        return _intCachedTotalRating = Math.Min(
-                            await GetRatingAsync(token).ConfigureAwait(false)
-                            + await GetFreeLevelsAsync(token).ConfigureAwait(false),
-                            await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false));
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    return _intCachedTotalRating = Math.Min(
+                        await GetRatingAsync(token).ConfigureAwait(false)
+                        + await GetFreeLevelsAsync(token).ConfigureAwait(false),
+                        await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false));
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1325,7 +1322,7 @@ namespace Chummer
 
         private int _intCachedFreeLevels = int.MinValue;
 
-        private readonly AsyncFriendlyReaderWriterLock _objCachedFreeLevelsLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedFreeLevelsLock;
 
         /// <summary>
         /// Free levels of the power.
@@ -1334,60 +1331,57 @@ namespace Chummer
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedFreeLevelsLock.EnterReadLock())
                 {
-                    using (_objCachedFreeLevelsLock.EnterReadLock())
-                    {
-                        if (_intCachedFreeLevels != int.MinValue)
-                            return _intCachedFreeLevels;
-                    }
+                    if (_intCachedFreeLevels != int.MinValue)
+                        return _intCachedFreeLevels;
+                }
 
-                    using (_objCachedFreeLevelsLock.EnterUpgradeableReadLock())
-                    {
-                        if (_intCachedFreeLevels != int.MinValue)
-                            return _intCachedFreeLevels;
+                using (_objCachedFreeLevelsLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedFreeLevels != int.MinValue)
+                        return _intCachedFreeLevels;
 
-                        using (_objCachedFreeLevelsLock.EnterWriteLock())
+                    using (_objCachedFreeLevelsLock.EnterWriteLock())
+                    {
+                        decimal decExtraCost = FreePoints;
+                        // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
+                        int intReturn = ImprovementManager
+                            .GetCachedImprovementListForValueOf(CharacterObject,
+                                Improvement.ImprovementType
+                                    .AdeptPowerFreeLevels,
+                                Name)
+                            .Sum(objImprovement => objImprovement.UniqueName == Extra,
+                                objImprovement => objImprovement.Rating);
+                        // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
+                        if (Rating + intReturn == 0 && ExtraPointCost > 0)
                         {
-                            decimal decExtraCost = FreePoints;
-                            // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
-                            int intReturn = ImprovementManager
-                                .GetCachedImprovementListForValueOf(CharacterObject,
-                                    Improvement.ImprovementType
-                                        .AdeptPowerFreeLevels,
-                                    Name)
-                                .Sum(objImprovement => objImprovement.UniqueName == Extra,
-                                    objImprovement => objImprovement.Rating);
-                            // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
-                            if (Rating + intReturn == 0 && ExtraPointCost > 0)
+                            decExtraCost -= PointsPerLevel + ExtraPointCost;
+                            if (decExtraCost >= 0)
                             {
-                                decExtraCost -= PointsPerLevel + ExtraPointCost;
-                                if (decExtraCost >= 0)
-                                {
-                                    ++intReturn;
-                                }
-
-                                for (decimal i = decExtraCost; i >= 1; --i)
-                                {
-                                    ++intReturn;
-                                }
-                            }
-                            else if (PointsPerLevel == 0)
-                            {
-                                Utils.BreakIfDebug();
-                                // power costs no PP, just return free levels
-                            }
-                            //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
-                            else
-                            {
-                                for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
-                                {
-                                    ++intReturn;
-                                }
+                                ++intReturn;
                             }
 
-                            return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
+                            for (decimal i = decExtraCost; i >= 1; --i)
+                            {
+                                ++intReturn;
+                            }
                         }
+                        else if (PointsPerLevel == 0)
+                        {
+                            Utils.BreakIfDebug();
+                            // power costs no PP, just return free levels
+                        }
+                        //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
+                        else
+                        {
+                            for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
+                            {
+                                ++intReturn;
+                            }
+                        }
+
+                        return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
                     }
                 }
             }
@@ -1398,67 +1392,53 @@ namespace Chummer
         /// </summary>
         public async Task<int> GetFreeLevelsAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await _objCachedFreeLevelsLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_intCachedFreeLevels != int.MinValue)
+                    return _intCachedFreeLevels;
+            }
+
+            IAsyncDisposable objLocker =
+                await _objCachedFreeLevelsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedFreeLevelsLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    if (_intCachedFreeLevels != int.MinValue)
-                        return _intCachedFreeLevels;
-                }
+                if (_intCachedFreeLevels != int.MinValue)
+                    return _intCachedFreeLevels;
 
-                IAsyncDisposable objLocker = await _objCachedFreeLevelsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 =
+                    await _objCachedFreeLevelsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_intCachedFreeLevels != int.MinValue)
-                        return _intCachedFreeLevels;
-
-                    IAsyncDisposable objLocker2 = await _objCachedFreeLevelsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    decimal decExtraCost = await GetFreePointsAsync(token).ConfigureAwait(false);
+                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
+                    // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
+                    int intReturn = (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                Improvement.ImprovementType.AdeptPowerFreeLevels,
+                                await GetNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                        .Sum(objImprovement => objImprovement.UniqueName == strExtra,
+                            objImprovement => objImprovement.Rating, token);
+                    decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
+                    // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
+                    if (await GetRatingAsync(token).ConfigureAwait(false) + intReturn == 0)
                     {
-                        token.ThrowIfCancellationRequested();
-                        decimal decExtraCost = await GetFreePointsAsync(token).ConfigureAwait(false);
-                        string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
-                        // Rating does not include free levels from improvements, and those free levels can be used to buy the first level of a power so that Qi Foci, so need to check for those first
-                        int intReturn = (await ImprovementManager
-                                .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                    Improvement.ImprovementType.AdeptPowerFreeLevels,
-                                    await GetNameAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
-                            .Sum(objImprovement => objImprovement.UniqueName == strExtra,
-                                objImprovement => objImprovement.Rating, token);
-                        decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
-                        // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
-                        if (await GetRatingAsync(token).ConfigureAwait(false) + intReturn == 0)
+                        decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
+                        if (decExtraPointCost > 0)
                         {
-                            decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
-                            if (decExtraPointCost > 0)
+                            decExtraCost -= decPointsPerLevel + decExtraPointCost;
+                            if (decExtraCost >= 0)
                             {
-                                decExtraCost -= decPointsPerLevel + decExtraPointCost;
-                                if (decExtraCost >= 0)
-                                {
-                                    ++intReturn;
-                                }
+                                ++intReturn;
+                            }
 
-                                for (decimal i = decExtraCost; i >= 1; --i)
-                                {
-                                    ++intReturn;
-                                }
-                            }
-                            else if (decPointsPerLevel != 0)
+                            for (decimal i = decExtraCost; i >= 1; --i)
                             {
-                                for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
-                                {
-                                    ++intReturn;
-                                }
-                            }
-                            else
-                            {
-                                Utils.BreakIfDebug();
-                                // power costs no PP, just return free levels
+                                ++intReturn;
                             }
                         }
-                        //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
                         else if (decPointsPerLevel != 0)
                         {
                             for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
@@ -1471,26 +1451,39 @@ namespace Chummer
                             Utils.BreakIfDebug();
                             // power costs no PP, just return free levels
                         }
-
-                        CharacterAttrib objMag = await GetMAGAttributeObjectAsync(token).ConfigureAwait(false);
-                        return _intCachedFreeLevels = Math.Min(intReturn,
-                            objMag != null ? await objMag.GetTotalValueAsync(token).ConfigureAwait(false) : 0);
                     }
-                    finally
+                    //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
+                    else if (decPointsPerLevel != 0)
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
+                        {
+                            ++intReturn;
+                        }
                     }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                        // power costs no PP, just return free levels
+                    }
+
+                    CharacterAttrib objMag = await GetMAGAttributeObjectAsync(token).ConfigureAwait(false);
+                    return _intCachedFreeLevels = Math.Min(intReturn,
+                        objMag != null ? await objMag.GetTotalValueAsync(token).ConfigureAwait(false) : 0);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private decimal _decCachedPowerPoints = decimal.MinValue;
 
-        private readonly AsyncFriendlyReaderWriterLock _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedPowerPointsLock;
 
         /// <summary>
         /// Total number of Power Points the Power costs.
@@ -1499,41 +1492,38 @@ namespace Chummer
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedPowerPointsLock.EnterReadLock())
                 {
-                    using (_objCachedPowerPointsLock.EnterReadLock())
-                    {
-                        if (_decCachedPowerPoints != decimal.MinValue)
-                            return _decCachedPowerPoints;
-                    }
+                    if (_decCachedPowerPoints != decimal.MinValue)
+                        return _decCachedPowerPoints;
+                }
 
-                    using (_objCachedPowerPointsLock.EnterUpgradeableReadLock())
-                    {
-                        if (_decCachedPowerPoints != decimal.MinValue)
-                            return _decCachedPowerPoints;
+                using (_objCachedPowerPointsLock.EnterUpgradeableReadLock())
+                {
+                    if (_decCachedPowerPoints != decimal.MinValue)
+                        return _decCachedPowerPoints;
 
-                        using (_objCachedPowerPointsLock.EnterWriteLock())
+                    using (_objCachedPowerPointsLock.EnterWriteLock())
+                    {
+                        if (Rating == 0 || !LevelsEnabled && FreeLevels > 0)
                         {
-                            if (Rating == 0 || !LevelsEnabled && FreeLevels > 0)
-                            {
-                                return _decCachedPowerPoints = 0;
-                            }
-
-                            decimal decReturn;
-                            if (FreeLevels * PointsPerLevel >= FreePoints)
-                            {
-                                decReturn = Rating * PointsPerLevel;
-                                decReturn += ExtraPointCost;
-                            }
-                            else
-                            {
-                                decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
-                                decReturn -= FreePoints;
-                            }
-
-                            decReturn -= Discount;
-                            return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
+                            return _decCachedPowerPoints = 0;
                         }
+
+                        decimal decReturn;
+                        if (FreeLevels * PointsPerLevel >= FreePoints)
+                        {
+                            decReturn = Rating * PointsPerLevel;
+                            decReturn += ExtraPointCost;
+                        }
+                        else
+                        {
+                            decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
+                            decReturn -= FreePoints;
+                        }
+
+                        decReturn -= Discount;
+                        return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
                     }
                 }
             }
@@ -1544,63 +1534,62 @@ namespace Chummer
         /// </summary>
         public async Task<decimal> GetPowerPointsAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await _objCachedPowerPointsLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedPowerPointsLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (_decCachedPowerPoints != decimal.MinValue)
-                        return _decCachedPowerPoints;
-                }
+                if (_decCachedPowerPoints != decimal.MinValue)
+                    return _decCachedPowerPoints;
+            }
 
-                IAsyncDisposable objLocker = await _objCachedPowerPointsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker =
+                await _objCachedPowerPointsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decCachedPowerPoints != decimal.MinValue)
+                    return _decCachedPowerPoints;
+
+                IAsyncDisposable objLocker2 =
+                    await _objCachedPowerPointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_decCachedPowerPoints != decimal.MinValue)
-                        return _decCachedPowerPoints;
-
-                    IAsyncDisposable objLocker2 =
-                        await _objCachedPowerPointsLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
+                    int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                    if (intRating == 0 ||
+                        !await GetLevelsEnabledAsync(token).ConfigureAwait(false) && intFreeLevels > 0)
                     {
-                        token.ThrowIfCancellationRequested();
-                        int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
-                        int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-                        if (intRating == 0 || !await GetLevelsEnabledAsync(token).ConfigureAwait(false) && intFreeLevels > 0)
-                        {
-                            return _decCachedPowerPoints = 0;
-                        }
-
-                        decimal decReturn;
-                        decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
-                        decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
-                        decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
-                        if (intFreeLevels * decPointsPerLevel >= decFreePoints)
-                        {
-                            decReturn = intRating * decPointsPerLevel;
-                            decReturn += decExtraPointCost;
-                        }
-                        else
-                        {
-                            decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * decPointsPerLevel
-                                        + decExtraPointCost;
-                            decReturn -= decFreePoints;
-                        }
-
-                        decReturn -= await GetDiscountAsync(token).ConfigureAwait(false);
-                        return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
+                        return _decCachedPowerPoints = 0;
                     }
-                    finally
+
+                    decimal decReturn;
+                    decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
+                    decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
+                    decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
+                    if (intFreeLevels * decPointsPerLevel >= decFreePoints)
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        decReturn = intRating * decPointsPerLevel;
+                        decReturn += decExtraPointCost;
                     }
+                    else
+                    {
+                        decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * decPointsPerLevel
+                                    + decExtraPointCost;
+                        decReturn -= decFreePoints;
+                    }
+
+                    decReturn -= await GetDiscountAsync(token).ConfigureAwait(false);
+                    return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2953,6 +2942,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

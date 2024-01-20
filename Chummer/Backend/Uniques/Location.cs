@@ -51,6 +51,7 @@ namespace Chummer
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             _strName = strName;
             Parent = objParent;
             Children.CollectionChanged += ChildrenOnCollectionChanged;
@@ -426,6 +427,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

@@ -31,34 +31,39 @@ namespace Chummer
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
-        public LockingOrderedSet()
+        public LockingOrderedSet(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>();
             _lstOrderedData = new List<T>();
         }
 
-        public LockingOrderedSet(int capacity)
+        public LockingOrderedSet(int capacity, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(capacity);
             _lstOrderedData = new List<T>(capacity);
         }
 
-        public LockingOrderedSet(IEnumerable<T> collection)
+        public LockingOrderedSet(IEnumerable<T> collection, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(collection);
             _lstOrderedData = new List<T>(_setData);
         }
 
-        public LockingOrderedSet(IEnumerable<T> collection, IEqualityComparer<T> comparer)
+        public LockingOrderedSet(IEnumerable<T> collection, IEqualityComparer<T> comparer, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(collection, comparer);
             _lstOrderedData = new List<T>(_setData);
         }
 
-        public LockingOrderedSet(IEqualityComparer<T> comparer)
+        public LockingOrderedSet(IEqualityComparer<T> comparer, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(comparer);
             _lstOrderedData = new List<T>();
         }

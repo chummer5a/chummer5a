@@ -29,30 +29,35 @@ namespace Chummer
     public class LockingHashSet<T> : IAsyncSet<T>, IAsyncProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
     {
         private readonly HashSet<T> _setData;
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
-        public LockingHashSet()
+        public LockingHashSet(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>();
         }
 
-        public LockingHashSet(int capacity)
+        public LockingHashSet(int capacity, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(capacity);
         }
 
-        public LockingHashSet(IEnumerable<T> collection)
+        public LockingHashSet(IEnumerable<T> collection, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(collection);
         }
 
-        public LockingHashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer)
+        public LockingHashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(collection, comparer);
         }
 
-        public LockingHashSet(IEqualityComparer<T> comparer)
+        public LockingHashSet(IEqualityComparer<T> comparer, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _setData = new HashSet<T>(comparer);
         }
 

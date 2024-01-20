@@ -45,6 +45,7 @@ namespace Chummer.Backend.Skills
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             _strName = strName; // Shouldn't create tasks in constructors because of potential unexpected behavior
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
@@ -674,6 +675,6 @@ namespace Chummer.Backend.Skills
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

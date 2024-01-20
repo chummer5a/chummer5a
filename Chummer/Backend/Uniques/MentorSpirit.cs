@@ -56,7 +56,7 @@ namespace Chummer
         private bool _blnMentorMask;
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
         #region Constructor
 
@@ -65,6 +65,7 @@ namespace Chummer
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             if (xmlNodeMentor != null)
             {
                 string strName = xmlNodeMentor["name"]?.InnerText;

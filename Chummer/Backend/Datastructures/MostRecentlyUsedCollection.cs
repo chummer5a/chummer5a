@@ -26,15 +26,15 @@ namespace Chummer
 {
     public class MostRecentlyUsedCollection<T> : ThreadSafeObservableCollectionWithMaxSize<T>
     {
-        public MostRecentlyUsedCollection(int intMaxSize) : base(intMaxSize)
+        public MostRecentlyUsedCollection(int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(intMaxSize, objParentLock, blnLockReadOnlyForParent)
         {
         }
 
-        public MostRecentlyUsedCollection(List<T> list, int intMaxSize) : base(list, intMaxSize)
+        public MostRecentlyUsedCollection(List<T> list, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(list, intMaxSize, objParentLock, blnLockReadOnlyForParent)
         {
         }
 
-        public MostRecentlyUsedCollection(IEnumerable<T> collection, int intMaxSize) : base(collection, intMaxSize)
+        public MostRecentlyUsedCollection(IEnumerable<T> collection, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(collection, intMaxSize, objParentLock, blnLockReadOnlyForParent)
         {
         }
 

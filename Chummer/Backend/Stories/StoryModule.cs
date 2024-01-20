@@ -47,6 +47,7 @@ namespace Chummer
         {
             _guiInternalId = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
         }
 
         public void Create(XmlNode xmlStoryModuleDataNode)
@@ -717,6 +718,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

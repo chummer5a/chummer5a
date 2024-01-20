@@ -77,6 +77,7 @@ namespace Chummer
             // Create the GUID for the new Spell.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
         }
 
         /// <summary>
@@ -2344,6 +2345,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

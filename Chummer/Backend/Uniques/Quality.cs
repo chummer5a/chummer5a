@@ -192,6 +192,7 @@ namespace Chummer
             // Create the GUID for the new Quality.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
         }
 
         public void SetGUID(Guid guidExisting)
@@ -3001,6 +3002,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

@@ -28,12 +28,12 @@ namespace Chummer
     {
         private readonly int _intMaxSize;
 
-        public ThreadSafeObservableCollectionWithMaxSize(int intMaxSize)
+        public ThreadSafeObservableCollectionWithMaxSize(int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(objParentLock, blnLockReadOnlyForParent)
         {
             _intMaxSize = intMaxSize;
         }
 
-        public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize) : base(list)
+        public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(list, objParentLock, blnLockReadOnlyForParent)
         {
             _intMaxSize = intMaxSize;
             for (int intCount = Count; intCount >= _intMaxSize; --intCount)
@@ -42,7 +42,7 @@ namespace Chummer
             }
         }
 
-        public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize) : base(collection)
+        public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(collection, objParentLock, blnLockReadOnlyForParent)
         {
             _intMaxSize = intMaxSize;
             for (int intCount = Count; intCount >= _intMaxSize; --intCount)

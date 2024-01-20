@@ -67,7 +67,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private Character _objLinkedCharacter;
 
-        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(3);
+        private readonly ThreadSafeList<Image> _lstMugshots;
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods
@@ -99,6 +99,8 @@ namespace Chummer
             // Create the GUID for the new Spirit.
             _guiId = Guid.NewGuid();
             CharacterObject = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
         }
 
         /// <summary>
@@ -2834,6 +2836,6 @@ namespace Chummer
         #endregion IHasMugshots
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

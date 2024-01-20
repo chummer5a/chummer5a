@@ -232,70 +232,69 @@ namespace Chummer.Backend.Attributes
             );
 
         private bool _blnAttributesInitialized;
-        private readonly AsyncFriendlyReaderWriterLock _objAttributesInitializerLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objAttributesInitializerLock;
         private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
 
         public ThreadSafeObservableCollection<CharacterAttrib> Attributes
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objAttributesInitializerLock.EnterReadLock())
                 {
-                    using (_objAttributesInitializerLock.EnterReadLock())
-                    {
-                        if (_blnAttributesInitialized)
-                            return _lstAttributes;
-                    }
-                    using (_objAttributesInitializerLock.EnterUpgradeableReadLock())
-                    {
-                        if (!_blnAttributesInitialized)
-                        {
-                            using (_objAttributesInitializerLock.EnterWriteLock())
-                                InitializeAttributesList();
-                        }
-                    }
-                    return _lstAttributes;
-                }
-            }
-        }
-
-        public async Task<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributesAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                using (await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
                     if (_blnAttributesInitialized)
                         return _lstAttributes;
                 }
-                IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+
+                using (_objAttributesInitializerLock.EnterUpgradeableReadLock())
                 {
-                    token.ThrowIfCancellationRequested();
                     if (!_blnAttributesInitialized)
                     {
-                        IAsyncDisposable objLocker2 = await _objAttributesInitializerLock.EnterWriteLockAsync(token)
-                            .ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await InitializeAttributesListAsync(token).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                        using (_objAttributesInitializerLock.EnterWriteLock())
+                            InitializeAttributesList();
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 return _lstAttributes;
             }
+        }
+
+        public async Task<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributesAsync(
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAttributesInitialized)
+                    return _lstAttributes;
+            }
+
+            IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!_blnAttributesInitialized)
+                {
+                    IAsyncDisposable objLocker2 = await _objAttributesInitializerLock.EnterWriteLockAsync(token)
+                        .ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await InitializeAttributesListAsync(token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            return _lstAttributes;
         }
 
         private void InitializeAttributesList(CancellationToken token = default)
@@ -472,9 +471,11 @@ namespace Chummer.Backend.Attributes
 
         #region Constructor, Save, Load, Print Methods
 
-        public AttributeSection(Character character)
+        public AttributeSection(Character objCharacter)
         {
-            _objCharacter = character;
+            _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objAttributesInitializerLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             AttributeList.CollectionChangedAsync += AttributeListOnCollectionChanged;
             AttributeList.BeforeClearCollectionChangedAsync += AttributeListOnBeforeClearCollectionChanged;
             SpecialAttributeList.CollectionChangedAsync += SpecialAttributeListOnCollectionChanged;
@@ -3133,6 +3134,6 @@ namespace Chummer.Backend.Attributes
 
         #endregion Properties
 
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

@@ -231,7 +231,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
@@ -11034,6 +11034,6 @@ namespace Chummer.Backend.Equipment
         public int ChildCostMultiplier => 1;
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

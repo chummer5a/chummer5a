@@ -39,7 +39,7 @@ namespace Chummer
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private readonly ThreadSafeList<Gear> _lstGear = new ThreadSafeList<Gear>(2);
+        private readonly ThreadSafeList<Gear> _lstGear;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
@@ -49,6 +49,8 @@ namespace Chummer
             // Create the GUID for the new Focus.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _lstGear = new ThreadSafeList<Gear>(2, LockObject);
         }
 
         /// <summary>
@@ -581,6 +583,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

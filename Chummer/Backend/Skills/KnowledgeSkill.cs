@@ -18,8 +18,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,148 +28,6 @@ namespace Chummer.Backend.Skills
 {
     public class KnowledgeSkill : Skill
     {
-        private ReadOnlyDictionary<string, string> _dicCategoriesSkillMap;  //Categories to their attribute
-        private readonly AsyncFriendlyReaderWriterLock _objCategoriesSkillMapLock = new AsyncFriendlyReaderWriterLock();
-
-        private IReadOnlyDictionary<string, string> CategoriesSkillMap
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                {
-                    if (GlobalSettings.LiveCustomData)
-                    {
-                        XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
-                            .SelectAndCacheExpression(
-                                "/chummer/knowledgeskills/skill");
-                        Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
-                        foreach (XPathNavigator objXmlSkill in lstXmlSkills)
-                        {
-                            string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")?.Value;
-                            if (!string.IsNullOrWhiteSpace(strCategory))
-                            {
-                                dicReturn[strCategory] =
-                                    objXmlSkill.SelectSingleNodeAndCacheExpression("attribute")?.Value;
-                            }
-                        }
-
-                        return new ReadOnlyDictionary<string, string>(dicReturn);
-                    }
-
-                    using (_objCategoriesSkillMapLock.EnterReadLock())
-                    {
-                        if (_dicCategoriesSkillMap != null)
-                            return _dicCategoriesSkillMap;
-                    }
-
-                    using (_objCategoriesSkillMapLock.EnterUpgradeableReadLock())
-                    {
-                        if (_dicCategoriesSkillMap != null)
-                            return _dicCategoriesSkillMap;
-
-                        using (_objCategoriesSkillMapLock.EnterWriteLock())
-                        {
-                            XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
-                                .SelectAndCacheExpression(
-                                    "/chummer/knowledgeskills/skill");
-                            Dictionary<string, string> dicReturn =
-                                new Dictionary<string, string>(lstXmlSkills.Count);
-                            foreach (XPathNavigator objXmlSkill in lstXmlSkills)
-                            {
-                                string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")
-                                    ?.Value;
-                                if (!string.IsNullOrWhiteSpace(strCategory))
-                                {
-                                    dicReturn[strCategory] =
-                                        objXmlSkill.SelectSingleNodeAndCacheExpression("attribute")?.Value;
-                                }
-                            }
-
-                            return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
-                        }
-                    }
-                }
-            }
-        }
-
-        private async Task<IReadOnlyDictionary<string, string>> GetCategoriesSkillMapAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                if (GlobalSettings.LiveCustomData)
-                {
-                    XPathNodeIterator lstXmlSkills =
-                        (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
-                        .SelectAndCacheExpression(
-                            "/chummer/knowledgeskills/skill", token);
-                    Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
-                    foreach (XPathNavigator objXmlSkill in lstXmlSkills)
-                    {
-                        string strCategory =
-                            objXmlSkill.SelectSingleNodeAndCacheExpression("category", token)?.Value;
-                        if (!string.IsNullOrWhiteSpace(strCategory))
-                        {
-                            dicReturn[strCategory] =
-                                objXmlSkill.SelectSingleNodeAndCacheExpression("attribute", token)?.Value;
-                        }
-                    }
-
-                    return new ReadOnlyDictionary<string, string>(dicReturn);
-                }
-
-                using (await _objCategoriesSkillMapLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (_dicCategoriesSkillMap != null)
-                        return _dicCategoriesSkillMap;
-                }
-
-                IAsyncDisposable objLocker = await _objCategoriesSkillMapLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-
-                    if (_dicCategoriesSkillMap != null)
-                        return _dicCategoriesSkillMap;
-
-                    IAsyncDisposable objLocker2 = await _objCategoriesSkillMapLock.EnterWriteLockAsync(token)
-                        .ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        XPathNodeIterator lstXmlSkills =
-                            (await CharacterObject.LoadDataXPathAsync("skills.xml", token: token)
-                                .ConfigureAwait(false))
-                            .SelectAndCacheExpression(
-                                "/chummer/knowledgeskills/skill", token);
-                        Dictionary<string, string> dicReturn =
-                            new Dictionary<string, string>(lstXmlSkills.Count);
-                        foreach (XPathNavigator objXmlSkill in lstXmlSkills)
-                        {
-                            string strCategory =
-                                objXmlSkill.SelectSingleNodeAndCacheExpression("category", token)?.Value;
-                            if (!string.IsNullOrWhiteSpace(strCategory))
-                            {
-                                dicReturn[strCategory] =
-                                    objXmlSkill.SelectSingleNodeAndCacheExpression("attribute", token)?.Value;
-                            }
-                        }
-
-                        return _dicCategoriesSkillMap = new ReadOnlyDictionary<string, string>(dicReturn);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-        }
-
         public override bool IsKnowledgeSkill => true;
 
         public override bool AllowDelete
@@ -560,53 +416,50 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedCyberwareRatingLock.EnterReadLock())
                 {
-                    using (_objCachedCyberwareRatingLock.EnterReadLock())
-                    {
-                        if (_intCachedCyberwareRating != int.MinValue)
-                            return _intCachedCyberwareRating;
-                    }
+                    if (_intCachedCyberwareRating != int.MinValue)
+                        return _intCachedCyberwareRating;
+                }
 
-                    using (_objCachedCyberwareRatingLock.EnterUpgradeableReadLock())
+                using (_objCachedCyberwareRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedCyberwareRating != int.MinValue)
+                        return _intCachedCyberwareRating;
+                    using (_objCachedCyberwareRatingLock.EnterWriteLock())
                     {
-                        if (_intCachedCyberwareRating != int.MinValue)
-                            return _intCachedCyberwareRating;
-                        using (_objCachedCyberwareRatingLock.EnterWriteLock())
+                        string strTranslatedName = CurrentDisplayName;
+                        int intMaxHardwire = -1;
+                        foreach (Improvement objImprovement in ImprovementManager
+                                     .GetCachedImprovementListForValueOf(
+                                         CharacterObject, Improvement.ImprovementType.Hardwire,
+                                         DictionaryKey)
+                                     .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
+                                         CharacterObject,
+                                         Improvement.ImprovementType.Hardwire,
+                                         strTranslatedName)))
                         {
-                            string strTranslatedName = CurrentDisplayName;
-                            int intMaxHardwire = -1;
-                            foreach (Improvement objImprovement in ImprovementManager
-                                         .GetCachedImprovementListForValueOf(
-                                             CharacterObject, Improvement.ImprovementType.Hardwire,
-                                             DictionaryKey)
-                                         .Concat(ImprovementManager.GetCachedImprovementListForValueOf(
-                                             CharacterObject,
-                                             Improvement.ImprovementType.Hardwire,
-                                             strTranslatedName)))
-                            {
-                                intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                            }
-
-                            if (intMaxHardwire >= 0)
-                            {
-                                return _intCachedCyberwareRating = intMaxHardwire;
-                            }
-
-                            int intMaxSkillsoftRating = ImprovementManager
-                                .ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess).StandardRound();
-                            if (intMaxSkillsoftRating <= 0)
-                                return _intCachedCyberwareRating = 0;
-                            int intMax = 0;
-                            foreach (Improvement objSkillsoftImprovement in ImprovementManager
-                                         .GetCachedImprovementListForValueOf(
-                                             CharacterObject, Improvement.ImprovementType.Skillsoft, InternalId))
-                            {
-                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                            }
-
-                            return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
+                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                         }
+
+                        if (intMaxHardwire >= 0)
+                        {
+                            return _intCachedCyberwareRating = intMaxHardwire;
+                        }
+
+                        int intMaxSkillsoftRating = ImprovementManager
+                            .ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess).StandardRound();
+                        if (intMaxSkillsoftRating <= 0)
+                            return _intCachedCyberwareRating = 0;
+                        int intMax = 0;
+                        foreach (Improvement objSkillsoftImprovement in ImprovementManager
+                                     .GetCachedImprovementListForValueOf(
+                                         CharacterObject, Improvement.ImprovementType.Skillsoft, InternalId))
+                        {
+                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                        }
+
+                        return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
                     }
                 }
             }
@@ -618,75 +471,73 @@ namespace Chummer.Backend.Skills
         /// <returns>Artificial skill attributeValue</returns>
         public override async Task<int> GetCyberwareRatingAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await _objCachedCyberwareRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_intCachedCyberwareRating != int.MinValue)
+                    return _intCachedCyberwareRating;
+            }
+
+            IAsyncDisposable objLocker = await _objCachedCyberwareRatingLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedCyberwareRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    if (_intCachedCyberwareRating != int.MinValue)
-                        return _intCachedCyberwareRating;
-                }
+                if (_intCachedCyberwareRating != int.MinValue)
+                    return _intCachedCyberwareRating;
 
-                IAsyncDisposable objLocker = await _objCachedCyberwareRatingLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token)
+                    .ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_intCachedCyberwareRating != int.MinValue)
-                        return _intCachedCyberwareRating;
-
-                    IAsyncDisposable objLocker2 = await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token)
-                        .ConfigureAwait(false);
-                    try
+                    string strTranslatedName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                    int intMaxHardwire = -1;
+                    foreach (Improvement objImprovement in (await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(
+                                     CharacterObject, Improvement.ImprovementType.Hardwire,
+                                     await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
+                                 .ConfigureAwait(false))
+                             .Concat(await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                 CharacterObject,
+                                 Improvement.ImprovementType.Hardwire,
+                                 strTranslatedName, token: token).ConfigureAwait(false)))
                     {
-                        token.ThrowIfCancellationRequested();
-                        string strTranslatedName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                        int intMaxHardwire = -1;
-                        foreach (Improvement objImprovement in (await ImprovementManager
-                                     .GetCachedImprovementListForValueOfAsync(
-                                         CharacterObject, Improvement.ImprovementType.Hardwire,
-                                         await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                                     .ConfigureAwait(false))
-                                 .Concat(await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                     CharacterObject,
-                                     Improvement.ImprovementType.Hardwire,
-                                     strTranslatedName, token: token).ConfigureAwait(false)))
-                        {
-                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                        }
-
-                        if (intMaxHardwire >= 0)
-                        {
-                            return _intCachedCyberwareRating = intMaxHardwire;
-                        }
-
-                        int intMaxSkillsoftRating =
-                            (await ImprovementManager
-                                .ValueOfAsync(CharacterObject, Improvement.ImprovementType.SkillsoftAccess,
-                                    token: token)
-                                .ConfigureAwait(false)).StandardRound();
-                        if (intMaxSkillsoftRating <= 0)
-                            return _intCachedCyberwareRating = 0;
-                        int intMax = 0;
-                        foreach (Improvement objSkillsoftImprovement in await ImprovementManager
-                                     .GetCachedImprovementListForValueOfAsync(
-                                         CharacterObject, Improvement.ImprovementType.Skillsoft, InternalId,
-                                         token: token)
-                                     .ConfigureAwait(false))
-                        {
-                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                        }
-
-                        return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
+                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                     }
-                    finally
+
+                    if (intMaxHardwire >= 0)
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        return _intCachedCyberwareRating = intMaxHardwire;
                     }
+
+                    int intMaxSkillsoftRating =
+                        (await ImprovementManager
+                            .ValueOfAsync(CharacterObject, Improvement.ImprovementType.SkillsoftAccess,
+                                token: token)
+                            .ConfigureAwait(false)).StandardRound();
+                    if (intMaxSkillsoftRating <= 0)
+                        return _intCachedCyberwareRating = 0;
+                    int intMax = 0;
+                    foreach (Improvement objSkillsoftImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(
+                                     CharacterObject, Improvement.ImprovementType.Skillsoft, InternalId,
+                                     token: token)
+                                 .ConfigureAwait(false))
+                    {
+                        intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                    }
+
+                    return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -722,8 +573,9 @@ namespace Chummer.Backend.Skills
                     string strOldType = Interlocked.Exchange(ref _strType, value);
                     if (strOldType == value)
                         return;
+                    string strNewAttributeValue = string.Empty;
                     bool blnSetDefaultAttribute =
-                        CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue);
+                        CharacterObject?.SkillsSection?.KnowledgeSkillCategoriesMap.TryGetValue(value, out strNewAttributeValue) ?? false;
                     bool blnUnsetNativeLanguage = value != "Language" && strOldType == "Language";
                     if (blnSetDefaultAttribute || blnUnsetNativeLanguage)
                     {
@@ -782,9 +634,14 @@ namespace Chummer.Backend.Skills
                 string strOldType = Interlocked.Exchange(ref _strType, value);
                 if (strOldType == value)
                     return;
+                string strNewAttributeValue = string.Empty;
+                SkillsSection objSkillsSection =
+                    CharacterObject != null ? await CharacterObject.GetSkillsSectionAsync(token) : null;
                 bool blnSetDefaultAttribute =
-                    (await GetCategoriesSkillMapAsync(token).ConfigureAwait(false)).TryGetValue(value,
-                        out string strNewAttributeValue);
+                    objSkillsSection != null && (await objSkillsSection.GetKnowledgeSkillCategoriesMapAsync(token)
+                        .ConfigureAwait(false))
+                    .TryGetValue(value,
+                        out strNewAttributeValue);
                 bool blnUnsetNativeLanguage = value != "Language" && strOldType == "Language";
                 if (blnSetDefaultAttribute || blnUnsetNativeLanguage)
                 {
@@ -1505,24 +1362,6 @@ namespace Chummer.Backend.Skills
 
                 _intIsNativeLanguage = blnTemp.ToInt32();
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _objCategoriesSkillMapLock.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        protected override async ValueTask DisposeAsync(bool disposing)
-        {
-            if (disposing)
-            {
-                await _objCategoriesSkillMapLock.DisposeAsync().ConfigureAwait(false);
-            }
-            await base.DisposeAsync(disposing).ConfigureAwait(false);
         }
     }
 }

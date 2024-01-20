@@ -41,7 +41,8 @@ namespace Chummer
 
         public Story(Character objCharacter)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstStoryModules.CollectionChangedAsync += StoryModulesOnCollectionChanged;
         }
@@ -310,6 +311,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

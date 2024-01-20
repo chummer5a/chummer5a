@@ -35,26 +35,29 @@ namespace Chummer
         [CLSCompliant(false)]
         protected readonly EnhancedObservableCollection<T> _lstData;
 
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
-        public ThreadSafeObservableCollection()
+        public ThreadSafeObservableCollection(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _lstData = new EnhancedObservableCollection<T>
             {
                 CollectionChangedLock = LockObject
             };
         }
 
-        public ThreadSafeObservableCollection(IEnumerable<T> collection)
+        public ThreadSafeObservableCollection(IEnumerable<T> collection, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _lstData = new EnhancedObservableCollection<T>(collection)
             {
                 CollectionChangedLock = LockObject
             };
         }
 
-        public ThreadSafeObservableCollection(List<T> list)
+        public ThreadSafeObservableCollection(List<T> list, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _lstData = new EnhancedObservableCollection<T>(list)
             {
                 CollectionChangedLock = LockObject

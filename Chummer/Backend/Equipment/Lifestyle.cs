@@ -155,6 +155,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChangedAsync += LifestyleQualitiesOnBeforeClearCollectionChanged;
         }
@@ -3872,6 +3873,6 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

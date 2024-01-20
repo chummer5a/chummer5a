@@ -85,7 +85,7 @@ namespace Chummer
         private bool _blnGroupEnabled = true;
         private bool _blnReadOnly;
         private bool _blnFree;
-        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(3);
+        private readonly ThreadSafeList<Image> _lstMugshots;
         private int _intMainMugshotIndex = -1;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -446,11 +446,13 @@ namespace Chummer
         public Contact(Character objCharacter, bool blnIsReadOnly = false)
         {
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             if (_objCharacter != null)
             {
                 _objCharacter.PropertyChangedAsync += CharacterObjectOnPropertyChanged;
             }
             _blnReadOnly = blnIsReadOnly;
+            _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
         }
 
         private Task CharacterObjectOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
@@ -3139,6 +3141,6 @@ namespace Chummer
         #endregion IHasMugshots
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

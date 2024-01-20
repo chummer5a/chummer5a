@@ -30,20 +30,23 @@ namespace Chummer
         private readonly Stack<T> _stkData;
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
-        public ThreadSafeStack()
+        public ThreadSafeStack(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _stkData = new Stack<T>();
         }
 
-        public ThreadSafeStack(IEnumerable<T> collection)
+        public ThreadSafeStack(IEnumerable<T> collection, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _stkData = new Stack<T>(collection);
         }
 
-        public ThreadSafeStack(int capacity)
+        public ThreadSafeStack(int capacity, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _stkData = new Stack<T>(capacity);
         }
 

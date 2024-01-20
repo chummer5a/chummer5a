@@ -58,6 +58,7 @@ namespace Chummer
         public MartialArt(Character objCharacter)
         {
             _objCharacter = objCharacter;
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
             _guiID = Guid.NewGuid();
 
             _lstTechniques.AddTaggedCollectionChanged(this, TechniquesOnCollectionChanged);
@@ -1119,6 +1120,6 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

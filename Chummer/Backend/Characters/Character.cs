@@ -99,7 +99,7 @@ namespace Chummer
         // General character info.
         private string _strName = string.Empty;
 
-        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(3);
+        private readonly ThreadSafeList<Image> _lstMugshots;
         private int _intMainMugshotIndex = -1;
         private string _strGender = string.Empty;
         private string _strAge = string.Empty;
@@ -196,34 +196,26 @@ namespace Chummer
         private string _strPrioritySkills = "D";
         private string _strPriorityResources = "E";
         private string _strPriorityTalent = string.Empty;
-        private readonly ThreadSafeList<string> _lstPrioritySkills = new ThreadSafeList<string>(3);
+        private readonly ThreadSafeList<string> _lstPrioritySkills;
 
         // Lists.
         private readonly ThreadSafeObservableCollection<Improvement> _lstImprovements = new ThreadSafeObservableCollection<Improvement>();
-
         private readonly ThreadSafeObservableCollection<MentorSpirit>
             _lstMentorSpirits = new ThreadSafeObservableCollection<MentorSpirit>();
-
         private readonly ThreadSafeObservableCollection<Contact> _lstContacts = new ThreadSafeObservableCollection<Contact>();
         private readonly ThreadSafeObservableCollection<Spirit> _lstSpirits = new ThreadSafeObservableCollection<Spirit>();
         private readonly ThreadSafeObservableCollection<Spell> _lstSpells = new ThreadSafeObservableCollection<Spell>();
-
         private readonly ThreadSafeObservableCollection<SustainedObject> _lstSustainedObjects = new ThreadSafeObservableCollection<SustainedObject>();
-
-        private readonly ThreadSafeList<Focus> _lstFoci = new ThreadSafeList<Focus>(5);
-        private readonly ThreadSafeList<StackedFocus> _lstStackedFoci = new ThreadSafeList<StackedFocus>(5);
-        private readonly ThreadSafeBindingList<Power> _lstPowers = new ThreadSafeBindingList<Power>();
+        private readonly ThreadSafeList<Focus> _lstFoci;
+        private readonly ThreadSafeList<StackedFocus> _lstStackedFoci;
+        private readonly ThreadSafeBindingList<Power> _lstPowers;
         private readonly ThreadSafeObservableCollection<ComplexForm> _lstComplexForms = new ThreadSafeObservableCollection<ComplexForm>();
         private readonly ThreadSafeObservableCollection<AIProgram> _lstAIPrograms = new ThreadSafeObservableCollection<AIProgram>();
         private readonly ThreadSafeObservableCollection<MartialArt> _lstMartialArts = new ThreadSafeObservableCollection<MartialArt>();
-
         private readonly ThreadSafeObservableCollection<LimitModifier> _lstLimitModifiers =
             new ThreadSafeObservableCollection<LimitModifier>();
-
         private readonly ThreadSafeObservableCollection<Armor> _lstArmor = new ThreadSafeObservableCollection<Armor>();
-
         private readonly ThreadSafeObservableCollection<Cyberware> _lstCyberware = new ThreadSafeObservableCollection<Cyberware>();
-
         private readonly ThreadSafeObservableCollection<Weapon> _lstWeapons = new ThreadSafeObservableCollection<Weapon>();
         private readonly ThreadSafeObservableCollection<Quality> _lstQualities = new ThreadSafeObservableCollection<Quality>();
         private readonly ThreadSafeObservableCollection<Lifestyle> _lstLifestyles = new ThreadSafeObservableCollection<Lifestyle>();
@@ -232,25 +224,18 @@ namespace Chummer
         private readonly ThreadSafeObservableCollection<Metamagic> _lstMetamagics = new ThreadSafeObservableCollection<Metamagic>();
         private readonly ThreadSafeObservableCollection<Art> _lstArts = new ThreadSafeObservableCollection<Art>();
         private readonly ThreadSafeObservableCollection<Enhancement> _lstEnhancements = new ThreadSafeObservableCollection<Enhancement>();
-
         private readonly ThreadSafeObservableCollection<ExpenseLogEntry> _lstExpenseLog =
             new ThreadSafeObservableCollection<ExpenseLogEntry>();
-
         private readonly ThreadSafeObservableCollection<CritterPower>
             _lstCritterPowers = new ThreadSafeObservableCollection<CritterPower>();
-
         private readonly ThreadSafeObservableCollection<InitiationGrade> _lstInitiationGrades =
             new ThreadSafeObservableCollection<InitiationGrade>();
-
         private readonly ThreadSafeObservableCollection<Location> _lstGearLocations = new ThreadSafeObservableCollection<Location>();
         private readonly ThreadSafeObservableCollection<Location> _lstArmorLocations = new ThreadSafeObservableCollection<Location>();
-
         private readonly ThreadSafeObservableCollection<Location> _lstVehicleLocations = new ThreadSafeObservableCollection<Location>();
-
         private readonly ThreadSafeObservableCollection<Location> _lstWeaponLocations = new ThreadSafeObservableCollection<Location>();
         private readonly ThreadSafeObservableCollection<string> _lstImprovementGroups = new ThreadSafeObservableCollection<string>();
-        private readonly ThreadSafeBindingList<CalendarWeek> _lstCalendar = new ThreadSafeBindingList<CalendarWeek>();
-
+        private readonly ThreadSafeBindingList<CalendarWeek> _lstCalendar;
         private readonly ThreadSafeObservableCollection<Drug> _lstDrugs = new ThreadSafeObservableCollection<Drug>();
 
         private SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap;
@@ -263,10 +248,10 @@ namespace Chummer
 
         private Version _verSavedVersion = new Version();
 
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
-        private readonly LockingOrderedSet<Func<Character, bool>> _setDoOnSaveCompleted = new LockingOrderedSet<Func<Character, bool>>();
-        private readonly LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>> _setDoOnSaveCompletedAsync = new LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>>();
+        private readonly LockingOrderedSet<Func<Character, bool>> _setDoOnSaveCompleted;
+        private readonly LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>> _setDoOnSaveCompletedAsync;
 
         /// <summary>
         /// Set of unique methods to run after the character's Save() method is otherwise finished.
@@ -312,6 +297,22 @@ namespace Chummer
             else if (!SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out _objSettings)
                      && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSettingDefaultValue, out _objSettings))
                 _objSettings = SettingsManager.LoadedCharacterSettings.First().Value;
+
+            LockObject = new AsyncFriendlyReaderWriterLock();
+            _objCachedSourceDetailLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedEssenceLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedPowerPointsUsedLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objAvailabilityMapLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+
+            _setDoOnSaveCompleted = new LockingOrderedSet<Func<Character, bool>>(LockObject);
+            _setDoOnSaveCompletedAsync = new LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>>(LockObject);
+
+            _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
+            _lstPrioritySkills = new ThreadSafeList<string>(3, LockObject);
+            _lstFoci = new ThreadSafeList<Focus>(3, LockObject);
+            _lstStackedFoci = new ThreadSafeList<StackedFocus>(1, LockObject);
+            _lstPowers = new ThreadSafeBindingList<Power>(LockObject);
+            _lstCalendar = new ThreadSafeBindingList<CalendarWeek>(LockObject);
 
             _objSettings.PropertyChangedAsync += OptionsOnPropertyChanged;
             _objAttributeSection = new AttributeSection(this);
@@ -20943,28 +20944,25 @@ namespace Chummer
 
         private decimal _decCachedPowerPointsUsed = decimal.MinValue;
 
-        private readonly AsyncFriendlyReaderWriterLock _objCachedPowerPointsUsedLock =
-            new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedPowerPointsUsedLock;
 
         public decimal PowerPointsUsed
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedPowerPointsUsedLock.EnterReadLock())
                 {
-                    using (_objCachedPowerPointsUsedLock.EnterReadLock())
+                    if (_decCachedPowerPointsUsed != decimal.MinValue)
+                        return _decCachedPowerPointsUsed;
+                }
+
+                using (_objCachedPowerPointsUsedLock.EnterUpgradeableReadLock())
+                {
+                    if (_decCachedPowerPointsUsed != decimal.MinValue)
+                        return _decCachedPowerPointsUsed;
+                    using (_objCachedPowerPointsUsedLock.EnterWriteLock())
                     {
-                        if (_decCachedPowerPointsUsed != decimal.MinValue)
-                            return _decCachedPowerPointsUsed;
-                    }
-                    using (_objCachedPowerPointsUsedLock.EnterUpgradeableReadLock())
-                    {
-                        if (_decCachedPowerPointsUsed != decimal.MinValue)
-                            return _decCachedPowerPointsUsed;
-                        using (_objCachedPowerPointsUsedLock.EnterWriteLock())
-                        {
-                            return _decCachedPowerPointsUsed = Powers.Sum(objPower => objPower.PowerPoints);
-                        }
+                        return _decCachedPowerPointsUsed = Powers.Sum(objPower => objPower.PowerPoints);
                     }
                 }
             }
@@ -20972,40 +20970,39 @@ namespace Chummer
 
         public async Task<decimal> GetPowerPointsUsedAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await _objCachedPowerPointsUsedLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedPowerPointsUsedLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (_decCachedPowerPointsUsed != decimal.MinValue)
-                        return _decCachedPowerPointsUsed;
-                }
-                IAsyncDisposable objLocker = await _objCachedPowerPointsUsedLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                if (_decCachedPowerPointsUsed != decimal.MinValue)
+                    return _decCachedPowerPointsUsed;
+            }
+
+            IAsyncDisposable objLocker = await _objCachedPowerPointsUsedLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decCachedPowerPointsUsed != decimal.MinValue)
+                    return _decCachedPowerPointsUsed;
+                IAsyncDisposable objLocker2 =
+                    await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_decCachedPowerPointsUsed != decimal.MinValue)
-                        return _decCachedPowerPointsUsed;
-                    IAsyncDisposable objLocker2 =
-                        await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        return _decCachedPowerPointsUsed = await (await GetPowersAsync(token).ConfigureAwait(false))
-                            .SumAsync(
-                                objPower => objPower.GetPowerPointsAsync(token),
-                                token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    return _decCachedPowerPointsUsed = await (await GetPowersAsync(token).ConfigureAwait(false))
+                        .SumAsync(
+                            objPower => objPower.GetPowerPointsAsync(token),
+                            token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -23063,7 +23060,7 @@ namespace Chummer
         }
 
         private decimal _decCachedEssence = decimal.MinValue;
-        private readonly AsyncFriendlyReaderWriterLock _objCachedEssenceLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedEssenceLock;
 
         public void ResetCachedEssence(CancellationToken token = default)
         {
@@ -46345,26 +46342,23 @@ namespace Chummer
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedSourceDetailLock.EnterReadLock())
                 {
-                    using (_objCachedSourceDetailLock.EnterReadLock())
-                    {
-                        if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
-                            return _objCachedSourceDetail;
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
 
-                    }
+                }
 
-                    using (_objCachedSourceDetailLock.EnterUpgradeableReadLock())
+                using (_objCachedSourceDetailLock.EnterUpgradeableReadLock())
+                {
+                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                        return _objCachedSourceDetail;
+                    using (_objCachedSourceDetailLock.EnterWriteLock())
                     {
-                        if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
-                            return _objCachedSourceDetail;
-                        using (_objCachedSourceDetailLock.EnterWriteLock())
-                        {
-                            return _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                                DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
-                                GlobalSettings.CultureInfo,
-                                this);
-                        }
+                        return _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                            DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
+                            GlobalSettings.CultureInfo,
+                            this);
                     }
                 }
             }
@@ -46373,40 +46367,39 @@ namespace Chummer
         public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            using (await _objCachedSourceDetailLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                    return _objCachedSourceDetail;
+
+            }
+
+            IAsyncDisposable objLocker =
+                await _objCachedSourceDetailLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedSourceDetailLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
-                        return _objCachedSourceDetail;
-
-                }
-
-                IAsyncDisposable objLocker = await _objCachedSourceDetailLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
+                    return _objCachedSourceDetail;
+                IAsyncDisposable objLocker2 =
+                    await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
-                        return _objCachedSourceDetail;
-                    IAsyncDisposable objLocker2 = await _objCachedSourceDetailLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        return _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
-                            await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), GlobalSettings.Language,
-                            GlobalSettings.CultureInfo,
-                            this, token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    return _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                        GlobalSettings.Language,
+                        GlobalSettings.CultureInfo,
+                        this, token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

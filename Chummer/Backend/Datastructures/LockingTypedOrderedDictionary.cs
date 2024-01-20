@@ -45,38 +45,47 @@ namespace Chummer
         private readonly Dictionary<TKey, TValue> _dicUnorderedData;
         private readonly List<TKey> _lstIndexes;
 
-        public LockingTypedOrderedDictionary()
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public LockingTypedOrderedDictionary(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _dicUnorderedData = new Dictionary<TKey, TValue>();
             _lstIndexes = new List<TKey>();
         }
 
-        public LockingTypedOrderedDictionary(IDictionary<TKey, TValue> dictionary)
+        public LockingTypedOrderedDictionary(IDictionary<TKey, TValue> dictionary, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _dicUnorderedData = new Dictionary<TKey, TValue>(dictionary);
             _lstIndexes = new List<TKey>(dictionary.Keys);
         }
 
-        public LockingTypedOrderedDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
+        public LockingTypedOrderedDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _dicUnorderedData = new Dictionary<TKey, TValue>(dictionary, comparer);
             _lstIndexes = new List<TKey>(dictionary.Keys);
         }
 
-        public LockingTypedOrderedDictionary(IEqualityComparer<TKey> comparer)
+        public LockingTypedOrderedDictionary(IEqualityComparer<TKey> comparer, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _dicUnorderedData = new Dictionary<TKey, TValue>(comparer);
             _lstIndexes = new List<TKey>();
         }
 
-        public LockingTypedOrderedDictionary(int capacity)
+        public LockingTypedOrderedDictionary(int capacity, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _dicUnorderedData = new Dictionary<TKey, TValue>(capacity);
             _lstIndexes = new List<TKey>(capacity);
         }
 
-        public LockingTypedOrderedDictionary(int capacity, IEqualityComparer<TKey> comparer)
+        public LockingTypedOrderedDictionary(int capacity, IEqualityComparer<TKey> comparer, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
             _dicUnorderedData = new Dictionary<TKey, TValue>(capacity, comparer);
             _lstIndexes = new List<TKey>(capacity);
         }
@@ -3555,9 +3564,6 @@ namespace Chummer
             await DisposeAsync(true).ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
-
-        /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public async Task<int> GetCountAsync(CancellationToken token = default)
         {

@@ -263,7 +263,7 @@ namespace Chummer
         private int _intKarmaCarryover = 7;
 
         // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether it's enabled
-        private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>();
+        private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys;
 
         // Cached lists that should be updated every time _dicCustomDataDirectoryKeys is updated
         private readonly OrderedSet<CustomDataDirectoryInfo> _setEnabledCustomDataDirectories = new OrderedSet<CustomDataDirectoryInfo>();
@@ -567,6 +567,7 @@ namespace Chummer
 
         public CharacterSettings(CharacterSettings objOther = null, bool blnCopySourceId = true, string strOverrideFileName = "")
         {
+            _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>(LockObject);
             _setBannedWareGrades.Add("Betaware");
             _setBannedWareGrades.Add("Deltaware");
             _setBannedWareGrades.Add("Gammaware");

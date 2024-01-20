@@ -61,7 +61,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
         public CharacterAttrib AttributeObject
         {
@@ -829,13 +829,16 @@ namespace Chummer.Backend.Skills
             return objReturn;
         }
 
-        protected Skill(Character character)
+        protected Skill(Character objCharacter)
         {
-            CharacterObject = character ?? throw new ArgumentNullException(nameof(character));
-            character.PropertyChangedAsync += OnCharacterChanged;
-            character.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
-            character.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
-            character.AttributeSection.Attributes.CollectionChangedAsync += OnAttributesCollectionChanged;
+            CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            objCharacter.PropertyChangedAsync += OnCharacterChanged;
+            objCharacter.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
+            objCharacter.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
+            objCharacter.AttributeSection.Attributes.CollectionChangedAsync += OnAttributesCollectionChanged;
 
             Specializations.CollectionChangedAsync += SpecializationsOnCollectionChanged;
             Specializations.BeforeClearCollectionChangedAsync += SpecializationsOnBeforeClearCollectionChanged;
@@ -3564,7 +3567,7 @@ namespace Chummer.Backend.Skills
         public virtual string SkillCategory { get; } = string.Empty;
 
         private bool _blnRecalculateCachedSuggestedSpecializations = true;
-        private readonly AsyncFriendlyReaderWriterLock _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedSuggestedSpecializationsLock;
         private List<ListItem> _lstCachedSuggestedSpecializations;
 
         // ReSharper disable once InconsistentNaming
@@ -3572,99 +3575,26 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedSuggestedSpecializationsLock.EnterReadLock())
                 {
-                    using (_objCachedSuggestedSpecializationsLock.EnterReadLock())
-                    {
-                        if (!_blnRecalculateCachedSuggestedSpecializations)
-                            return _lstCachedSuggestedSpecializations;
-                    }
-
-                    using (_objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLock())
-                    {
-                        if (!_blnRecalculateCachedSuggestedSpecializations)
-                            return _lstCachedSuggestedSpecializations;
-
-                        using (_objCachedSuggestedSpecializationsLock.EnterWriteLock())
-                        {
-                            _blnRecalculateCachedSuggestedSpecializations = false;
-                            if (_lstCachedSuggestedSpecializations == null)
-                                _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
-                            else
-                                _lstCachedSuggestedSpecializations.Clear();
-                            XPathNodeIterator xmlSpecList =
-                                this.GetNodeXPath(GlobalSettings.Language)?.SelectAndCacheExpression("specs/spec");
-                            if (xmlSpecList?.Count > 0)
-                            {
-                                foreach (XPathNavigator xmlSpecNode in xmlSpecList)
-                                {
-                                    string strInnerText = xmlSpecNode.Value;
-                                    if (string.IsNullOrEmpty(strInnerText))
-                                        continue;
-                                    _lstCachedSuggestedSpecializations.Add(
-                                        new ListItem(strInnerText,
-                                            xmlSpecNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ??
-                                            strInnerText));
-                                }
-                            }
-
-                            foreach (string strSpecializationName in ImprovementManager
-                                         .GetCachedImprovementListForValueOf(
-                                             CharacterObject, Improvement.ImprovementType.SkillSpecializationOption,
-                                             DictionaryKey).Select(x => x.UniqueName))
-                            {
-                                if (_lstCachedSuggestedSpecializations.Exists(
-                                        y => y.Value?.ToString() == strSpecializationName))
-                                    continue;
-                                _lstCachedSuggestedSpecializations.Add(
-                                    new ListItem(strSpecializationName,
-                                        CharacterObject.TranslateExtra(strSpecializationName)));
-                            }
-
-                            _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
-                        }
-
-                        return _lstCachedSuggestedSpecializations;
-                    }
-                }
-            }
-        }
-
-        // ReSharper disable once InconsistentNaming
-        public async Task<IReadOnlyList<ListItem>> GetCGLSpecializationsAsync(CancellationToken token = default)
-        {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                using (await _objCachedSuggestedSpecializationsLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
                     if (!_blnRecalculateCachedSuggestedSpecializations)
                         return _lstCachedSuggestedSpecializations;
                 }
 
-                IAsyncDisposable objLocker = await _objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                using (_objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLock())
                 {
-                    token.ThrowIfCancellationRequested();
                     if (!_blnRecalculateCachedSuggestedSpecializations)
                         return _lstCachedSuggestedSpecializations;
 
-                    IAsyncDisposable objLocker2 = await _objCachedSuggestedSpecializationsLock
-                        .EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    using (_objCachedSuggestedSpecializationsLock.EnterWriteLock())
                     {
-                        token.ThrowIfCancellationRequested();
                         _blnRecalculateCachedSuggestedSpecializations = false;
                         if (_lstCachedSuggestedSpecializations == null)
                             _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
                         else
                             _lstCachedSuggestedSpecializations.Clear();
-                        XPathNavigator objBaseNode = await this
-                            .GetNodeXPathAsync(GlobalSettings.Language, token: token)
-                            .ConfigureAwait(false);
                         XPathNodeIterator xmlSpecList =
-                            objBaseNode?.SelectAndCacheExpression("specs/spec", token);
+                            this.GetNodeXPath(GlobalSettings.Language)?.SelectAndCacheExpression("specs/spec");
                         if (xmlSpecList?.Count > 0)
                         {
                             foreach (XPathNavigator xmlSpecNode in xmlSpecList)
@@ -3674,43 +3604,111 @@ namespace Chummer.Backend.Skills
                                     continue;
                                 _lstCachedSuggestedSpecializations.Add(
                                     new ListItem(strInnerText,
-                                        xmlSpecNode
-                                            .SelectSingleNodeAndCacheExpression("@translate", token)?.Value
-                                        ?? strInnerText));
+                                        xmlSpecNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ??
+                                        strInnerText));
                             }
                         }
 
-                        foreach (string strSpecializationName in (await ImprovementManager
-                                     .GetCachedImprovementListForValueOfAsync(
-                                         CharacterObject,
-                                         Improvement.ImprovementType
-                                             .SkillSpecializationOption,
-                                         await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                                     .ConfigureAwait(false)).Select(x => x.UniqueName))
+                        foreach (string strSpecializationName in ImprovementManager
+                                     .GetCachedImprovementListForValueOf(
+                                         CharacterObject, Improvement.ImprovementType.SkillSpecializationOption,
+                                         DictionaryKey).Select(x => x.UniqueName))
                         {
                             if (_lstCachedSuggestedSpecializations.Exists(
                                     y => y.Value?.ToString() == strSpecializationName))
                                 continue;
                             _lstCachedSuggestedSpecializations.Add(
                                 new ListItem(strSpecializationName,
-                                    await CharacterObject
-                                        .TranslateExtraAsync(strSpecializationName, token: token)
-                                        .ConfigureAwait(false)));
+                                    CharacterObject.TranslateExtra(strSpecializationName)));
                         }
 
                         _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     return _lstCachedSuggestedSpecializations;
                 }
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+        public async Task<IReadOnlyList<ListItem>> GetCGLSpecializationsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (await _objCachedSuggestedSpecializationsLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!_blnRecalculateCachedSuggestedSpecializations)
+                    return _lstCachedSuggestedSpecializations;
+            }
+
+            IAsyncDisposable objLocker = await _objCachedSuggestedSpecializationsLock
+                .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!_blnRecalculateCachedSuggestedSpecializations)
+                    return _lstCachedSuggestedSpecializations;
+
+                IAsyncDisposable objLocker2 = await _objCachedSuggestedSpecializationsLock
+                    .EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnRecalculateCachedSuggestedSpecializations = false;
+                    if (_lstCachedSuggestedSpecializations == null)
+                        _lstCachedSuggestedSpecializations = Utils.ListItemListPool.Get();
+                    else
+                        _lstCachedSuggestedSpecializations.Clear();
+                    XPathNavigator objBaseNode = await this
+                        .GetNodeXPathAsync(GlobalSettings.Language, token: token)
+                        .ConfigureAwait(false);
+                    XPathNodeIterator xmlSpecList =
+                        objBaseNode?.SelectAndCacheExpression("specs/spec", token);
+                    if (xmlSpecList?.Count > 0)
+                    {
+                        foreach (XPathNavigator xmlSpecNode in xmlSpecList)
+                        {
+                            string strInnerText = xmlSpecNode.Value;
+                            if (string.IsNullOrEmpty(strInnerText))
+                                continue;
+                            _lstCachedSuggestedSpecializations.Add(
+                                new ListItem(strInnerText,
+                                    xmlSpecNode
+                                        .SelectSingleNodeAndCacheExpression("@translate", token)?.Value
+                                    ?? strInnerText));
+                        }
+                    }
+
+                    foreach (string strSpecializationName in (await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(
+                                     CharacterObject,
+                                     Improvement.ImprovementType
+                                         .SkillSpecializationOption,
+                                     await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
+                                 .ConfigureAwait(false)).Select(x => x.UniqueName))
+                    {
+                        if (_lstCachedSuggestedSpecializations.Exists(
+                                y => y.Value?.ToString() == strSpecializationName))
+                            continue;
+                        _lstCachedSuggestedSpecializations.Add(
+                            new ListItem(strSpecializationName,
+                                await CharacterObject
+                                    .TranslateExtraAsync(strSpecializationName, token: token)
+                                    .ConfigureAwait(false)));
+                    }
+
+                    _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
+                }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+
+                return _lstCachedSuggestedSpecializations;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5258,8 +5256,7 @@ namespace Chummer.Backend.Skills
         private int _intCachedCyberwareRating = int.MinValue;
 
         [CLSCompliant(false)]
-        protected readonly AsyncFriendlyReaderWriterLock _objCachedCyberwareRatingLock =
-            new AsyncFriendlyReaderWriterLock();
+        protected readonly AsyncFriendlyReaderWriterLock _objCachedCyberwareRatingLock;
 
         protected virtual void ResetCachedCyberwareRating()
         {
@@ -5291,56 +5288,53 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedCyberwareRatingLock.EnterReadLock())
                 {
-                    using (_objCachedCyberwareRatingLock.EnterReadLock())
-                    {
-                        if (_intCachedCyberwareRating != int.MinValue)
-                            return _intCachedCyberwareRating;
-                    }
+                    if (_intCachedCyberwareRating != int.MinValue)
+                        return _intCachedCyberwareRating;
+                }
 
-                    using (_objCachedCyberwareRatingLock.EnterUpgradeableReadLock())
+                using (_objCachedCyberwareRatingLock.EnterUpgradeableReadLock())
+                {
+                    if (_intCachedCyberwareRating != int.MinValue)
+                        return _intCachedCyberwareRating;
+                    using (_objCachedCyberwareRatingLock.EnterWriteLock())
                     {
-                        if (_intCachedCyberwareRating != int.MinValue)
-                            return _intCachedCyberwareRating;
-                        using (_objCachedCyberwareRatingLock.EnterWriteLock())
+                        //TODO: method is here, but not used in any form, needs testing (worried about child items...)
+                        //this might do hardwires if i understand how they works correctly
+                        int intMaxHardwire = -1;
+                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                     CharacterObject, Improvement.ImprovementType.Hardwire, DictionaryKey))
                         {
-                            //TODO: method is here, but not used in any form, needs testing (worried about child items...)
-                            //this might do hardwires if i understand how they works correctly
-                            int intMaxHardwire = -1;
-                            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                         CharacterObject, Improvement.ImprovementType.Hardwire, DictionaryKey))
-                            {
-                                intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                            }
-
-                            if (intMaxHardwire >= 0)
-                            {
-                                return _intCachedCyberwareRating = intMaxHardwire;
-                            }
-
-                            int intMaxActivesoftRating =
-                                Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire),
-                                        ImprovementManager.ValueOf(CharacterObject,
-                                            Improvement.ImprovementType.SkillsoftAccess))
-                                    .StandardRound();
-                            if (intMaxActivesoftRating > 0)
-                            {
-                                int intMax = 0;
-                                //TODO this works with translate?
-                                foreach (Improvement objSkillsoftImprovement in ImprovementManager
-                                             .GetCachedImprovementListForValueOf(CharacterObject,
-                                                 Improvement.ImprovementType.Activesoft,
-                                                 DictionaryKey))
-                                {
-                                    intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                                }
-
-                                return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
-                            }
-
-                            return _intCachedCyberwareRating = 0;
+                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                         }
+
+                        if (intMaxHardwire >= 0)
+                        {
+                            return _intCachedCyberwareRating = intMaxHardwire;
+                        }
+
+                        int intMaxActivesoftRating =
+                            Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire),
+                                    ImprovementManager.ValueOf(CharacterObject,
+                                        Improvement.ImprovementType.SkillsoftAccess))
+                                .StandardRound();
+                        if (intMaxActivesoftRating > 0)
+                        {
+                            int intMax = 0;
+                            //TODO this works with translate?
+                            foreach (Improvement objSkillsoftImprovement in ImprovementManager
+                                         .GetCachedImprovementListForValueOf(CharacterObject,
+                                             Improvement.ImprovementType.Activesoft,
+                                             DictionaryKey))
+                            {
+                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                            }
+
+                            return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
+                        }
+
+                        return _intCachedCyberwareRating = 0;
                     }
                 }
             }
@@ -5352,84 +5346,83 @@ namespace Chummer.Backend.Skills
         /// <returns>Artificial skill attributeValue</returns>
         public virtual async Task<int> GetCyberwareRatingAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            using (await _objCachedCyberwareRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await _objCachedCyberwareRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (_intCachedCyberwareRating != int.MinValue)
-                        return _intCachedCyberwareRating;
-                }
+                if (_intCachedCyberwareRating != int.MinValue)
+                    return _intCachedCyberwareRating;
+            }
 
-                IAsyncDisposable objLocker = await _objCachedCyberwareRatingLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _objCachedCyberwareRatingLock.EnterUpgradeableReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedCyberwareRating != int.MinValue)
+                    return _intCachedCyberwareRating;
+
+                IAsyncDisposable objLocker2 =
+                    await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_intCachedCyberwareRating != int.MinValue)
-                        return _intCachedCyberwareRating;
-
-                    IAsyncDisposable objLocker2 = await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    //TODO: method is here, but not used in any form, needs testing (worried about child items...)
+                    //this might do hardwires if i understand how they works correctly
+                    int intMaxHardwire = -1;
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(
+                                     CharacterObject, Improvement.ImprovementType.Hardwire,
+                                     await GetDictionaryKeyAsync(token)
+                                         .ConfigureAwait(false), token: token)
+                                 .ConfigureAwait(false))
                     {
-                        token.ThrowIfCancellationRequested();
-                        //TODO: method is here, but not used in any form, needs testing (worried about child items...)
-                        //this might do hardwires if i understand how they works correctly
-                        int intMaxHardwire = -1;
-                        foreach (Improvement objImprovement in await ImprovementManager
+                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
+                    }
+
+                    if (intMaxHardwire >= 0)
+                    {
+                        return _intCachedCyberwareRating = intMaxHardwire;
+                    }
+
+                    int intMaxActivesoftRating =
+                        Math.Min(
+                                await ImprovementManager
+                                    .ValueOfAsync(CharacterObject, Improvement.ImprovementType.Skillwire,
+                                        token: token)
+                                    .ConfigureAwait(false),
+                                await ImprovementManager.ValueOfAsync(CharacterObject,
+                                    Improvement.ImprovementType.SkillsoftAccess,
+                                    token: token).ConfigureAwait(false))
+                            .StandardRound();
+                    if (intMaxActivesoftRating > 0)
+                    {
+                        int intMax = 0;
+                        //TODO this works with translate?
+                        foreach (Improvement objSkillsoftImprovement in await ImprovementManager
                                      .GetCachedImprovementListForValueOfAsync(
-                                         CharacterObject, Improvement.ImprovementType.Hardwire,
+                                         CharacterObject,
+                                         Improvement.ImprovementType.Activesoft,
                                          await GetDictionaryKeyAsync(token)
                                              .ConfigureAwait(false), token: token)
                                      .ConfigureAwait(false))
                         {
-                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
+                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
                         }
 
-                        if (intMaxHardwire >= 0)
-                        {
-                            return _intCachedCyberwareRating = intMaxHardwire;
-                        }
-
-                        int intMaxActivesoftRating =
-                            Math.Min(
-                                    await ImprovementManager
-                                        .ValueOfAsync(CharacterObject, Improvement.ImprovementType.Skillwire,
-                                            token: token)
-                                        .ConfigureAwait(false),
-                                    await ImprovementManager.ValueOfAsync(CharacterObject,
-                                        Improvement.ImprovementType.SkillsoftAccess,
-                                        token: token).ConfigureAwait(false))
-                                .StandardRound();
-                        if (intMaxActivesoftRating > 0)
-                        {
-                            int intMax = 0;
-                            //TODO this works with translate?
-                            foreach (Improvement objSkillsoftImprovement in await ImprovementManager
-                                         .GetCachedImprovementListForValueOfAsync(
-                                             CharacterObject,
-                                             Improvement.ImprovementType.Activesoft,
-                                             await GetDictionaryKeyAsync(token)
-                                                 .ConfigureAwait(false), token: token)
-                                         .ConfigureAwait(false))
-                            {
-                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                            }
-
-                            return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
-                        }
-
-                        return _intCachedCyberwareRating = 0;
+                        return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+
+                    return _intCachedCyberwareRating = 0;
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
