@@ -4060,7 +4060,7 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-                await _objKnowledgeSkillCategoriesMapLock.DisposeAsync();
+                await _objKnowledgeSkillCategoriesMapLock.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {

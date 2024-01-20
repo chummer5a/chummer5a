@@ -222,11 +222,11 @@ namespace Chummer
                 return (_blnLockReadOnlyForParent
                     ? _objParentLock.EnterReadLockAsync(token).ContinueWith(async x => await TakeWriteLockCoreAsync(
                         objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                        objTopMostHeldWriter, await x, null, token), TaskScheduler.Current)
+                        objTopMostHeldWriter, await x.ConfigureAwait(false), null, token).ConfigureAwait(false), TaskScheduler.Current)
                     : _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x =>
                         await TakeWriteLockCoreAsync(
                             objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, null, await x, token), TaskScheduler.Current)).Unwrap();
+                            objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)).Unwrap();
             }
 
             return TakeWriteLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
@@ -342,11 +342,11 @@ namespace Chummer
                     ? _objParentLock.EnterReadLockAsync(token).ContinueWith(async x =>
                         await TakeUpgradeableReadLockCoreAsync(
                             objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, await x, null, token), TaskScheduler.Current)
+                            objTopMostHeldWriter, await x.ConfigureAwait(false), null, token).ConfigureAwait(false), TaskScheduler.Current)
                     : _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x =>
                         await TakeUpgradeableReadLockCoreAsync(
                             objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, null, await x, token), TaskScheduler.Current)).Unwrap();
+                            objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)).Unwrap();
             }
 
             return TakeUpgradeableReadLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader,
@@ -479,7 +479,7 @@ namespace Chummer
             {
                 return _objParentLock.EnterReadLockAsync(token).ContinueWith(async x => await TakeReadLockCoreAsync(
                     objCurrentHelper, objTopMostHeldUReader,
-                    objTopMostHeldWriter, blnIsInReadLock, await x, token), TaskScheduler.Current).Unwrap();
+                    objTopMostHeldWriter, blnIsInReadLock, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current).Unwrap();
             }
 
             return TakeReadLockCoreAsync(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock,
@@ -647,13 +647,13 @@ namespace Chummer
                 switch (_objParentReleaseAsync)
                 {
                     case SafeWriterSemaphoreRelease objCastReleaseWriter:
-                        await objCastReleaseWriter.DisposeCoreAsync();
+                        await objCastReleaseWriter.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                     case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
-                        await objCastReleaseUReader.DisposeCoreAsync();
+                        await objCastReleaseUReader.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                     case SafeReaderSemaphoreRelease objCastReleaseReader:
-                        await objCastReleaseReader.DisposeCoreAsync();
+                        await objCastReleaseReader.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                 }
                 if (_objReaderWriterLock._intDisposedStatus > 1)
@@ -749,19 +749,19 @@ namespace Chummer
                 switch (_objParentReleaseAsync)
                 {
                     case SafeWriterSemaphoreRelease objCastReleaseWriter:
-                        await objCastReleaseWriter.DisposeCoreAsync();
+                        await objCastReleaseWriter.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                     case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
-                        await objCastReleaseUReader.DisposeCoreAsync();
+                        await objCastReleaseUReader.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                     case SafeReaderSemaphoreRelease objCastReleaseReader:
-                        await objCastReleaseReader.DisposeCoreAsync();
+                        await objCastReleaseReader.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                 }
 
                 if (_blnSkipUnlockOnDispose)
                 {
-                    await _objNextHelper.DisposeAsync();
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
 
@@ -950,19 +950,19 @@ namespace Chummer
                 switch (_objParentReleaseAsync)
                 {
                     case SafeWriterSemaphoreRelease objCastReleaseWriter:
-                        await objCastReleaseWriter.DisposeCoreAsync();
+                        await objCastReleaseWriter.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                     case SafeUpgradeableReaderSemaphoreRelease objCastReleaseUReader:
-                        await objCastReleaseUReader.DisposeCoreAsync();
+                        await objCastReleaseUReader.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                     case SafeReaderSemaphoreRelease objCastReleaseReader:
-                        await objCastReleaseReader.DisposeCoreAsync();
+                        await objCastReleaseReader.DisposeCoreAsync().ConfigureAwait(false);
                         break;
                 }
 
                 if (_blnSkipUnlockOnDispose)
                 {
-                    await _objNextHelper.DisposeAsync();
+                    await _objNextHelper.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
                 LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;

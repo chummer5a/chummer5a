@@ -636,7 +636,7 @@ namespace Chummer.Backend.Skills
                     return;
                 string strNewAttributeValue = string.Empty;
                 SkillsSection objSkillsSection =
-                    CharacterObject != null ? await CharacterObject.GetSkillsSectionAsync(token) : null;
+                    CharacterObject != null ? await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false) : null;
                 bool blnSetDefaultAttribute =
                     objSkillsSection != null && (await objSkillsSection.GetKnowledgeSkillCategoriesMapAsync(token)
                         .ConfigureAwait(false))
