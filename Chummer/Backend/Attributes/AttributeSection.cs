@@ -2874,7 +2874,6 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public void ResetBindings(CancellationToken token = default)
         {
-            using (_objCharacter.LockObject.EnterWriteLock(token))
             using (LockObject.EnterWriteLock(token))
             {
                 token.ThrowIfCancellationRequested();
@@ -2933,54 +2932,42 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public async Task ResetBindingsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker1 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await _objCharacter.RefreshAttributeBindingsAsync(token).ConfigureAwait(false);
+                List<PropertyInfo> lstProperties =
+                    typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).ToList();
+                foreach (string strAbbrev in AttributeStrings)
                 {
                     token.ThrowIfCancellationRequested();
-                    await _objCharacter.RefreshAttributeBindingsAsync(token).ConfigureAwait(false);
-                    List<PropertyInfo> lstProperties = typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).ToList();
-                    foreach (string strAbbrev in AttributeStrings)
+                    if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
+                        foreach (PropertyInfo objProperty in lstProperties)
                         {
-                            foreach (PropertyInfo objProperty in lstProperties)
+                            token.ThrowIfCancellationRequested();
+                            if (objEvents.AsyncPropertyChangedList.Count != 0)
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (objEvents.AsyncPropertyChangedList.Count != 0)
+                                PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
+                                List<Task> lstTasks = new List<Task>(Math.Min(objEvents.AsyncPropertyChangedList.Count,
+                                    Utils.MaxParallelBatchSize));
+                                int i = 0;
+                                foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                                 {
-                                    PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
-                                    List<Task> lstTasks = new List<Task>(Math.Min(objEvents.AsyncPropertyChangedList.Count, Utils.MaxParallelBatchSize));
-                                    int i = 0;
-                                    foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
-                                    {
-                                        lstTasks.Add(objEvent.Invoke(this, e, token));
-                                        if (++i < Utils.MaxParallelBatchSize)
-                                            continue;
-                                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                        lstTasks.Clear();
-                                        i = 0;
-                                    }
+                                    lstTasks.Add(objEvent.Invoke(this, e, token));
+                                    if (++i < Utils.MaxParallelBatchSize)
+                                        continue;
                                     await Task.WhenAll(lstTasks).ConfigureAwait(false);
-
-                                    if (objEvents.PropertyChangedList.Count != 0)
-                                    {
-                                        await Utils.RunOnMainThreadAsync(() =>
-                                        {
-                                            foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
-                                            {
-                                                funcToRun?.Invoke(this, e);
-                                            }
-                                        }, token).ConfigureAwait(false);
-                                    }
+                                    lstTasks.Clear();
+                                    i = 0;
                                 }
-                                else if (objEvents.PropertyChangedList.Count != 0)
+
+                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                                if (objEvents.PropertyChangedList.Count != 0)
                                 {
-                                    PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
                                     await Utils.RunOnMainThreadAsync(() =>
                                     {
                                         foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
@@ -2990,17 +2977,24 @@ namespace Chummer.Backend.Attributes
                                     }, token).ConfigureAwait(false);
                                 }
                             }
+                            else if (objEvents.PropertyChangedList.Count != 0)
+                            {
+                                PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
+                                await Utils.RunOnMainThreadAsync(() =>
+                                {
+                                    foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                                    {
+                                        funcToRun?.Invoke(this, e);
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
                         }
                     }
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objLocker1.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

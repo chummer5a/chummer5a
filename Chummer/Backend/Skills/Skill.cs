@@ -468,8 +468,10 @@ namespace Chummer.Backend.Skills
                     }
                     else
                     {
-                        objLoadingSkill = new Skill(objCharacter, xmlSkillDataNode);
-                        objLoadingSkill.IsLoading = true;
+                        objLoadingSkill = new Skill(objCharacter, xmlSkillDataNode)
+                        {
+                            IsLoading = true
+                        };
                     }
                 }
             }
@@ -498,13 +500,17 @@ namespace Chummer.Backend.Skills
                         xmlSkillNode["name"]?.InnerText ?? string.Empty,
                         !Convert.ToBoolean(
                             xmlSkillNode["disableupgrades"]?.InnerText,
-                            GlobalSettings.InvariantCultureInfo));
-                    objLoadingSkill.IsLoading = true;
+                            GlobalSettings.InvariantCultureInfo))
+                    {
+                        IsLoading = true
+                    };
                 }
                 else
                 {
-                    KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter);
-                    objKnowledgeSkill.IsLoading = true;
+                    KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
+                    {
+                        IsLoading = true
+                    };
                     objKnowledgeSkill.Load(xmlSkillNode);
                     objLoadingSkill = objKnowledgeSkill;
                 }
@@ -743,8 +749,10 @@ namespace Chummer.Backend.Skills
             if (xmlNode["exotic"]?.InnerText == bool.TrueString)
             {
                 //load exotic skill
-                ExoticSkill objExoticReturn = new ExoticSkill(objCharacter, xmlNode, false);
-                objExoticReturn.IsLoading = true;
+                ExoticSkill objExoticReturn = new ExoticSkill(objCharacter, xmlNode, false)
+                {
+                    IsLoading = true
+                };
                 try
                 {
                     string strExoticGroup = xmlNode["skillgroup"]?.InnerText;
@@ -779,8 +787,10 @@ namespace Chummer.Backend.Skills
                 //TODO INIT SKILL
                 Utils.BreakIfDebug();
 
-                KnowledgeSkill objKnoSkillReturn = new KnowledgeSkill(objCharacter, false);
-                objKnoSkillReturn.IsLoading = true;
+                KnowledgeSkill objKnoSkillReturn = new KnowledgeSkill(objCharacter, false)
+                {
+                    IsLoading = true
+                };
                 try
                 {
                     await objKnoSkillReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
@@ -799,8 +809,10 @@ namespace Chummer.Backend.Skills
 
             //TODO INIT SKILL
 
-            Skill objReturn = new Skill(objCharacter, xmlNode, false);
-            objReturn.IsLoading = true;
+            Skill objReturn = new Skill(objCharacter, xmlNode, false)
+            {
+                IsLoading = true
+            };
             try
             {
                 string strGroup = xmlNode["skillgroup"]?.InnerText;

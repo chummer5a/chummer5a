@@ -327,7 +327,7 @@ namespace Chummer.Backend.Equipment
             {
                 return _objCachedBackupSourceDetail == default
                     ? _objCachedBackupSourceDetail = await SourceString.GetSourceStringAsync(
-                        (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
+                        (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("source", token)?.Value ?? Source,
                         await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter, token).ConfigureAwait(false)
                     : _objCachedBackupSourceDetail;

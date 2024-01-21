@@ -100,7 +100,7 @@ namespace Chummer
                                 string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
                                 if (string.IsNullOrEmpty(strGrade))
                                 {
-                                    if (lstGrades.All(x => x.Name != strGrade))
+                                    if (lstGrades.TrueForAll(x => x.Name != strGrade))
                                         continue;
                                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                                     switch (_eSource)
@@ -297,7 +297,7 @@ namespace Chummer
 
                         lstChildren.Add(objCyberware);
 
-                        await ParseNode(xmlChildItem, objGrade, objCyberware.Children).ConfigureAwait(false);
+                        await ParseNode(xmlChildItem, objGrade, objCyberware.Children, token).ConfigureAwait(false);
                     }
                 }
             }
