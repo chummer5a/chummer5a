@@ -1420,13 +1420,14 @@ namespace Chummer.Backend.Equipment
                     strForcedSide = _strForced;
                 if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                 {
-                    IList<Cyberware> lstCyberwareToCheck =
+                    ThreadSafeObservableCollection<Cyberware> lstCyberwareToCheck =
                         Parent == null ? _objCharacter.Cyberware : Parent.Children;
                     Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
                     Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
-                    foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
+                    lstCyberwareToCheck.ForEach(objCheckCyberware =>
                     {
-                        if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts)) continue;
+                        if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts))
+                            return;
                         Dictionary<string, int> dicToUse;
                         switch (objCheckCyberware.Location)
                         {
@@ -1439,7 +1440,7 @@ namespace Chummer.Backend.Equipment
                                 break;
 
                             default:
-                                continue;
+                                return;
                         }
 
                         foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
@@ -1450,7 +1451,7 @@ namespace Chummer.Backend.Equipment
                             else
                                 dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
                         }
-                    }
+                    });
 
                     bool blnAllowLeft = true;
                     bool blnAllowRight = true;
@@ -1483,31 +1484,23 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                foreach (Cyberware x in lstCyberwareToCheck)
+                                blnAllowLeft = lstCyberwareToCheck.FirstOrDefault(x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     if (x.Location != "Left")
-                                        continue;
+                                        return false;
                                     if (!setBlocksMounts.Contains(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
                                     if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                    {
-                                        blnAllowLeft = false;
-                                        return;
-                                    }
+                                        return true;
 
                                     int intLimbSlotCount = LimbSlotCount;
                                     if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
-
-                                    if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
-                                    {
-                                        blnAllowLeft = false;
-                                        return;
-                                    }
-                                }
+                                    return _objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount;
+                                }) != null;
                             }
                         },
                         () =>
@@ -1535,31 +1528,23 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                foreach (Cyberware x in lstCyberwareToCheck)
+                                blnAllowRight = lstCyberwareToCheck.FirstOrDefault(x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     if (x.Location != "Right")
-                                        continue;
+                                        return false;
                                     if (!setBlocksMounts.Contains(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
                                     if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                    {
-                                        blnAllowRight = false;
-                                        return;
-                                    }
+                                        return true;
 
                                     int intLimbSlotCount = LimbSlotCount;
                                     if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
-
-                                    if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
-                                    {
-                                        blnAllowRight = false;
-                                        return;
-                                    }
-                                }
+                                    return _objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount;
+                                }) != null;
                             }
                         });
                     // Only one side is allowed.
@@ -1613,7 +1598,7 @@ namespace Chummer.Backend.Equipment
                     strForcedSide = _strForced;
                 if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                 {
-                    IAsyncList<Cyberware> lstCyberwareToCheck =
+                    ThreadSafeObservableCollection<Cyberware> lstCyberwareToCheck =
                         Parent == null
                             ? await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)
                             : Parent.Children;
@@ -1683,32 +1668,24 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                foreach (Cyberware x in lstCyberwareToCheck)
+                                blnAllowLeft = await lstCyberwareToCheck.FirstOrDefaultAsync(async x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     if (x.Location != "Left")
-                                        continue;
+                                        return false;
                                     if (!setBlocksMounts.Contains(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
                                     if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                    {
-                                        blnAllowLeft = false;
-                                        return;
-                                    }
+                                        return true;
 
                                     int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
                                     if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
-
-                                    if (await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
-                                            .ConfigureAwait(false) / 2 < intLimbSlotCount)
-                                    {
-                                        blnAllowLeft = false;
-                                        return;
-                                    }
-                                }
+                                    return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
+                                        .ConfigureAwait(false) / 2 < intLimbSlotCount;
+                                }, token).ConfigureAwait(false) != null;
                             }
                         }, token),
                         Task.Run(async () =>
@@ -1737,32 +1714,24 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                foreach (Cyberware x in lstCyberwareToCheck)
+                                blnAllowRight = await lstCyberwareToCheck.FirstOrDefaultAsync(async x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     if (x.Location != "Right")
-                                        continue;
+                                        return false;
                                     if (!setBlocksMounts.Contains(x.HasModularMount))
-                                        continue;
+                                        return false;
                                     string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
                                     if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                    {
-                                        blnAllowRight = false;
-                                        return;
-                                    }
+                                        return true;
 
                                     int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
                                     if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
-
-                                    if (await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
-                                            .ConfigureAwait(false) / 2 < intLimbSlotCount)
-                                    {
-                                        blnAllowRight = false;
-                                        return;
-                                    }
-                                }
+                                    return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
+                                        .ConfigureAwait(false) / 2 < intLimbSlotCount;
+                                }, token).ConfigureAwait(false) != null;
                             }
                         }, token)).ConfigureAwait(false);
                     // Only one side is allowed.
@@ -8733,11 +8702,11 @@ namespace Chummer.Backend.Equipment
                         strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
                 {
                     List<Cyberware> lstCustomizationWare = new List<Cyberware>(Children.Count);
-                    foreach (Cyberware objChild in Children)
+                    Children.ForEach(objChild =>
                     {
                         if (setNamesToCheck.Contains(objChild.Name))
                             lstCustomizationWare.Add(objChild);
-                    }
+                    });
 
                     if (lstCustomizationWare.Count > 0)
                     {
@@ -8849,11 +8818,11 @@ namespace Chummer.Backend.Equipment
                         strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
                 {
                     List<Cyberware> lstEnhancementWare = new List<Cyberware>(Children.Count);
-                    foreach (Cyberware objChild in Children)
+                    Children.ForEach(objChild =>
                     {
                         if (setNamesToCheck.Contains(objChild.Name))
                             lstEnhancementWare.Add(objChild);
-                    }
+                    });
 
                     if (lstEnhancementWare.Count > 0)
                     {
@@ -8889,7 +8858,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (InheritAttributes)
+                if (await GetInheritAttributesAsync(token).ConfigureAwait(false))
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = await Children.SumAsync(async objChild =>
@@ -8937,7 +8906,7 @@ namespace Chummer.Backend.Equipment
                     intBonus += await _objCharacter.GetRedlinerBonusAsync(token).ConfigureAwait(false);
                 }
 
-                intBonus = Math.Min(intBonus, _objCharacter.Settings.CyberlimbAttributeBonusCap);
+                intBonus = Math.Min(intBonus, await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetCyberlimbAttributeBonusCapAsync(token).ConfigureAwait(false));
 
                 int intReturn = await GetAttributeValueAsync(strAbbrev, token).ConfigureAwait(false) + intBonus;
                 if (ParentVehicle == null)

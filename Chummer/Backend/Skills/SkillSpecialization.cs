@@ -333,7 +333,6 @@ namespace Chummer.Backend.Skills
                             if (intOld == 0)
                             {
                                 CancellationTokenSource objNewSource = new CancellationTokenSource();
-                                CancellationToken objToken = objNewSource.Token;
                                 CancellationTokenSource objOldSource
                                     = Interlocked.CompareExchange(ref _objNameLoaderCancellationTokenSource,
                                                                   objNewSource,
@@ -341,6 +340,7 @@ namespace Chummer.Backend.Skills
                                 // Cancellation token source is only null if it's our first time running
                                 if (objOldSource == null && Interlocked.CompareExchange(ref _intNameLoaded, 2, 0) == 0)
                                 {
+                                    CancellationToken objToken = objNewSource.Token;
                                     Task<string> tskNewTask
                                         = Task.Run(
                                             () => _objCharacter.ReverseTranslateExtraAsync(
@@ -429,7 +429,6 @@ namespace Chummer.Backend.Skills
                         if (intOld == 0)
                         {
                             CancellationTokenSource objNewSource = new CancellationTokenSource();
-                            CancellationToken objToken = objNewSource.Token;
                             CancellationTokenSource objOldSource
                                 = Interlocked.CompareExchange(ref _objNameLoaderCancellationTokenSource,
                                                               objNewSource,
@@ -437,6 +436,7 @@ namespace Chummer.Backend.Skills
                             // Cancellation token source is only null if it's our first time running
                             if (objOldSource == null && Interlocked.CompareExchange(ref _intNameLoaded, 2, 0) == 0)
                             {
+                                CancellationToken objToken = objNewSource.Token;
                                 Task<string> tskNewTask
                                     = Task.Run(
                                         () => _objCharacter.ReverseTranslateExtraAsync(

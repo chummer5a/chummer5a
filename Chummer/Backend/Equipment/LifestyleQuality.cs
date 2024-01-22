@@ -208,7 +208,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // If the item grants a bonus, pass the information to the Improvement Manager.
-                XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
+                XmlElement xmlBonus = objXmlLifestyleQuality["bonus"];
                 if (xmlBonus != null)
                 {
                     string strOldForced = ImprovementManager.ForcedValue;
@@ -318,7 +318,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // If the item grants a bonus, pass the information to the Improvement Manager.
-                XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
+                XmlElement xmlBonus = objXmlLifestyleQuality["bonus"];
                 if (xmlBonus != null)
                 {
                     string strOldForced = ImprovementManager.ForcedValue;
@@ -1920,7 +1920,7 @@ namespace Chummer.Backend.Equipment
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlNode objDoc = blnSync
+                XmlDocument objDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false);

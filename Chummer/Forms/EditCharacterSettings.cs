@@ -253,15 +253,15 @@ namespace Chummer
 
                 // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
                 _blnForceMasterIndexRepopulateOnClose = true;
+                CharacterBuildMethod eReferenceBuildMethod = await _objReferenceCharacterSettings.GetBuildMethodAsync().ConfigureAwait(false);
                 KeyValuePair<string, CharacterSettings> kvpReplacementOption
-                    = dicCharacterSettings.FirstOrDefault(
-                                                    x => x.Value.BuiltInOption
-                                                         && x.Value.BuildMethod
-                                                         == _objReferenceCharacterSettings.BuildMethod);
+                    = await dicCharacterSettings.FirstOrDefaultAsync(async x =>
+                        await x.Value.GetBuiltInOptionAsync().ConfigureAwait(false) &&
+                        await x.Value.GetBuildMethodAsync().ConfigureAwait(false) == eReferenceBuildMethod).ConfigureAwait(false);
+                string strReferenceFileName = await _objReferenceCharacterSettings.GetFileNameAsync().ConfigureAwait(false);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    if (await objCharacter.GetSettingsKeyAsync().ConfigureAwait(false)
-                        == _objReferenceCharacterSettings.FileName)
+                    if (await objCharacter.GetSettingsKeyAsync().ConfigureAwait(false) == strReferenceFileName)
                         await objCharacter.SetSettingsKeyAsync(kvpReplacementOption.Key).ConfigureAwait(false);
                 }).ConfigureAwait(false);
 

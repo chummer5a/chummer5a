@@ -420,7 +420,7 @@ namespace Chummer
                                             token: token).ConfigureAwait(false))
                                     .SelectSingleNodeAndCacheExpression("/chummer", token: token);
 
-                            XmlNode xmlPowersNode = objXmlCritterNode["powers"];
+                            XmlElement xmlPowersNode = objXmlCritterNode["powers"];
                             if (xmlPowersNode != null)
                             {
                                 // <powers>

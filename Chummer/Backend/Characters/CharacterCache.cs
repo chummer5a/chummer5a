@@ -928,7 +928,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock())
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
+                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                     Utils.SafelyRunSynchronously(() => tskOld);
             }
@@ -945,7 +945,7 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
+                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
                 if (tskOld != null)
                     await tskOld.ConfigureAwait(false);
             }
