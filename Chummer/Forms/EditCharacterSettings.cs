@@ -810,11 +810,8 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync().ConfigureAwait(false))
-            {
-                if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
-                    return;
-            }
+            if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
+                return;
 
             IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
             try
@@ -849,11 +846,8 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync().ConfigureAwait(false))
-            {
-                if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
+            if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
-            }
 
             IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
             try
@@ -1236,7 +1230,9 @@ namespace Chummer
                                                               .ConfigureAwait(false);
                 Color objErrorColor = ColorManager.ErrorColor;
                 Color objGrayTextColor = ColorManager.GrayText;
-                using (await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     int intNewCount
@@ -1391,6 +1387,10 @@ namespace Chummer
                                 .ConfigureAwait(false);
                         }
                     }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally

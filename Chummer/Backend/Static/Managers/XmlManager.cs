@@ -62,19 +62,29 @@ namespace Chummer
             /// </summary>
             public async Task<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     return _intDuplicatesChecked > 0;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
             public async Task SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -105,10 +115,15 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 while (_intInitialLoadComplete == 0)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     return _xmlContent;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -209,10 +224,15 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 while (_intInitialLoadComplete == 0)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     return _objXPathContent;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -423,10 +443,15 @@ namespace Chummer
             if (lstEnabledCustomDataPaths != null)
             {
                 bool blnDoComplex = false;
-                using (blnSync
-                           // ReSharper disable once MethodHasAsyncOverload
-                           ? s_objDataDirectoriesLock.EnterReadLock(token)
-                           : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                IDisposable objLocker = null;
+                IAsyncDisposable objLockerAsync = null;
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker = s_objDataDirectoriesLock.EnterReadLock(token);
+                else
+                    objLockerAsync = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     if (s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setDirectoriesPossible))
@@ -435,12 +460,20 @@ namespace Chummer
                     else
                         blnDoComplex = true;
                 }
+                finally
+                {
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objLocker.Dispose();
+                    else
+                        await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                }
 
                 if (blnDoComplex)
                 {
                     // Wait to make sure our data directories are loaded before proceeding
-                    IDisposable objLocker = null;
-                    IAsyncDisposable objLockerAsync = null;
+                    objLocker = null;
+                    objLockerAsync = null;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
                         objLocker = s_objDataDirectoriesLock.EnterUpgradeableReadLock(token);
@@ -509,10 +542,15 @@ namespace Chummer
             XmlDocument xmlDocumentOfReturn = null;
             XmlReference xmlReferenceOfReturn;
 
-            using (blnSync
-                       // ReSharper disable once MethodHasAsyncOverload
-                       ? s_objDataDirectoriesLock.EnterReadLock(token)
-                       : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker3 = null;
+            IAsyncDisposable objLockerAsync3 = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker3 = s_objDataDirectoriesLock.EnterReadLock(token);
+            else
+                objLockerAsync3 = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // Look to see if this XmlDocument is already loaded.
@@ -555,6 +593,14 @@ namespace Chummer
                         return null;
                     }
                 }
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker3.Dispose();
+                else
+                    await objLockerAsync3.DisposeAsync().ConfigureAwait(false);
             }
 
             // Live custom data will cause the reference's document to not be the same as the actual one we need, so we'll need to remake the document returned by the Load
@@ -624,8 +670,15 @@ namespace Chummer
             string strPath = string.Empty;
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? s_objDataDirectoriesLock.EnterReadLock(token) : await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = s_objDataDirectoriesLock.EnterReadLock(token);
+            else
+                objLockerAsync = await s_objDataDirectoriesLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 foreach (string strDirectory in s_SetDataDirectories)
@@ -690,26 +743,26 @@ namespace Chummer
 
                 if (blnForceLoadFile || !xmlReferenceOfReturn.InitialLoadComplete)
                 {
-                    IDisposable objLocker = null;
-                    IAsyncDisposable objLockerAsync = null;
+                    IDisposable objLocker2 = null;
+                    IAsyncDisposable objLockerAsync2 = null;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
-                        objLocker = xmlReferenceOfReturn.LockObject.EnterUpgradeableReadLock(token);
+                        objLocker2 = xmlReferenceOfReturn.LockObject.EnterUpgradeableReadLock(token);
                     else
-                        objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterUpgradeableReadLockAsync(token)
+                        objLockerAsync2 = await xmlReferenceOfReturn.LockObject.EnterUpgradeableReadLockAsync(token)
                             .ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
                         if (blnForceLoadFile || !xmlReferenceOfReturn.InitialLoadComplete)
                         {
-                            IDisposable objLocker2 = null;
-                            IAsyncDisposable objLockerAsync2 = null;
+                            IDisposable objLocker3 = null;
+                            IAsyncDisposable objLockerAsync3 = null;
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverload
-                                objLocker2 = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
+                                objLocker3 = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
                             else
-                                objLockerAsync2 = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token)
+                                objLockerAsync3 = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token)
                                     .ConfigureAwait(false);
                             try
                             {
@@ -835,9 +888,9 @@ namespace Chummer
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    objLocker2.Dispose();
+                                    objLocker3.Dispose();
                                 else
-                                    await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
+                                    await objLockerAsync3.DisposeAsync().ConfigureAwait(false);
                             }
 
                             // Make sure we do not override the cached document with our live data
@@ -867,9 +920,9 @@ namespace Chummer
                     {
                         if (blnSync)
                             // ReSharper disable once MethodHasAsyncOverload
-                            objLocker.Dispose();
+                            objLocker2.Dispose();
                         else
-                            await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                            await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 else
@@ -929,6 +982,14 @@ namespace Chummer
                 }
 
                 return xmlReturn;
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 

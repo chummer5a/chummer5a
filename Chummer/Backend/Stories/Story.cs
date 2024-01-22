@@ -252,14 +252,14 @@ namespace Chummer
 
         public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
                 string[] strModuleOutputStrings;
-                IDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -275,14 +275,14 @@ namespace Chummer
                 }
                 finally
                 {
-                    objLocker2.Dispose();
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
                 return string.Concat(strModuleOutputStrings);
             }
             finally
             {
-                objLocker.Dispose();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

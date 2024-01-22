@@ -94,7 +94,7 @@ namespace Chummer
         {
             if (RaiseListChangedEvents)
             {
-                IDisposable objLocker = BindingListLock?.EnterReadLock();
+                IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
                     if (_setBeforeRemoveAsync.Count > 0)
@@ -129,7 +129,7 @@ namespace Chummer
         {
             if (RaiseListChangedEvents)
             {
-                IDisposable objLocker = BindingListLock?.EnterReadLock();
+                IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
                     if (_setBeforeRemoveAsync.Count > 0)
@@ -191,7 +191,7 @@ namespace Chummer
         {
             if (RaiseListChangedEvents)
             {
-                IDisposable objLocker = BindingListLock?.EnterReadLock();
+                IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
                     T objOldItem = Items[index];
@@ -230,7 +230,7 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnAddingNew(AddingNewEventArgs e)
         {
-            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
             try
             {
                 if (_setAddingNewAsync.Count > 0)
@@ -251,7 +251,7 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnListChanged(ListChangedEventArgs e)
         {
-            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
             try
             {
                 // INotifyPropertyChangedAsync will call PropertyChangedAsync anyway, which does everything we would do here
@@ -275,7 +275,9 @@ namespace Chummer
         protected virtual async Task OnListChangedAsync(ListChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IDisposable objLocker = BindingListLock != null ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false) : null;
+            IAsyncDisposable objLocker = BindingListLock != null
+                ? await BindingListLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
+                : null;
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -300,7 +302,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -549,7 +552,7 @@ namespace Chummer
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
 
-            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
             try
             {
                 if (propertyChangedAsyncEventHandler != null)
@@ -598,7 +601,8 @@ namespace Chummer
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
 
-            using (await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await BindingListLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler != null)
@@ -607,8 +611,12 @@ namespace Chummer
                     return;
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
-            IAsyncDisposable objLocker = await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            objLocker = await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -639,7 +647,7 @@ namespace Chummer
         {
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
             try
             {
                 if (propertyChangedAsyncEventHandler == null)
@@ -657,8 +665,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            IDisposable objLocker = BindingListLock != null
-                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+            IAsyncDisposable objLocker = BindingListLock != null
+                ? await BindingListLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
                 : null;
             try
             {
@@ -668,7 +676,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             notifyPropertyChanged.PropertyChangedAsync -= propertyChangedAsyncEventHandler;
         }
@@ -676,8 +685,8 @@ namespace Chummer
         private async Task Child_PropertyChangedAsync(object sender, PropertyChangedEventArgs e,
             CancellationToken token = default)
         {
-            IDisposable objLocker = BindingListLock != null
-                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+            IAsyncDisposable objLocker = BindingListLock != null
+                ? await BindingListLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
                 : null;
             try
             {
@@ -687,7 +696,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             string strPropertyName = e?.PropertyName;
@@ -700,7 +710,7 @@ namespace Chummer
             PropertyDescriptor propDesc = itemTypeProperties.Find(strPropertyName, true);
 
             objLocker = BindingListLock != null
-                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
+                ? await BindingListLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
                 : null;
             try
             {
@@ -715,10 +725,11 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            IAsyncDisposable objLocker2 = BindingListLock != null
+            objLocker = BindingListLock != null
                 ? await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
                 : null;
             try
@@ -738,8 +749,8 @@ namespace Chummer
             }
             finally
             {
-                if (objLocker2 != null)
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

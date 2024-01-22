@@ -262,14 +262,19 @@ namespace Chummer.Backend.Attributes
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnAttributesInitialized)
                     return _lstAttributes;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
-            IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterUpgradeableReadLockAsync(token)
+            objLocker = await _objAttributesInitializerLock.EnterUpgradeableReadLockAsync(token)
                 .ConfigureAwait(false);
             try
             {
@@ -469,6 +474,8 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
+
         #region Constructor, Save, Load, Print Methods
 
         public AttributeSection(Character objCharacter)
@@ -485,247 +492,247 @@ namespace Chummer.Backend.Attributes
             SpecialAttributeList.BeforeClearCollectionChangedAsync += SpecialAttributeListOnBeforeClearCollectionChanged;
         }
 
-        private async Task SpecialAttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private async Task SpecialAttributeListOnBeforeClearCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            foreach (CharacterAttrib objAttribute in e.OldItems)
             {
-                token.ThrowIfCancellationRequested();
-                foreach (CharacterAttrib objAttribute in e.OldItems)
+                if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                 {
-                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                    objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                }
+
+                Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                    new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                        objAttribute.MetatypeCategory);
+                _dicAttributes.TryRemove(tupKey, out _);
+                await objAttribute.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task AttributeListOnBeforeClearCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (CharacterAttrib objAttribute in e.OldItems)
+            {
+                if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                {
+                    objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                }
+
+                Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                    new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                        objAttribute.MetatypeCategory);
+                _dicAttributes.TryRemove(tupKey, out _);
+                await objAttribute.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task AttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (CharacterAttrib objAttribute in e.NewItems)
                     {
-                        objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        {
+                            y.Dispose();
+                            return objAttribute;
+                        });
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        }
                     }
 
-                    Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                        new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                            objAttribute.MetatypeCategory);
-                    _dicAttributes.TryRemove(tupKey, out _);
-                    await objAttribute.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-        }
+                    break;
 
-        private async Task AttributeListOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                foreach (CharacterAttrib objAttribute in e.OldItems)
-                {
-                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (CharacterAttrib objAttribute in e.OldItems)
                     {
-                        objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        }
+
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.TryRemove(tupKey, out _);
+                        await objAttribute.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                        new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                            objAttribute.MetatypeCategory);
-                    _dicAttributes.TryRemove(tupKey, out _);
-                    await objAttribute.DisposeAsync().ConfigureAwait(false);
-                }
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
+                    foreach (CharacterAttrib objAttribute in e.OldItems)
+                    {
+                        if (setNewAttribs.Contains(objAttribute))
+                            continue;
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        }
+
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.TryRemove(tupKey, out _);
+                        await objAttribute.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    foreach (CharacterAttrib objAttribute in setNewAttribs)
+                    {
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        {
+                            y.Dispose();
+                            return objAttribute;
+                        });
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        }
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    await AttributeList.ForEachAsync(async objAttribute =>
+                    {
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
+                        {
+                            y.Dispose();
+                            return objAttribute;
+                        });
+                        if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token)
+                                .ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        }
+                    }, token).ConfigureAwait(false);
+
+                    break;
             }
         }
 
-        private async Task AttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private async Task SpecialAttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            switch (e.Action)
             {
-                token.ThrowIfCancellationRequested();
-                switch (e.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        foreach (CharacterAttrib objAttribute in e.NewItems)
+                case NotifyCollectionChangedAction.Add:
+                    foreach (CharacterAttrib objAttribute in e.NewItems)
+                    {
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
-                            {
-                                y.Dispose();
-                                return objAttribute;
-                            });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
+                            y.Dispose();
+                            return objAttribute;
+                        });
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        }
+                    }
+
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (CharacterAttrib objAttribute in e.OldItems)
+                    {
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
-                        break;
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.TryRemove(tupKey, out _);
+                        await objAttribute.DisposeAsync().ConfigureAwait(false);
+                    }
 
-                    case NotifyCollectionChangedAction.Remove:
-                        foreach (CharacterAttrib objAttribute in e.OldItems)
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
+                    foreach (CharacterAttrib objAttribute in e.OldItems)
+                    {
+                        if (setNewAttribs.Contains(objAttribute))
+                            continue;
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync().ConfigureAwait(false);
+                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
-                        break;
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.TryRemove(tupKey, out _);
+                        await objAttribute.DisposeAsync().ConfigureAwait(false);
+                    }
 
-                    case NotifyCollectionChangedAction.Replace:
-                        HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
-                        foreach (CharacterAttrib objAttribute in e.OldItems)
+                    foreach (CharacterAttrib objAttribute in setNewAttribs)
+                    {
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
-                            if (setNewAttribs.Contains(objAttribute))
-                                continue;
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync().ConfigureAwait(false);
+                            y.Dispose();
+                            return objAttribute;
+                        });
+                        if (objAttribute ==
+                            await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
+                    }
 
-                        foreach (CharacterAttrib objAttribute in setNewAttribs)
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    await SpecialAttributeList.ForEachAsync(async objAttribute =>
+                    {
+                        Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
+                            new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
+                                objAttribute.MetatypeCategory);
+                        _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
                         {
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
-                            {
-                                y.Dispose();
-                                return objAttribute;
-                            });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
+                            y.Dispose();
+                            return objAttribute;
+                        });
+                        if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token)
+                                .ConfigureAwait(false))
+                        {
+                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
+                    }, token).ConfigureAwait(false);
 
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        await AttributeList.ForEachAsync(async objAttribute =>
-                        {
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
-                            {
-                                y.Dispose();
-                                return objAttribute;
-                            });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token)
-                                    .ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                        }, token).ConfigureAwait(false);
-
-                        break;
-                }
-            }
-        }
-
-        private async Task SpecialAttributeListOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                switch (e.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        foreach (CharacterAttrib objAttribute in e.NewItems)
-                        {
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
-                            {
-                                y.Dispose();
-                                return objAttribute;
-                            });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                        }
-
-                        break;
-
-                    case NotifyCollectionChangedAction.Remove:
-                        foreach (CharacterAttrib objAttribute in e.OldItems)
-                        {
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync().ConfigureAwait(false);
-                        }
-
-                        break;
-
-                    case NotifyCollectionChangedAction.Replace:
-                        HashSet<CharacterAttrib> setNewAttribs = e.NewItems.OfType<CharacterAttrib>().ToHashSet();
-                        foreach (CharacterAttrib objAttribute in e.OldItems)
-                        {
-                            if (setNewAttribs.Contains(objAttribute))
-                                continue;
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.TryRemove(tupKey, out _);
-                            await objAttribute.DisposeAsync().ConfigureAwait(false);
-                        }
-
-                        foreach (CharacterAttrib objAttribute in setNewAttribs)
-                        {
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
-                            {
-                                y.Dispose();
-                                return objAttribute;
-                            });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                        }
-
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        await SpecialAttributeList.ForEachAsync(async objAttribute =>
-                        {
-                            Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                                new Tuple<string, CharacterAttrib.AttributeCategory>(objAttribute.Abbrev,
-                                    objAttribute.MetatypeCategory);
-                            _dicAttributes.AddOrUpdate(tupKey, objAttribute, (x, y) =>
-                            {
-                                y.Dispose();
-                                return objAttribute;
-                            });
-                            if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token)
-                                    .ConfigureAwait(false))
-                            {
-                                objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
-                            }
-                        }, token).ConfigureAwait(false);
-
-                        break;
-                }
+                    break;
             }
         }
 
@@ -859,7 +866,11 @@ namespace Chummer.Backend.Attributes
                                                                        CharacterAttrib.AttributeCategory.Standard);
                                     AttributeList.Add(objAttribute);
                                     break;
+
+                                default:
+                                    continue;
                             }
+                            objAttribute.LockObject.SetParent(LockObject, token: token);
                         }
 
                         objBod = GetAttributeByName("BOD", token);
@@ -1068,7 +1079,11 @@ namespace Chummer.Backend.Attributes
                                             CharacterAttrib.AttributeCategory.Standard);
                                         await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                         break;
+
+                                    default:
+                                        continue;
                                 }
+                                await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                             }
 
                             objBod = await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false);
@@ -1379,7 +1394,16 @@ namespace Chummer.Backend.Attributes
                                     }
 
                                     break;
+
+                                default:
+                                    continue;
                             }
+
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objAttribute.LockObject.SetParent(LockObject, token: token);
+                            else
+                                await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
 
                             if (xmlCharNodeAnimalForm == null)
                                 continue;
@@ -1406,7 +1430,16 @@ namespace Chummer.Backend.Attributes
                                     else
                                         await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                     break;
+
+                                default:
+                                    continue;
                             }
+
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objAttribute.LockObject.SetParent(LockObject, token: token);
+                            else
+                                await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -1436,7 +1469,15 @@ namespace Chummer.Backend.Attributes
                                         else
                                             await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
                                         break;
+
+                                    default:
+                                        continue;
                                 }
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objAttribute.LockObject.SetParent(LockObject, token: token);
+                                else
+                                    await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                             }
                         }
                     }
@@ -1494,6 +1535,7 @@ namespace Chummer.Backend.Attributes
                                     CharacterAttrib.AttributeCategory.Special);
                                 objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                 SpecialAttributeList.Add(objAttribute);
+                                objAttribute.LockObject.SetParent(LockObject, token: token);
                                 break;
 
                             case CharacterAttrib.AttributeCategory.Standard:
@@ -1501,6 +1543,7 @@ namespace Chummer.Backend.Attributes
                                     CharacterAttrib.AttributeCategory.Standard);
                                 objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                 AttributeList.Add(objAttribute);
+                                objAttribute.LockObject.SetParent(LockObject, token: token);
                                 break;
                         }
 
@@ -1513,6 +1556,7 @@ namespace Chummer.Backend.Attributes
                                         CharacterAttrib.AttributeCategory.Special);
                                     objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                     SpecialAttributeList.Add(objAttribute);
+                                    objAttribute.LockObject.SetParent(LockObject, token: token);
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Shapeshifter:
@@ -1521,6 +1565,7 @@ namespace Chummer.Backend.Attributes
                                             .Shapeshifter);
                                     objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                     AttributeList.Add(objAttribute);
+                                    objAttribute.LockObject.SetParent(LockObject, token: token);
                                     break;
                             }
                         }
@@ -1794,7 +1839,8 @@ namespace Chummer.Backend.Attributes
 
         internal async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
@@ -1824,6 +1870,10 @@ namespace Chummer.Backend.Attributes
                 {
                     await att.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1871,7 +1921,8 @@ namespace Chummer.Backend.Attributes
                 && await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -1882,11 +1933,16 @@ namespace Chummer.Backend.Attributes
                         new Tuple<string, CharacterAttrib.AttributeCategory>(abbrev,
                             CharacterAttrib.AttributeCategory.Special), out objReturn);
                 }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             else
             {
                 token.ThrowIfCancellationRequested();
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     if (_dicAttributes.TryGetValue(
@@ -1896,6 +1952,10 @@ namespace Chummer.Backend.Attributes
                     _dicAttributes.TryGetValue(
                         new Tuple<string, CharacterAttrib.AttributeCategory>(abbrev,
                             CharacterAttrib.AttributeCategory.Special), out objReturn);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -2320,7 +2380,8 @@ namespace Chummer.Backend.Attributes
         {
             if (objSource == null || objTarget == null)
                 return;
-            using (await objSource.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objSource.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
@@ -2341,6 +2402,10 @@ namespace Chummer.Backend.Attributes
                     intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
                     await objTarget.AssignBaseKarmaLimitsAsync(objSource.Base, objSource.Karma, intMinimum, intMaximum, intAugmentedMaximum, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2409,7 +2474,8 @@ namespace Chummer.Backend.Attributes
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn = strInput;
@@ -2437,6 +2503,10 @@ namespace Chummer.Backend.Attributes
 
                 return strReturn;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
@@ -2445,7 +2515,8 @@ namespace Chummer.Backend.Attributes
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -2467,6 +2538,10 @@ namespace Chummer.Backend.Attributes
                                                              : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
                                                          .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2622,7 +2697,8 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             string strReturn = strInput;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -2690,6 +2766,10 @@ namespace Chummer.Backend.Attributes
                                       }, token: token).ConfigureAwait(false);
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             return strReturn;
         }
@@ -2705,7 +2785,8 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -2760,6 +2841,10 @@ namespace Chummer.Backend.Attributes
                     }, token: token).ConfigureAwait(false);
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         internal void Reset(bool blnFirstTime = false, CancellationToken token = default)
@@ -2788,7 +2873,10 @@ namespace Chummer.Backend.Attributes
                                                                    CharacterAttrib.AttributeCategory.Standard);
                                 AttributeList.Add(objAttribute);
                                 break;
+                            default:
+                                continue;
                         }
+                        objAttribute.LockObject.SetParent(LockObject, token: token);
                     }
 
                     ResetBindings(token);
@@ -2832,7 +2920,10 @@ namespace Chummer.Backend.Attributes
                                                                    CharacterAttrib.AttributeCategory.Standard);
                                 await lstAttributes.AddAsync(objAttribute, token).ConfigureAwait(false);
                                 break;
+                            default:
+                                continue;
                         }
+                        await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                     }
 
                     await ResetBindingsAsync(token).ConfigureAwait(false);
@@ -3008,7 +3099,8 @@ namespace Chummer.Backend.Attributes
         public async Task<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute,
                                                                     CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
@@ -3025,6 +3117,10 @@ namespace Chummer.Backend.Attributes
                                                                            .ConfigureAwait(false), token)
                                           .ConfigureAwait(false)
                        < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3047,10 +3143,15 @@ namespace Chummer.Backend.Attributes
 
         public async Task<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributeListAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _lstNormalAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3068,10 +3169,15 @@ namespace Chummer.Backend.Attributes
 
         public async Task<ThreadSafeObservableCollection<CharacterAttrib>> GetSpecialAttributeListAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _lstSpecialAttributes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3086,10 +3192,15 @@ namespace Chummer.Backend.Attributes
 
         public async Task<IReadOnlyCollection<CharacterAttrib>> GetAllAttributesAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _dicAttributes.Values as IReadOnlyCollection<CharacterAttrib>;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3122,15 +3233,18 @@ namespace Chummer.Backend.Attributes
 
         public async Task<CharacterAttrib.AttributeCategory> GetAttributeCategoryAsync(CancellationToken token = default)
         {
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return _eAttributeCategory;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         #endregion Properties
-
-        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

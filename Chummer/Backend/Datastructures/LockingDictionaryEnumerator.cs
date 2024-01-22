@@ -24,9 +24,10 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IDisposable
+    public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IDisposable, IAsyncDisposable
     {
         private readonly IDisposable _objMyRelease;
+        private readonly IAsyncDisposable _objMyReleaseAsync;
 
         private IDictionaryEnumerator _objInternalEnumerator;
 
@@ -38,14 +39,14 @@ namespace Chummer
 
         public static async Task<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
             }
             catch
             {
-                objMyRelease.Dispose();
+                await objMyRelease.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
             return new LockingDictionaryEnumerator(objMyRelease);
@@ -54,6 +55,11 @@ namespace Chummer
         private LockingDictionaryEnumerator(IDisposable objMyRelease)
         {
             _objMyRelease = objMyRelease;
+        }
+
+        private LockingDictionaryEnumerator(IAsyncDisposable objMyReleaseAsync)
+        {
+            _objMyReleaseAsync = objMyReleaseAsync;
         }
 
         public void SetEnumerator(IDictionaryEnumerator objInternalEnumerator)
@@ -67,6 +73,16 @@ namespace Chummer
         public void Dispose()
         {
             _objMyRelease.Dispose();
+            if (_objMyReleaseAsync != null)
+                Utils.SafelyRunSynchronously(() => _objMyReleaseAsync.DisposeAsync().AsTask());
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            _objMyRelease?.Dispose();
+            if (_objMyReleaseAsync != null)
+                await _objMyReleaseAsync.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

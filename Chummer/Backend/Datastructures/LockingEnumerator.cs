@@ -29,9 +29,10 @@ namespace Chummer
     /// Special class that should be used instead of GetEnumerator for collections with an internal locking object
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class LockingEnumerator<T> : IEnumerator<T>
+    public sealed class LockingEnumerator<T> : IEnumerator<T>, IAsyncDisposable
     {
         private readonly IDisposable _objMyRelease;
+        private readonly IAsyncDisposable _objMyReleaseAsync;
 
         private IEnumerator<T> _objInternalEnumerator;
 
@@ -43,14 +44,14 @@ namespace Chummer
 
         public static async Task<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
             }
             catch
             {
-                objMyRelease.Dispose();
+                await objMyRelease.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
             return new LockingEnumerator<T>(objMyRelease);
@@ -59,6 +60,11 @@ namespace Chummer
         private LockingEnumerator(IDisposable objMyRelease)
         {
             _objMyRelease = objMyRelease;
+        }
+
+        private LockingEnumerator(IAsyncDisposable objMyReleaseAsync)
+        {
+            _objMyReleaseAsync = objMyReleaseAsync;
         }
 
         public void SetEnumerator(IEnumerator<T> objInternalEnumerator)
@@ -73,6 +79,17 @@ namespace Chummer
         {
             _objInternalEnumerator.Dispose();
             _objMyRelease?.Dispose();
+            if (_objMyReleaseAsync != null)
+                Utils.SafelyRunSynchronously(() => _objMyReleaseAsync.DisposeAsync().AsTask());
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            _objInternalEnumerator.Dispose();
+            _objMyRelease?.Dispose();
+            if (_objMyReleaseAsync != null)
+                await _objMyReleaseAsync.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

@@ -211,7 +211,8 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
                 return Name;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 return await _objCharacter.TranslateExtraAsync(
@@ -220,6 +221,10 @@ namespace Chummer
                                 .ReverseTranslateExtraAsync(Name, GlobalSettings.Language, _objCharacter, token: token)
                                 .ConfigureAwait(false)
                         : Name, strLanguage, token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -678,8 +678,14 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strImprovedName))
                 strImprovedName = string.Empty;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? objCharacter.LockObject.EnterReadLock(token) : await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = objCharacter.LockObject.EnterReadLock(token);
+            else
+                objLockerAsync = await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // These values are needed to prevent race conditions that could cause Chummer to crash
@@ -1275,6 +1281,12 @@ namespace Chummer
                     s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
                     s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
                 }
+            }
+            finally
+            {
+                objLocker?.Dispose();
+                if (objLockerAsync != null)
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4067,30 +4079,38 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
                     ? objCharacter.Improvements.Where(objImprovement =>
-                                                          objImprovement.ImproveSource == objImprovementSource)
+                        objImprovement.ImproveSource == objImprovementSource)
                     : objCharacter.Improvements.Where(objImprovement =>
-                                                          objImprovement.ImproveSource == objImprovementSource
-                                                          && objImprovement.SourceName == strSourceName)).ToList();
+                        objImprovement.ImproveSource == objImprovementSource
+                        && objImprovement.SourceName == strSourceName)).ToList();
 
                 // Compatibility fix for when blnConcatSelectedValue was around
                 if (strSourceName.IsGuid())
                 {
-                    string strSourceNameSpaced = strSourceName + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    string strSourceNameSpaced = strSourceName +
+                                                 await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                     .ConfigureAwait(false);
                     string strSourceNameSpacedInvariant = strSourceName + ' ';
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
-                                                    objImprovement =>
-                                                        objImprovement.ImproveSource == objImprovementSource &&
-                                                        (objImprovement.SourceName.StartsWith(
-                                                             strSourceNameSpaced, StringComparison.Ordinal)
-                                                         || objImprovement.SourceName.StartsWith(
-                                                             strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                        objImprovement =>
+                            objImprovement.ImproveSource == objImprovementSource &&
+                            (objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpaced, StringComparison.Ordinal)
+                             || objImprovement.SourceName.StartsWith(
+                                 strSourceNameSpacedInvariant, StringComparison.Ordinal))));
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
@@ -4116,7 +4136,9 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
                       + lstImprovementSources + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
@@ -4143,6 +4165,10 @@ namespace Chummer
                                  strSourceNameSpacedInvariant, StringComparison.Ordinal))));
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
         }
@@ -4167,7 +4193,9 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                       + objImprovementSource + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
             List<Improvement> objImprovementList;
-            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
@@ -4211,6 +4239,10 @@ namespace Chummer
                         lstSourceNames.Contains(objImprovement.SourceName), token: token).ConfigureAwait(false);
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);
         }
@@ -4235,7 +4267,9 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "lstImprovementSources = "
                       + lstImprovementSources + Environment.NewLine + "lstSourceNames = " + lstSourceNames);
             List<Improvement> objImprovementList;
-            using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // A List of Improvements to hold all the items that will eventually be deleted.
@@ -4278,6 +4312,10 @@ namespace Chummer
                         lstImprovementSources.Contains(objImprovement.ImproveSource) &&
                         lstSourceNames.Contains(objImprovement.SourceName), token: token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return await RemoveImprovementsAsync(objCharacter, objImprovementList, token: token).ConfigureAwait(false);

@@ -253,7 +253,7 @@ namespace Chummer
         {
             if (_setBeforeClearCollectionChangedAsync.Count != 0)
             {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
                     using (BlockReentrancy())
@@ -275,7 +275,7 @@ namespace Chummer
             }
             else
             {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
                     using (BlockReentrancy())
@@ -297,9 +297,9 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             CheckReentrancy();
-            IDisposable objLocker = null;
+            IAsyncDisposable objLocker = null;
             if (CollectionChangedLock != null)
-                objLocker = await CollectionChangedLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                objLocker = await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -327,7 +327,8 @@ namespace Chummer
             }
             finally
             {
-                objLocker?.Dispose();
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             Items.Clear();
@@ -379,7 +380,7 @@ namespace Chummer
         {
             if (_setCollectionChangedAsync.Count != 0)
             {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
                     List<Func<Task>> lstFuncs = new List<Func<Task>>(_setCollectionChangedAsync.Count);
@@ -395,7 +396,7 @@ namespace Chummer
             }
             else
             {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLock();
+                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
                 try
                 {
                     base.OnCollectionChanged(e);
@@ -412,9 +413,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_setCollectionChangedAsync.Count != 0)
             {
-                IDisposable objLocker = null;
+                IAsyncDisposable objLocker = null;
                 if (CollectionChangedLock != null)
-                    objLocker = await CollectionChangedLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                    objLocker = await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -423,12 +424,15 @@ namespace Chummer
                 }
                 finally
                 {
-                    objLocker?.Dispose();
+                    if (objLocker != null)
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             else
             {
-                IDisposable objLocker = CollectionChangedLock != null ? await CollectionChangedLock.EnterReadLockAsync(token).ConfigureAwait(false) : null;
+                IAsyncDisposable objLocker = CollectionChangedLock != null
+                    ? await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
+                    : null;
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -436,7 +440,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    objLocker?.Dispose();
+                    if (objLocker != null)
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }

@@ -326,7 +326,8 @@ namespace Chummer
         public async Task<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
-            using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 decCost += await Gear.SumAsync(async objFocus =>
@@ -463,6 +464,10 @@ namespace Chummer
                     return objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
                 }, token).ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             return decCost.StandardRound();
         }
@@ -499,7 +504,8 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     await Gear.ForEachAsync(async objGear =>
@@ -507,6 +513,10 @@ namespace Chummer
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
                                                       .ConfigureAwait(false)).Append(", ");
                     }, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 // Remove the trailing comma.

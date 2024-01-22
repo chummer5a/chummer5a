@@ -15917,7 +15917,9 @@ namespace Chummer
                 }
                 else
                 {
-                    using (await objQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await objQuality.LockObject.EnterReadLockAsync(token)
+                        .ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true, token)
@@ -15933,6 +15935,10 @@ namespace Chummer
                               + await LanguageManager.GetStringAsync("String_Karma", token: token)
                                                      .ConfigureAwait(false);
                         await lblQualityBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -20804,7 +20810,9 @@ namespace Chummer
                 {
                     // WARNING! Under no circumstances should this be changed to a write lock or upgradeable read lock! If you write code that would make you want to do that, rethink/redesign your code!
                     // Doing so will cause softlocks from circular logic (e.g. cyberware updates stall because they are waiting to get an upgradeable read lock on the character, but the character info update stalls because it's waiting for the cyberware updates to finish)
-                    using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                        .ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         try
@@ -20873,6 +20881,10 @@ namespace Chummer
                             RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
                             RefreshSelectedImprovement(token)).ConfigureAwait(false);
                         await tskAutosave.ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally

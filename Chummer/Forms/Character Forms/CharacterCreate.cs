@@ -13635,7 +13635,9 @@ namespace Chummer
                 ? await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false)
                 : string.Empty;
 
-            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 // ------------------------------------------------------------------------------
@@ -14598,6 +14600,10 @@ namespace Chummer
 
                 return intKarmaPointsRemain;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private async Task UpdateSkillRelatedInfo(CancellationToken token = default)
@@ -14843,7 +14849,9 @@ namespace Chummer
                 {
                     // WARNING! Under no circumstances should this be changed to a write lock or upgradeable read lock! If you write code that would make you want to do that, rethink/redesign your code!
                     // Doing so will cause softlocks from circular logic (e.g. cyberware updates stall because they are waiting to get an upgradeable read lock on the character, but the character info update stalls because it's waiting for the cyberware updates to finish)
-                    using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                        .ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         try
@@ -14914,6 +14922,10 @@ namespace Chummer
                             .ConfigureAwait(false);
                         await tskAutosave.ConfigureAwait(false);
                     }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
@@ -14934,7 +14946,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             decimal decDeductions = 0;
             decimal decStolenDeductions = 0;
-            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 decimal decStolenNuyenAllowance
@@ -15010,6 +15024,10 @@ namespace Chummer
                 decimal decReturn = await CharacterObject.GetTotalStartingNuyenAsync(token).ConfigureAwait(false)
                                     - decDeductions;
                 return new Tuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17427,7 +17445,7 @@ namespace Chummer
                     }
 
                     List<CharacterAttrib> lstAttributesToAdd = null;
-                    if (CharacterObject.MetatypeCategory == "Shapeshifter")
+                    if (await CharacterObject.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Shapeshifter")
                     {
                         lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
                         XPathNavigator xmlDoc = await CharacterObject.LoadDataXPathAsync("metatypes.xml", token: token)
@@ -17447,7 +17465,8 @@ namespace Chummer
                                                      + " or translate(id, 'abcdef', 'ABCDEF') = "
                                                      + strMetavariantGuidString.ToUpperInvariant().CleanXPath()
                                                      + ']';
-                        await CharacterObject.AttributeSection.AttributeList.ForEachAsync(async objOldAttribute =>
+                        AttributeSection objAttributeSection = await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                        await objAttributeSection.AttributeList.ForEachAsync(async objOldAttribute =>
                         {
                             CharacterAttrib objNewAttribute = new CharacterAttrib(
                                 CharacterObject, objOldAttribute.Abbrev,
@@ -17457,6 +17476,7 @@ namespace Chummer
                                                                       strMetavariantXPath,
                                                                       xmlDoc, token).ConfigureAwait(false);
                             lstAttributesToAdd.Add(objNewAttribute);
+                            await objNewAttribute.LockObject.SetParentAsync(objAttributeSection.LockObject, token: token).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
 
                         foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
@@ -21724,7 +21744,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                using (await CharacterObjectSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                IAsyncDisposable objLocker2 = await CharacterObjectSettings.LockObject.EnterReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
                 {
                     token.ThrowIfCancellationRequested();
                     int intBuildPoints = await CalculateBPandRefreshBPDisplays(false, token).ConfigureAwait(false);
@@ -21904,6 +21926,10 @@ namespace Chummer
                             SkipUpdate = false;
                         }
                     }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -22777,7 +22803,9 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strInitTip;
-            using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
                 decimal decMultiplier = 1.0m;
@@ -22822,6 +22850,10 @@ namespace Chummer
                         (intGrade + 1).ToString(GlobalSettings.CultureInfo),
                         intAmount.ToString(GlobalSettings.CultureInfo));
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             token.ThrowIfCancellationRequested();

@@ -55,8 +55,8 @@ namespace Chummer
 
         private readonly LinkedAsyncRWLockHelper _objTopLevelHelper = new LinkedAsyncRWLockHelper(null, false);
 
-        private readonly AsyncFriendlyReaderWriterLock _objParentLock;
-        private readonly bool _blnLockReadOnlyForParent;
+        private AsyncFriendlyReaderWriterLock _objParentLock;
+        private bool _blnLockReadOnlyForParent;
 
         private int _intDisposedStatus;
 
@@ -66,6 +66,38 @@ namespace Chummer
             {
                 _objParentLock = objParentLock;
                 _blnLockReadOnlyForParent = blnLockReadOnlyForParent;
+            }
+        }
+
+        public void SetParent(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _objTopLevelHelper.TakeSingleWriteLock(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _objParentLock = objParentLock;
+                _blnLockReadOnlyForParent = blnLockReadOnlyForParent;
+            }
+            finally
+            {
+                _objTopLevelHelper.ReleaseSingleWriteLock();
+            }
+        }
+
+        public async Task SetParentAsync(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await _objTopLevelHelper.TakeSingleWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _objParentLock = objParentLock;
+                _blnLockReadOnlyForParent = blnLockReadOnlyForParent;
+            }
+            finally
+            {
+                _objTopLevelHelper.ReleaseSingleWriteLock();
             }
         }
 
@@ -222,7 +254,7 @@ namespace Chummer
                 return (_blnLockReadOnlyForParent
                     ? _objParentLock.EnterReadLockAsync(token).ContinueWith(async x => await TakeWriteLockCoreAsync(
                         objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                        objTopMostHeldWriter, await x.ConfigureAwait(false), null, token).ConfigureAwait(false), TaskScheduler.Current)
+                        objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)
                     : _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x =>
                         await TakeWriteLockCoreAsync(
                             objCurrentHelper, objNextHelper, objTopMostHeldUReader,
@@ -342,7 +374,7 @@ namespace Chummer
                     ? _objParentLock.EnterReadLockAsync(token).ContinueWith(async x =>
                         await TakeUpgradeableReadLockCoreAsync(
                             objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, await x.ConfigureAwait(false), null, token).ConfigureAwait(false), TaskScheduler.Current)
+                            objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)
                     : _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x =>
                         await TakeUpgradeableReadLockCoreAsync(
                             objCurrentHelper, objNextHelper, objTopMostHeldUReader,
@@ -378,6 +410,20 @@ namespace Chummer
         /// </summary>
         public IDisposable EnterReadLock(CancellationToken token = default)
         {
+            return EnterReadLock(false, token);
+        }
+
+        /// <summary>
+        /// Try to synchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one
+        /// </summary>
+        public IDisposable EnterReadLockWithUpgradeableParent(CancellationToken token = default)
+        {
+            return EnterReadLock(true, token);
+        }
+
+        private IDisposable EnterReadLock(bool blnParentLockIsUpgradeable, CancellationToken token = default)
+        {
             if (_intDisposedStatus != 0)
             {
 #if DEBUG
@@ -412,7 +458,9 @@ namespace Chummer
                 if (_objParentLock == null)
                     return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                         blnIsInReadLock, this, true);
-                IDisposable objParentRelease2 = _objParentLock.EnterReadLock(token);
+                IDisposable objParentRelease2 = blnParentLockIsUpgradeable
+                    ? _objParentLock.EnterUpgradeableReadLockAsync(token)
+                    : _objParentLock.EnterReadLock(token);
                 return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                     blnIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease2);
             }
@@ -429,7 +477,9 @@ namespace Chummer
             if (_objParentLock == null)
                 return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                     blnIsInReadLock, this, objCurrentHelper.IsDisposed);
-            IDisposable objParentRelease = _objParentLock.EnterReadLock(token);
+            IDisposable objParentRelease = blnParentLockIsUpgradeable
+                ? _objParentLock.EnterUpgradeableReadLockAsync(token)
+                : _objParentLock.EnterReadLock(token);
             return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                 blnIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease);
         }
@@ -438,7 +488,22 @@ namespace Chummer
         /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
         /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
         /// </summary>
-        public Task<IDisposable> EnterReadLockAsync(CancellationToken token = default)
+        public Task<IAsyncDisposable> EnterReadLockAsync(CancellationToken token = default)
+        {
+            return EnterReadLockAsync(false, token);
+        }
+
+        /// <summary>
+        /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one
+        /// </summary>
+        public Task<IAsyncDisposable> EnterReadLockWithUpgradeableParentAsync(CancellationToken token = default)
+        {
+            return EnterReadLockAsync(true, token);
+        }
+
+        private Task<IAsyncDisposable> EnterReadLockAsync(bool blnParentLockIsUpgradeable, CancellationToken token = default)
         {
             if (_intDisposedStatus != 0)
             {
@@ -447,11 +512,11 @@ namespace Chummer
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
                 Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
-                return Task.FromResult<IDisposable>(null);
+                return Task.FromResult<IAsyncDisposable>(null);
             }
 
             if (token.IsCancellationRequested)
-                return Task.FromException<IDisposable>(new OperationCanceledException(token));
+                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
 
             LinkedAsyncRWLockHelper objCurrentHelper;
             LinkedAsyncRWLockHelper objTopMostHeldUReader;
@@ -465,7 +530,7 @@ namespace Chummer
             catch (Exception e)
             {
                 Utils.BreakIfDebug();
-                return Task.FromException<IDisposable>(e);
+                return Task.FromException<IAsyncDisposable>(e);
             }
 
             if (!blnIsInReadLock)
@@ -477,17 +542,23 @@ namespace Chummer
 
             if (_objParentLock != null)
             {
-                return _objParentLock.EnterReadLockAsync(token).ContinueWith(async x => await TakeReadLockCoreAsync(
-                    objCurrentHelper, objTopMostHeldUReader,
-                    objTopMostHeldWriter, blnIsInReadLock, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current).Unwrap();
+                return blnParentLockIsUpgradeable
+                    ? _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x => await TakeReadLockCoreAsync(
+                            objCurrentHelper, objTopMostHeldUReader,
+                            objTopMostHeldWriter, blnIsInReadLock, null, await x.ConfigureAwait(false), token)
+                        .ConfigureAwait(false), TaskScheduler.Current).Unwrap()
+                    : _objParentLock.EnterReadLockAsync(token).ContinueWith(async x => await TakeReadLockCoreAsync(
+                            objCurrentHelper, objTopMostHeldUReader,
+                            objTopMostHeldWriter, blnIsInReadLock, null, await x.ConfigureAwait(false), token)
+                        .ConfigureAwait(false), TaskScheduler.Current).Unwrap();
             }
 
             return TakeReadLockCoreAsync(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock,
                 innerToken: token);
 
-            async Task<IDisposable> TakeReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+            async Task<IAsyncDisposable> TakeReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
                 LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
-                bool blnInnerIsInReadLock, IDisposable objParentRelease = null, CancellationToken innerToken = default)
+                bool blnInnerIsInReadLock, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null, CancellationToken innerToken = default)
             {
                 if (_intDisposedStatus != 0 || objCurrentHelper.IsDisposed)
                 {
@@ -497,7 +568,7 @@ namespace Chummer
                     Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                     return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true, objParentRelease: objParentRelease);
+                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true, objParentRelease, objParentReleaseAsync);
                 }
 
                 try
@@ -509,11 +580,11 @@ namespace Chummer
                 {
                     //swallow this because unsetting the AsyncLocal must be handled as a disposal in the original ExecutionContext
                     return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true, objParentRelease: objParentRelease);
+                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, true, objParentRelease, objParentReleaseAsync);
                 }
 
                 return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, objInnerTopMostHeldUReader,
-                    objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease: objParentRelease);
+                    objInnerTopMostHeldWriter, blnInnerIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease, objParentReleaseAsync);
             }
         }
 
@@ -592,6 +663,12 @@ namespace Chummer
             public void Dispose()
             {
                 _objParentRelease?.Dispose();
+                if (_objParentReleaseAsync != null)
+                {
+                    IAsyncDisposable objRelease = _objParentReleaseAsync;
+                    Utils.SafelyRunSynchronously(() => objRelease.DisposeAsync().AsTask());
+                }
+
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     return;
 
@@ -620,6 +697,7 @@ namespace Chummer
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
+                _objParentRelease?.Dispose();
                 switch (_objParentReleaseAsync)
                 {
                     case SafeWriterSemaphoreRelease objCastReleaseWriter:
@@ -717,7 +795,9 @@ namespace Chummer
 
                 DisposeAsyncPre();
 
-                return _blnSkipUnlockOnDispose && _objParentReleaseAsync == null ? _objNextHelper.DisposeAsync() : DisposeCoreAsync();
+                return _blnSkipUnlockOnDispose && _objParentReleaseAsync == null
+                    ? _objNextHelper.DisposeAsync()
+                    : DisposeCoreAsync();
             }
 
             public void DisposeAsyncPre()
@@ -725,6 +805,7 @@ namespace Chummer
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
+                _objParentRelease?.Dispose();
                 switch (_objParentReleaseAsync)
                 {
                     case SafeWriterSemaphoreRelease objCastReleaseWriter:
@@ -814,6 +895,11 @@ namespace Chummer
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
 
                 _objParentRelease?.Dispose();
+                if (_objParentReleaseAsync != null)
+                {
+                    IAsyncDisposable objRelease = _objParentReleaseAsync;
+                    Utils.SafelyRunSynchronously(() => objRelease.DisposeAsync().AsTask());
+                }
 
                 LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
@@ -918,7 +1004,9 @@ namespace Chummer
 
                 DisposeAsyncPre();
 
-                return _blnSkipUnlockOnDispose && _objParentReleaseAsync == null ? _objNextHelper.DisposeAsync() : DisposeCoreAsync();
+                return _blnSkipUnlockOnDispose && _objParentReleaseAsync == null
+                    ? _objNextHelper.DisposeAsync()
+                    : DisposeCoreAsync();
             }
 
             public void DisposeAsyncPre()
@@ -926,6 +1014,7 @@ namespace Chummer
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
+                _objParentRelease?.Dispose();
                 switch (_objParentReleaseAsync)
                 {
                     case SafeWriterSemaphoreRelease objCastReleaseWriter:
@@ -1016,6 +1105,11 @@ namespace Chummer
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
 
                 _objParentRelease?.Dispose();
+                if (_objParentReleaseAsync != null)
+                {
+                    IAsyncDisposable objRelease = _objParentReleaseAsync;
+                    Utils.SafelyRunSynchronously(() => objRelease.DisposeAsync().AsTask());
+                }
 
                 LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =

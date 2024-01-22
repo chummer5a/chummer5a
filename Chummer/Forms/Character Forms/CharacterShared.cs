@@ -515,7 +515,9 @@ namespace Chummer
                 {
                     ThreadSafeObservableCollection<CharacterAttrib> lstAttributes =
                         await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributesAsync(token).ConfigureAwait(false);
-                    using (await lstAttributes.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await lstAttributes.LockObject.EnterReadLockAsync(token)
+                        .ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
                         int intAttributeCount = await lstAttributes.GetCountAsync(token).ConfigureAwait(false);
@@ -571,6 +573,10 @@ namespace Chummer
                                 x.ResumeLayout();
                             }
                         }, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 else
