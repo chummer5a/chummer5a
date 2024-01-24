@@ -344,15 +344,11 @@ namespace Chummer
 
             _objSettings.PropertyChangedAsync += OptionsOnPropertyChanged;
             _objAttributeSection = new AttributeSection(this);
-            using (_objAttributeSection.LockObject.EnterWriteLock())
-            {
-                _objAttributeSection.Reset(true);
-                _objAttributeSection.PropertyChangedAsync += AttributeSectionOnPropertyChanged;
-            }
+            _objAttributeSection.Reset(true);
+            _objAttributeSection.PropertyChangedAsync += AttributeSectionOnPropertyChanged;
 
             _objSkillsSection = new SkillsSection(this);
-            using (_objSkillsSection.LockObject.EnterWriteLock())
-                _objSkillsSection.Reset(true);
+            _objSkillsSection.Reset(true);
 
             _lstCyberware.CollectionChangedAsync += CyberwareOnCollectionChanged;
             _lstArmor.CollectionChangedAsync += ArmorOnCollectionChanged;

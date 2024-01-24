@@ -662,12 +662,10 @@ namespace Chummer
 
             public void Dispose()
             {
-                _objParentRelease?.Dispose();
                 if (_objParentReleaseAsync != null)
-                {
-                    IAsyncDisposable objRelease = _objParentReleaseAsync;
-                    Utils.SafelyRunSynchronously(() => objRelease.DisposeAsync().AsTask());
-                }
+                    throw new InvalidOperationException(
+                        "Tried to synchronously dispose a lock with a parent that was acquired asynchronously.");
+                _objParentRelease?.Dispose();
 
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     return;
@@ -893,13 +891,10 @@ namespace Chummer
             {
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
-
-                _objParentRelease?.Dispose();
                 if (_objParentReleaseAsync != null)
-                {
-                    IAsyncDisposable objRelease = _objParentReleaseAsync;
-                    Utils.SafelyRunSynchronously(() => objRelease.DisposeAsync().AsTask());
-                }
+                    throw new InvalidOperationException(
+                        "Tried to synchronously dispose a lock with a parent that was acquired asynchronously.");
+                _objParentRelease?.Dispose();
 
                 LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =
@@ -1103,13 +1098,10 @@ namespace Chummer
             {
                 if (_objReaderWriterLock._intDisposedStatus > 1)
                     throw new ObjectDisposedException(nameof(_objReaderWriterLock));
-
-                _objParentRelease?.Dispose();
                 if (_objParentReleaseAsync != null)
-                {
-                    IAsyncDisposable objRelease = _objParentReleaseAsync;
-                    Utils.SafelyRunSynchronously(() => objRelease.DisposeAsync().AsTask());
-                }
+                    throw new InvalidOperationException(
+                        "Tried to synchronously dispose a lock with a parent that was acquired asynchronously.");
+                _objParentRelease?.Dispose();
 
                 LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
                 _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value =

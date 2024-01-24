@@ -1484,7 +1484,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowLeft = lstCyberwareToCheck.FirstOrDefault(x =>
+                                blnAllowLeft = lstCyberwareToCheck.Any(x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
@@ -1500,7 +1500,7 @@ namespace Chummer.Backend.Equipment
                                     if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
                                     return _objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount;
-                                }) != null;
+                                });
                             }
                         },
                         () =>
@@ -1528,7 +1528,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowRight = lstCyberwareToCheck.FirstOrDefault(x =>
+                                blnAllowRight = lstCyberwareToCheck.Any(x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
@@ -1544,7 +1544,7 @@ namespace Chummer.Backend.Equipment
                                     if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
                                     return _objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount;
-                                }) != null;
+                                });
                             }
                         });
                     // Only one side is allowed.
@@ -1668,7 +1668,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowLeft = await lstCyberwareToCheck.FirstOrDefaultAsync(async x =>
+                                blnAllowLeft = await lstCyberwareToCheck.AnyAsync(async x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
@@ -1685,7 +1685,7 @@ namespace Chummer.Backend.Equipment
                                         intLimbSlotCount += intNumBlockers;
                                     return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
                                         .ConfigureAwait(false) / 2 < intLimbSlotCount;
-                                }, token).ConfigureAwait(false) != null;
+                                }, token).ConfigureAwait(false);
                             }
                         }, token),
                         Task.Run(async () =>
@@ -1714,7 +1714,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowRight = await lstCyberwareToCheck.FirstOrDefaultAsync(async x =>
+                                blnAllowRight = await lstCyberwareToCheck.AnyAsync(async x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
@@ -1731,7 +1731,7 @@ namespace Chummer.Backend.Equipment
                                         intLimbSlotCount += intNumBlockers;
                                     return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
                                         .ConfigureAwait(false) / 2 < intLimbSlotCount;
-                                }, token).ConfigureAwait(false) != null;
+                                }, token).ConfigureAwait(false);
                             }
                         }, token)).ConfigureAwait(false);
                     // Only one side is allowed.

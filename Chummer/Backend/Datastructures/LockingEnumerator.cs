@@ -77,19 +77,19 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
+            if (_objMyReleaseAsync != null)
+                throw new InvalidOperationException(
+                    "Tried to synchronously dispose an enumerator that was created asynchronously.");
             _objInternalEnumerator.Dispose();
             _objMyRelease?.Dispose();
-            if (_objMyReleaseAsync != null)
-                Utils.SafelyRunSynchronously(() => _objMyReleaseAsync.DisposeAsync().AsTask());
         }
 
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
             _objInternalEnumerator.Dispose();
             _objMyRelease?.Dispose();
-            if (_objMyReleaseAsync != null)
-                await _objMyReleaseAsync.DisposeAsync().ConfigureAwait(false);
+            return _objMyReleaseAsync?.DisposeAsync() ?? default;
         }
 
         /// <inheritdoc />
