@@ -849,7 +849,7 @@ namespace Chummer.Backend.Skills
         protected Skill(Character objCharacter)
         {
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.SkillsSection.LockObject);
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);

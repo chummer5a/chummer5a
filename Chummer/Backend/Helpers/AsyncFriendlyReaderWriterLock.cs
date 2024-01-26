@@ -110,7 +110,6 @@ namespace Chummer
             LinkedAsyncRWLockHelper objTopMostHeldWriter = null;
             bool blnIsInReadLock = false;
             LinkedAsyncRWLockHelper objNextHelper = null;
-            // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
             if (blnForReadLock)
             {
                 token.ThrowIfCancellationRequested();
@@ -123,6 +122,7 @@ namespace Chummer
             }
             else
             {
+                // Loop is a hacky fix for weird cases where another locker changes our AsyncLocal semaphores in between us obtaining them and us checking them
                 int intLoopCount = 0;
                 while (true)
                 {
@@ -478,7 +478,7 @@ namespace Chummer
                 return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                     blnIsInReadLock, this, objCurrentHelper.IsDisposed);
             IDisposable objParentRelease = blnParentLockIsUpgradeable
-                ? _objParentLock.EnterUpgradeableReadLockAsync(token)
+                ? _objParentLock.EnterUpgradeableReadLock(token)
                 : _objParentLock.EnterReadLock(token);
             return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                 blnIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease);
