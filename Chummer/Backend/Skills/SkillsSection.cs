@@ -2545,7 +2545,7 @@ namespace Chummer.Backend.Skills
                         objSkill.PropertyChangedAsync -= OnKnowledgeSkillPropertyChanged;
                         return objSkill.RemoveAsync(token);
                     }, token).ConfigureAwait(false);
-                    await SkillGroups.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
+                    await SkillGroups.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
                     _dicSkillBackups.Clear();
                     _dicSkills.Clear();
                     await _lstSkills.ClearAsync(token).ConfigureAwait(false);
@@ -4081,13 +4081,13 @@ namespace Chummer.Backend.Skills
                 {
                     //swallow this
                 }
-                await _lstSkillGroups.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstSkillGroups.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 foreach (Skill objSkill in _dicSkillBackups.Values)
                     await objSkill.DisposeAsync().ConfigureAwait(false);
                 _dicSkillBackups.Clear();
-                await _lstSkills.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstSkills.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstSkills.DisposeAsync().ConfigureAwait(false);
-                await _lstKnowledgeSkills.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstKnowledgeSkills.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstKnowledgeSkills.DisposeAsync().ConfigureAwait(false);
                 await _lstKnowsoftSkills.ClearAsync().ConfigureAwait(false);
                 await _lstKnowsoftSkills.DisposeAsync().ConfigureAwait(false);

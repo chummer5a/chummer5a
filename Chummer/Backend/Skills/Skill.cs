@@ -7871,7 +7871,7 @@ namespace Chummer.Backend.Skills
                 {
                     _lstSpecializations.CollectionChangedAsync -= SpecializationsOnCollectionChanged;
                     _lstSpecializations.BeforeClearCollectionChangedAsync -= SpecializationsOnBeforeClearCollectionChanged;
-                    await _lstSpecializations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                    await _lstSpecializations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 }
                 finally
                 {

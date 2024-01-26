@@ -12217,43 +12217,43 @@ namespace Chummer
                 ImprovementManager.ClearCachedValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
-                await _lstContacts.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstSpirits.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstArmor.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstWeapons.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstGear.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstCyberware.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstVehicles.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstLifestyles.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstSpells.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
-                await _lstMartialArts.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstContacts.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstSpirits.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstArmor.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstWeapons.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstGear.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstCyberware.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstVehicles.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstLifestyles.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstSpells.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstMartialArts.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstMartialArts.DisposeAsync().ConfigureAwait(false);
                 await _lstComplexForms.DisposeAsync().ConfigureAwait(false);
                 await _lstAIPrograms.DisposeAsync().ConfigureAwait(false);
-                await _lstPowers.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstPowers.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstPowers.DisposeAsync().ConfigureAwait(false);
                 await _lstCritterPowers.DisposeAsync().ConfigureAwait(false);
                 await _lstFoci.DisposeAsync().ConfigureAwait(false);
-                await _lstStackedFoci.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstStackedFoci.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstStackedFoci.DisposeAsync().ConfigureAwait(false);
                 await _lstMetamagics.DisposeAsync().ConfigureAwait(false);
                 await _lstArts.DisposeAsync().ConfigureAwait(false);
                 await _lstEnhancements.DisposeAsync().ConfigureAwait(false);
                 await _lstImprovements.DisposeAsync().ConfigureAwait(false);
                 await _lstInitiationGrades.DisposeAsync().ConfigureAwait(false);
-                await _lstQualities.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstQualities.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstQualities.DisposeAsync().ConfigureAwait(false);
-                await _lstCalendar.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstCalendar.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstCalendar.DisposeAsync().ConfigureAwait(false);
-                await _lstDrugs.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstDrugs.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstDrugs.DisposeAsync().ConfigureAwait(false);
-                await _lstMentorSpirits.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstMentorSpirits.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstMentorSpirits.DisposeAsync().ConfigureAwait(false);
                 await _lstExpenseLog.DisposeAsync().ConfigureAwait(false);
-                await _lstArmorLocations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstGearLocations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstWeaponLocations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstVehicleLocations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstArmorLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstGearLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstWeaponLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstVehicleLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstArmorLocations.DisposeAsync().ConfigureAwait(false);
                 await _lstGearLocations.DisposeAsync().ConfigureAwait(false);
                 await _lstWeaponLocations.DisposeAsync().ConfigureAwait(false);
@@ -12522,39 +12522,40 @@ namespace Chummer
                 _intMainMugshotIndex = -1;
                 await _lstMugshots.ForEachAsync(x => x.Dispose(), token).ConfigureAwait(false);
                 await _lstMugshots.ClearAsync(token).ConfigureAwait(false);
-                await _lstContacts.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstContacts.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                   .ConfigureAwait(false);
                 await _lstContacts.ClearAsync(token).ConfigureAwait(false);
-                await _lstSpirits.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstSpirits.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                  .ConfigureAwait(false);
                 await _lstSpirits.ClearAsync(token).ConfigureAwait(false);
-                await _lstArmor.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstArmor.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                .ConfigureAwait(false);
-                await _lstWeapons.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstWeapons.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                  .ConfigureAwait(false);
-                await _lstGear.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstGear.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                               .ConfigureAwait(false);
-                await _lstCyberware.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstCyberware.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                    .ConfigureAwait(false);
-                await _lstVehicles.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstVehicles.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                   .ConfigureAwait(false);
-                await _lstLifestyles.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstLifestyles.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                     .ConfigureAwait(false);
-                await _lstSpells.ForEachAsync(x => x.Dispose(), token).ConfigureAwait(false);
-                await _lstPowers.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstSpells.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
+                await _lstPowers.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
-                await _lstMartialArts.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstMartialArts.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                      .ConfigureAwait(false);
-                await _lstStackedFoci.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstStackedFoci.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                      .ConfigureAwait(false);
-                await _lstDrugs.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstDrugs.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                .ConfigureAwait(false);
-                await _lstMentorSpirits.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                await _lstMentorSpirits.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token)
                                        .ConfigureAwait(false);
-                await _lstGearLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
-                await _lstArmorLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
-                await _lstWeaponLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
-                await _lstVehicleLocations.ForEachAsync(x => x.DisposeAsync().AsTask(), token).ConfigureAwait(false);
+                await _lstGearLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
+                await _lstArmorLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
+                await _lstWeaponLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
+                await _lstVehicleLocations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this, token);
