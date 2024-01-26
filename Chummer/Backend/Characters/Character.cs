@@ -35713,7 +35713,7 @@ namespace Chummer
                             }
                         }, token);
 
-                        foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children, token))
+                        foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children, token).ToList())
                         {
                             token.ThrowIfCancellationRequested();
                             if (objCyberware.DiscountCost)
@@ -35895,7 +35895,7 @@ namespace Chummer
                         }
                     }, token);
 
-                    foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children, token))
+                    foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children, token).ToList())
                     {
                         token.ThrowIfCancellationRequested();
                         objCyberware.DiscountCost = false;

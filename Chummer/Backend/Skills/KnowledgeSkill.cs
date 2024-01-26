@@ -119,11 +119,33 @@ namespace Chummer.Backend.Skills
 
         public KnowledgeSkill(Character objCharacter, bool blnSetProperties = true) : base(objCharacter)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
-            if (blnSetProperties)
-                DefaultAttribute = "LOG";
-            IsLoading = false;
+            LockObject.SetParent();
+            try
+            {
+                if (blnSetProperties)
+                    DefaultAttribute = "LOG";
+                IsLoading = false;
+            }
+            finally
+            {
+                LockObject.SetParent(objCharacter.SkillsSection.LockObject);
+            }
+        }
+
+        public KnowledgeSkill(Character objCharacter, string strForcedName, bool blnAllowUpgrade) : this(objCharacter)
+        {
+            LockObject.SetParent();
+            try
+            {
+                WritableName = strForcedName;
+                ForcedName = true;
+                _blnAllowUpgrade = blnAllowUpgrade;
+                IsLoading = false;
+            }
+            finally
+            {
+                LockObject.SetParent(objCharacter.SkillsSection.LockObject);
+            }
         }
 
         public static async Task<KnowledgeSkill> NewAsync(Character objCharacter, string strForcedName,
@@ -133,10 +155,18 @@ namespace Chummer.Backend.Skills
             KnowledgeSkill objReturn = new KnowledgeSkill(objCharacter, false);
             try
             {
-                await objReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
-                await objReturn.SetWritableNameAsync(strForcedName, token).ConfigureAwait(false);
-                objReturn.ForcedName = true;
-                objReturn._blnAllowUpgrade = blnAllowUpgrade;
+                await objReturn.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                try
+                {
+                    await objReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                    await objReturn.SetWritableNameAsync(strForcedName, token).ConfigureAwait(false);
+                    objReturn.ForcedName = true;
+                    objReturn._blnAllowUpgrade = blnAllowUpgrade;
+                }
+                finally
+                {
+                    await objReturn.LockObject.SetParentAsync(objCharacter.SkillsSection.LockObject, token: token).ConfigureAwait(false);
+                }
             }
             catch
             {
@@ -145,14 +175,6 @@ namespace Chummer.Backend.Skills
             }
 
             return objReturn;
-        }
-
-        public KnowledgeSkill(Character objCharacter, string strForcedName, bool blnAllowUpgrade) : this(objCharacter)
-        {
-            WritableName = strForcedName;
-            ForcedName = true;
-            _blnAllowUpgrade = blnAllowUpgrade;
-            IsLoading = false;
         }
 
         private bool _blnAllowUpgrade = true;

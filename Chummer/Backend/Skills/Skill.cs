@@ -934,45 +934,57 @@ namespace Chummer.Backend.Skills
         {
             if (xmlNode == null)
                 return;
-            _strName = xmlNode["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-            DefaultAttribute = xmlNode["attribute"]?.InnerText;
-            SkillCategory = xmlNode["category"]?.InnerText ?? string.Empty;
-            Default = xmlNode["default"]?.InnerText == bool.TrueString;
-            Source = xmlNode["source"]?.InnerText;
-            Page = xmlNode["page"]?.InnerText;
-            if (xmlNode.TryGetField("id", Guid.TryParse, out Guid guiTemp))
-                _guidSkillId = guiTemp;
-            else if (xmlNode.TryGetField("suid", Guid.TryParse, out guiTemp))
-                _guidSkillId = guiTemp;
-            if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
-                _guidInternalId = guiTemp;
-
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
-            bool blnTemp = false;
-            if (xmlNode.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) == true)
-                RequiresGroundMovement = blnTemp;
-            if (xmlNode.TryGetBoolFieldQuickly("requiresswimmovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresswimmovement", ref blnTemp) == true)
-                RequiresSwimMovement = blnTemp;
-            if (xmlNode.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) == true)
-                RequiresFlyMovement = blnTemp;
-
-            if (blnDoSkillGroup)
+            LockObject.SetParent();
+            try
             {
-                string strGroup = xmlNode["skillgroup"]?.InnerText;
+                _strName = xmlNode["name"]
+                    ?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
+                DefaultAttribute = xmlNode["attribute"]?.InnerText;
+                SkillCategory = xmlNode["category"]?.InnerText ?? string.Empty;
+                Default = xmlNode["default"]?.InnerText == bool.TrueString;
+                Source = xmlNode["source"]?.InnerText;
+                Page = xmlNode["page"]?.InnerText;
+                if (xmlNode.TryGetField("id", Guid.TryParse, out Guid guiTemp))
+                    _guidSkillId = guiTemp;
+                else if (xmlNode.TryGetField("suid", Guid.TryParse, out guiTemp))
+                    _guidSkillId = guiTemp;
+                if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
+                    _guidInternalId = guiTemp;
 
-                if (!string.IsNullOrEmpty(strGroup))
+                Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                bool blnTemp = false;
+                if (xmlNode.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) ||
+                    objMyNode.Value?.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) == true)
+                    RequiresGroundMovement = blnTemp;
+                if (xmlNode.TryGetBoolFieldQuickly("requiresswimmovement", ref blnTemp) ||
+                    objMyNode.Value?.TryGetBoolFieldQuickly("requiresswimmovement", ref blnTemp) == true)
+                    RequiresSwimMovement = blnTemp;
+                if (xmlNode.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) ||
+                    objMyNode.Value?.TryGetBoolFieldQuickly("requiresflymovement", ref blnTemp) == true)
+                    RequiresFlyMovement = blnTemp;
+
+                if (blnDoSkillGroup)
                 {
-                    SkillGroup = strGroup;
-                    SkillGroupObject = Skills.SkillGroup.Get(this);
-                    if (SkillGroupObject != null)
+                    string strGroup = xmlNode["skillgroup"]?.InnerText;
+
+                    if (!string.IsNullOrEmpty(strGroup))
                     {
-                        SkillGroupObject.PropertyChangedAsync += OnSkillGroupChanged;
+                        SkillGroup = strGroup;
+                        SkillGroupObject = Skills.SkillGroup.Get(this);
+                        if (SkillGroupObject != null)
+                        {
+                            SkillGroupObject.PropertyChangedAsync += OnSkillGroupChanged;
+                        }
                     }
                 }
-            }
 
-            _blnRecalculateCachedSuggestedSpecializations = true;
-            IsLoading = false;
+                _blnRecalculateCachedSuggestedSpecializations = true;
+                IsLoading = false;
+            }
+            finally
+            {
+                LockObject.SetParent(CharacterObject.SkillsSection.LockObject);
+            }
         }
 
         #endregion Factory

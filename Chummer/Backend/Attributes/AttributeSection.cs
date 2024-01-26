@@ -310,29 +310,37 @@ namespace Chummer.Backend.Attributes
                 {
                     _blnAttributesInitialized = true;
 
-                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
-                    _lstAttributes.Clear();
-
-                    foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
-                        _lstAttributes.Add(GetAttributeByName(strAbbrev, token));
-
-                    _lstAttributes.Add(GetAttributeByName("EDG", token));
-
-                    if (_objCharacter.MAGEnabled)
+                    _lstAttributes.LockObject.SetParent(token: token);
+                    try
                     {
-                        _lstAttributes.Add(GetAttributeByName("MAG", token));
-                        if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                            _lstAttributes.Add(GetAttributeByName("MAGAdept", token));
+                        // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                        _lstAttributes.Clear();
+
+                        foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
+                            _lstAttributes.Add(GetAttributeByName(strAbbrev, token));
+
+                        _lstAttributes.Add(GetAttributeByName("EDG", token));
+
+                        if (_objCharacter.MAGEnabled)
+                        {
+                            _lstAttributes.Add(GetAttributeByName("MAG", token));
+                            if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                                _lstAttributes.Add(GetAttributeByName("MAGAdept", token));
+                        }
+
+                        if (_objCharacter.RESEnabled)
+                        {
+                            _lstAttributes.Add(GetAttributeByName("RES", token));
+                        }
+
+                        if (_objCharacter.DEPEnabled)
+                        {
+                            _lstAttributes.Add(GetAttributeByName("DEP", token));
+                        }
                     }
-
-                    if (_objCharacter.RESEnabled)
+                    finally
                     {
-                        _lstAttributes.Add(GetAttributeByName("RES", token));
-                    }
-
-                    if (_objCharacter.DEPEnabled)
-                    {
-                        _lstAttributes.Add(GetAttributeByName("DEP", token));
+                        _lstAttributes.LockObject.SetParent(LockObject, true, token);
                     }
                 }
             }
@@ -351,30 +359,51 @@ namespace Chummer.Backend.Attributes
                     token.ThrowIfCancellationRequested();
                     _blnAttributesInitialized = true;
 
-                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
-                    await _lstAttributes.ClearAsync(token).ConfigureAwait(false);
-                    
-                    foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
-                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync(strAbbrev, token).ConfigureAwait(false), token).ConfigureAwait(false);
-
-                    await _lstAttributes.AddAsync(await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false), token).ConfigureAwait(false);
-
-                    if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                    await _lstAttributes.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                    try
                     {
-                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false), token).ConfigureAwait(false);
-                        if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) &&
-                            await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
-                            await _lstAttributes.AddAsync(await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                        await _lstAttributes.ClearAsync(token).ConfigureAwait(false);
+
+                        foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
+                            await _lstAttributes
+                                .AddAsync(await GetAttributeByNameAsync(strAbbrev, token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
+
+                        await _lstAttributes
+                            .AddAsync(await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+
+                        if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await _lstAttributes
+                                .AddAsync(await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
+                            if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                    .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) &&
+                                await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
+                                await _lstAttributes
+                                    .AddAsync(await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false),
+                                        token).ConfigureAwait(false);
+                        }
+
+                        if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await _lstAttributes
+                                .AddAsync(await GetAttributeByNameAsync("RES", token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
+                        }
+
+                        if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await _lstAttributes
+                                .AddAsync(await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false), token)
+                                .ConfigureAwait(false);
+                        }
                     }
-
-                    if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+                    finally
                     {
-                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("RES", token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    }
-
-                    if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false))
-                    {
-                        await _lstAttributes.AddAsync(await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await _lstAttributes.LockObject.SetParentAsync(LockObject, true, token).ConfigureAwait(false);
                     }
                 }
                 finally

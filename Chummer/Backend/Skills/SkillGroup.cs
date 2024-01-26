@@ -1550,16 +1550,24 @@ namespace Chummer.Backend.Skills
                 else
                 {
                     objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
-                    objSkillGroup.Add(objSkill);
-                    objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objSkillGroup,
-                        SkillsSection.CompareSkillGroups,
-                        (objExistingSkillGroup, objNewSkillGroup) =>
-                        {
-                            foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
-                                         !objExistingSkillGroup.SkillList.Contains(x)))
-                                objExistingSkillGroup.Add(x);
-                            objNewSkillGroup.Dispose();
-                        });
+                    objSkillGroup.LockObject.SetParent();
+                    try
+                    {
+                        objSkillGroup.Add(objSkill);
+                        objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objSkillGroup,
+                            SkillsSection.CompareSkillGroups,
+                            (objExistingSkillGroup, objNewSkillGroup) =>
+                            {
+                                foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
+                                             !objExistingSkillGroup.SkillList.Contains(x)))
+                                    objExistingSkillGroup.Add(x);
+                                objNewSkillGroup.Dispose();
+                            });
+                    }
+                    finally
+                    {
+                        objSkillGroup.LockObject.SetParent(objSkill.CharacterObject.SkillsSection.LockObject);
+                    }
                 }
 
                 return objSkillGroup;
@@ -1607,16 +1615,26 @@ namespace Chummer.Backend.Skills
                 else
                 {
                     objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
-                    await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
-                    await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
-                        (x, y) => SkillsSection.CompareSkillGroupsAsync(x, y, token),
-                        async (objExistingSkillGroup, objNewSkillGroup) =>
-                        {
-                            foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
-                                         !objExistingSkillGroup.SkillList.Contains(x)))
-                                await objExistingSkillGroup.AddAsync(x, token).ConfigureAwait(false);
-                            await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
-                        }, token: token).ConfigureAwait(false);
+                    await objSkillGroup.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                    try
+                    {
+                        await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
+                        await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
+                            (x, y) => SkillsSection.CompareSkillGroupsAsync(x, y, token),
+                            async (objExistingSkillGroup, objNewSkillGroup) =>
+                            {
+                                foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
+                                             !objExistingSkillGroup.SkillList.Contains(x)))
+                                    await objExistingSkillGroup.AddAsync(x, token).ConfigureAwait(false);
+                                await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
+                            }, token: token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objSkillGroup.LockObject
+                            .SetParentAsync(objSkill.CharacterObject.SkillsSection.LockObject, token: token)
+                            .ConfigureAwait(false);
+                    }
                 }
 
                 return objSkillGroup;

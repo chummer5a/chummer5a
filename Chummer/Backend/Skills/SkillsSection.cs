@@ -1170,65 +1170,74 @@ namespace Chummer.Backend.Skills
                                     {
                                         bool blnDoInitialize;
                                         token.ThrowIfCancellationRequested();
-                                        IDisposable objLocker2 = null;
-                                        IAsyncDisposable objLockerAsync2 = null;
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            objLocker2 = _objSkillsInitializerLock.EnterReadLock(token);
+                                            _objSkillsInitializerLock.SetParent(token: token);
                                         else
-                                            objLockerAsync2 = await _objSkillsInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false);
+                                            await _objSkillsInitializerLock.SetParentAsync(token: token).ConfigureAwait(false);
                                         try
                                         {
-                                            token.ThrowIfCancellationRequested();
-                                            blnDoInitialize = !_blnSkillsInitialized &&
-                                                              _objCharacter.SkillsSection == this;
-                                        }
-                                        finally
-                                        {
+                                            IDisposable objLocker2 = null;
+                                            IAsyncDisposable objLockerAsync2 = null;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                objLocker2.Dispose();
+                                                objLocker2 = _objSkillsInitializerLock.EnterReadLock(token);
                                             else
-                                                await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
-                                        }
-
-                                        if (blnDoInitialize)
-                                        {
-                                            objLocker2 = null;
-                                            objLockerAsync2 = null;
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                objLocker2 = _objSkillsInitializerLock.EnterUpgradeableReadLock(token);
-                                            else
-                                            {
                                                 objLockerAsync2 = await _objSkillsInitializerLock
-                                                    .EnterUpgradeableReadLockAsync(token)
-                                                    .ConfigureAwait(false);
-                                            }
-
+                                                    .EnterReadLockAsync(token).ConfigureAwait(false);
                                             try
                                             {
                                                 token.ThrowIfCancellationRequested();
-                                                if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
+                                                blnDoInitialize = !_blnSkillsInitialized &&
+                                                                  _objCharacter.SkillsSection == this;
+                                            }
+                                            finally
+                                            {
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    objLocker2.Dispose();
+                                                else
+                                                    await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
+                                            }
+
+                                            if (blnDoInitialize)
+                                            {
+                                                objLocker2 = null;
+                                                objLockerAsync2 = null;
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    objLocker2 =
+                                                        _objSkillsInitializerLock.EnterUpgradeableReadLock(token);
+                                                else
                                                 {
-                                                    IDisposable objLocker3 = null;
-                                                    IAsyncDisposable objLockerAsync3 = null;
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        objLocker3 = _objSkillsInitializerLock.EnterWriteLock(token);
-                                                    else
-                                                        objLockerAsync3 = await _objSkillsInitializerLock
-                                                            .EnterWriteLockAsync(token)
-                                                            .ConfigureAwait(false);
-                                                    try
+                                                    objLockerAsync2 = await _objSkillsInitializerLock
+                                                        .EnterUpgradeableReadLockAsync(token)
+                                                        .ConfigureAwait(false);
+                                                }
+
+                                                try
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
                                                     {
-                                                        token.ThrowIfCancellationRequested();
-                                                        if (!_blnSkillsInitialized)
+                                                        IDisposable objLocker3 = null;
+                                                        IAsyncDisposable objLockerAsync3 = null;
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            objLocker3 =
+                                                                _objSkillsInitializerLock.EnterWriteLock(token);
+                                                        else
+                                                            objLockerAsync3 = await _objSkillsInitializerLock
+                                                                .EnterWriteLockAsync(token)
+                                                                .ConfigureAwait(false);
+                                                        try
                                                         {
+                                                            token.ThrowIfCancellationRequested();
                                                             blnDidInitializeInLoad = true;
                                                             XmlDocument xmlSkillsDataDoc = blnSync
                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                ? _objCharacter.LoadData("skills.xml", token: token)
+                                                                ? _objCharacter.LoadData("skills.xml",
+                                                                    token: token)
                                                                 : await _objCharacter
                                                                     .LoadDataAsync("skills.xml", token: token)
                                                                     .ConfigureAwait(false);
@@ -1242,7 +1251,8 @@ namespace Chummer.Backend.Skills
                                                                            : await _objCharacter.Settings
                                                                                .BookXPathAsync(token: token)
                                                                                .ConfigureAwait(false)) + ')'
-                                                                       + SkillFilter(FilterOption.NonSpecial) + ']'))
+                                                                       + SkillFilter(FilterOption.NonSpecial) +
+                                                                       ']'))
                                                             {
                                                                 if (lstSkillDataNodes?.Count > 0)
                                                                 {
@@ -1254,7 +1264,8 @@ namespace Chummer.Backend.Skills
                                                                                   // ReSharper disable once MethodHasAsyncOverload
                                                                                   .SelectSingleNodeAndCacheExpressionAsNavigator(
                                                                                       "/chummer/categories/category[. = "
-                                                                                      + xmlSkillDataNode["category"]
+                                                                                      + xmlSkillDataNode[
+                                                                                              "category"]
                                                                                           ?.InnerText
                                                                                           .CleanXPath()
                                                                                       + "]/@type", token)
@@ -1267,9 +1278,10 @@ namespace Chummer.Backend.Skills
                                                                                 _objCharacter,
                                                                                 blnIsKnowledgeSkill)
                                                                             : await Skill.FromDataAsync(
-                                                                                xmlSkillDataNode,
-                                                                                _objCharacter,
-                                                                                blnIsKnowledgeSkill, token).ConfigureAwait(false);
+                                                                                    xmlSkillDataNode,
+                                                                                    _objCharacter,
+                                                                                    blnIsKnowledgeSkill, token)
+                                                                                .ConfigureAwait(false);
                                                                         if (objSkill.SkillId != Guid.Empty)
                                                                         {
                                                                             string strSkillId =
@@ -1277,41 +1289,51 @@ namespace Chummer.Backend.Skills
                                                                             XmlNode xmlLoadingSkillNode =
                                                                                 xmlSkillNode.SelectSingleNode(
                                                                                     "skills/skill[suid = " +
-                                                                                    strSkillId.CleanXPath() + ']') ??
+                                                                                    strSkillId.CleanXPath() +
+                                                                                    ']') ??
                                                                                 xmlSkillNode.SelectSingleNode(
                                                                                     "knoskills/skill[suid = " +
-                                                                                    strSkillId.CleanXPath() + ']');
+                                                                                    strSkillId.CleanXPath() +
+                                                                                    ']');
                                                                             if (xmlLoadingSkillNode != null)
                                                                             {
-                                                                                setSkillIdsToSkip.Add(strSkillId);
+                                                                                setSkillIdsToSkip.Add(
+                                                                                    strSkillId);
                                                                                 Skill.Load(_objCharacter,
                                                                                     xmlLoadingSkillNode,
                                                                                     objSkill);
                                                                             }
                                                                         }
 
-                                                                        KnowledgeSkill objKnoSkill = blnIsKnowledgeSkill
-                                                                            ? objSkill as KnowledgeSkill
-                                                                            : null;
+                                                                        KnowledgeSkill objKnoSkill =
+                                                                            blnIsKnowledgeSkill
+                                                                                ? objSkill as KnowledgeSkill
+                                                                                : null;
 
                                                                         if (blnSync)
                                                                         {
                                                                             if (objKnoSkill != null)
                                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                                _lstKnowledgeSkills.Add(objKnoSkill);
+                                                                                _lstKnowledgeSkills
+                                                                                    .Add(objKnoSkill);
                                                                             else
                                                                             {
-                                                                                string strKey = objSkill.DictionaryKey;
-                                                                                if (_dicSkills.TryAdd(strKey, objSkill))
+                                                                                string strKey =
+                                                                                    objSkill.DictionaryKey;
+                                                                                if (_dicSkills.TryAdd(strKey,
+                                                                                         objSkill))
                                                                                 {
                                                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                                     _lstSkills.Add(objSkill);
                                                                                 }
-                                                                                else if (_dicSkills.TryGetValue(strKey,
-                                                                                    out Skill objExistingSkill))
+                                                                                else if (_dicSkills.TryGetValue(
+                                                                                         strKey,
+                                                                                         out Skill
+                                                                                             objExistingSkill))
                                                                                 {
                                                                                     // ReSharper disable once MethodHasAsyncOverload
-                                                                                    MergeSkills(objExistingSkill,
+                                                                                    MergeSkills(
+                                                                                        objExistingSkill,
                                                                                         objSkill,
                                                                                         token);
                                                                                 }
@@ -1328,15 +1350,20 @@ namespace Chummer.Backend.Skills
                                                                             string strKey = await objSkill
                                                                                 .GetDictionaryKeyAsync(token)
                                                                                 .ConfigureAwait(false);
-                                                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                                                            if (_dicSkills.TryAdd(strKey,
+                                                                                    objSkill))
                                                                             {
-                                                                                await _lstSkills.AddAsync(objSkill,
+                                                                                await _lstSkills.AddAsync(
+                                                                                        objSkill,
                                                                                         token)
                                                                                     .ConfigureAwait(false);
                                                                             }
-                                                                            else if (_dicSkills.TryGetValue(strKey,
-                                                                                out Skill objExistingSkill))
-                                                                                await MergeSkillsAsync(objExistingSkill,
+                                                                            else if (_dicSkills.TryGetValue(
+                                                                                     strKey,
+                                                                                     out Skill
+                                                                                         objExistingSkill))
+                                                                                await MergeSkillsAsync(
+                                                                                        objExistingSkill,
                                                                                         objSkill, token)
                                                                                     .ConfigureAwait(false);
                                                                             else
@@ -1348,25 +1375,34 @@ namespace Chummer.Backend.Skills
 
                                                             _blnSkillsInitialized = true;
                                                         }
-                                                    }
-                                                    finally
-                                                    {
-                                                        if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            objLocker3.Dispose();
-                                                        else
-                                                            await objLockerAsync3.DisposeAsync().ConfigureAwait(false);
+                                                        finally
+                                                        {
+                                                            if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                objLocker3.Dispose();
+                                                            else
+                                                                await objLockerAsync3.DisposeAsync()
+                                                                    .ConfigureAwait(false);
+                                                        }
                                                     }
                                                 }
+                                                finally
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        objLocker2.Dispose();
+                                                    else
+                                                        await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
+                                                }
                                             }
-                                            finally
-                                            {
-                                                if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    objLocker2.Dispose();
-                                                else
-                                                    await objLockerAsync2.DisposeAsync().ConfigureAwait(false);
-                                            }
+                                        }
+                                        finally
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _objSkillsInitializerLock.SetParent(LockObject, token: token);
+                                            else
+                                                await _objSkillsInitializerLock.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                                         }
                                     }
 
@@ -1846,8 +1882,9 @@ namespace Chummer.Backend.Skills
                                 if (!_objCharacter.Created)
                                 {
                                     // zero out any skillgroups whose skills did not make the final cut
-                                    foreach (SkillGroup objSkillGroup in SkillGroups)
+                                    foreach (SkillGroup objSkillGroup in SkillGroups.ToList())
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
                                         {
                                             objSkillGroup.Base = 0;
@@ -1865,6 +1902,7 @@ namespace Chummer.Backend.Skills
                                     // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
                                     foreach (SkillGroup g in SkillGroups.ToList())
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         g.OnPropertyChanged(nameof(SkillGroup.SkillList));
                                     }
                                 }
@@ -1872,8 +1910,10 @@ namespace Chummer.Backend.Skills
                             else if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             {
                                 // zero out any skillgroups whose skills did not make the final cut
-                                await SkillGroups.ForEachAsync(async objSkillGroup =>
+                                foreach (SkillGroup objSkillGroup in await SkillGroups.ToListAsync(token)
+                                             .ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (!await objSkillGroup.SkillList.AnyAsync(
                                                 async x => _dicSkills.ContainsKey(
                                                         await x.GetDictionaryKeyAsync(token)
@@ -1889,7 +1929,7 @@ namespace Chummer.Backend.Skills
                                         await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token)
                                             .ConfigureAwait(false);
                                     }
-                                }, token).ConfigureAwait(false);
+                                };
                             }
                             else
                             {
@@ -1897,6 +1937,7 @@ namespace Chummer.Backend.Skills
                                 foreach (SkillGroup objSkillGroup in await SkillGroups.ToListAsync(token)
                                              .ConfigureAwait(false))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token)
                                         .ConfigureAwait(false);
                                 }
@@ -2595,6 +2636,9 @@ namespace Chummer.Backend.Skills
                     using (_objSkillsInitializerLock.EnterWriteLock())
                     {
                         _lstSkills.RaiseListChangedEvents = false;
+                        _lstSkillGroups.RaiseListChangedEvents = false;
+                        _lstSkills.LockObject.SetParent();
+                        _lstSkillGroups.LockObject.SetParent();
                         try
                         {
                             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
@@ -2632,6 +2676,9 @@ namespace Chummer.Backend.Skills
                         }
                         finally
                         {
+                            _lstSkillGroups.LockObject.SetParent(LockObject);
+                            _lstSkills.LockObject.SetParent(LockObject);
+                            _lstSkillGroups.RaiseListChangedEvents = true;
                             _lstSkills.RaiseListChangedEvents = true;
                         }
 
@@ -2679,49 +2726,67 @@ namespace Chummer.Backend.Skills
                         .LoadDataAsync("skills.xml", token: token)
                         .ConfigureAwait(false);
                     _lstSkills.RaiseListChangedEvents = false;
+                    _lstSkillGroups.RaiseListChangedEvents = false;
                     try
                     {
-                        using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                   .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
-                                                + await (await _objCharacter.GetSettingsAsync(token)
-                                                        .ConfigureAwait(false)).BookXPathAsync(token: token)
-                                                    .ConfigureAwait(false) + ')'
-                                                + SkillFilter(FilterOption.NonSpecial) + ']'))
+                        await _lstSkills.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                        try
                         {
-                            if (xmlSkillList?.Count > 0)
+                            await _lstSkillGroups.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                            try
                             {
-                                foreach (XmlNode xmlSkill in xmlSkillList)
+                                using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and ("
+                                                        + await (await _objCharacter.GetSettingsAsync(token)
+                                                                .ConfigureAwait(false)).BookXPathAsync(token: token)
+                                                            .ConfigureAwait(false) + ')'
+                                                        + SkillFilter(FilterOption.NonSpecial) + ']'))
                                 {
-                                    bool blnIsKnowledgeSkill
-                                        = xmlSkillsDocument
-                                              .SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                  "/chummer/categories/category[. = "
-                                                  + xmlSkill["category"]?.InnerText.CleanXPath()
-                                                  + "]/@type", token)
-                                              ?.Value
-                                          != "active";
-                                    Skill objSkill = await Skill.FromDataAsync(xmlSkill, _objCharacter,
-                                        blnIsKnowledgeSkill, token).ConfigureAwait(false);
-                                    string strKey = await objSkill.GetDictionaryKeyAsync(token)
-                                        .ConfigureAwait(false);
-                                    if (_dicSkills.TryAdd(strKey, objSkill))
+                                    if (xmlSkillList?.Count > 0)
                                     {
-                                        await _lstSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                        foreach (XmlNode xmlSkill in xmlSkillList)
+                                        {
+                                            bool blnIsKnowledgeSkill
+                                                = xmlSkillsDocument
+                                                      .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                          "/chummer/categories/category[. = "
+                                                          + xmlSkill["category"]?.InnerText.CleanXPath()
+                                                          + "]/@type", token)
+                                                      ?.Value
+                                                  != "active";
+                                            Skill objSkill = await Skill.FromDataAsync(xmlSkill, _objCharacter,
+                                                blnIsKnowledgeSkill, token).ConfigureAwait(false);
+                                            string strKey = await objSkill.GetDictionaryKeyAsync(token)
+                                                .ConfigureAwait(false);
+                                            if (_dicSkills.TryAdd(strKey, objSkill))
+                                            {
+                                                await _lstSkills.AddAsync(objSkill, token).ConfigureAwait(false);
+                                            }
+                                            else if (_dicSkills.TryGetValue(strKey,
+                                                         out Skill objExistingSkill))
+                                                await MergeSkillsAsync(objExistingSkill,
+                                                    objSkill, token).ConfigureAwait(false);
+                                            else
+                                                Utils.BreakIfDebug();
+                                        }
                                     }
-                                    else if (_dicSkills.TryGetValue(strKey,
-                                                 out Skill objExistingSkill))
-                                        await MergeSkillsAsync(objExistingSkill,
-                                            objSkill, token).ConfigureAwait(false);
-                                    else
-                                        Utils.BreakIfDebug();
                                 }
+
+                                await _lstSkills.SortAsync(CompareSkills, token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await _lstSkillGroups.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                             }
                         }
-
-                        await _lstSkills.SortAsync(CompareSkills, token).ConfigureAwait(false);
+                        finally
+                        {
+                            await _lstSkills.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
+                        _lstSkillGroups.RaiseListChangedEvents = true;
                         _lstSkills.RaiseListChangedEvents = true;
                     }
 
