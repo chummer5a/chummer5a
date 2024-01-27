@@ -72,7 +72,7 @@ namespace Chummer
             CancellationTokenRegistration objCancellationRegistration
                 = GenericToken.Register(() => Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null)?.Cancel(false));
             Disposed += (sender, args) => objCancellationRegistration.Dispose();
-            _objCharacter.PropertyChangedAsync += CharacterPropertyChanged;
+            _objCharacter.MultiplePropertiesChangedAsync += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
             Load += OnLoad;
             Program.MainForm.OpenCharacterEditorForms?.Add(this);
@@ -127,41 +127,36 @@ namespace Chummer
         {
         }
 
-        private async Task CharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task CharacterPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
-            switch (e.PropertyName)
+            if (e.PropertyNames.Contains(nameof(Character.FileName)))
             {
-                case nameof(Character.Settings):
+                FileSystemWatcher objNewWatcher = null;
+                if (GlobalSettings.LiveUpdateCleanCharacterFiles)
                 {
-                    _objCachedSettings = null;
-                    try
+                    string strFileName = Path.GetFileName(CharacterObject.FileName);
+                    if (!string.IsNullOrEmpty(strFileName))
                     {
-                        await RequestCharacterUpdate(token).ConfigureAwait(false);
-                        await SetDirty(true, token).ConfigureAwait(false);
+                        objNewWatcher = new FileSystemWatcher(
+                            Path.GetDirectoryName(CharacterObject.FileName)
+                            ?? Path.GetPathRoot(CharacterObject.FileName), strFileName);
+                        objNewWatcher.Changed += LiveUpdateFromCharacterFile;
                     }
-                    catch (OperationCanceledException)
-                    {
-                        //swallow this
-                    }
-                    break;
                 }
-                case nameof(Character.FileName):
-                {
-                    FileSystemWatcher objNewWatcher = null;
-                    if (GlobalSettings.LiveUpdateCleanCharacterFiles)
-                    {
-                        string strFileName = Path.GetFileName(CharacterObject.FileName);
-                        if (!string.IsNullOrEmpty(strFileName))
-                        {
-                            objNewWatcher = new FileSystemWatcher(
-                                Path.GetDirectoryName(CharacterObject.FileName)
-                                ?? Path.GetPathRoot(CharacterObject.FileName), strFileName);
-                            objNewWatcher.Changed += LiveUpdateFromCharacterFile;
-                        }
-                    }
-                    Interlocked.Exchange(ref _objCharacterFileWatcher, objNewWatcher)?.Dispose();
+                Interlocked.Exchange(ref _objCharacterFileWatcher, objNewWatcher)?.Dispose();
+            }
 
-                    break;
+            if (e.PropertyNames.Contains(nameof(Character.Settings)))
+            {
+                _objCachedSettings = null;
+                try
+                {
+                    await RequestCharacterUpdate(token).ConfigureAwait(false);
+                    await SetDirty(true, token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
                 }
             }
         }
@@ -2376,7 +2371,7 @@ namespace Chummer
                             IHasInternalId)?.InternalId ?? string.Empty;
 
                     // Create the root nodes.
-                    await CharacterObject.Qualities.ForEachAsync(x => x.PropertyChangedAsync -= AddedQualityOnPropertyChanged, token).ConfigureAwait(false);
+                    await CharacterObject.Qualities.ForEachAsync(x => x.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged, token).ConfigureAwait(false);
 
                     await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
@@ -2452,7 +2447,7 @@ namespace Chummer
                                                 objParent.Remove();
                                         }
                                     }, token).ConfigureAwait(false);
-                                    objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
+                                    objQuality.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged;
                                 }
                             }
 
@@ -2479,7 +2474,7 @@ namespace Chummer
                                                 lstOldParents.Add(objNode.Parent);
                                             objNode.Remove();
                                         }, token).ConfigureAwait(false);
-                                        objQuality.PropertyChangedAsync -= AddedQualityOnPropertyChanged;
+                                        objQuality.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged;
                                     }
                                     else
                                     {
@@ -2606,38 +2601,28 @@ namespace Chummer
                         else
                             objParentNode.Nodes.Add(objNode);
                     }, token).ConfigureAwait(false);
-                    objQuality.PropertyChangedAsync += AddedQualityOnPropertyChanged;
+                    objQuality.MultiplePropertiesChangedAsync += AddedQualityOnPropertyChanged;
                 }
             }
 
-            async Task AddedQualityOnPropertyChanged(object sender, PropertyChangedEventArgs e2, CancellationToken innerToken = default)
+            async Task AddedQualityOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e2, CancellationToken innerToken = default)
             {
                 innerToken.ThrowIfCancellationRequested();
-                switch (e2.PropertyName)
+                if (!(sender is Quality objQuality))
+                    return;
+                if (e2.PropertyNames.Contains(nameof(Quality.Suppressed))
+                    || e2.PropertyNames.Contains(nameof(Quality.Notes)))
                 {
-                    case nameof(Quality.Suppressed):
-                    {
-                        if (!(sender is Quality objQuality))
-                            return;
-                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
-                        if (objNode == null)
-                            return;
+                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                    if (objNode == null)
+                        return;
+                    if (e2.PropertyNames.Contains(nameof(Quality.Suppressed)))
                         objNode.NodeFont = await objQuality.GetSuppressedAsync(innerToken).ConfigureAwait(false)
                             ? fntStrikeout
                             : fntNormal;
-                        break;
-                    }
-                    case nameof(Quality.Notes):
-                    {
-                        if (!(sender is Quality objQuality))
-                            return;
-                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
-                        if (objNode == null)
-                            return;
+                    if (e2.PropertyNames.Contains(nameof(Quality.Notes)))
                         objNode.ToolTipText =
                             (await objQuality.GetNotesAsync(innerToken).ConfigureAwait(false)).WordWrap();
-                        break;
-                    }
                 }
             }
         }
@@ -10579,7 +10564,7 @@ namespace Chummer
             {
                 if (_objCharacter?.IsDisposed == false)
                 {
-                    _objCharacter.PropertyChangedAsync -= CharacterPropertyChanged;
+                    _objCharacter.MultiplePropertiesChangedAsync -= CharacterPropertyChanged;
                 }
 
                 Interlocked.Exchange(ref _objCharacterFileWatcher, null)?.Dispose();

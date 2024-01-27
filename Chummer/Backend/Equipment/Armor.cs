@@ -183,9 +183,9 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter?.IsLoading != false || !await _objCharacter.Armor.ContainsAsync(this, token).ConfigureAwait(false))
                 return;
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -226,7 +226,7 @@ namespace Chummer.Backend.Equipment
                                     == objItem.InternalId
                                     && objImprovement.Enabled)
                                 {
-                                    foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                    foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                  string strPropertyToUpdate) in objImprovement
                                                  .GetRelevantPropertyChangers())
                                     {
@@ -245,10 +245,10 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                              dicChangedProperties)
                     {
-                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally

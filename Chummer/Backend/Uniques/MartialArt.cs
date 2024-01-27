@@ -122,9 +122,9 @@ namespace Chummer
 
                 if (lstImprovementSourcesToProcess.Count == 0 || _objCharacter?.IsLoading != false)
                     return;
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
-                           out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                           out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
                 {
                     try
                     {
@@ -136,7 +136,7 @@ namespace Chummer
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     return;
-                                foreach ((INotifyMultiplePropertyChangedAsync objToUpdate, string strPropertyName) in
+                                foreach ((INotifyMultiplePropertiesChangedAsync objToUpdate, string strPropertyName) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
                                     if (!dicChangedProperties.TryGetValue(objToUpdate,
@@ -151,10 +151,10 @@ namespace Chummer
                             }, token: token).ConfigureAwait(false);
                         }
 
-                        foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
                                  dicChangedProperties)
                         {
-                            await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token)
+                            await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token)
                                 .ConfigureAwait(false);
                         }
                     }

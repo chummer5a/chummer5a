@@ -57,7 +57,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyMultiplePropertyChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject
+    public sealed class Character : INotifyMultiplePropertiesChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -342,10 +342,10 @@ namespace Chummer
             _lstImprovementGroups = new ThreadSafeObservableCollection<string>(LockObject);
             _lstDrugs = new ThreadSafeObservableCollection<Drug>(LockObject);
 
-            _objSettings.PropertyChangedAsync += OptionsOnPropertyChanged;
+            _objSettings.MultiplePropertiesChangedAsync += OptionsOnPropertyChanged;
             _objAttributeSection = new AttributeSection(this);
             _objAttributeSection.Reset(true);
-            _objAttributeSection.PropertyChangedAsync += AttributeSectionOnPropertyChanged;
+            _objAttributeSection.MultiplePropertiesChangedAsync += AttributeSectionOnPropertyChanged;
 
             _objSkillsSection = new SkillsSection(this);
             _objSkillsSection.Reset(true);
@@ -674,59 +674,59 @@ namespace Chummer
                         switch (objAttribute.Abbrev)
                         {
                             case "BOD":
-                                objAttribute.PropertyChangedAsync -= RefreshBODDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
                                 break;
 
                             case "AGI":
-                                objAttribute.PropertyChangedAsync -= RefreshAGIDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshAGIDependentProperties;
                                 break;
 
                             case "REA":
-                                objAttribute.PropertyChangedAsync -= RefreshREADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshREADependentProperties;
                                 break;
 
                             case "STR":
-                                objAttribute.PropertyChangedAsync -= RefreshSTRDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshSTRDependentProperties;
                                 break;
 
                             case "CHA":
-                                objAttribute.PropertyChangedAsync -= RefreshCHADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshCHADependentProperties;
                                 break;
 
                             case "INT":
-                                objAttribute.PropertyChangedAsync -= RefreshINTDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshINTDependentProperties;
                                 break;
 
                             case "LOG":
-                                objAttribute.PropertyChangedAsync -= RefreshLOGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshLOGDependentProperties;
                                 break;
 
                             case "WIL":
-                                objAttribute.PropertyChangedAsync -= RefreshWILDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshWILDependentProperties;
                                 break;
 
                             case "EDG":
-                                objAttribute.PropertyChangedAsync -= RefreshEDGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshEDGDependentProperties;
                                 break;
 
                             case "MAG":
-                                objAttribute.PropertyChangedAsync -= RefreshMAGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
                                 break;
 
                             case "MAGAdept":
-                                objAttribute.PropertyChangedAsync -= RefreshMAGAdeptDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
                                 break;
 
                             case "RES":
-                                objAttribute.PropertyChangedAsync -= RefreshRESDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshRESDependentProperties;
                                 break;
 
                             case "DEP":
-                                objAttribute.PropertyChangedAsync -= RefreshDEPDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshDEPDependentProperties;
                                 break;
 
                             case "ESS":
-                                objAttribute.PropertyChangedAsync -= RefreshESSDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshESSDependentProperties;
                                 break;
                         }
                     }
@@ -739,59 +739,59 @@ namespace Chummer
                         switch (strAbbrev)
                         {
                             case "BOD":
-                                objAttribute.PropertyChangedAsync += RefreshBODDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
                                 break;
 
                             case "AGI":
-                                objAttribute.PropertyChangedAsync += RefreshAGIDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshAGIDependentProperties;
                                 break;
 
                             case "REA":
-                                objAttribute.PropertyChangedAsync += RefreshREADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshREADependentProperties;
                                 break;
 
                             case "STR":
-                                objAttribute.PropertyChangedAsync += RefreshSTRDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshSTRDependentProperties;
                                 break;
 
                             case "CHA":
-                                objAttribute.PropertyChangedAsync += RefreshCHADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshCHADependentProperties;
                                 break;
 
                             case "INT":
-                                objAttribute.PropertyChangedAsync += RefreshINTDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshINTDependentProperties;
                                 break;
 
                             case "LOG":
-                                objAttribute.PropertyChangedAsync += RefreshLOGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshLOGDependentProperties;
                                 break;
 
                             case "WIL":
-                                objAttribute.PropertyChangedAsync += RefreshWILDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshWILDependentProperties;
                                 break;
 
                             case "EDG":
-                                objAttribute.PropertyChangedAsync += RefreshEDGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshEDGDependentProperties;
                                 break;
 
                             case "MAG":
-                                objAttribute.PropertyChangedAsync += RefreshMAGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
                                 break;
 
                             case "MAGAdept":
-                                objAttribute.PropertyChangedAsync += RefreshMAGAdeptDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
                                 break;
 
                             case "RES":
-                                objAttribute.PropertyChangedAsync += RefreshRESDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshRESDependentProperties;
                                 break;
 
                             case "DEP":
-                                objAttribute.PropertyChangedAsync += RefreshDEPDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshDEPDependentProperties;
                                 break;
 
                             case "ESS":
-                                objAttribute.PropertyChangedAsync += RefreshESSDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshESSDependentProperties;
                                 break;
                         }
                     }
@@ -829,46 +829,46 @@ namespace Chummer
                         switch (objAttribute.Abbrev)
                         {
                             case "BOD":
-                                objAttribute.PropertyChangedAsync -= RefreshBODDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
                                 break;
                             case "AGI":
-                                objAttribute.PropertyChangedAsync -= RefreshAGIDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshAGIDependentProperties;
                                 break;
                             case "REA":
-                                objAttribute.PropertyChangedAsync -= RefreshREADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshREADependentProperties;
                                 break;
                             case "STR":
-                                objAttribute.PropertyChangedAsync -= RefreshSTRDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshSTRDependentProperties;
                                 break;
                             case "CHA":
-                                objAttribute.PropertyChangedAsync -= RefreshCHADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshCHADependentProperties;
                                 break;
                             case "INT":
-                                objAttribute.PropertyChangedAsync -= RefreshINTDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshINTDependentProperties;
                                 break;
                             case "LOG":
-                                objAttribute.PropertyChangedAsync -= RefreshLOGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshLOGDependentProperties;
                                 break;
                             case "WIL":
-                                objAttribute.PropertyChangedAsync -= RefreshWILDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshWILDependentProperties;
                                 break;
                             case "EDG":
-                                objAttribute.PropertyChangedAsync -= RefreshEDGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshEDGDependentProperties;
                                 break;
                             case "MAG":
-                                objAttribute.PropertyChangedAsync -= RefreshMAGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
                                 break;
                             case "MAGAdept":
-                                objAttribute.PropertyChangedAsync -= RefreshMAGAdeptDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
                                 break;
                             case "RES":
-                                objAttribute.PropertyChangedAsync -= RefreshRESDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshRESDependentProperties;
                                 break;
                             case "DEP":
-                                objAttribute.PropertyChangedAsync -= RefreshDEPDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshDEPDependentProperties;
                                 break;
                             case "ESS":
-                                objAttribute.PropertyChangedAsync -= RefreshESSDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync -= RefreshESSDependentProperties;
                                 break;
                         }
                     }
@@ -882,59 +882,59 @@ namespace Chummer
                         switch (strAbbrev)
                         {
                             case "BOD":
-                                objAttribute.PropertyChangedAsync += RefreshBODDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
                                 break;
 
                             case "AGI":
-                                objAttribute.PropertyChangedAsync += RefreshAGIDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshAGIDependentProperties;
                                 break;
 
                             case "REA":
-                                objAttribute.PropertyChangedAsync += RefreshREADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshREADependentProperties;
                                 break;
 
                             case "STR":
-                                objAttribute.PropertyChangedAsync += RefreshSTRDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshSTRDependentProperties;
                                 break;
 
                             case "CHA":
-                                objAttribute.PropertyChangedAsync += RefreshCHADependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshCHADependentProperties;
                                 break;
 
                             case "INT":
-                                objAttribute.PropertyChangedAsync += RefreshINTDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshINTDependentProperties;
                                 break;
 
                             case "LOG":
-                                objAttribute.PropertyChangedAsync += RefreshLOGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshLOGDependentProperties;
                                 break;
 
                             case "WIL":
-                                objAttribute.PropertyChangedAsync += RefreshWILDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshWILDependentProperties;
                                 break;
 
                             case "EDG":
-                                objAttribute.PropertyChangedAsync += RefreshEDGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshEDGDependentProperties;
                                 break;
 
                             case "MAG":
-                                objAttribute.PropertyChangedAsync += RefreshMAGDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
                                 break;
 
                             case "MAGAdept":
-                                objAttribute.PropertyChangedAsync += RefreshMAGAdeptDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
                                 break;
 
                             case "RES":
-                                objAttribute.PropertyChangedAsync += RefreshRESDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshRESDependentProperties;
                                 break;
 
                             case "DEP":
-                                objAttribute.PropertyChangedAsync += RefreshDEPDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshDEPDependentProperties;
                                 break;
 
                             case "ESS":
-                                objAttribute.PropertyChangedAsync += RefreshESSDependentProperties;
+                                objAttribute.MultiplePropertiesChangedAsync += RefreshESSDependentProperties;
                                 break;
                         }
                     }
@@ -953,10 +953,10 @@ namespace Chummer
             }
         }
 
-        private Task OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e,
+        private Task OptionsOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
-            return OptionsOnMultiplePropertyChanged(new[] { e.PropertyName }, token);
+            return OptionsOnMultiplePropertyChanged(e.PropertyNames, token);
         }
 
         private async Task OptionsOnMultiplePropertyChanged(IReadOnlyCollection<string> lstProperties, CancellationToken token = default)
@@ -1202,7 +1202,46 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (setPropertiesToRefresh.Count > 0)
                     {
-                        await OnMultiplePropertyChangedAsync(setPropertiesToRefresh, token).ConfigureAwait(false);
+                        await OnMultiplePropertiesChangedAsync(setPropertiesToRefresh, token).ConfigureAwait(false);
+                    }
+
+                    if (_lstSettingsMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs = new MultiplePropertiesChangedEventArgs(lstProperties);
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _lstSettingsMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                        if (SettingsPropertyChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                SettingsMultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (SettingsMultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs = new MultiplePropertiesChangedEventArgs(lstProperties);
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            if (SettingsMultiplePropertiesChanged != null)
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                SettingsMultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }
+                        }, token).ConfigureAwait(false);
                     }
 
                     if (_lstSettingsPropertyChangedAsync.Count > 0)
@@ -1265,10 +1304,10 @@ namespace Chummer
             }
         }
 
-        private Task AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task AttributeSectionOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (e.PropertyName == nameof(AttributeSection.AttributeCategory) || IsLoading)
+            if (IsLoading || e.PropertyNames.Contains(nameof(AttributeSection.AttributeCategory)))
             {
                 return this.OnMultiplePropertyChangedAsync(token, nameof(CurrentWalkingRateString),
                     nameof(CurrentRunningRateString),
@@ -1315,9 +1354,9 @@ namespace Chummer
 
         private async Task PowersOnListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1352,7 +1391,7 @@ namespace Chummer
                                         if (objImprovement.SourceName != objNewPower.InternalId
                                             || !objImprovement.Enabled)
                                             continue;
-                                        foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                        foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                   string strPropertyToUpdate) in
                                                  objImprovement.GetRelevantPropertyChangers())
                                         {
@@ -1448,10 +1487,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                              dicChangedProperties)
                     {
-                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1493,9 +1532,9 @@ namespace Chummer
                 return;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1515,7 +1554,7 @@ namespace Chummer
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     continue;
-                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                           string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
@@ -1536,10 +1575,10 @@ namespace Chummer
                         await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1575,9 +1614,9 @@ namespace Chummer
                     break;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1607,7 +1646,7 @@ namespace Chummer
                                     if (objImprovement.SourceName != objNewItem.InternalId
                                         || !objImprovement.Enabled)
                                         continue;
-                                    foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                    foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                               string strPropertyToUpdate) in
                                              objImprovement.GetRelevantPropertyChangers())
                                     {
@@ -1629,10 +1668,10 @@ namespace Chummer
                         await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1674,9 +1713,9 @@ namespace Chummer
                 return;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1696,7 +1735,7 @@ namespace Chummer
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     continue;
-                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                           string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
@@ -1717,10 +1756,10 @@ namespace Chummer
                         await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1762,9 +1801,9 @@ namespace Chummer
                 return;
             }
 
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1784,7 +1823,7 @@ namespace Chummer
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
                                     continue;
-                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                           string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
@@ -1805,10 +1844,10 @@ namespace Chummer
                         await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToUpdate in
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        await kvpToUpdate.Key.OnMultiplePropertyChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1889,7 +1928,7 @@ namespace Chummer
                 }
 
                 if (setPropertiesToRefresh.Count > 0)
-                    await OnMultiplePropertyChangedAsync(setPropertiesToRefresh.ToList(), token).ConfigureAwait(false);
+                    await OnMultiplePropertiesChangedAsync(setPropertiesToRefresh.ToList(), token).ConfigureAwait(false);
             }
         }
 
@@ -1898,9 +1937,9 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -1930,7 +1969,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -1998,7 +2037,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2037,9 +2076,9 @@ namespace Chummer
                         setChangedProperties.Add(nameof(TotalCarriedWeight));
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2060,9 +2099,9 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move || IsLoading)
                 return;
             bool blnDoEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -2094,7 +2133,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2167,7 +2206,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2207,10 +2246,10 @@ namespace Chummer
                         setChangedProperties.Add(nameof(TotalCarriedWeight));
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2232,9 +2271,9 @@ namespace Chummer
                 return;
             bool blnDoEquippedArmorRefresh = false;
             bool blnDoArmorEncumbranceRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -2268,7 +2307,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2351,7 +2390,7 @@ namespace Chummer
                                             &&
                                             objImprovement.Enabled)
                                         {
-                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
@@ -2403,10 +2442,10 @@ namespace Chummer
                         setChangedProperties.Add(nameof(ArmorEncumbrance));
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2428,9 +2467,9 @@ namespace Chummer
                 return;
             bool blnDoEncumbranceRefresh = false;
             bool blnDoCyberlimbAttributesRefresh = false;
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
@@ -2462,7 +2501,7 @@ namespace Chummer
                                             if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
                                                 objNewItem.InternalId && objImprovement.Enabled)
                                             {
-                                                foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                                foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                           string strPropertyToUpdate) in
                                                          objImprovement.GetRelevantPropertyChangers())
                                                 {
@@ -2647,10 +2686,10 @@ namespace Chummer
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
                         token.ThrowIfCancellationRequested();
-                        await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -10217,9 +10256,9 @@ namespace Chummer
                         {
                             // Process all events related to improvements
                             using (new FetchSafelyFromPool<
-                                       Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                                       Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                                        Utils.DictionaryForMultiplePropertyChangedPool,
-                                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>
+                                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
                                            dicChangedProperties))
                             {
                                 try
@@ -10239,7 +10278,7 @@ namespace Chummer
                                     {
                                         if (!objImprovement.Enabled)
                                             continue;
-                                        foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                        foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                   string strPropertyToUpdate) in objImprovement
                                                      .GetRelevantPropertyChangers())
                                         {
@@ -10254,15 +10293,15 @@ namespace Chummer
                                         }
                                     }
 
-                                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>>
+                                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
                                                  kvpToProcess in
                                              dicChangedProperties)
                                     {
                                         if (blnSync)
-                                            kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                                            kvpToProcess.Key.OnMultiplePropertiesChanged(kvpToProcess.Value.ToList());
                                         else
                                             await kvpToProcess.Key
-                                                .OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token)
+                                                .OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
                                                 .ConfigureAwait(false);
                                     }
                                 }
@@ -12098,7 +12137,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
-                _objSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
+                _objSettings.MultiplePropertiesChangedAsync -= OptionsOnPropertyChanged;
                 ImprovementManager.ClearCachedValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 foreach (Image imgMugshot in _lstMugshots)
@@ -12213,7 +12252,7 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
-                _objSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
+                _objSettings.MultiplePropertiesChangedAsync -= OptionsOnPropertyChanged;
                 ImprovementManager.ClearCachedValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
@@ -15968,7 +16007,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
+                                    objOldSettings.MultiplePropertiesChangedAsync -= OptionsOnPropertyChanged;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -15976,7 +16015,7 @@ namespace Chummer
                                 }
                             }
                             if (value != null)
-                                value.PropertyChangedAsync += OptionsOnPropertyChanged;
+                                value.MultiplePropertiesChangedAsync += OptionsOnPropertyChanged;
 
                             if (!blnActuallyDifferentSettings || IsLoading)
                                 return;
@@ -16062,12 +16101,12 @@ namespace Chummer
                         {
                             blnActuallyDifferentSettings = !await objOldSettings.HasIdenticalSettingsAsync(value, token)
                                 .ConfigureAwait(false);
-                            objOldSettings.PropertyChangedAsync -= OptionsOnPropertyChanged;
+                            objOldSettings.MultiplePropertiesChangedAsync -= OptionsOnPropertyChanged;
                         }
 
                         if (value != null)
                         {
-                            value.PropertyChangedAsync += OptionsOnPropertyChanged;
+                            value.MultiplePropertiesChangedAsync += OptionsOnPropertyChanged;
                         }
 
                         if (!blnActuallyDifferentSettings || IsLoading)
@@ -36780,7 +36819,7 @@ namespace Chummer
             return LanguageManager.GetStringAsync("String_None", token: token);
         }
 
-        private readonly AsyncFriendlyReaderWriterLock _objAvailabilityMapLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objAvailabilityMapLock;
 
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
@@ -38556,8 +38595,8 @@ namespace Chummer
                 bool blnCreated = Created;
                 Improvements.ForEach(objImprovement =>
                 {
-                    if ((objImprovement.ImproveType == Improvement.ImprovementType.Attribute
-                         || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                        || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM)
                     {
                         if (objImprovement.SourceName.Contains("SEEKER"))
                             lstSeekerImprovements.Add(objImprovement);
@@ -38688,8 +38727,8 @@ namespace Chummer
                 bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
                 await Improvements.ForEachAsync(objImprovement =>
                 {
-                    if ((objImprovement.ImproveType == Improvement.ImprovementType.Attribute
-                         || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute
+                        || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM)
                     {
                         if (objImprovement.SourceName.Contains("SEEKER"))
                             lstSeekerImprovements.Add(objImprovement);
@@ -40587,1220 +40626,637 @@ namespace Chummer
             }
         }
 
-        public async Task RefreshBODDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshBODDependentProperties(object sender, MultiplePropertiesChangedEventArgs e,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                lstProperties.AddRange(new[]
                 {
-                    List<string> lstProperties = new List<string>(16)
-                    {
-                        nameof(LimitPhysical),
-                        nameof(DamageResistancePool),
-                        nameof(LiftAndCarry),
-                        nameof(FatigueResist),
-                        nameof(RadiationResist),
-                        nameof(PhysiologicalAddictionResistFirstTime),
-                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                        nameof(StunCMNaturalRecovery),
-                        nameof(PhysicalCMNaturalRecovery),
-                        nameof(PhysicalCM),
-                        nameof(CMOverflow),
-                        nameof(SpellDefenseIndirectSoak),
-                        nameof(SpellDefenseDirectSoakPhysical),
-                        nameof(SpellDefenseDecreaseBOD),
-                        nameof(SpellDefenseManipulationPhysical)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{BOD}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    nameof(LimitPhysical),
+                    nameof(DamageResistancePool),
+                    nameof(LiftAndCarry),
+                    nameof(FatigueResist),
+                    nameof(RadiationResist),
+                    nameof(PhysiologicalAddictionResistFirstTime),
+                    nameof(PhysiologicalAddictionResistAlreadyAddicted),
+                    nameof(StunCMNaturalRecovery),
+                    nameof(PhysicalCMNaturalRecovery),
+                    nameof(PhysicalCM),
+                    nameof(CMOverflow),
+                    nameof(SpellDefenseIndirectSoak),
+                    nameof(SpellDefenseDirectSoakPhysical),
+                    nameof(SpellDefenseDecreaseBOD),
+                    nameof(SpellDefenseManipulationPhysical)
+                });
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.MetatypeMaximum):
-                {
-                    IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (await GetDEPEnabledAsync(token).ConfigureAwait(false))
-                            await OnPropertyChangedAsync(nameof(IsAI), token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.MetatypeMaximum)) &&
+                await GetDEPEnabledAsync(token).ConfigureAwait(false))
+            {
+                lstProperties.Add(nameof(IsAI));
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{BOD}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshAGIDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshAGIDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
-                {
-                    List<string> lstProperties = new List<string>(2)
-                    {
-                        nameof(SpellDefenseDecreaseAGI),
-                        nameof(CalculatedMovement)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{AGI}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                lstProperties.Add(nameof(SpellDefenseDecreaseAGI));
+                lstProperties.Add(nameof(CalculatedMovement));
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{AGI}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshREADependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshREADependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                lstProperties.AddRange(new[]
                 {
-                    List<string> lstProperties = new List<string>(6)
-                    {
-                        nameof(LimitPhysical),
-                        nameof(InitiativeValue),
-                        nameof(Dodge),
-                        nameof(SpellDefenseDecreaseREA),
-                        nameof(Surprise)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("REA", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{REA}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    nameof(LimitPhysical),
+                    nameof(InitiativeValue),
+                    nameof(Dodge),
+                    nameof(SpellDefenseDecreaseREA),
+                    nameof(Surprise)
+                });
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("REA", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{REA}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshSTRDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshSTRDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                lstProperties.AddRange(new[]
                 {
-                    List<string> lstProperties = new List<string>(5)
-                    {
-                        nameof(LimitPhysical),
-                        nameof(LiftAndCarry),
-                        nameof(SpellDefenseDecreaseSTR),
-                        nameof(SpellDefenseManipulationPhysical),
-                        nameof(CalculatedMovement),
-                        nameof(ArmorEncumbrance)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{STR}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    nameof(LimitPhysical),
+                    nameof(LiftAndCarry),
+                    nameof(SpellDefenseDecreaseSTR),
+                    nameof(SpellDefenseManipulationPhysical),
+                    nameof(CalculatedMovement),
+                    nameof(ArmorEncumbrance)
+                });
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{STR}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshCHADependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshCHADependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                lstProperties.AddRange(new[]
                 {
-                    List<string> lstProperties = new List<string>(6)
-                    {
-                        nameof(LimitSocial),
-                        nameof(Composure),
-                        nameof(JudgeIntentions),
-                        nameof(JudgeIntentionsResist),
-                        nameof(SpellDefenseDecreaseCHA)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{CHA}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    nameof(LimitSocial),
+                    nameof(Composure),
+                    nameof(JudgeIntentions),
+                    nameof(JudgeIntentionsResist),
+                    nameof(SpellDefenseDecreaseCHA)
+                });
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("CHA", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{CHA}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshINTDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshINTDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                lstProperties.AddRange(new[]
                 {
-                    List<string> lstProperties = new List<string>(12)
-                    {
-                        nameof(LimitMental),
-                        nameof(JudgeIntentions),
-                        nameof(InitiativeValue),
-                        nameof(AstralInitiativeValue),
-                        nameof(MatrixInitiativeValue),
-                        nameof(MatrixInitiativeColdValue),
-                        nameof(MatrixInitiativeHotValue),
-                        nameof(Dodge),
-                        nameof(SpellDefenseDecreaseINT),
-                        nameof(SpellDefenseIllusionPhysical),
-                        nameof(Surprise)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{INT}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    nameof(LimitMental),
+                    nameof(JudgeIntentions),
+                    nameof(InitiativeValue),
+                    nameof(AstralInitiativeValue),
+                    nameof(MatrixInitiativeValue),
+                    nameof(MatrixInitiativeColdValue),
+                    nameof(MatrixInitiativeHotValue),
+                    nameof(Dodge),
+                    nameof(SpellDefenseDecreaseINT),
+                    nameof(SpellDefenseIllusionPhysical),
+                    nameof(Surprise)
+                });
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("INT", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{INT}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshLOGDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshLOGDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                lstProperties.AddRange(new[]
                 {
-                    List<string> lstProperties = new List<string>(10)
-                    {
-                        nameof(LimitMental),
-                        nameof(Memory),
-                        nameof(PsychologicalAddictionResistFirstTime),
-                        nameof(PsychologicalAddictionResistAlreadyAddicted),
-                        nameof(SpellDefenseDetection),
-                        nameof(SpellDefenseDecreaseLOG),
-                        nameof(SpellDefenseIllusionMana),
-                        nameof(SpellDefenseIllusionPhysical),
-                        nameof(SpellDefenseManipulationMental)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{LOG}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    nameof(LimitMental),
+                    nameof(Memory),
+                    nameof(PsychologicalAddictionResistFirstTime),
+                    nameof(PsychologicalAddictionResistAlreadyAddicted),
+                    nameof(SpellDefenseDetection),
+                    nameof(SpellDefenseDecreaseLOG),
+                    nameof(SpellDefenseIllusionMana),
+                    nameof(SpellDefenseIllusionPhysical),
+                    nameof(SpellDefenseManipulationMental)
+                });
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("LOG", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{LOG}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshWILDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshWILDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                lstProperties.AddRange(new[]
                 {
-                    List<string> lstProperties = new List<string>(27)
-                    {
-                        nameof(LimitSocial),
-                        nameof(LimitMental),
-                        nameof(Composure),
-                        nameof(Memory),
-                        nameof(JudgeIntentionsResist),
-                        nameof(FatigueResist),
-                        nameof(SonicResist),
-                        nameof(RadiationResist),
-                        nameof(PhysiologicalAddictionResistFirstTime),
-                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                        nameof(PsychologicalAddictionResistFirstTime),
-                        nameof(PsychologicalAddictionResistAlreadyAddicted),
-                        nameof(StunCMNaturalRecovery),
-                        nameof(StunCM),
-                        nameof(SpellDefenseDirectSoakMana),
-                        nameof(SpellDefenseDetection),
-                        nameof(SpellDefenseDecreaseBOD),
-                        nameof(SpellDefenseDecreaseAGI),
-                        nameof(SpellDefenseDecreaseREA),
-                        nameof(SpellDefenseDecreaseSTR),
-                        nameof(SpellDefenseDecreaseCHA),
-                        nameof(SpellDefenseDecreaseINT),
-                        nameof(SpellDefenseDecreaseLOG),
-                        nameof(SpellDefenseDecreaseWIL),
-                        nameof(SpellDefenseIllusionMana),
-                        nameof(SpellDefenseManipulationMental)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{WIL}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    nameof(LimitSocial),
+                    nameof(LimitMental),
+                    nameof(Composure),
+                    nameof(Memory),
+                    nameof(JudgeIntentionsResist),
+                    nameof(FatigueResist),
+                    nameof(SonicResist),
+                    nameof(RadiationResist),
+                    nameof(PhysiologicalAddictionResistFirstTime),
+                    nameof(PhysiologicalAddictionResistAlreadyAddicted),
+                    nameof(PsychologicalAddictionResistFirstTime),
+                    nameof(PsychologicalAddictionResistAlreadyAddicted),
+                    nameof(StunCMNaturalRecovery),
+                    nameof(StunCM),
+                    nameof(SpellDefenseDirectSoakMana),
+                    nameof(SpellDefenseDetection),
+                    nameof(SpellDefenseDecreaseBOD),
+                    nameof(SpellDefenseDecreaseAGI),
+                    nameof(SpellDefenseDecreaseREA),
+                    nameof(SpellDefenseDecreaseSTR),
+                    nameof(SpellDefenseDecreaseCHA),
+                    nameof(SpellDefenseDecreaseINT),
+                    nameof(SpellDefenseDecreaseLOG),
+                    nameof(SpellDefenseDecreaseWIL),
+                    nameof(SpellDefenseIllusionMana),
+                    nameof(SpellDefenseManipulationMental)
+                });
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("WIL", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{WIL}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshEDGDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshEDGDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
-                {
-                    List<string> lstProperties = new List<string>(3);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            int intEdgeValue =
-                                await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
-                                    .GetTotalValueAsync(token).ConfigureAwait(false);
-                            if (await GetEdgeUsedAsync(token).ConfigureAwait(false) > intEdgeValue)
-                                await SetEdgeUsedAsync(intEdgeValue, token).ConfigureAwait(false);
-                            else
-                                lstProperties.Add(nameof(EdgeRemaining));
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{EDG}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}", token)
+                    .ConfigureAwait(false);
+                int intEdgeValue =
+                    await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                        .GetTotalValueAsync(token).ConfigureAwait(false);
+                if (await GetEdgeUsedAsync(token).ConfigureAwait(false) > intEdgeValue)
+                    await SetEdgeUsedAsync(intEdgeValue, token).ConfigureAwait(false);
+                else
+                    lstProperties.Add(nameof(EdgeRemaining));
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{EDG}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshMAGDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshMAGDependentProperties(object sender, MultiplePropertiesChangedEventArgs e,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}", token)
+                    .ConfigureAwait(false);
+                CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
+                if (!IsLoading)
                 {
-                    List<string> lstProperties = new List<string>(5);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}", token).ConfigureAwait(false);
-                    CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objMag.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    int intMysticAdeptPowerPoints =
+                        await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
+                    if (intMysticAdeptPowerPoints > 0)
                     {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            if (!IsLoading)
-                            {
-                                int intMysticAdeptPowerPoints =
-                                    await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
-                                if (intMysticAdeptPowerPoints > 0)
-                                {
-                                    int intMAGTotalValue = await objMag.GetTotalValueAsync(token).ConfigureAwait(false);
-                                    if (intMysticAdeptPowerPoints > intMAGTotalValue)
-                                        await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token)
-                                            .ConfigureAwait(false);
-                                }
-                            }
-
-                            if (await (await GetSettingsAsync(token).ConfigureAwait(false))
-                                .GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false))
-                                lstProperties.Add(nameof(MaxSpiritForce));
-                            if (await GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false))
-                                lstProperties.Add(nameof(CanAffordCareerPP));
-                            if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false) && objMag ==
-                                await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                                lstProperties.Add(nameof(PowerPointsTotal));
-                            if (await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
-                                lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{MAG}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
+                        int intMAGTotalValue = await objMag.GetTotalValueAsync(token).ConfigureAwait(false);
+                        if (intMysticAdeptPowerPoints > intMAGTotalValue)
+                            await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token)
+                                .ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-
-                    break;
                 }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
 
-                    break;
-                }
+                if (await (await GetSettingsAsync(token).ConfigureAwait(false))
+                    .GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(MaxSpiritForce));
+                if (await GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(CanAffordCareerPP));
+                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false)
+                    && objMag == await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(PowerPointsTotal));
+                if (await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+            }
+
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}", token)
+                    .ConfigureAwait(false);
+            }
+
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{MAG}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshMAGAdeptDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshMAGAdeptDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CharacterAttrib objMagAdept = await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false);
             if (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false) == objMagAdept)
                 return;
 
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
-                {
-                    List<string> lstProperties = new List<string>(2);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objMagAdept.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
-                                lstProperties.Add(nameof(MaxSpiritForce));
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}", token)
+                    .ConfigureAwait(false);
+                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(MaxSpiritForce));
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objMagAdept.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshRESDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
-                {
-                    List<string> lstProperties = new List<string>(2)
-                    {
-                        nameof(MaxSpriteLevel)
-                    };
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("RES", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{RES}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                lstProperties.Add(nameof(MaxSpriteLevel));
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}", token)
+                    .ConfigureAwait(false);
+                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(MaxSpiritForce));
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("RES", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{RES}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshDEPDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                case nameof(CharacterAttrib.TotalValue):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("DEP", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            if (await GetIsAIAsync(token).ConfigureAwait(false))
-                                await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
-                                    .ConfigureAwait(false);
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{DEP}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                    await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
+                        .ConfigureAwait(false);
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}", token)
+                    .ConfigureAwait(false);
+                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(MaxSpiritForce));
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("DEP", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{DEP}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RefreshESSDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e?.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
             {
-                // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
-                case nameof(CharacterAttrib.MetatypeMaximum):
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole)).ConfigureAwait(false);
-                    break;
-                case nameof(CharacterAttrib.TotalValue):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("ESS", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{ESS}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                    await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
+                        .ConfigureAwait(false);
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}", token)
+                    .ConfigureAwait(false);
+                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                    lstProperties.Add(nameof(MaxSpiritForce));
+            }
 
-                    break;
-                }
-                case nameof(CharacterAttrib.Value):
-                {
-                    List<string> lstProperties = new List<string>(4);
-                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}", token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker =
-                        await (await GetAttributeAsync("ESS", token: token).ConfigureAwait(false)).LockObject
-                            .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 =
-                            await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
-                            await OnMultiplePropertyChangedAsync(lstProperties, token).ConfigureAwait(false);
-                            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                                Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
-                                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                                    .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            {
+                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}", token)
+                    .ConfigureAwait(false);
+            }
 
-                    break;
-                }
+            // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.MetatypeMaximum)))
+            {
+                lstProperties.AddRange(new[]
+                {
+                    nameof(PrototypeTranshumanEssenceUsed),
+                    nameof(BiowareEssence),
+                    nameof(CyberwareEssence),
+                    nameof(EssenceHole)
+                });
+            }
+
+            if (lstProperties.Count > 0)
+            {
+                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+            }
+
+            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                  && Settings.KnowledgePointsExpression.Contains("{ESS}"))
+                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                     && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))))
+            {
+                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -42819,6 +42275,17 @@ namespace Chummer
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         // Kept separate for events that are meant to work off of changes to whatever settings the character even if they change
         public event PropertyChangedEventHandler SettingsPropertyChanged;
 
@@ -42836,6 +42303,25 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                     _lstSettingsPropertyChangedAsync.Remove(value);
+            }
+        }
+
+        public event MultiplePropertiesChangedEventHandler SettingsMultiplePropertiesChanged;
+
+        private readonly List<MultiplePropertiesChangedAsyncEventHandler> _lstSettingsMultiplePropertiesChangedAsync =
+            new List<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler SettingsMultiplePropertiesChangedAsync
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstSettingsMultiplePropertiesChangedAsync.Add(value);
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstSettingsMultiplePropertiesChangedAsync.Remove(value);
             }
         }
 
@@ -43594,7 +43080,7 @@ namespace Chummer
             nameof(MetagenicLimit)
         };
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -43716,6 +43202,37 @@ namespace Chummer
                         RefreshSustainingPenalties();
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         RefreshAstralReputationImprovements();
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
 
                     if (_setPropertyChangedAsync.Count > 0)
                     {
@@ -43841,7 +43358,7 @@ namespace Chummer
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -43975,6 +43492,43 @@ namespace Chummer
                         await RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         await RefreshAstralReputationImprovementsAsync(token).ConfigureAwait(false);
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
+                    }
 
                     if (_setPropertyChangedAsync.Count > 0)
                     {
@@ -47093,9 +46647,9 @@ namespace Chummer
                         {
                             // Process all events related to improvements
                             using (new FetchSafelyFromPool<
-                                       Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                                       Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                                        Utils.DictionaryForMultiplePropertyChangedPool,
-                                       out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>
+                                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
                                            dicChangedProperties))
                             {
                                 try
@@ -47115,7 +46669,7 @@ namespace Chummer
                                     {
                                         if (!objImprovement.Enabled)
                                             continue;
-                                        foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                        foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                   string strPropertyToUpdate) in objImprovement
                                                      .GetRelevantPropertyChangers())
                                         {
@@ -47130,15 +46684,15 @@ namespace Chummer
                                         }
                                     }
 
-                                    foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>>
+                                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
                                                  kvpToProcess in
                                              dicChangedProperties)
                                     {
                                         if (blnSync)
-                                            kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                                            kvpToProcess.Key.OnMultiplePropertiesChanged(kvpToProcess.Value.ToList());
                                         else
                                             await kvpToProcess.Key
-                                                .OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token)
+                                                .OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
                                                 .ConfigureAwait(false);
                                     }
                                 }
@@ -47951,7 +47505,7 @@ namespace Chummer
         #region Source
 
         private SourceString _objCachedSourceDetail;
-        private readonly AsyncFriendlyReaderWriterLock _objCachedSourceDetailLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objCachedSourceDetailLock;
         private readonly SkillsSection _objSkillsSection;
         private readonly AttributeSection _objAttributeSection;
         private readonly ConcurrentHashSet<Func<CancellationToken, bool>> _setPostLoadMethods = new ConcurrentHashSet<Func<CancellationToken, bool>>();

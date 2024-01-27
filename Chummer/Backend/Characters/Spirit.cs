@@ -52,7 +52,7 @@ namespace Chummer
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
     [DebuggerDisplay("{Name}, \"{CritterName}\"")]
-    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasMugshots, INotifyMultiplePropertyChangedAsync, IHasNotes, IHasLockObject
+    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasMugshots, INotifyMultiplePropertiesChangedAsync, IHasNotes, IHasLockObject
     {
         private Guid _guiId;
         private string _strName = string.Empty;
@@ -2008,6 +2008,17 @@ namespace Chummer
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -2019,7 +2030,7 @@ namespace Chummer
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -2041,6 +2052,37 @@ namespace Chummer
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
 
                     if (_setPropertyChangedAsync.Count > 0)
                     {
@@ -2091,7 +2133,7 @@ namespace Chummer
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2117,6 +2159,43 @@ namespace Chummer
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
+                    }
 
                     if (_setPropertyChangedAsync.Count > 0)
                     {
@@ -2380,7 +2459,7 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
+                                    objOldLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
                                 }
                                 catch (ObjectDisposedException)
                                 {
@@ -2411,7 +2490,7 @@ namespace Chummer
                                         _strCritterName = strCritterName;
                                 }
 
-                                _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
+                                _objLinkedCharacter.MultiplePropertiesChangedAsync += LinkedCharacterOnPropertyChanged;
                             }
                         }
                     }
@@ -2491,7 +2570,7 @@ namespace Chummer
                         blnDoPropertyChanged = true;
                         if (objOldLinkedCharacter != null)
                         {
-                            objOldLinkedCharacter.PropertyChangedAsync -= LinkedCharacterOnPropertyChanged;
+                            objOldLinkedCharacter.MultiplePropertiesChangedAsync -= LinkedCharacterOnPropertyChanged;
 
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
@@ -2530,7 +2609,7 @@ namespace Chummer
                                 try
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    _objLinkedCharacter.PropertyChangedAsync += LinkedCharacterOnPropertyChanged;
+                                    _objLinkedCharacter.MultiplePropertiesChangedAsync += LinkedCharacterOnPropertyChanged;
                                 }
                                 finally
                                 {
@@ -2558,29 +2637,28 @@ namespace Chummer
             }
         }
 
-        private Task LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e.PropertyName)
+            List<string> lstProperties = new List<string>();
+            if (e.PropertyNames.Contains(nameof(Character.Name)))
+                lstProperties.Add(nameof(CritterName));
+            if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
+                lstProperties.Add(nameof(Mugshots));
+            if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
+                lstProperties.Add(nameof(MainMugshot));
+            if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
+                lstProperties.Add(nameof(MainMugshotIndex));
+            if (e.PropertyNames.Contains(nameof(Character.AllowSpriteFettering)))
             {
-                case nameof(Character.Name):
-                    return OnPropertyChangedAsync(nameof(CritterName), token);
-
-                case nameof(Character.Mugshots):
-                    return OnPropertyChangedAsync(nameof(Mugshots), token);
-
-                case nameof(Character.MainMugshot):
-                    return OnPropertyChangedAsync(nameof(MainMugshot), token);
-
-                case nameof(Character.MainMugshotIndex):
-                    return OnPropertyChangedAsync(nameof(MainMugshotIndex), token);
-
-                case nameof(Character.AllowSpriteFettering):
-                    _intCachedAllowFettering = int.MinValue;
-                    return this.OnMultiplePropertyChangedAsync(token, nameof(AllowFettering), nameof(Fettered));
+                _intCachedAllowFettering = int.MinValue;
+                lstProperties.Add(nameof(AllowFettering));
+                lstProperties.Add(nameof(Fettered));
             }
 
-            return Task.CompletedTask;
+            return lstProperties.Count > 0
+                ? OnMultiplePropertiesChangedAsync(lstProperties, token)
+                : Task.CompletedTask;
         }
 
         #endregion Properties

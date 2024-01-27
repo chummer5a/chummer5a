@@ -568,9 +568,9 @@ namespace Chummer.Backend.Equipment
                             break;
                     }
 
-                    using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                    using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                                Utils.DictionaryForMultiplePropertyChangedPool,
-                               out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>
+                               out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
                                    dicChangedProperties))
                     {
                         try
@@ -643,7 +643,7 @@ namespace Chummer.Backend.Equipment
                                             if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless")
                                                 != objItem.InternalId || !objImprovement.Enabled)
                                                 return;
-                                            foreach ((INotifyMultiplePropertyChangedAsync objItemToUpdate,
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                          string strPropertyToUpdate) in objImprovement
                                                          .GetRelevantPropertyChangers())
                                             {
@@ -661,11 +661,11 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
+                            foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                                      dicChangedProperties)
                             {
                                 await kvpToProcess.Key
-                                    .OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token)
+                                    .OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
                                     .ConfigureAwait(false);
                             }
                         }
@@ -825,9 +825,9 @@ namespace Chummer.Backend.Equipment
             else
             {
                 if (objParentVehicle != null)
-                    await LockObject.SetParentAsync(token: token);
+                    await LockObject.SetParentAsync(token: token).ConfigureAwait(false);
                 else
-                    await LockObject.SetParentAsync(_objCharacter.LockObject, token: token);
+                    await LockObject.SetParentAsync(_objCharacter.LockObject, token: token).ConfigureAwait(false);
             }
             IDisposable objSyncLocker = null;
             IAsyncDisposable objAsyncLocker = null;
@@ -5020,9 +5020,9 @@ namespace Chummer.Backend.Equipment
                 if (_intProcessPropertyChanges == 0
                     || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
                     return;
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
-                           out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                           out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
                 {
                     try
                     {
@@ -5161,10 +5161,10 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                                  dicChangedProperties)
                         {
-                            kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
+                            kvpToProcess.Key.OnMultiplePropertiesChanged(kvpToProcess.Value.ToList());
                         }
                     }
                     finally
@@ -5205,9 +5205,9 @@ namespace Chummer.Backend.Equipment
                 if (_intProcessPropertyChanges == 0
                     || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
                     return;
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
                            Utils.DictionaryForMultiplePropertyChangedPool,
-                           out Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>> dicChangedProperties))
+                           out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
                 {
                     try
                     {
@@ -5368,10 +5368,10 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        foreach (KeyValuePair<INotifyMultiplePropertyChangedAsync, HashSet<string>> kvpToProcess in
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
                                  dicChangedProperties)
                         {
-                            await kvpToProcess.Key.OnMultiplePropertyChangedAsync(kvpToProcess.Value.ToList(), token)
+                            await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
                                 .ConfigureAwait(false);
                         }
                     }

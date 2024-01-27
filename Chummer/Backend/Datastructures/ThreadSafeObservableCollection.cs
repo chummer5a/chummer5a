@@ -30,7 +30,7 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, IAsyncProducerConsumerCollection<T>, IHasLockObject, INotifyMultiplePropertyChangedAsync
+    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, IAsyncProducerConsumerCollection<T>, IHasLockObject, INotifyMultiplePropertiesChangedAsync
     {
         [CLSCompliant(false)]
         protected readonly EnhancedObservableCollection<T> _lstData;
@@ -1247,6 +1247,26 @@ namespace Chummer
             remove => _lstData.PropertyChangedAsync -= value;
         }
 
+        public virtual event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged
+        {
+            add
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.MultiplePropertiesChanged += value;
+            }
+            remove
+            {
+                using (LockObject.EnterWriteLock())
+                    _lstData.MultiplePropertiesChanged -= value;
+            }
+        }
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _lstData.MultiplePropertiesChangedAsync += value;
+            remove => _lstData.MultiplePropertiesChangedAsync -= value;
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -1258,22 +1278,22 @@ namespace Chummer
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
-                _lstData.OnMultiplePropertyChanged(lstPropertyNames);
+                _lstData.OnMultiplePropertiesChanged(lstPropertyNames);
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                await _lstData.OnMultiplePropertyChangedAsync(lstPropertyNames, token).ConfigureAwait(false);
+                await _lstData.OnMultiplePropertiesChangedAsync(lstPropertyNames, token).ConfigureAwait(false);
             }
             finally
             {

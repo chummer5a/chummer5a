@@ -25,25 +25,30 @@ using System.Runtime.CompilerServices;
 
 namespace Chummer
 {
-    public interface INotifyMultiplePropertyChanged : INotifyPropertyChanged
+    public interface INotifyMultiplePropertiesChanged : INotifyPropertyChanged
     {
-        void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames);
+        void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames);
+
+        /// <summary>Occurs when one or more property values change.</summary>
+        event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
     }
 
-    public static class NotifyMultiplePropertyChangedExtensions
+    public delegate void MultiplePropertiesChangedEventHandler(object sender, MultiplePropertiesChangedEventArgs e);
+
+    public static class NotifyMultiplePropertiesChangedExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertyChanged objSubject,
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
                                                      IEnumerable<string> lstPropertyNames)
         {
-            objSubject.OnMultiplePropertyChanged(lstPropertyNames.ToList());
+            objSubject.OnMultiplePropertiesChanged(lstPropertyNames.ToList());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertyChanged objSubject,
+        public static void OnMultiplePropertyChanged(this INotifyMultiplePropertiesChanged objSubject,
                                                      params string[] lstPropertyNames)
         {
-            objSubject.OnMultiplePropertyChanged(Array.AsReadOnly(lstPropertyNames));
+            objSubject.OnMultiplePropertiesChanged(Array.AsReadOnly(lstPropertyNames));
         }
     }
 }

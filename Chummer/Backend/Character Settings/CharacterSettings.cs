@@ -54,7 +54,7 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyMultiplePropertyChangedAsync, IHasName, IHasLockObject
+    public sealed class CharacterSettings : INotifyMultiplePropertiesChangedAsync, IHasName, IHasLockObject
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -286,6 +286,17 @@ namespace Chummer
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -297,7 +308,7 @@ namespace Chummer
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -336,6 +347,37 @@ namespace Chummer
                             RecalculateBookXPath();
                         if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
                             RecalculateEnabledCustomDataDirectories();
+                    }
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -387,7 +429,7 @@ namespace Chummer
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -436,6 +478,43 @@ namespace Chummer
                     finally
                     {
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -710,7 +789,7 @@ namespace Chummer
                     _blnDoingCopy = blnOldDoingCopy;
                 }
 
-                OnMultiplePropertyChanged(lstPropertiesToUpdate);
+                OnMultiplePropertiesChanged(lstPropertiesToUpdate);
             }
         }
 
@@ -861,7 +940,7 @@ namespace Chummer
                     _blnDoingCopy = blnOldDoingCopy;
                 }
 
-                await OnMultiplePropertyChangedAsync(lstPropertiesToUpdate, token).ConfigureAwait(false);
+                await OnMultiplePropertiesChangedAsync(lstPropertiesToUpdate, token).ConfigureAwait(false);
             }
             finally
             {
@@ -7457,7 +7536,7 @@ namespace Chummer
                                     setProperties.Add(nameof(MysAdeptAllowPpCareer));
                                 }
                             }
-                            OnMultiplePropertyChanged(setProperties);
+                            OnMultiplePropertiesChanged(setProperties);
                         }
                     }
                     else
@@ -7538,7 +7617,7 @@ namespace Chummer
                         {
                             await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
-                        await OnMultiplePropertyChangedAsync(setProperties, token).ConfigureAwait(false);
+                        await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
                     }
                 }
                 else

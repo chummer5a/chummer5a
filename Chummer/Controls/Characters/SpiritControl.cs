@@ -552,13 +552,13 @@ namespace Chummer
         #region Methods
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public Task RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        public async Task RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            return e?.PropertyName == nameof(Character.MagicTradition)
-                ? RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition, token)
-                : Task.CompletedTask;
+            token.ThrowIfCancellationRequested();
+            if (e?.PropertyName == nameof(Character.MagicTradition))
+                await RebuildSpiritList(
+                        await _objSpirit.CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
         }
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.

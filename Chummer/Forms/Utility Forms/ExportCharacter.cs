@@ -91,7 +91,7 @@ namespace Chummer
                 try
                 {
                     _objGenericToken.ThrowIfCancellationRequested();
-                    _objCharacter.PropertyChangedAsync += ObjCharacterOnPropertyChanged;
+                    _objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
                     _objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
                     // TODO: Make these also work for any children collection changes
                     _objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
@@ -180,11 +180,12 @@ namespace Chummer
             }
         }
 
-        private async Task ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task ObjCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(Character.CharacterName)) || e.PropertyNames.Contains(nameof(Character.Created)))
                     await UpdateWindowTitleAsync(token).ConfigureAwait(false);
                 await DoXsltUpdate(token).ConfigureAwait(false);
             }
@@ -246,7 +247,7 @@ namespace Chummer
                                                                  .ConfigureAwait(false);
             try
             {
-                _objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                _objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
                 _objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
                 _objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
                 _objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;

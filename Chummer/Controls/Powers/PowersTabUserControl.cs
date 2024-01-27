@@ -204,7 +204,7 @@ namespace Chummer.UI.Powers
 #endif
 
             lstPowers.ListChangedAsync += OnPowersListChanged;
-            _objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
+            _objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
         }
 
         private void UnbindPowersTabUserControl()
@@ -212,18 +212,18 @@ namespace Chummer.UI.Powers
             if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.Powers.ListChangedAsync -= OnPowersListChanged;
-                _objCharacter.PropertyChangedAsync -= OnCharacterPropertyChanged;
+                _objCharacter.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
             }
         }
 
-        private async Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e,
+        private async Task OnCharacterPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (e.PropertyName == nameof(Character.PowerPointsTotal)
-                    || e.PropertyName == nameof(Character.PowerPointsUsed))
+                if (e.PropertyNames.Contains(nameof(Character.PowerPointsTotal))
+                    || e.PropertyNames.Contains(nameof(Character.PowerPointsUsed)))
                     await CalculatePowerPoints(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

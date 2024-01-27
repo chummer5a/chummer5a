@@ -82,11 +82,11 @@ namespace Chummer
 
             _dicCharacterCustomDataDirectoryInfos = new LockingTypedOrderedDictionary<object, bool>();
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
-            _objCharacterSettings.PropertyChangedAsync += SettingsChanged;
+            _objCharacterSettings.MultiplePropertiesChangedAsync += SettingsChanged;
             Disposed += (sender, args) =>
             {
                 _dicCharacterCustomDataDirectoryInfos.Dispose();
-                _objCharacterSettings.PropertyChangedAsync -= SettingsChanged;
+                _objCharacterSettings.MultiplePropertiesChangedAsync -= SettingsChanged;
                 _objCharacterSettings.Dispose();
                 Utils.ListItemListPool.Return(ref _lstSettings);
                 Utils.StringHashSetPool.Return(ref _setPermanentSourcebooks);
@@ -2930,7 +2930,7 @@ namespace Chummer
             }
         }
 
-        private async Task SettingsChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task SettingsChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -2942,16 +2942,10 @@ namespace Chummer
                         await SetIsDirtyAsync(!await _objCharacterSettings
                                                 .HasIdenticalSettingsAsync(_objReferenceCharacterSettings, token)
                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
-                        switch (e.PropertyName)
-                        {
-                            case nameof(CharacterSettings.EnabledCustomDataDirectoryPaths):
-                                await PopulateOptions(token).ConfigureAwait(false);
-                                break;
-
-                            case nameof(CharacterSettings.PriorityTable):
-                                await PopulatePriorityTableList(token).ConfigureAwait(false);
-                                break;
-                        }
+                        if (e.PropertyNames.Contains(nameof(CharacterSettings.EnabledCustomDataDirectoryPaths)))
+                            await PopulateOptions(token).ConfigureAwait(false);
+                        else if (e.PropertyNames.Contains(nameof(CharacterSettings.PriorityTable)))
+                            await PopulatePriorityTableList(token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -2960,36 +2954,27 @@ namespace Chummer
                 }
                 else
                 {
-                    switch (e.PropertyName)
+                    if (e.PropertyNames.Contains(nameof(CharacterSettings.BuiltInOption)))
                     {
-                        case nameof(CharacterSettings.BuiltInOption):
-                        {
-                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync(token).ConfigureAwait(false);
-                            await cmdSave.DoThreadSafeAsync(
-                                x => x.Enabled = IsDirty && blnAllTextBoxesLegal
-                                                         && !_objCharacterSettings.BuiltInOption, token: token).ConfigureAwait(false);
-                            break;
-                        }
-                        case nameof(CharacterSettings.PriorityArray):
-                        case nameof(CharacterSettings.BuildMethod):
-                        {
-                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync(token).ConfigureAwait(false);
-                            await cmdSaveAs.DoThreadSafeAsync(x => x.Enabled = IsDirty && blnAllTextBoxesLegal, token: token)
-                                           .ConfigureAwait(false);
-                            await cmdSave.DoThreadSafeAsync(
-                                x => x.Enabled = IsDirty && blnAllTextBoxesLegal
-                                                         && !_objCharacterSettings.BuiltInOption, token: token).ConfigureAwait(false);
-                            break;
-                        }
-                        // Not data-bound so that the setter can be asynchronous
-                        case nameof(CharacterSettings.ChargenKarmaToNuyenExpression):
-                        {
-                            await txtNuyenExpression.DoThreadSafeAsync(
-                                                        x => x.Text = _objCharacterSettings
-                                                            .ChargenKarmaToNuyenExpression, token: token)
-                                                    .ConfigureAwait(false);
-                            break;
-                        }
+                        bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync(token).ConfigureAwait(false);
+                        await cmdSave.DoThreadSafeAsync(
+                            x => x.Enabled = IsDirty && blnAllTextBoxesLegal
+                                                     && !_objCharacterSettings.BuiltInOption, token: token).ConfigureAwait(false);
+                    }
+                    else if (e.PropertyNames.Contains(nameof(CharacterSettings.PriorityArray))
+                             || e.PropertyNames.Contains(nameof(CharacterSettings.BuildMethod)))
+                    {
+                        bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync(token).ConfigureAwait(false);
+                        await cmdSaveAs.DoThreadSafeAsync(x => x.Enabled = IsDirty && blnAllTextBoxesLegal, token: token)
+                            .ConfigureAwait(false);
+                        await cmdSave.DoThreadSafeAsync(
+                            x => x.Enabled = IsDirty && blnAllTextBoxesLegal
+                                                     && !_objCharacterSettings.BuiltInOption, token: token).ConfigureAwait(false);
+                    }
+                    if (e.PropertyNames.Contains(nameof(CharacterSettings.ChargenKarmaToNuyenExpression)))
+                    {
+                        string strText = await _objCharacterSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false);
+                        await txtNuyenExpression.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
                     }
                 }
             }

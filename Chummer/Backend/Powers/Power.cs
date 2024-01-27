@@ -45,7 +45,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Power : INotifyMultiplePropertyChangedAsync, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, IHasLockObject
+    public sealed class Power : INotifyMultiplePropertiesChangedAsync, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, IHasLockObject
     {
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
@@ -84,7 +84,7 @@ namespace Chummer
             if (objCharacter != null)
             {
                 objCharacter.PropertyChangedAsync += OnCharacterChanged;
-                objCharacter.Settings.PropertyChangedAsync += OnCharacterSettingsChanged;
+                objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsChanged;
                 if (objCharacter.Settings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
                 {
                     MAGAttributeObject = objCharacter.MAGAdept;
@@ -2489,6 +2489,17 @@ namespace Chummer
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -2500,7 +2511,7 @@ namespace Chummer
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -2581,6 +2592,37 @@ namespace Chummer
                         RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
                     }
 
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
+
                     if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
@@ -2630,7 +2672,7 @@ namespace Chummer
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -2728,6 +2770,43 @@ namespace Chummer
                         await RefreshDiscountedAdeptWayAsync(
                                 await GetAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false), token)
                             .ConfigureAwait(false);
+                    }
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -2850,19 +2929,18 @@ namespace Chummer
             }
         }
 
-        private async Task OnCharacterSettingsChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnCharacterSettingsChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e.PropertyName)
+            if (e.PropertyNames.Contains(nameof(CharacterSettings.MysAdeptSecondMAGAttribute))
+                || e.PropertyNames.Contains(nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier)))
             {
-                case nameof(CharacterSettings.MysAdeptSecondMAGAttribute):
-                case nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier):
-                    await SetMAGAttributeObjectAsync(
+                await SetMAGAttributeObjectAsync(
                         await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                         && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                             ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)
-                            : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    break;
+                            : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -3066,7 +3144,7 @@ namespace Chummer
                 if (CharacterObject != null)
                 {
                     CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsChanged;
+                    CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
                 }
 
                 MAGAttributeObject = null;
@@ -3089,7 +3167,7 @@ namespace Chummer
                 if (CharacterObject != null)
                 {
                     CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    CharacterObject.Settings.PropertyChangedAsync -= OnCharacterSettingsChanged;
+                    CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
                 }
 
                 await SetMAGAttributeObjectAsync(null).ConfigureAwait(false);

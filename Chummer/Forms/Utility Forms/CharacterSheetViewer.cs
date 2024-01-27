@@ -365,7 +365,7 @@ namespace Chummer
             {
                 if (objCharacter?.IsDisposed == false)
                 {
-                    objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                    objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
                     objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
                 }
             }
@@ -1267,7 +1267,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        objCharacter.PropertyChangedAsync -= ObjCharacterOnPropertyChanged;
+                        objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
                         objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
                         objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
                         objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
@@ -1300,7 +1300,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        objCharacter.PropertyChangedAsync += ObjCharacterOnPropertyChanged;
+                        objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
                         objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
                         // TODO: Make these also work for any children collection changes
                         objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
@@ -1392,11 +1392,12 @@ namespace Chummer
             }
         }
 
-        private async Task ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task ObjCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(Character.CharacterName)) || e.PropertyNames.Contains(nameof(Character.Created)))
                     await UpdateWindowTitleAsync(token).ConfigureAwait(false);
                 await RefreshCharacters(token).ConfigureAwait(false);
             }

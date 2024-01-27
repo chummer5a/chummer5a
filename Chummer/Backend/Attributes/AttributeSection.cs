@@ -36,7 +36,7 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
-    public sealed class AttributeSection : INotifyMultiplePropertyChangedAsync, IHasLockObject
+    public sealed class AttributeSection : INotifyMultiplePropertiesChangedAsync, IHasLockObject
     {
         private int _intLoading = 1;
 
@@ -51,6 +51,17 @@ namespace Chummer.Backend.Attributes
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -62,7 +73,7 @@ namespace Chummer.Backend.Attributes
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -84,6 +95,37 @@ namespace Chummer.Backend.Attributes
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
 
                     if (_setPropertyChangedAsync.Count > 0)
                     {
@@ -134,7 +176,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -159,6 +201,43 @@ namespace Chummer.Backend.Attributes
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
+                    }
 
                     if (_setPropertyChangedAsync.Count > 0)
                     {
@@ -492,14 +571,14 @@ namespace Chummer.Backend.Attributes
         private readonly struct UiPropertyChangerTracker
         {
             public string Abbrev { get; }
-            public List<PropertyChangedEventHandler> PropertyChangedList { get; }
-            public List<PropertyChangedAsyncEventHandler> AsyncPropertyChangedList { get; }
+            public List<MultiplePropertiesChangedEventHandler> PropertyChangedList { get; }
+            public List<MultiplePropertiesChangedAsyncEventHandler> AsyncPropertyChangedList { get; }
 
             public UiPropertyChangerTracker(string strAbbrev)
             {
                 Abbrev = strAbbrev;
-                PropertyChangedList = new List<PropertyChangedEventHandler>();
-                AsyncPropertyChangedList = new List<PropertyChangedAsyncEventHandler>();
+                PropertyChangedList = new List<MultiplePropertiesChangedEventHandler>();
+                AsyncPropertyChangedList = new List<MultiplePropertiesChangedAsyncEventHandler>();
             }
         }
 
@@ -529,7 +608,7 @@ namespace Chummer.Backend.Attributes
             {
                 if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                 {
-                    objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                 }
 
                 Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -548,7 +627,7 @@ namespace Chummer.Backend.Attributes
             {
                 if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                 {
-                    objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                 }
 
                 Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -579,7 +658,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
                     }
 
@@ -591,7 +670,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
                         Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -612,7 +691,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
                         Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -635,7 +714,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
                     }
 
@@ -654,7 +733,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token)
                                 .ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
                     }, token).ConfigureAwait(false);
 
@@ -682,7 +761,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
                     }
 
@@ -694,7 +773,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
                         Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -715,7 +794,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
 
                         Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
@@ -738,7 +817,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute ==
                             await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
                     }
 
@@ -757,7 +836,7 @@ namespace Chummer.Backend.Attributes
                         if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token)
                                 .ConfigureAwait(false))
                         {
-                            objAttribute.PropertyChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                            objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                         }
                     }, token).ConfigureAwait(false);
 
@@ -773,7 +852,7 @@ namespace Chummer.Backend.Attributes
                 {
                     if (objAttribute == GetAttributeByName(objAttribute.Abbrev))
                     {
-                        objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                     }
                     objAttribute.Dispose();
                 }
@@ -795,7 +874,7 @@ namespace Chummer.Backend.Attributes
                 {
                     if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev).ConfigureAwait(false))
                     {
-                        objAttribute.PropertyChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                        objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
                     }
                     await objAttribute.DisposeAsync().ConfigureAwait(false);
                 }
@@ -1992,7 +2071,7 @@ namespace Chummer.Backend.Attributes
         }
 
         public void RegisterPropertyChangedForActiveAttribute(string strAbbrev,
-            PropertyChangedEventHandler funcPropertyChanged)
+            MultiplePropertiesChangedEventHandler funcPropertyChanged)
         {
             UiPropertyChangerTracker objNewValue = new UiPropertyChangerTracker(strAbbrev);
             objNewValue.PropertyChangedList.Add(funcPropertyChanged);
@@ -2006,7 +2085,7 @@ namespace Chummer.Backend.Attributes
         }
 
         public void RegisterAsyncPropertyChangedForActiveAttribute(string strAbbrev,
-            PropertyChangedAsyncEventHandler funcPropertyChanged)
+            MultiplePropertiesChangedAsyncEventHandler funcPropertyChanged)
         {
             UiPropertyChangerTracker objNewValue = new UiPropertyChangerTracker(strAbbrev);
             objNewValue.AsyncPropertyChangedList.Add(funcPropertyChanged);
@@ -2020,7 +2099,7 @@ namespace Chummer.Backend.Attributes
         }
 
         public void DeregisterPropertyChangedForActiveAttribute(string strAbbrev,
-            PropertyChangedEventHandler funcPropertyChanged)
+            MultiplePropertiesChangedEventHandler funcPropertyChanged)
         {
             if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
             {
@@ -2029,7 +2108,7 @@ namespace Chummer.Backend.Attributes
         }
 
         public void DeregisterAsyncPropertyChangedForActiveAttribute(string strAbbrev,
-            PropertyChangedAsyncEventHandler funcPropertyChanged)
+            MultiplePropertiesChangedAsyncEventHandler funcPropertyChanged)
         {
             if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
             {
@@ -2037,7 +2116,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private PropertyChangedEventHandler RunExtraPropertyChanged(string strAbbrev)
+        private MultiplePropertiesChangedEventHandler RunExtraPropertyChanged(string strAbbrev)
         {
             switch (strAbbrev)
             {
@@ -2073,7 +2152,7 @@ namespace Chummer.Backend.Attributes
                     throw new ArgumentException("Invalid attribute key provided.", nameof(strAbbrev));
             }
 
-            void CommonCode(UiPropertyChangerTracker objEvents, PropertyChangedEventArgs e)
+            void CommonCode(UiPropertyChangerTracker objEvents, MultiplePropertiesChangedEventArgs e)
             {
                 if (objEvents.AsyncPropertyChangedList.Count != 0)
                 {
@@ -2089,7 +2168,7 @@ namespace Chummer.Backend.Attributes
                     {
                         Utils.RunOnMainThread(() =>
                         {
-                            foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                            foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents.PropertyChangedList)
                             {
                                 funcToRun?.Invoke(this, e);
                             }
@@ -2100,7 +2179,7 @@ namespace Chummer.Backend.Attributes
                 {
                     Utils.RunOnMainThread(() =>
                     {
-                        foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                        foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents.PropertyChangedList)
                         {
                             funcToRun?.Invoke(this, e);
                         }
@@ -2108,79 +2187,79 @@ namespace Chummer.Backend.Attributes
                 }
             }
 
-            void BODVariant(object sender, PropertyChangedEventArgs e)
+            void BODVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("BOD", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void AGIVariant(object sender, PropertyChangedEventArgs e)
+            void AGIVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("AGI", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void REAVariant(object sender, PropertyChangedEventArgs e)
+            void REAVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("REA", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void STRVariant(object sender, PropertyChangedEventArgs e)
+            void STRVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("STR", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void CHAVariant(object sender, PropertyChangedEventArgs e)
+            void CHAVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("CHA", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void INTVariant(object sender, PropertyChangedEventArgs e)
+            void INTVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("INT", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void LOGVariant(object sender, PropertyChangedEventArgs e)
+            void LOGVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("LOG", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void WILVariant(object sender, PropertyChangedEventArgs e)
+            void WILVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("WIL", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void EDGVariant(object sender, PropertyChangedEventArgs e)
+            void EDGVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("EDG", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void ESSVariant(object sender, PropertyChangedEventArgs e)
+            void ESSVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("ESS", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void MAGVariant(object sender, PropertyChangedEventArgs e)
+            void MAGVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("MAG", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void MAGAdeptVariant(object sender, PropertyChangedEventArgs e)
+            void MAGAdeptVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("MAGAdept", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void RESVariant(object sender, PropertyChangedEventArgs e)
+            void RESVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("RES", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
-            void DEPVariant(object sender, PropertyChangedEventArgs e)
+            void DEPVariant(object sender, MultiplePropertiesChangedEventArgs e)
             {
                 if (_dicUIPropertyChangers.TryGetValue("DEP", out UiPropertyChangerTracker objEvents))
                     CommonCode(objEvents, e);
             }
         }
 
-        private PropertyChangedAsyncEventHandler RunExtraAsyncPropertyChanged(string strAbbrev)
+        private MultiplePropertiesChangedAsyncEventHandler RunExtraAsyncPropertyChanged(string strAbbrev)
         {
             switch (strAbbrev)
             {
@@ -2216,13 +2295,13 @@ namespace Chummer.Backend.Attributes
                     throw new ArgumentException("Invalid attribute key provided.", nameof(strAbbrev));
             }
 
-            async Task CommonCode(UiPropertyChangerTracker objEvents, PropertyChangedEventArgs e, CancellationToken token = default)
+            async Task CommonCode(UiPropertyChangerTracker objEvents, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (objEvents.AsyncPropertyChangedList.Count != 0)
                 {
                     List<Task> lstTasks = new List<Task>(Math.Min(objEvents.AsyncPropertyChangedList.Count, Utils.MaxParallelBatchSize));
                     int i = 0;
-                    foreach (PropertyChangedAsyncEventHandler objEvent in objEvents.AsyncPropertyChangedList)
+                    foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in objEvents.AsyncPropertyChangedList)
                     {
                         lstTasks.Add(objEvent.Invoke(this, e, token));
                         if (++i < Utils.MaxParallelBatchSize)
@@ -2237,7 +2316,7 @@ namespace Chummer.Backend.Attributes
                     {
                         await Utils.RunOnMainThreadAsync(() =>
                         {
-                            foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                            foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents.PropertyChangedList)
                             {
                                 funcToRun?.Invoke(this, e);
                             }
@@ -2248,7 +2327,7 @@ namespace Chummer.Backend.Attributes
                 {
                     await Utils.RunOnMainThreadAsync(() =>
                     {
-                        foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                        foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents.PropertyChangedList)
                         {
                             funcToRun?.Invoke(this, e);
                         }
@@ -2256,7 +2335,7 @@ namespace Chummer.Backend.Attributes
                 }
             }
 
-            Task BODVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task BODVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2264,7 +2343,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task AGIVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task AGIVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2272,7 +2351,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task REAVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task REAVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2280,7 +2359,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task STRVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task STRVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2288,7 +2367,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task CHAVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task CHAVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2296,7 +2375,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task INTVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task INTVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2304,7 +2383,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task LOGVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task LOGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2312,7 +2391,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task WILVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task WILVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2320,7 +2399,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task EDGVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task EDGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2328,7 +2407,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task ESSVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task ESSVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2336,7 +2415,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task MAGVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task MAGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2344,7 +2423,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task MAGAdeptVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task MAGAdeptVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2352,7 +2431,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task RESVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task RESVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2360,7 +2439,7 @@ namespace Chummer.Backend.Attributes
                     return CommonCode(objEvents, e, token);
                 return Task.CompletedTask;
             }
-            Task DEPVariant(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            Task DEPVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
@@ -2374,7 +2453,7 @@ namespace Chummer.Backend.Attributes
         {
             foreach (CharacterAttrib att in AttributeList)
             {
-                att.OnMultiplePropertyChanged(Array.AsReadOnly(lstNames));
+                att.OnMultiplePropertiesChanged(Array.AsReadOnly(lstNames));
             }
         }
 
@@ -2998,48 +3077,45 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 _objCharacter.RefreshAttributeBindings(token);
-                List< PropertyInfo> lstProperties = typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).ToList();
+                List<string> lstProperties = typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).Select(x => x.Name).ToList();
                 foreach (string strAbbrev in AttributeStrings)
                 {
                     token.ThrowIfCancellationRequested();
                     if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
                     {
-                        foreach (PropertyInfo objProperty in lstProperties)
+                        token.ThrowIfCancellationRequested();
+                        if (objEvents.AsyncPropertyChangedList.Count != 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (objEvents.AsyncPropertyChangedList.Count != 0)
+                            MultiplePropertiesChangedEventArgs e = new MultiplePropertiesChangedEventArgs(lstProperties);
+                            Func<Task>[] aFuncs = new Func<Task>[objEvents.AsyncPropertyChangedList.Count];
+                            for (int i = 0; i < objEvents.AsyncPropertyChangedList.Count; ++i)
                             {
-                                PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
-                                Func<Task>[] aFuncs = new Func<Task>[objEvents.AsyncPropertyChangedList.Count];
-                                for (int i = 0; i < objEvents.AsyncPropertyChangedList.Count; ++i)
-                                {
-                                    int i1 = i;
-                                    aFuncs[i] = () => objEvents.AsyncPropertyChangedList[i1].Invoke(this, e, token);
-                                }
-
-                                Utils.RunWithoutThreadLock(aFuncs, token);
-                                if (objEvents.PropertyChangedList.Count != 0)
-                                {
-                                    Utils.RunOnMainThread(() =>
-                                    {
-                                        foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
-                                        {
-                                            funcToRun?.Invoke(this, e);
-                                        }
-                                    }, token: token);
-                                }
+                                int i1 = i;
+                                aFuncs[i] = () => objEvents.AsyncPropertyChangedList[i1].Invoke(this, e, token);
                             }
-                            else if (objEvents.PropertyChangedList.Count != 0)
+
+                            Utils.RunWithoutThreadLock(aFuncs, token);
+                            if (objEvents.PropertyChangedList.Count != 0)
                             {
-                                PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
                                 Utils.RunOnMainThread(() =>
                                 {
-                                    foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                                    foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents.PropertyChangedList)
                                     {
                                         funcToRun?.Invoke(this, e);
                                     }
                                 }, token: token);
                             }
+                        }
+                        else if (objEvents.PropertyChangedList.Count != 0)
+                        {
+                            MultiplePropertiesChangedEventArgs e = new MultiplePropertiesChangedEventArgs(lstProperties);
+                            Utils.RunOnMainThread(() =>
+                            {
+                                foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                                {
+                                    funcToRun?.Invoke(this, e);
+                                }
+                            }, token: token);
                         }
                     }
                 }
@@ -3058,56 +3134,57 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 await _objCharacter.RefreshAttributeBindingsAsync(token).ConfigureAwait(false);
-                List<PropertyInfo> lstProperties =
-                    typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).ToList();
+                List<string> lstProperties = typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).Select(x => x.Name).ToList();
                 foreach (string strAbbrev in AttributeStrings)
                 {
                     token.ThrowIfCancellationRequested();
                     if (_dicUIPropertyChangers.TryGetValue(strAbbrev, out UiPropertyChangerTracker objEvents))
                     {
-                        foreach (PropertyInfo objProperty in lstProperties)
+                        token.ThrowIfCancellationRequested();
+                        if (objEvents.AsyncPropertyChangedList.Count != 0)
                         {
-                            token.ThrowIfCancellationRequested();
-                            if (objEvents.AsyncPropertyChangedList.Count != 0)
+                            MultiplePropertiesChangedEventArgs
+                                e = new MultiplePropertiesChangedEventArgs(lstProperties);
+                            List<Task> lstTasks = new List<Task>(Math.Min(objEvents.AsyncPropertyChangedList.Count,
+                                Utils.MaxParallelBatchSize));
+                            int i = 0;
+                            foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in objEvents
+                                         .AsyncPropertyChangedList)
                             {
-                                PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
-                                List<Task> lstTasks = new List<Task>(Math.Min(objEvents.AsyncPropertyChangedList.Count,
-                                    Utils.MaxParallelBatchSize));
-                                int i = 0;
-                                foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
-                                {
-                                    lstTasks.Add(objEvent.Invoke(this, e, token));
-                                    if (++i < Utils.MaxParallelBatchSize)
-                                        continue;
-                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                    lstTasks.Clear();
-                                    i = 0;
-                                }
-
+                                lstTasks.Add(objEvent.Invoke(this, e, token));
+                                if (++i < Utils.MaxParallelBatchSize)
+                                    continue;
                                 await Task.WhenAll(lstTasks).ConfigureAwait(false);
-
-                                if (objEvents.PropertyChangedList.Count != 0)
-                                {
-                                    await Utils.RunOnMainThreadAsync(() =>
-                                    {
-                                        foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
-                                        {
-                                            funcToRun?.Invoke(this, e);
-                                        }
-                                    }, token).ConfigureAwait(false);
-                                }
+                                lstTasks.Clear();
+                                i = 0;
                             }
-                            else if (objEvents.PropertyChangedList.Count != 0)
+
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                            if (objEvents.PropertyChangedList.Count != 0)
                             {
-                                PropertyChangedEventArgs e = new PropertyChangedEventArgs(objProperty.Name);
                                 await Utils.RunOnMainThreadAsync(() =>
                                 {
-                                    foreach (PropertyChangedEventHandler funcToRun in objEvents.PropertyChangedList)
+                                    foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents
+                                                 .PropertyChangedList)
                                     {
                                         funcToRun?.Invoke(this, e);
                                     }
                                 }, token).ConfigureAwait(false);
                             }
+                        }
+                        else if (objEvents.PropertyChangedList.Count != 0)
+                        {
+                            MultiplePropertiesChangedEventArgs
+                                e = new MultiplePropertiesChangedEventArgs(lstProperties);
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                foreach (MultiplePropertiesChangedEventHandler funcToRun in objEvents
+                                             .PropertyChangedList)
+                                {
+                                    funcToRun?.Invoke(this, e);
+                                }
+                            }, token).ConfigureAwait(false);
                         }
                     }
                 }

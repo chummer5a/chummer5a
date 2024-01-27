@@ -36,7 +36,7 @@ using IAsyncDisposable = System.IAsyncDisposable;
 
 namespace Chummer.Backend.Skills
 {
-    public sealed class SkillsSection : INotifyMultiplePropertyChangedAsync, IHasLockObject
+    public sealed class SkillsSection : INotifyMultiplePropertiesChangedAsync, IHasLockObject
     {
         private int _intLoading = 1;
         private readonly Character _objCharacter;
@@ -55,7 +55,7 @@ namespace Chummer.Backend.Skills
             _lstKnowsoftSkills = new ThreadSafeBindingList<KnowledgeSkill>(LockObject);
             _lstSkillGroups = new ThreadSafeBindingList<SkillGroup>(LockObject);
             objCharacter.PropertyChangedAsync += OnCharacterPropertyChanged;
-            objCharacter.Settings.PropertyChangedAsync += OnCharacterSettingsPropertyChanged;
+            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
             SkillGroups.BeforeRemoveAsync += SkillGroupsOnBeforeRemove;
             KnowsoftSkills.BeforeRemoveAsync += KnowsoftSkillsOnBeforeRemove;
             KnowledgeSkills.BeforeRemoveAsync += KnowledgeSkillsOnBeforeRemove;
@@ -120,7 +120,7 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    objSkill.PropertyChangedAsync -= OnKnowledgeSkillPropertyChanged;
+                    objSkill.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
 
                     if (!_dicSkillBackups.Values.Contains(objSkill)
                         && !await KnowsoftSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
@@ -232,7 +232,7 @@ namespace Chummer.Backend.Skills
                 case ListChangedType.Reset:
                 {
                     await KnowledgeSkills
-                        .ForEachAsync(x => x.PropertyChangedAsync += OnKnowledgeSkillPropertyChanged, token: token)
+                        .ForEachAsync(x => x.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged, token: token)
                         .ConfigureAwait(false);
 
                     goto case ListChangedType.ItemDeleted;
@@ -243,7 +243,7 @@ namespace Chummer.Backend.Skills
                         await KnowledgeSkills.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                     if (objKnoSkill != null)
                     {
-                        objKnoSkill.PropertyChangedAsync += OnKnowledgeSkillPropertyChanged;
+                        objKnoSkill.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged;
                     }
 
                     goto case ListChangedType.ItemDeleted;
@@ -255,88 +255,87 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private Task OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private Task OnKnowledgeSkillPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             if (_intLoading > 0)
                 return Task.CompletedTask;
-            switch (e.PropertyName)
+            if (e.PropertyNames.Contains(nameof(KnowledgeSkill.CurrentSpCost)))
             {
-                case nameof(KnowledgeSkill.CurrentSpCost):
-                    return OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token);
-
-                case nameof(KnowledgeSkill.IsNativeLanguage):
-                    return OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token);
+                return e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage))
+                    ? OnMultiplePropertiesChangedAsync(
+                        new[] { nameof(KnowledgeSkillRanksSum), nameof(HasAvailableNativeLanguageSlots) }, token)
+                    : OnPropertyChangedAsync(nameof(KnowledgeSkillRanksSum), token);
             }
 
-            return Task.CompletedTask;
+            return e.PropertyNames.Contains(nameof(KnowledgeSkill.IsNativeLanguage))
+                ? OnPropertyChangedAsync(nameof(HasAvailableNativeLanguageSlots), token)
+                : Task.CompletedTask;
         }
 
         private Task OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             if (_intLoading > 0)
                 return Task.CompletedTask;
-            if (e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables))
-                return OnPropertyChangedAsync(nameof(SkillPointsSpentOnKnoskills), token);
-            return Task.CompletedTask;
+            return e?.PropertyName == nameof(Character.EffectiveBuildMethodUsesPriorityTables)
+                ? OnPropertyChangedAsync(nameof(SkillPointsSpentOnKnoskills), token)
+                : Task.CompletedTask;
         }
 
-        private async Task OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_intLoading > 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            if (e.PropertyNames.Contains(nameof(CharacterSettings.KnowledgePointsExpression)))
             {
-                switch (e?.PropertyName)
-                {
-                    case nameof(CharacterSettings.KnowledgePointsExpression):
-                        await OnPropertyChangedAsync(nameof(KnowledgeSkillPoints), token).ConfigureAwait(false);
-                        break;
+                await OnPropertyChangedAsync(nameof(KnowledgeSkillPoints), token).ConfigureAwait(false);
+            }
 
-                    case nameof(CharacterSettings.MaxSkillRatingCreate):
+            if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) &&
+                !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+            {
+                if (e.PropertyNames.Contains(nameof(CharacterSettings.MaxSkillRatingCreate)))
+                {
+                    await Skills.ForEachAsync(
+                        objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
+                        token: token).ConfigureAwait(false);
+                    if (e.PropertyNames.Contains(nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate)))
                     {
-                        if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) &&
-                            !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
-                        {
-                            await Skills.ForEachAsync(
+                        await KnowledgeSkills
+                            .ForEachAsync(
                                 objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
                                 token: token).ConfigureAwait(false);
-                            foreach (Skill objSkill in _dicSkillBackups.Values)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (!objSkill.IsKnowledgeSkill)
-                                    await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
-                                        .ConfigureAwait(false);
-                            }
-                        }
-
-                        break;
-                    }
-                    case nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate):
-                    {
-                        if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) &&
-                            !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                        foreach (Skill objSkill in _dicSkillBackups.Values)
                         {
-                            await KnowledgeSkills
-                                .ForEachAsync(
-                                    objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
-                                    token: token).ConfigureAwait(false);
-                            foreach (Skill objSkill in _dicSkillBackups.Values)
-                            {
-                                if (objSkill.IsKnowledgeSkill)
-                                    await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
-                                        .ConfigureAwait(false);
-                            }
+                            await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
+                                .ConfigureAwait(false);
                         }
-
-                        break;
+                    }
+                    else
+                    {
+                        foreach (Skill objSkill in _dicSkillBackups.Values)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (!objSkill.IsKnowledgeSkill)
+                                await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
+                                    .ConfigureAwait(false);
+                        }
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                else if (e.PropertyNames.Contains(nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate)))
+                {
+                    await KnowledgeSkills
+                        .ForEachAsync(
+                            objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
+                            token: token).ConfigureAwait(false);
+                    foreach (Skill objSkill in _dicSkillBackups.Values)
+                    {
+                        if (objSkill.IsKnowledgeSkill)
+                            await objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token)
+                                .ConfigureAwait(false);
+                    }
+                }
             }
         }
 
@@ -351,7 +350,7 @@ namespace Chummer.Backend.Skills
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -378,6 +377,37 @@ namespace Chummer.Backend.Skills
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
                             _intCachedKnowledgePoints = int.MinValue;
+                    }
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        }
+
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            Utils.RunOnMainThread(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            });
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -429,7 +459,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -465,6 +495,43 @@ namespace Chummer.Backend.Skills
                     finally
                     {
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (_setMultiplePropertiesChangedAsync.Count > 0)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int i = 0;
+                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                        {
+                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                            if (++i < Utils.MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                            lstTasks.Clear();
+                            i = 0;
+                        }
+
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        if (MultiplePropertiesChanged != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() =>
+                            {
+                                // ReSharper disable once AccessToModifiedClosure
+                                MultiplePropertiesChanged?.Invoke(this, objArgs);
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (MultiplePropertiesChanged != null)
+                    {
+                        MultiplePropertiesChangedEventArgs objArgs =
+                            new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
                     }
 
                     if (_setPropertyChangedAsync.Count > 0)
@@ -1859,7 +1926,7 @@ namespace Chummer.Backend.Skills
                             {
                                 foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
                                 {
-                                    objKnoSkill.PropertyChangedAsync += OnKnowledgeSkillPropertyChanged;
+                                    objKnoSkill.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged;
                                 }
                             }
                             else
@@ -1867,7 +1934,7 @@ namespace Chummer.Backend.Skills
                                 await KnowledgeSkills
                                     .ForEachAsync(
                                         objKnoSkill =>
-                                            objKnoSkill.PropertyChangedAsync += OnKnowledgeSkillPropertyChanged, token)
+                                            objKnoSkill.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged, token)
                                     .ConfigureAwait(false);
                             }
 
@@ -1929,7 +1996,7 @@ namespace Chummer.Backend.Skills
                                         await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token)
                                             .ConfigureAwait(false);
                                     }
-                                };
+                                }
                             }
                             else
                             {
@@ -2545,7 +2612,7 @@ namespace Chummer.Backend.Skills
                     _lstSkills.ForEach(x => x.Remove(), token);
                     KnowledgeSkills.ForEach(x =>
                     {
-                        x.PropertyChangedAsync -= OnKnowledgeSkillPropertyChanged;
+                        x.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
                         x.Remove();
                     }, token);
                     SkillGroups.ForEach(x => x.Dispose(), token);
@@ -2583,7 +2650,7 @@ namespace Chummer.Backend.Skills
                     await _lstSkills.ForEachAsync(x => x.RemoveAsync(token), token).ConfigureAwait(false);
                     await KnowledgeSkills.ForEachAsync(objSkill =>
                     {
-                        objSkill.PropertyChangedAsync -= OnKnowledgeSkillPropertyChanged;
+                        objSkill.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
                         return objSkill.RemoveAsync(token);
                     }, token).ConfigureAwait(false);
                     await SkillGroups.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
@@ -3909,6 +3976,17 @@ namespace Chummer.Backend.Skills
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -4083,7 +4161,7 @@ namespace Chummer.Backend.Skills
 
                 try
                 {
-                    _objCharacter.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {
@@ -4140,7 +4218,7 @@ namespace Chummer.Backend.Skills
 
                 try
                 {
-                    _objCharacter.Settings.PropertyChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {

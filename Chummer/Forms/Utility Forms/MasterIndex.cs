@@ -21,7 +21,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -266,7 +265,7 @@ namespace Chummer
 
                     if (objSettings != null)
                     {
-                        objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
+                        objSettings.MultiplePropertiesChangedAsync += OnSelectedSettingChanged;
                     }
                 }
                 finally
@@ -290,7 +289,7 @@ namespace Chummer
                 return;
             CharacterSettings objSettings = Interlocked.Exchange(ref _objSelectedSetting, null);
             if (objSettings != null)
-                objSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
+                objSettings.MultiplePropertiesChangedAsync -= OnSelectedSettingChanged;
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
@@ -342,10 +341,10 @@ namespace Chummer
             _objGenericFormClosingCancellationTokenSource.Cancel(false);
         }
 
-        private async Task OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnSelectedSettingChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
-            if (e.PropertyName == nameof(CharacterSettings.Books)
-                || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
+            if (e.PropertyNames.Contains(nameof(CharacterSettings.Books))
+                || e.PropertyNames.Contains(nameof(CharacterSettings.EnabledCustomDataDirectoryPaths)))
             {
                 try
                 {
@@ -415,12 +414,12 @@ namespace Chummer
                         {
                             if (objPreviousSettings != null)
                             {
-                                objPreviousSettings.PropertyChangedAsync -= OnSelectedSettingChanged;
+                                objPreviousSettings.MultiplePropertiesChangedAsync -= OnSelectedSettingChanged;
                             }
 
                             if (objSettings != null)
                             {
-                                objSettings.PropertyChangedAsync += OnSelectedSettingChanged;
+                                objSettings.MultiplePropertiesChangedAsync += OnSelectedSettingChanged;
                             }
 
                             await LoadContent(token).ConfigureAwait(false);

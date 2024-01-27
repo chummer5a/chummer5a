@@ -418,7 +418,7 @@ namespace Chummer.UI.Skills
                     _objCharacter.SkillsSection.Skills.ListChangedAsync += SkillsOnListChanged;
                     _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
                     _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
-                    _objCharacter.SkillsSection.PropertyChangedAsync += SkillsSectionOnPropertyChanged;
+                    _objCharacter.SkillsSection.MultiplePropertiesChangedAsync += SkillsSectionOnPropertyChanged;
                 }
                 finally
                 {
@@ -440,14 +440,14 @@ namespace Chummer.UI.Skills
             MakeDirtyWithCharacterUpdate?.Invoke(sender, e);
         }
 
-        private async Task SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task SkillsSectionOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 token.ThrowIfCancellationRequested();
-                if ((e.PropertyName == nameof(SkillsSection.KnowledgeSkillPointsRemain)
-                     || e.PropertyName == nameof(SkillsSection.KnowledgeSkillPoints)
-                     || e.PropertyName == nameof(SkillsSection.SkillPointsSpentOnKnoskills))
+                if ((e.PropertyNames.Contains(nameof(SkillsSection.KnowledgeSkillPointsRemain))
+                     || e.PropertyNames.Contains(nameof(SkillsSection.KnowledgeSkillPoints))
+                     || e.PropertyNames.Contains(nameof(SkillsSection.SkillPointsSpentOnKnoskills)))
                     && _objCharacter != null && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
                     await UpdateKnoSkillRemainingAsync(token).ConfigureAwait(false);
@@ -629,7 +629,7 @@ namespace Chummer.UI.Skills
                         _objCharacter.SkillsSection.Skills.ListChangedAsync -= SkillsOnListChanged;
                         _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
                         _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
-                        _objCharacter.SkillsSection.PropertyChangedAsync -= SkillsSectionOnPropertyChanged;
+                        _objCharacter.SkillsSection.MultiplePropertiesChangedAsync -= SkillsSectionOnPropertyChanged;
                     }
                 }
                 catch (ObjectDisposedException)

@@ -153,111 +153,187 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private async Task OnAttributePropertyChanged(object sender, PropertyChangedEventArgs e,
+        private async Task OnAttributePropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (e.PropertyName)
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.DisplayNameFormatted)))
             {
-                case nameof(CharacterAttrib.DisplayNameFormatted):
-                    string strName = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
-                        .GetDisplayNameFormattedAsync(token).ConfigureAwait(false);
-                    await lblName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
-                    break;
-                case nameof(CharacterAttrib.DisplayValue):
-                    string strValue = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
-                        .GetDisplayValueAsync(token).ConfigureAwait(false);
-                    await lblValue.DoThreadSafeAsync(x => x.Text = strValue, token).ConfigureAwait(false);
-                    break;
-                case nameof(CharacterAttrib.AugmentedMetatypeLimits):
-                    string strAugmentedMetatypeLimits =
-                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
-                            .GetAugmentedMetatypeLimitsAsync(token).ConfigureAwait(false);
-                    await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits, token)
-                        .ConfigureAwait(false);
-                    break;
-                case nameof(CharacterAttrib.ToolTip):
+                string strName = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                    .GetDisplayNameFormattedAsync(token).ConfigureAwait(false);
+                await lblName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
+            }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.AugmentedMetatypeLimits)))
+            {
+                string strAugmentedMetatypeLimits =
+                    await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                        .GetAugmentedMetatypeLimitsAsync(token).ConfigureAwait(false);
+                await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits, token)
+                    .ConfigureAwait(false);
+            }
+            if (e.PropertyNames.Contains(nameof(CharacterAttrib.DisplayValue)))
+            {
+                string strValue = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                    .GetDisplayValueAsync(token).ConfigureAwait(false);
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.ToolTip)))
+                {
                     string strToolTip = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
                         .GetToolTipAsync(token).ConfigureAwait(false);
-                    await lblValue.DoThreadSafeAsync(x => x.ToolTipText = strToolTip, token).ConfigureAwait(false);
-                    break;
-                case nameof(CharacterAttrib.UpgradeToolTip):
-                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                    await lblValue.DoThreadSafeAsync(x =>
                     {
-                        string strUpgradeToolTip =
-                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
-                                .GetUpgradeToolTipAsync(token).ConfigureAwait(false);
-                        await cmdImproveATT.DoThreadSafeAsync(x => x.ToolTipText = strUpgradeToolTip, token)
-                            .ConfigureAwait(false);
-                    }
+                        x.Text = strValue;
+                        x.ToolTipText = strToolTip;
+                    }, token).ConfigureAwait(false);
+                }
+                else
+                    await lblValue.DoThreadSafeAsync(x => x.Text = strValue, token).ConfigureAwait(false);
+            }
+            else if (e.PropertyNames.Contains(nameof(CharacterAttrib.ToolTip)))
+            {
+                string strToolTip = await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                    .GetToolTipAsync(token).ConfigureAwait(false);
+                await lblValue.DoThreadSafeAsync(x => x.ToolTipText = strToolTip, token).ConfigureAwait(false);
+            }
 
-                    break;
-                case nameof(CharacterAttrib.CanUpgradeCareer):
-                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+            if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+            {
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.UpgradeToolTip)))
+                {
+                    string strUpgradeToolTip =
+                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                            .GetUpgradeToolTipAsync(token).ConfigureAwait(false);
+                    if (e.PropertyNames.Contains(nameof(CharacterAttrib.CanUpgradeCareer)))
                     {
                         bool blnCanUpgradeCareer =
                             await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
                                 .GetCanUpgradeCareerAsync(token).ConfigureAwait(false);
-                        await cmdImproveATT.DoThreadSafeAsync(x => x.Enabled = blnCanUpgradeCareer, token)
+                        await cmdImproveATT.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = blnCanUpgradeCareer;
+                                x.ToolTipText = strUpgradeToolTip;
+                            }, token)
                             .ConfigureAwait(false);
                     }
-
-                    break;
-                case nameof(CharacterAttrib.PriorityMaximum):
-                    if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                    {
-                        int intPriorityMaximum =
+                    else
+                        await cmdImproveATT.DoThreadSafeAsync(x => x.ToolTipText = strUpgradeToolTip, token)
+                            .ConfigureAwait(false);
+                }
+                else if (e.PropertyNames.Contains(nameof(CharacterAttrib.CanUpgradeCareer)))
+                {
+                    bool blnCanUpgradeCareer =
+                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                            .GetCanUpgradeCareerAsync(token).ConfigureAwait(false);
+                    await cmdImproveATT.DoThreadSafeAsync(x => x.Enabled = blnCanUpgradeCareer, token)
+                        .ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.PriorityMaximum)))
+                {
+                    int intPriorityMaximum =
                             await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
                                 .GetPriorityMaximumAsync(token).ConfigureAwait(false);
-                        await nudBase.DoThreadSafeAsync(x => x.Maximum = intPriorityMaximum, token)
-                            .ConfigureAwait(false);
-                    }
-
-                    break;
-                case nameof(CharacterAttrib.BaseUnlocked):
-                    if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                    if (e.PropertyNames.Contains(nameof(CharacterAttrib.BaseUnlocked)))
                     {
                         bool blnBaseUnlocked =
                             await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
                                 .GetBaseUnlockedAsync(token).ConfigureAwait(false);
-                        await nudBase.DoThreadSafeAsync(x => x.Enabled = blnBaseUnlocked, token)
-                            .ConfigureAwait(false);
+                        if (e.PropertyNames.Contains(nameof(CharacterAttrib.Base)) && _intChangingBase == 0)
+                        {
+                            int intBase =
+                                await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                                    .ConfigureAwait(false);
+                            await nudBase.DoThreadSafeAsync(x =>
+                                {
+                                    x.Maximum = intPriorityMaximum;
+                                    x.Enabled = blnBaseUnlocked;
+                                    x.Value = intBase;
+                                }, token)
+                                .ConfigureAwait(false);
+                        }
+                        else
+                            await nudBase.DoThreadSafeAsync(x =>
+                                {
+                                    x.Maximum = intPriorityMaximum;
+                                    x.Enabled = blnBaseUnlocked;
+                                }, token)
+                                .ConfigureAwait(false);
                     }
-
-                    break;
-                case nameof(CharacterAttrib.KarmaMaximum):
-                    if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                    {
-                        int intKarmaMaximum =
-                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
-                                .GetKarmaMaximumAsync(token).ConfigureAwait(false);
-                        await nudKarma.DoThreadSafeAsync(x => x.Maximum = intKarmaMaximum, token)
-                            .ConfigureAwait(false);
-                    }
-
-                    break;
-                case nameof(CharacterAttrib.Base):
-                    if (_intChangingBase == 0 && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                    else if (e.PropertyNames.Contains(nameof(CharacterAttrib.Base)) && _intChangingBase == 0)
                     {
                         int intBase =
                             await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
                                 .ConfigureAwait(false);
-                        await nudBase.DoThreadSafeAsync(x => x.Value = intBase, token)
+                        await nudBase.DoThreadSafeAsync(x =>
+                            {
+                                x.Maximum = intPriorityMaximum;
+                                x.Value = intBase;
+                            }, token)
                             .ConfigureAwait(false);
                     }
+                    await nudBase.DoThreadSafeAsync(x => x.Maximum = intPriorityMaximum, token)
+                            .ConfigureAwait(false);
+                }
+                else if (e.PropertyNames.Contains(nameof(CharacterAttrib.BaseUnlocked)))
+                {
+                    bool blnBaseUnlocked =
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                                .GetBaseUnlockedAsync(token).ConfigureAwait(false);
+                    if (e.PropertyNames.Contains(nameof(CharacterAttrib.Base)) && _intChangingBase == 0)
+                    {
+                        int intBase =
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                                .ConfigureAwait(false);
+                        await nudBase.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = blnBaseUnlocked;
+                                x.Value = intBase;
+                            }, token)
+                            .ConfigureAwait(false);
+                    }
+                    else
+                        await nudBase.DoThreadSafeAsync(x => x.Enabled = blnBaseUnlocked, token)
+                                .ConfigureAwait(false);
+                }
+                else if (e.PropertyNames.Contains(nameof(CharacterAttrib.Base)) && _intChangingBase == 0)
+                {
+                    int intBase =
+                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                            .ConfigureAwait(false);
+                    await nudBase.DoThreadSafeAsync(x => x.Value = intBase, token)
+                        .ConfigureAwait(false);
+                }
 
-                    break;
-                case nameof(CharacterAttrib.Karma):
-                    if (_intChangingKarma == 0 && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.KarmaMaximum)))
+                {
+                    int intKarmaMaximum =
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false))
+                                .GetKarmaMaximumAsync(token).ConfigureAwait(false);
+                    if (e.PropertyNames.Contains(nameof(CharacterAttrib.Karma)) && _intChangingKarma == 0)
                     {
                         int intKarma =
                             await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
                                 .ConfigureAwait(false);
-                        await nudKarma.DoThreadSafeAsync(x => x.Value = intKarma, token)
+                        await nudKarma.DoThreadSafeAsync(x =>
+                            {
+                                x.Maximum = intKarmaMaximum;
+                                x.Value = intKarma;
+                            }, token)
                             .ConfigureAwait(false);
                     }
-
-                    break;
+                    else
+                        await nudKarma.DoThreadSafeAsync(x => x.Maximum = intKarmaMaximum, token)
+                                .ConfigureAwait(false);
+                }
+                else if (e.PropertyNames.Contains(nameof(CharacterAttrib.Karma)) && _intChangingKarma == 0)
+                {
+                    int intKarma =
+                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                            .ConfigureAwait(false);
+                    await nudKarma.DoThreadSafeAsync(x => x.Value = intKarma, token)
+                        .ConfigureAwait(false);
+                }
             }
         }
 

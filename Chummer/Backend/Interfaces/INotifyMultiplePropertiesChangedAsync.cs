@@ -26,31 +26,36 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public interface INotifyMultiplePropertyChangedAsync : INotifyMultiplePropertyChanged, INotifyPropertyChangedAsync
+    public interface INotifyMultiplePropertiesChangedAsync : INotifyMultiplePropertiesChanged, INotifyPropertyChangedAsync
     {
-        Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default);
+        Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default);
+
+        /// <summary>Occurs when one or more property values change.</summary>
+        event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync;
     }
 
-    public static class NotifyMultiplePropertyChangedAsyncExtensions
+    public delegate Task MultiplePropertiesChangedAsyncEventHandler(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default);
+
+    public static class NotifyMultiplePropertiesChangedAsyncExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertyChangedAsync objSubject,
+        public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject,
             IEnumerable<string> lstPropertyNames, CancellationToken token = default)
         {
-            return objSubject.OnMultiplePropertyChangedAsync(lstPropertyNames.ToList(), token);
+            return objSubject.OnMultiplePropertiesChangedAsync(lstPropertyNames.ToList(), token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertyChangedAsync objSubject, params string[] lstPropertyNames)
+        public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, params string[] lstPropertyNames)
         {
-            return objSubject.OnMultiplePropertyChangedAsync(Array.AsReadOnly(lstPropertyNames));
+            return objSubject.OnMultiplePropertiesChangedAsync(Array.AsReadOnly(lstPropertyNames));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertyChangedAsync objSubject, CancellationToken token,
+        public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
             params string[] lstPropertyNames)
         {
-            return objSubject.OnMultiplePropertyChangedAsync(Array.AsReadOnly(lstPropertyNames), token);
+            return objSubject.OnMultiplePropertiesChangedAsync(Array.AsReadOnly(lstPropertyNames), token);
         }
     }
 }

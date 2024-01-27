@@ -17,19 +17,22 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Chummer
 {
-    public interface INotifyPropertyChangedAsync : INotifyPropertyChanged
+    public readonly struct MultiplePropertiesChangedEventArgs
     {
-        /// <summary>Occurs when a property value changes.</summary>
-        event PropertyChangedAsyncEventHandler PropertyChangedAsync;
+        private readonly string[] _astrPropertyNames;
 
-        Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default);
+        public MultiplePropertiesChangedEventArgs(params string[] astrPropertyNames) => _astrPropertyNames = astrPropertyNames;
+
+        public MultiplePropertiesChangedEventArgs(IEnumerable<string> astrPropertyNames) =>
+            _astrPropertyNames = astrPropertyNames.ToArray();
+
+        public ReadOnlyCollection<string> PropertyNames => Array.AsReadOnly(_astrPropertyNames);
     }
-
-    public delegate Task PropertyChangedAsyncEventHandler(object sender, PropertyChangedEventArgs e, CancellationToken token = default);
 }

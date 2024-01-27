@@ -33,7 +33,7 @@ using Chummer.Annotations;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyMultiplePropertyChangedAsync, IEquatable<CalendarWeek>, IComparable<CalendarWeek>, IHasNotes, IHasLockObject
+    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyMultiplePropertiesChangedAsync, IEquatable<CalendarWeek>, IComparable<CalendarWeek>, IHasNotes, IHasLockObject
     {
         private Guid _guiID;
         private int _intYear = 2072;
@@ -52,6 +52,17 @@ namespace Chummer
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
+        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
+            new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
+
+        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        {
+            add => _setMultiplePropertiesChangedAsync.TryAdd(value);
+            remove => _setMultiplePropertiesChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
@@ -63,10 +74,41 @@ namespace Chummer
             return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
+                if (_setMultiplePropertiesChangedAsync.Count > 0)
+                {
+                    MultiplePropertiesChangedEventArgs objArgs =
+                        new MultiplePropertiesChangedEventArgs(lstPropertyNames);
+                    List<Func<Task>> lstFuncs = new List<Func<Task>>(_setMultiplePropertiesChangedAsync.Count);
+                    foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                    {
+                        lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                    }
+
+                    Utils.RunWithoutThreadLock(lstFuncs);
+                    if (MultiplePropertiesChanged != null)
+                    {
+                        Utils.RunOnMainThread(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        });
+                    }
+                }
+                else if (MultiplePropertiesChanged != null)
+                {
+                    MultiplePropertiesChangedEventArgs objArgs =
+                        new MultiplePropertiesChangedEventArgs(lstPropertyNames);
+                    Utils.RunOnMainThread(() =>
+                    {
+                        // ReSharper disable once AccessToModifiedClosure
+                        MultiplePropertiesChanged?.Invoke(this, objArgs);
+                    });
+                }
+
                 if (_setPropertyChangedAsync.Count > 0)
                 {
                     List<PropertyChangedEventArgs> lstArgsList = lstPropertyNames.Select(x => new PropertyChangedEventArgs(x)).ToList();
@@ -109,13 +151,50 @@ namespace Chummer
             }
         }
 
-        public async Task OnMultiplePropertyChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
+        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
+                if (_setMultiplePropertiesChangedAsync.Count > 0)
+                {
+                    MultiplePropertiesChangedEventArgs objArgs =
+                        new MultiplePropertiesChangedEventArgs(lstPropertyNames);
+                    List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                    int i = 0;
+                    foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
+                    {
+                        lstTasks.Add(objEvent.Invoke(this, objArgs, token));
+                        if (++i < Utils.MaxParallelBatchSize)
+                            continue;
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        lstTasks.Clear();
+                        i = 0;
+                    }
+
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    if (MultiplePropertiesChanged != null)
+                    {
+                        await Utils.RunOnMainThreadAsync(() =>
+                        {
+                            // ReSharper disable once AccessToModifiedClosure
+                            MultiplePropertiesChanged?.Invoke(this, objArgs);
+                        }, token: token).ConfigureAwait(false);
+                    }
+                }
+                else if (MultiplePropertiesChanged != null)
+                {
+                    MultiplePropertiesChangedEventArgs objArgs =
+                        new MultiplePropertiesChangedEventArgs(lstPropertyNames);
+                    await Utils.RunOnMainThreadAsync(() =>
+                    {
+                        // ReSharper disable once AccessToModifiedClosure
+                        MultiplePropertiesChanged?.Invoke(this, objArgs);
+                    }, token: token).ConfigureAwait(false);
+                }
+
                 if (_setPropertyChangedAsync.Count > 0)
                 {
                     List<PropertyChangedEventArgs> lstArgsList =

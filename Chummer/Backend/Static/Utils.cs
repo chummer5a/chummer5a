@@ -2598,10 +2598,10 @@ namespace Chummer
         /// Memory Pool for empty dictionaries used for processing multiple property changed. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
-        public static SafeObjectPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>
+        public static SafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>
             DictionaryForMultiplePropertyChangedPool { get; }
-            = new SafeObjectPool<Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>>(
-                () => new Dictionary<INotifyMultiplePropertyChangedAsync, HashSet<string>>(), x => x.Clear());
+            = new SafeObjectPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                () => new Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for SemaphoreSlim with one allowed semaphore that is used for async-friendly thread safety stuff. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.

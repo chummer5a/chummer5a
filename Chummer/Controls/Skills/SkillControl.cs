@@ -273,10 +273,10 @@ namespace Chummer.UI.Skills
                 ResumeLayout(true);
             }
 
-            _objSkill.PropertyChangedAsync += Skill_PropertyChanged;
+            _objSkill.MultiplePropertiesChangedAsync += Skill_PropertyChanged;
             if (_objAttributeActive != null)
             {
-                _objAttributeActive.PropertyChangedAsync += Attribute_PropertyChanged;
+                _objAttributeActive.MultiplePropertiesChangedAsync += Attribute_PropertyChanged;
             }
         }
 
@@ -714,95 +714,121 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async Task Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs, CancellationToken token = default)
+        private async Task Skill_PropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
 
-            bool blnUpdateAll = false;
+            bool blnAll = e.PropertyNames == default;
             //I learned something from this but i'm not sure it is a good solution
             //scratch that, i'm sure it is a bad solution. (Tooltip manager from tooltip, properties from reflection?
-
             //if name of changed is null it does magic to change all, otherwise it only does one.
             try
             {
                 token.ThrowIfCancellationRequested();
-                switch (propertyChangedEventArgs?.PropertyName)
+                if (blnAll || e.PropertyNames.Contains(nameof(Skill.DisplayOtherAttribute)))
                 {
-                    case null:
-                        blnUpdateAll = true;
-                        goto case nameof(Skill.DisplayOtherAttribute);
-                    case nameof(Skill.DisplayOtherAttribute):
-                        await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
-                        if (blnUpdateAll)
-                            goto case nameof(Skill.Default);
-                        break;
-
-                    case nameof(Skill.Default):
-                        bool blnDefault = await _objSkill.GetDefaultAsync(token).ConfigureAwait(false);
-                        await lblName
-                              .DoThreadSafeAsync(x => x.Font = !blnDefault ? _fntItalicName : _fntNormalName,
-                                                 token: token).ConfigureAwait(false);
-                        if (blnUpdateAll)
-                            goto case nameof(Skill.DefaultAttribute);
-                        break;
-
-                    case nameof(Skill.DefaultAttribute):
-                        if (cboSelectAttribute != null)
+                    await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
+                }
+                if (blnAll || e.PropertyNames.Contains(nameof(Skill.Default)))
+                {
+                    bool blnDefault = await _objSkill.GetDefaultAsync(token).ConfigureAwait(false);
+                    await lblName
+                        .DoThreadSafeAsync(x => x.Font = !blnDefault ? _fntItalicName : _fntNormalName,
+                            token: token).ConfigureAwait(false);
+                }
+                if (blnAll || e.PropertyNames.Contains(nameof(Skill.DefaultAttribute)))
+                {
+                    if (cboSelectAttribute != null)
+                    {
+                        string strAbbrev = _objSkill.AttributeObject.Abbrev;
+                        await cboSelectAttribute
+                            .DoThreadSafeAsync(x => x.SelectedValue = strAbbrev,
+                                token: token).ConfigureAwait(false);
+                        await DoSelectAttributeClosed(token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await SetAttributeActiveAsync(_objSkill.AttributeObject, token).ConfigureAwait(false);
+                    }
+                }
+                if (cboSpec != null && await cboSpec.DoThreadSafeFuncAsync(x => x.Visible, token: token)
+                        .ConfigureAwait(false))
+                {
+                    if (blnAll || (e.PropertyNames.Contains(nameof(Skill.CGLSpecializations)) &&
+                                   e.PropertyNames.Contains(nameof(Skill.TopMostDisplaySpecialization))))
+                    {
+                        IReadOnlyList<ListItem> lstSpecializations
+                            = await _objSkill.GetCGLSpecializationsAsync(token).ConfigureAwait(false);
+                        string strOldSpec = lstSpecializations.Count != 0
+                            ? await cboSpec
+                                .DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
+                                .ConfigureAwait(false)
+                            : await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: token)
+                                .ConfigureAwait(false);
+                        int intOldUpdating = Interlocked.Increment(ref _intUpdatingSpec);
+                        try
                         {
-                            string strAbbrev = _objSkill.AttributeObject.Abbrev;
-                            await cboSelectAttribute
-                                  .DoThreadSafeAsync(x => x.SelectedValue = strAbbrev,
-                                                     token: token).ConfigureAwait(false);
-                            await DoSelectAttributeClosed(token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await SetAttributeActiveAsync(_objSkill.AttributeObject, token).ConfigureAwait(false);
-                        }
-
-                        if (blnUpdateAll)
-                            goto case nameof(Skill.TopMostDisplaySpecialization);
-                        break;
-
-                    case nameof(Skill.TopMostDisplaySpecialization):
-                        if (cboSpec != null)
-                        {
-                            int intOldUpdating = Interlocked.Increment(ref _intUpdatingSpec);
-                            try
+                            if (intOldUpdating == 0)
                             {
-                                if (intOldUpdating == 0)
+                                string strDisplaySpec = await _objSkill
+                                    .GetTopMostDisplaySpecializationAsync(token)
+                                    .ConfigureAwait(false);
+                                await cboSpec.PopulateWithListItemsAsync(lstSpecializations, token: token)
+                                    .ConfigureAwait(false);
+                                await cboSpec.DoThreadSafeAsync(x =>
                                 {
-                                    string strDisplaySpec = await _objSkill
-                                                                  .GetTopMostDisplaySpecializationAsync(token)
-                                                                  .ConfigureAwait(false);
-                                    await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: token)
-                                                 .ConfigureAwait(false);
-                                }
+                                    if (string.IsNullOrEmpty(strOldSpec))
+                                        x.SelectedIndex = -1;
+                                    else
+                                    {
+                                        x.SelectedValue = strOldSpec;
+                                        if (x.SelectedIndex == -1)
+                                            x.Text = strOldSpec;
+                                    }
+
+                                    x.Text = strDisplaySpec;
+                                }, token: token).ConfigureAwait(false);
                             }
-                            finally
+                            else
                             {
-                                Interlocked.Decrement(ref _intUpdatingSpec);
+                                await cboSpec.PopulateWithListItemsAsync(lstSpecializations, token: token)
+                                    .ConfigureAwait(false);
+                                await cboSpec.DoThreadSafeAsync(x =>
+                                {
+                                    if (string.IsNullOrEmpty(strOldSpec))
+                                        x.SelectedIndex = -1;
+                                    else
+                                    {
+                                        x.SelectedValue = strOldSpec;
+                                        if (x.SelectedIndex == -1)
+                                            x.Text = strOldSpec;
+                                    }
+                                }, token: token).ConfigureAwait(false);
                             }
                         }
-
-                        if (blnUpdateAll)
-                            goto case nameof(Skill.CGLSpecializations);
-                        break;
-
-                    case nameof(Skill.CGLSpecializations):
-                        if (cboSpec != null && await cboSpec.DoThreadSafeFuncAsync(x => x.Visible, token: token)
-                                                            .ConfigureAwait(false))
+                        finally
                         {
-                            string strOldSpec = await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: token)
-                                                             .ConfigureAwait(false);
+                            Interlocked.Decrement(ref _intUpdatingSpec);
+                        }
+                    }
+                    else
+                    {
+                        if (e.PropertyNames.Contains(nameof(Skill.CGLSpecializations)))
+                        {
                             IReadOnlyList<ListItem> lstSpecializations
                                 = await _objSkill.GetCGLSpecializationsAsync(token).ConfigureAwait(false);
+                            string strOldSpec = lstSpecializations.Count != 0
+                                ? await cboSpec
+                                    .DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: token)
+                                    .ConfigureAwait(false)
+                                : await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: token)
+                                    .ConfigureAwait(false);
                             Interlocked.Increment(ref _intUpdatingSpec);
                             try
                             {
                                 await cboSpec.PopulateWithListItemsAsync(lstSpecializations, token: token)
-                                             .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                                 await cboSpec.DoThreadSafeAsync(x =>
                                 {
                                     if (string.IsNullOrEmpty(strOldSpec))
@@ -821,15 +847,33 @@ namespace Chummer.UI.Skills
                             }
                         }
 
-                        if (blnUpdateAll)
-                            goto case nameof(Skill.Specializations);
-                        break;
-
-                    case nameof(Skill.Specializations):
-                        if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject, token)
-                                .ConfigureAwait(false) is CharacterShared frmParent)
-                            await frmParent.RequestCharacterUpdate(token).ConfigureAwait(false);
-                        break;
+                        if (e.PropertyNames.Contains(nameof(KnowledgeSkill.TopMostDisplaySpecialization)))
+                        {
+                            int intOldUpdating = Interlocked.Increment(ref _intUpdatingSpec);
+                            try
+                            {
+                                if (intOldUpdating == 0)
+                                {
+                                    string strDisplaySpec = await _objSkill
+                                        .GetTopMostDisplaySpecializationAsync(token)
+                                        .ConfigureAwait(false);
+                                    await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: token)
+                                        .ConfigureAwait(false);
+                                }
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intUpdatingSpec);
+                            }
+                        }
+                    }
+                }
+                if ((blnAll || e.PropertyNames.Contains(nameof(KnowledgeSkill.Specializations)))
+                    && await Program
+                        .GetFormForDialogAsync(_objSkill.CharacterObject, token)
+                        .ConfigureAwait(false) is CharacterShared frmParent)
+                {
+                    await frmParent.RequestCharacterUpdate(token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -838,7 +882,8 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private async Task Attribute_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs, CancellationToken token = default)
+        private async Task Attribute_PropertyChanged(object sender,
+            MultiplePropertiesChangedEventArgs propertyChangedEventArgs, CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
@@ -846,13 +891,10 @@ namespace Chummer.UI.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                switch (propertyChangedEventArgs?.PropertyName)
+                if (propertyChangedEventArgs.PropertyNames.Contains(nameof(CharacterAttrib.Abbrev))
+                    || propertyChangedEventArgs.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    case null:
-                    case nameof(CharacterAttrib.Abbrev):
-                    case nameof(CharacterAttrib.TotalValue):
-                        await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
-                        break;
+                    await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1018,7 +1060,7 @@ namespace Chummer.UI.Skills
                 {
                     try
                     {
-                        objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
+                        objOldAttrib.MultiplePropertiesChangedAsync -= Attribute_PropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
@@ -1026,7 +1068,7 @@ namespace Chummer.UI.Skills
                     }
                 }
                 if (value != null)
-                    value.PropertyChangedAsync += Attribute_PropertyChanged;
+                    value.MultiplePropertiesChangedAsync += Attribute_PropertyChanged;
 
                 btnAttribute.Font = value == _objSkill.AttributeObject
                     ? _fntNormal
@@ -1045,7 +1087,7 @@ namespace Chummer.UI.Skills
             {
                 try
                 {
-                    objOldAttrib.PropertyChangedAsync -= Attribute_PropertyChanged;
+                    objOldAttrib.MultiplePropertiesChangedAsync -= Attribute_PropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {
@@ -1053,7 +1095,7 @@ namespace Chummer.UI.Skills
                 }
             }
             if (value != null)
-                value.PropertyChangedAsync += Attribute_PropertyChanged;
+                value.MultiplePropertiesChangedAsync += Attribute_PropertyChanged;
 
             Font objFont = value == _objSkill.AttributeObject ? _fntNormal : _fntItalic;
             await btnAttribute.DoThreadSafeAsync(x => x.Font = objFont, token).ConfigureAwait(false);
@@ -1188,7 +1230,7 @@ namespace Chummer.UI.Skills
             _tmrSpecChangeTimer?.Dispose();
             try
             {
-                _objSkill.PropertyChangedAsync -= Skill_PropertyChanged;
+                _objSkill.MultiplePropertiesChangedAsync -= Skill_PropertyChanged;
             }
             catch (ObjectDisposedException)
             {
@@ -1198,7 +1240,7 @@ namespace Chummer.UI.Skills
             {
                 try
                 {
-                    AttributeActive.PropertyChangedAsync -= Attribute_PropertyChanged;
+                    AttributeActive.MultiplePropertiesChangedAsync -= Attribute_PropertyChanged;
                 }
                 catch (ObjectDisposedException)
                 {
