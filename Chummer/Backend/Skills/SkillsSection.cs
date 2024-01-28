@@ -1223,7 +1223,6 @@ namespace Chummer.Backend.Skills
                         _lstSkillGroups.RaiseListChangedEvents = false;
                         try
                         {
-
                             _dicSkills.Clear();
                             if (!blnLegacy)
                             {

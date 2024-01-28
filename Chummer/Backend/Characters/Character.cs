@@ -10317,17 +10317,24 @@ namespace Chummer
                             }
 
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
-                            if (MysticAdeptPowerPoints > 0)
+                            int intMysAdPPs =
+                                blnSync ? MysticAdeptPowerPoints : await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
+                            if (intMysAdPPs > 0)
                             {
                                 int intMAGTotalValue = blnSync
                                     ? MAG.TotalValue
                                     : await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
                                             .GetTotalValueAsync(token).ConfigureAwait(false);
-                                if (MysticAdeptPowerPoints > intMAGTotalValue)
-                                    MysticAdeptPowerPoints = intMAGTotalValue;
+                                if (intMysAdPPs > intMAGTotalValue)
+                                {
+                                    if (blnSync)
+                                        MysticAdeptPowerPoints = intMAGTotalValue;
+                                    else
+                                        await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token).ConfigureAwait(false);
+                                }
                             }
 
-                            if (!InitiationEnabled || !AddInitiationsAllowed)
+                            if (!InitiationEnabled || !(blnSync ? AddInitiationsAllowed : await GetAddInitiationsAllowedAsync(token).ConfigureAwait(false)))
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -46789,7 +46796,6 @@ namespace Chummer
                     }
 
                     return _intCachedPositiveQualityLimitKarma = intNewValue;
-
                 }
             }
         }
@@ -46829,7 +46835,6 @@ namespace Chummer
                 }
 
                 return _intCachedPositiveQualityLimitKarma = intNewValue;
-
             }
             finally
             {
@@ -46908,7 +46913,6 @@ namespace Chummer
                                                                               && !objQuality.ContributeToLimit, objQuality => objQuality.BP) * Settings.KarmaQuality;
 
                     return _intCachedPositiveQualities = intNewValue;
-
                 }
             }
         }
@@ -46987,7 +46991,6 @@ namespace Chummer
                     objQuality => objQuality.BP, token: token).ConfigureAwait(false) * intKarmaQuality;
 
                 return _intCachedPositiveQualities = intNewValue;
-
             }
             finally
             {
@@ -47092,7 +47095,6 @@ namespace Chummer
                                                                               && !objQuality.ContributeToLimit, objQuality => objQuality.BP) * Settings.KarmaQuality;
 
                     return _intCachedNegativeQualities = -intNewValue;
-
                 }
             }
         }
@@ -47149,7 +47151,6 @@ namespace Chummer
                                intKarmaQuality;
 
                 return _intCachedNegativeQualities = -intNewValue;
-
             }
             finally
             {
@@ -47194,7 +47195,6 @@ namespace Chummer
                     }
 
                     return _intCachedNegativeQualityLimitKarma = -intNewValue;
-
                 }
             }
         }
@@ -47242,7 +47242,6 @@ namespace Chummer
                 }
 
                 return _intCachedNegativeQualityLimitKarma = -intNewValue;
-
             }
             finally
             {
@@ -47338,7 +47337,6 @@ namespace Chummer
                 return _intCachedMetagenicPositiveQualities = await lstQualities.SumAsync(async objQuality =>
                         await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive && await objQuality.GetContributeToMetagenicLimitAsync(token).ConfigureAwait(false),
                     objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false);
-
             }
             finally
             {
@@ -47368,7 +47366,6 @@ namespace Chummer
                             .StandardRound();
 
                     return _intCachedMetagenicNegativeQualities = intNewValue;
-
                 }
             }
         }
@@ -47390,7 +47387,6 @@ namespace Chummer
                     .StandardRound();
 
                 return _intCachedMetagenicNegativeQualities = intNewValue;
-
             }
             finally
             {
@@ -47519,7 +47515,6 @@ namespace Chummer
                 {
                     if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
                         return _objCachedSourceDetail;
-
                 }
 
                 using (_objCachedSourceDetailLock.EnterUpgradeableReadLock())
@@ -47545,7 +47540,6 @@ namespace Chummer
             {
                 if (_objCachedSourceDetail != default && _objCachedSourceDetail.Language == GlobalSettings.Language)
                     return _objCachedSourceDetail;
-
             }
             finally
             {

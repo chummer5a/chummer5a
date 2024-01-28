@@ -36,7 +36,7 @@ namespace Chummer
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _dicPersistence.TryAdd("metatype", _objCharacter.Metatype.ToLowerInvariant());
             _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }

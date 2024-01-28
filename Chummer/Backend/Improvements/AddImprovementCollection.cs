@@ -2631,7 +2631,7 @@ namespace Chummer
             if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                string strPrecendenceString = objNode.Attributes?["precedence"]?.InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
 
@@ -2644,7 +2644,7 @@ namespace Chummer
             if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                string strPrecendenceString = objNode.Attributes?["precedence"]?.InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
 
@@ -2656,7 +2656,7 @@ namespace Chummer
             if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                string strPrecendenceString = objNode.Attributes?["precedence"]?.InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
 
