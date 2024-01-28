@@ -36,7 +36,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
+        public event PropertyChangedAsyncEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _lstActiveSkills;
         private BindingListDisplay<SkillGroup> _lstSkillGroups;
@@ -249,6 +249,9 @@ namespace Chummer.UI.Skills
                                 _lstSkillGroups.Filter(
                                     z => z.SkillList.Any(y =>
                                         _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
+                                    (z, t) => z.SkillList.AnyAsync(async y =>
+                                        await _objCharacter.SkillsSection.HasActiveSkillAsync(
+                                            await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t).ConfigureAwait(false), t),
                                     true);
                                 _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
 
@@ -334,9 +337,9 @@ namespace Chummer.UI.Skills
                             parts.TaskEnd("_sort databind");
 
                             if (_lstSkillGroups != null)
-                                _lstSkillGroups.ChildPropertyChanged += ChildPropertyChanged;
-                            _lstActiveSkills.ChildPropertyChanged += ChildPropertyChanged;
-                            _lstKnowledgeSkills.ChildPropertyChanged += ChildPropertyChanged;
+                                _lstSkillGroups.ChildPropertyChangedAsync += ChildPropertyChanged;
+                            _lstActiveSkills.ChildPropertyChangedAsync += ChildPropertyChanged;
+                            _lstKnowledgeSkills.ChildPropertyChangedAsync += ChildPropertyChanged;
 
                             if (_objCharacter.Created)
                             {
@@ -435,9 +438,11 @@ namespace Chummer.UI.Skills
 #endif
         }
 
-        private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private Task ChildPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            MakeDirtyWithCharacterUpdate?.Invoke(sender, e);
+            if (MakeDirtyWithCharacterUpdate != null)
+                return MakeDirtyWithCharacterUpdate.Invoke(sender, e, token);
+            return token.IsCancellationRequested ? Task.FromCanceled(token) : Task.CompletedTask;
         }
 
         private async Task SkillsSectionOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
@@ -587,7 +592,11 @@ namespace Chummer.UI.Skills
                         .DoThreadSafeAsync(
                             x => x.Filter(
                                 z => z.SkillList.Any(y =>
-                                    _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)), true), token)
+                                    _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
+                                (z, t) => z.SkillList.AnyAsync(async y =>
+                                    await _objCharacter.SkillsSection.HasActiveSkillAsync(
+                                            await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t)
+                                        .ConfigureAwait(false), t), true), token)
                         .ConfigureAwait(false);
                 }
             }
@@ -597,6 +606,11 @@ namespace Chummer.UI.Skills
                     .DoThreadSafeAsync(
                         x => x.Filter(
                             z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
+                            (z, t) => z.SkillList.AnyAsync(async y =>
+                                    await _objCharacter.SkillsSection.HasActiveSkillAsync(
+                                        await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t)
+                                    .ConfigureAwait(false),
+                                t),
                             true), token).ConfigureAwait(false);
             }
         }
@@ -978,62 +992,98 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Skill>> selectedItem)
+            try
             {
+                if (!(await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.SelectedItem, MyToken).ConfigureAwait(false)
+                        is Tuple<string, Predicate<Skill>>
+                        selectedItem))
+                    return;
                 if (selectedItem.Item2 == null)
                 {
-                    cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDown;
-                    _blnActiveSkillSearchMode = true;
-                    cboDisplayFilter.Text = string.Empty;
+                    await cboDisplayFilter.DoThreadSafeAsync(x =>
+                    {
+                        x.DropDownStyle = ComboBoxStyle.DropDown;
+                        _blnActiveSkillSearchMode = true;
+                        x.Text = string.Empty;
+                    }, token: MyToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-                    _blnActiveSkillSearchMode = false;
-                    _lstActiveSkills.SuspendLayout();
+                    await cboDisplayFilter.DoThreadSafeAsync(x =>
+                    {
+                        x.DropDownStyle = ComboBoxStyle.DropDownList;
+                        _blnActiveSkillSearchMode = false;
+                    }, token: MyToken).ConfigureAwait(false);
+                    await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken)
+                        .ConfigureAwait(false);
                     try
                     {
-                        _lstActiveSkills.Filter(selectedItem.Item2);
+                        await _lstActiveSkills.FilterAsync(selectedItem.Item2, token: MyToken).ConfigureAwait(false);
                     }
                     finally
                     {
-                        _lstActiveSkills.ResumeLayout();
+                        await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout(), token: MyToken)
+                            .ConfigureAwait(false);
                     }
                 }
             }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+        private async void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
         {
             if (!_blnActiveSkillSearchMode)
                 return;
-            _lstActiveSkills.SuspendLayout();
             try
             {
-                _lstActiveSkills.Filter(
-                    skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
-                        skill.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken).ConfigureAwait(false);
+                try
+                {
+                    string strText = await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.Text, token: MyToken).ConfigureAwait(false);
+                    await _lstActiveSkills.FilterAsync(
+                        skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
+                            skill.CurrentDisplayName, strText, CompareOptions.IgnoreCase) >= 0,
+                        async (skill, token) => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
+                            await skill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strText, CompareOptions.IgnoreCase) >= 0,
+                        true, MyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout(), token: MyToken).ConfigureAwait(false);
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                _lstActiveSkills.ResumeLayout();
+                //swallow this
             }
         }
 
-        private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSort_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(cboSort.SelectedItem is Tuple<string, IComparer<Skill>> selectedItem))
-                return;
-            _lstActiveSkills.SuspendLayout();
             try
             {
-                _lstActiveSkills.Sort(selectedItem.Item2);
+                if (!(await cboSort.DoThreadSafeFuncAsync(x => x.SelectedItem, token: MyToken).ConfigureAwait(false) is
+                        Tuple<string, IComparer<Skill>> selectedItem))
+                    return;
+                await _lstActiveSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken).ConfigureAwait(false);
+                try
+                {
+                    await _lstActiveSkills.SortAsync(selectedItem.Item2, token: MyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout(), token: MyToken)
+                        .ConfigureAwait(false);
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                _lstActiveSkills.ResumeLayout();
+                //swallow this
             }
         }
 
@@ -1199,62 +1249,98 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSortKnowledge_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(cboSortKnowledge.SelectedItem is Tuple<string, IComparer<KnowledgeSkill>> selectedItem))
-                return;
-            _lstKnowledgeSkills.SuspendLayout();
             try
             {
-                _lstKnowledgeSkills.Sort(selectedItem.Item2);
-            }
-            finally
-            {
-                _lstKnowledgeSkills.ResumeLayout();
-            }
-        }
-
-        private void cboDisplayFilterKnowledge_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!(cboDisplayFilterKnowledge.SelectedItem is Tuple<string, Predicate<KnowledgeSkill>> selectedItem))
-                return;
-            if (selectedItem.Item2 == null)
-            {
-                cboDisplayFilterKnowledge.DropDownStyle = ComboBoxStyle.DropDown;
-                _blnKnowledgeSkillSearchMode = true;
-                cboDisplayFilterKnowledge.Text = string.Empty;
-            }
-            else
-            {
-                cboDisplayFilterKnowledge.DropDownStyle = ComboBoxStyle.DropDownList;
-                _blnKnowledgeSkillSearchMode = false;
-                _lstKnowledgeSkills.SuspendLayout();
+                if (!(await cboSortKnowledge.DoThreadSafeFuncAsync(x => x.SelectedItem, token: MyToken).ConfigureAwait(false) is
+                        Tuple<string, IComparer<KnowledgeSkill>> selectedItem))
+                    return;
+                await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken).ConfigureAwait(false);
                 try
                 {
-                    _lstKnowledgeSkills.Filter(selectedItem.Item2);
+                    await _lstKnowledgeSkills.SortAsync(selectedItem.Item2, token: MyToken).ConfigureAwait(false);
                 }
                 finally
                 {
-                    _lstKnowledgeSkills.ResumeLayout();
+                    await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.ResumeLayout(), token: MyToken)
+                        .ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private void cboDisplayFilterKnowledge_TextUpdate(object sender, EventArgs e)
+        private async void cboDisplayFilterKnowledge_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await cboDisplayFilterKnowledge.DoThreadSafeFuncAsync(x => x.SelectedItem, MyToken).ConfigureAwait(false)
+                        is Tuple<string, Predicate<KnowledgeSkill>>
+                        selectedItem))
+                    return;
+                if (selectedItem.Item2 == null)
+                {
+                    await cboDisplayFilterKnowledge.DoThreadSafeAsync(x =>
+                    {
+                        x.DropDownStyle = ComboBoxStyle.DropDown;
+                        _blnKnowledgeSkillSearchMode = true;
+                        x.Text = string.Empty;
+                    }, token: MyToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await cboDisplayFilterKnowledge.DoThreadSafeAsync(x =>
+                    {
+                        x.DropDownStyle = ComboBoxStyle.DropDownList;
+                        _blnKnowledgeSkillSearchMode = false;
+                    }, token: MyToken).ConfigureAwait(false);
+                    await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken)
+                        .ConfigureAwait(false);
+                    try
+                    {
+                        await _lstKnowledgeSkills.FilterAsync(selectedItem.Item2, token: MyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.ResumeLayout(), token: MyToken)
+                            .ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        private async void cboDisplayFilterKnowledge_TextUpdate(object sender, EventArgs e)
         {
             if (!_blnKnowledgeSkillSearchMode)
                 return;
-            _lstKnowledgeSkills.SuspendLayout();
             try
             {
-                _lstKnowledgeSkills.Filter(
-                    skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
-                        skill.CurrentDisplayName, cboDisplayFilterKnowledge.Text, CompareOptions.IgnoreCase) >= 0,
-                    true);
+                await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken).ConfigureAwait(false);
+                try
+                {
+                    string strText = await cboDisplayFilterKnowledge.DoThreadSafeFuncAsync(x => x.Text, token: MyToken).ConfigureAwait(false);
+                    await _lstKnowledgeSkills.FilterAsync(
+                        skill => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
+                            skill.CurrentDisplayName, strText, CompareOptions.IgnoreCase) >= 0,
+                        async (skill, token) => GlobalSettings.CultureInfo.CompareInfo.IndexOf(
+                            await skill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strText, CompareOptions.IgnoreCase) >= 0,
+                        true, MyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.ResumeLayout(), token: MyToken).ConfigureAwait(false);
+                }
             }
-            finally
+            catch (OperationCanceledException)
             {
-                _lstKnowledgeSkills.ResumeLayout();
+                //swallow this
             }
         }
 

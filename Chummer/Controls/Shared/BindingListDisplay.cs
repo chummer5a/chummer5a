@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 
@@ -34,6 +35,14 @@ namespace Chummer.Controls.Shared
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(BindingListDisplay<TType>));
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setChildPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler ChildPropertyChangedAsync
+        {
+            add => _setChildPropertyChangedAsync.TryAdd(value);
+            remove => _setChildPropertyChangedAsync.Remove(value);
+        }
 
         private int _intSuspendLayoutCount;
         private readonly Func<TType, Control> _funcCreateControl;  //Function to create a control out of a item
@@ -46,7 +55,9 @@ namespace Chummer.Controls.Shared
         private int _intListItemControlHeight;
         private bool _blnAllRendered;
         private Predicate<TType> _visibleFilter = x => true;
+        private Func<TType, CancellationToken, Task<bool>> _visibleFilterAsync = DefaultVisibleAsync;
         private IComparer<TType> _comparison;
+        private Func<TType, TType, CancellationToken, Task<int>> _comparisonAsync;
 
         public BindingListDisplay(ThreadSafeBindingList<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
         {
@@ -79,6 +90,7 @@ namespace Chummer.Controls.Shared
                 pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
+                _comparisonAsync = _comparisonAsync ?? ((x, y, z) => DefaultCompareAsync(_indexComparer, x, y, z));
                 Contents.ListChanged += ContentsChanged;
                 Disposed += (sender, args) =>
                 {
@@ -131,6 +143,17 @@ namespace Chummer.Controls.Shared
             }
         }
 
+        private async Task SetListItemControlHeightAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _intListItemControlHeight, value) == value)
+                return;
+            foreach (ControlWithMetaData objControl in _lstContentList)
+            {
+                await objControl.UpdateHeightAsync(token).ConfigureAwait(false);
+            }
+        }
+
         private void LoadRange(int min, int max)
         {
             min = Math.Max(0, min);
@@ -160,6 +183,39 @@ namespace Chummer.Controls.Shared
             {
                 if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
+            }
+        }
+
+        private async Task LoadRangeAsync(int min, int max, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            min = Math.Max(0, min);
+            max = Math.Min(_lstDisplayIndex.Count, max);
+            if (_ablnRendered.FirstMatching(false, min) > max)
+                return;
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+            try
+            {
+                for (int i = min; i < max; ++i)
+                {
+                    if (_ablnRendered[i])
+                        continue;
+
+                    ControlWithMetaData item = _lstContentList[_lstDisplayIndex[i]];
+                    int intLocal = i;
+                    await (await item.GetControlAsync(token).ConfigureAwait(false)).DoThreadSafeAsync(x =>
+                    {
+                        x.Location = new Point(0, intLocal * ListItemControlHeight);
+                        x.Visible = true;
+                    }, token: token).ConfigureAwait(false);
+                    _ablnRendered[i] = true;
+                }
+            }
+            finally
+            {
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
+                    await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
             }
         }
 
@@ -211,6 +267,46 @@ namespace Chummer.Controls.Shared
             }
         }
 
+        private async Task ComputeDisplayIndexAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>(_lstContentList.Count);
+            for (int i = 0; i < _lstContentList.Count; ++i)
+            {
+                ControlWithMetaData objLoopControl = _lstContentList[i];
+                if (objLoopControl.Visible)
+                {
+                    objTTypeList.Add(new Tuple<TType, int>(objLoopControl.Item, i));
+                }
+            }
+
+            await objTTypeList.SortAsync((x, y) => _comparisonAsync(x.Item1, y.Item1, token), token: token).ConfigureAwait(false);
+
+            // Can't use stackalloc in async methods, so always use array pool instead
+            int[] aintOldDisplayIndex = ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count);
+            try
+            {
+                for (int i = 0; i < _lstDisplayIndex.Count; ++i)
+                    aintOldDisplayIndex[i] = _lstDisplayIndex[i];
+                _lstDisplayIndex.Clear();
+                _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
+
+                if (_ablnRendered == null || _ablnRendered.Length != _lstDisplayIndex.Count)
+                    _ablnRendered = new bool[_lstDisplayIndex.Count];
+                else
+                {
+                    for (int i = 0; i < _ablnRendered.Length; ++i)
+                    {
+                        _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<int>.Shared.Return(aintOldDisplayIndex);
+            }
+        }
+
         private void LoadScreenContent()
         {
             if (_lstContentList.Count == 0 || ListItemControlHeight == 0)
@@ -223,6 +319,22 @@ namespace Chummer.Controls.Shared
             int top = VerticalScroll.Value / ListItemControlHeight;
 
             LoadRange(top, top + toload);
+        }
+
+        private Task LoadScreenContentAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (_lstContentList.Count == 0 || ListItemControlHeight == 0)
+                return Task.CompletedTask;
+
+            int toload = _blnLoadVisibleOnly
+                ? NumVisibleElements
+                : _lstContentList.Count;
+
+            int top = VerticalScroll.Value / ListItemControlHeight;
+
+            return LoadRangeAsync(top, top + toload, token);
         }
 
         private int NumVisibleElements
@@ -242,6 +354,15 @@ namespace Chummer.Controls.Shared
                                                              (intNumVisible >= 0 ? intNumVisible : _lstContentList.Count(y => y.Visible)) * ListItemControlHeight));
         }
 
+        private async Task ResetDisplayPanelHeightAsync(int intNumVisible = -1, CancellationToken token = default)
+        {
+            int intMyHeight = await this.DoThreadSafeFuncAsync(x => x.Height, token: token).ConfigureAwait(false);
+            await pnlDisplay.DoThreadSafeAsync(x => x.Height = Math.Max(intMyHeight,
+                    (intNumVisible >= 0 ? intNumVisible : _lstContentList.Count(y => y.Visible)) *
+                    ListItemControlHeight),
+                token: token).ConfigureAwait(false);
+        }
+
         private void RedrawControls(IEnumerable<ControlWithMetaData> lstToClear)
         {
             _blnAllRendered = false;
@@ -257,6 +378,24 @@ namespace Chummer.Controls.Shared
             ResetDisplayPanelHeight(intNumVisible);
             ComputeDisplayIndex();
             LoadScreenContent();
+        }
+
+        private async Task RedrawControlsAsync(IEnumerable<ControlWithMetaData> lstToClear, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _blnAllRendered = false;
+            int intNumVisible = _lstContentList.Count(x => x.Visible);
+            foreach (ControlWithMetaData item in lstToClear)
+            {
+                if (item.Visible)
+                    --intNumVisible;
+                await item.RefreshVisibleAsync(token).ConfigureAwait(false);
+                if (item.Visible)
+                    ++intNumVisible;
+            }
+            await ResetDisplayPanelHeightAsync(intNumVisible, token).ConfigureAwait(false);
+            await ComputeDisplayIndexAsync(token).ConfigureAwait(false);
+            await LoadScreenContentAsync(token).ConfigureAwait(false);
         }
 
         private void ApplicationOnIdle(object sender, EventArgs eventArgs)
@@ -311,10 +450,17 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        public void Filter(Predicate<TType> predicate, bool forceRefresh = false)
+        public void Filter(Predicate<TType> predicate, Func<TType, CancellationToken, Task<bool>> predicateAsync = null, bool forceRefresh = false)
         {
-            if (_visibleFilter == predicate && !forceRefresh) return;
-            _visibleFilter = predicate;
+            if (ReferenceEquals(Interlocked.Exchange(ref _visibleFilter, predicate), predicate))
+            {
+                if (!forceRefresh)
+                    return;
+            }
+            else
+            {
+                _visibleFilterAsync = predicateAsync ?? ((x, y) => DefaultVisibleAsync(predicate, x, y));
+            }
 
             if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                 pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
@@ -329,10 +475,38 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        public void Sort(IComparer<TType> comparison)
+        public async Task FilterAsync(Predicate<TType> predicate, Func<TType, CancellationToken, Task<bool>> predicateAsync = null, bool forceRefresh = false, CancellationToken token = default)
         {
-            if (Equals(_comparison, comparison)) return;
-            _comparison = comparison;
+            token.ThrowIfCancellationRequested();
+            if (ReferenceEquals(Interlocked.Exchange(ref _visibleFilter, predicate), predicate))
+            {
+                if (!forceRefresh)
+                    return;
+            }
+            else
+            {
+                _visibleFilterAsync = predicateAsync ?? ((x, y) => DefaultVisibleAsync(predicate, x, y));
+            }
+
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+            try
+            {
+                await RedrawControlsAsync(_lstContentList, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
+                    await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
+            }
+        }
+
+        public void Sort(IComparer<TType> comparison, Func<TType, TType, CancellationToken, Task<int>> comparisonAsync = null)
+        {
+            if (ReferenceEquals(Interlocked.Exchange(ref _comparison, comparison), comparison))
+                return;
+
+            _comparisonAsync = comparisonAsync ?? ((x, y, z) => DefaultCompareAsync(comparison, x, y, z));
 
             if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                 pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
@@ -344,6 +518,27 @@ namespace Chummer.Controls.Shared
             {
                 if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                     pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
+            }
+        }
+
+        public async Task SortAsync(IComparer<TType> comparison, Func<TType, TType, CancellationToken, Task<int>> comparisonAsync = null, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (ReferenceEquals(Interlocked.Exchange(ref _comparison, comparison), comparison))
+                return;
+
+            _comparisonAsync = comparisonAsync ?? ((x, y, z) => DefaultCompareAsync(comparison, x, y, z));
+
+            if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
+                await pnlDisplay.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+            try
+            {
+                await RedrawControlsAsync(_lstContentList, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
+                    await pnlDisplay.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
             }
         }
 
@@ -382,7 +577,7 @@ namespace Chummer.Controls.Shared
                     break;
 
                 case ListChangedType.ItemAdded:
-                    _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this));
+                    _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this, true));
                     _indexComparer.Reset(Contents);
                     lstToRedraw = intNewIndex == 0 ? _lstContentList : _lstContentList.Skip(intNewIndex);
                     break;
@@ -444,7 +639,16 @@ namespace Chummer.Controls.Shared
                     pnlDisplay.SuspendLayout();
                 try
                 {
-                    ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Contents)));
+                    PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(nameof(Contents));
+                    if (_setChildPropertyChangedAsync.Count > 0)
+                    {
+                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setChildPropertyChangedAsync.Count);
+                        foreach (PropertyChangedAsyncEventHandler objEvent in _setChildPropertyChangedAsync)
+                            lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
+                        Utils.RunWithoutThreadLock(lstFuncs);
+                    }
+                    if (ChildPropertyChanged != null)
+                        Utils.RunOnMainThread(() => ChildPropertyChanged?.Invoke(this, objArgs));
                     RedrawControls(lstToRedraw);
                 }
                 finally
@@ -504,18 +708,18 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private sealed class ControlWithMetaData : IDisposable
+        private sealed class ControlWithMetaData : IDisposable, IAsyncDisposable
         {
             public TType Item { get; }
 
-            public Control Control
+            public Control Control => _control ?? CreateControl();
+
+            public Task<Control> GetControlAsync(CancellationToken token = default)
             {
-                get
-                {
-                    if (_control == null)
-                        CreateControl();
-                    return _control;
-                }
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled<Control>(token);
+                Control objControl = _control;
+                return objControl != null ? Task.FromResult(objControl) : CreateControlAsync(token: token);
             }
 
             public bool Visible => _visible ?? (_visible = _parent._visibleFilter(Item)).Value;
@@ -524,10 +728,8 @@ namespace Chummer.Controls.Shared
             private Control _control;
             private bool? _visible;
 
-            public ControlWithMetaData(TType item, BindingListDisplay<TType> parent, bool blnAddControlAfterCreation = true)
+            public ControlWithMetaData(TType item, BindingListDisplay<TType> parent, bool blnAddControlAfterCreation) : this(item, parent)
             {
-                _parent = parent;
-                Item = item;
                 // Because binding list displays generally involve syncing the name label of child controls after-the-fact,
                 // we need to create the control in the constructor (even if it isn't rendered) so that we can measure its
                 // elements' widths and/or heights
@@ -551,6 +753,77 @@ namespace Chummer.Controls.Shared
                 }
             }
 
+            private ControlWithMetaData(TType item, BindingListDisplay<TType> parent)
+            {
+                _parent = parent;
+                Item = item;
+            }
+
+            public static async Task<ControlWithMetaData> GetNewAsync(TType item,
+                BindingListDisplay<TType> parent, bool blnAddControlAfterCreation = true, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                ControlWithMetaData objReturn = new ControlWithMetaData(item, parent);
+                try
+                {
+                    await objReturn.CreateControlAsync(blnAddControlAfterCreation, token).ConfigureAwait(false);
+                    switch (item)
+                    {
+                        case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
+                            try
+                            {
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    prop.PropertyChangedAsync += objReturn.item_ChangedEventAsync;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+
+                            break;
+                        case INotifyPropertyChangedAsync prop:
+                            prop.PropertyChangedAsync += objReturn.item_ChangedEventAsync;
+                            break;
+                        case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
+                            try
+                            {
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    prop2.PropertyChanged += objReturn.item_ChangedEvent;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+
+                            break;
+                        case INotifyPropertyChanged prop2:
+                            prop2.PropertyChanged += objReturn.item_ChangedEvent;
+                            break;
+                    }
+                }
+                catch
+                {
+                    await objReturn.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
+
+                return objReturn;
+            }
+
             private void item_ChangedEvent(object sender, PropertyChangedEventArgs e)
             {
                 bool changes = false;
@@ -559,33 +832,52 @@ namespace Chummer.Controls.Shared
                     changes = true;
                     _visible = !_visible;
                 }
-                //TODO: Add this back in, but it is spamming updates like crazy right now and not updating right
-                //else if (_visible != null && _visible.Value)
-                //{
-                //    int displayIndex = _parent._displayIndex.FindIndex(x => _parent._contentList[x] == this);
 
-                //    if (displayIndex > 0)
-                //    {
-                //        if(_parent._comparison.Compare(Item, _parent._contentList[_parent._displayIndex[displayIndex - 1]].Item) > 0)
-                //        {
-                //            changes = true;
-                //        }
-                //    }
-                //    if(_parent._displayIndex.Count - 1 > displayIndex)
-                //    {
-                //        if (_parent._comparison.Compare(Item, _parent._contentList[_parent._displayIndex[displayIndex + 1]].Item) < 0)
-                //        {
-                //            changes = true;
-                //        }
-                //    }
-
-                //}
-
-                _parent.ChildPropertyChanged?.Invoke(sender, e);
-                if (changes)
+                if (_parent._setChildPropertyChangedAsync.Count > 0)
                 {
-                    _parent.RedrawControls(this.Yield());
+                    List<Func<Task>> lstFuncs = new List<Func<Task>>(_parent._setChildPropertyChangedAsync.Count);
+                    foreach (PropertyChangedAsyncEventHandler objEvent in _parent._setChildPropertyChangedAsync)
+                        lstFuncs.Add(() => objEvent.Invoke(sender, e));
+                    Utils.RunWithoutThreadLock(lstFuncs);
                 }
+                if (_parent.ChildPropertyChanged != null)
+                    Utils.RunOnMainThread(() => _parent.ChildPropertyChanged?.Invoke(sender, e));
+                if (changes)
+                    _parent.RedrawControls(this.Yield());
+            }
+
+            private async Task item_ChangedEventAsync(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                bool changes = false;
+                if (_visible != null && _visible.Value != await _parent._visibleFilterAsync(Item, token).ConfigureAwait(false))
+                {
+                    changes = true;
+                    _visible = !_visible;
+                }
+
+                if (_parent._setChildPropertyChangedAsync.Count > 0)
+                {
+                    List<Task> lstTasks =
+                        new List<Task>(Math.Min(_parent._setChildPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
+                    int i = 0;
+                    foreach (PropertyChangedAsyncEventHandler objEvent in _parent._setChildPropertyChangedAsync)
+                    {
+                        lstTasks.Add(objEvent.Invoke(this, e, token));
+                        if (++i < Utils.MaxParallelBatchSize)
+                            continue;
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        lstTasks.Clear();
+                        i = 0;
+                    }
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                    if (_parent.ChildPropertyChanged != null)
+                        await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
+                }
+                else if (_parent.ChildPropertyChanged != null)
+                    await Utils.RunOnMainThreadAsync(() => _parent.ChildPropertyChanged?.Invoke(sender, e), token).ConfigureAwait(false);
+                if (changes)
+                    await _parent.RedrawControlsAsync(this.Yield(), token).ConfigureAwait(false);
             }
 
             /// <summary>
@@ -612,25 +904,62 @@ namespace Chummer.Controls.Shared
                 });
             }
 
-            private void CreateControl(bool blnAddControlAfterCreation = true)
+            /// <summary>
+            /// Updates the height of the contained control if it exists. Necessary to ensure that the contained control doesn't get created prematurely.
+            /// </summary>
+            public async Task UpdateHeightAsync(CancellationToken token = default)
             {
-                _control = _parent.DoThreadSafeFunc(x => x._funcCreateControl(Item));
-                _control.DoThreadSafe(x =>
+                token.ThrowIfCancellationRequested();
+                Control objControl = _control;
+                if (objControl != null)
+                {
+                    await objControl.DoThreadSafeAsync(x =>
+                    {
+                        int intParentControlHeight = _parent.ListItemControlHeight;
+                        if (x.AutoSize)
+                        {
+                            if (x.MinimumSize.Height > intParentControlHeight)
+                                x.MinimumSize = new Size(x.MinimumSize.Width, intParentControlHeight);
+                            if (x.MaximumSize.Height != intParentControlHeight)
+                                x.MaximumSize = new Size(x.MaximumSize.Width, intParentControlHeight);
+                            if (x.MinimumSize.Height < intParentControlHeight)
+                                x.MinimumSize = new Size(x.MinimumSize.Width, intParentControlHeight);
+                        }
+                        else
+                        {
+                            x.Height = intParentControlHeight;
+                        }
+                    }, token: token).ConfigureAwait(false);
+                }
+            }
+
+            private Control CreateControl(bool blnAddControlAfterCreation = true)
+            {
+                Control objNewControl = _parent.DoThreadSafeFunc(x => x._funcCreateControl(Item));
+                Control objOldControl = Interlocked.CompareExchange(ref _control, objNewControl, null);
+                if (objOldControl != null)
+                {
+                    objNewControl.DoThreadSafe(x => x.Dispose());
+                    objNewControl = objOldControl;
+                }
+                int intHeight = objNewControl.DoThreadSafeFunc(x => x.PreferredSize.Height);
+                objNewControl.DoThreadSafe(x =>
                 {
                     x.SuspendLayout();
                     try
                     {
                         x.Visible = false;
-                        _parent.ListItemControlHeight = Math.Max(_parent.ListItemControlHeight, x.PreferredSize.Height);
+                        intHeight = Math.Max(_parent.ListItemControlHeight, intHeight);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
                         if (x.AutoSize)
                         {
-                            x.MinimumSize = new Size(_parent.DisplayPanel.DoThreadSafeFunc(y => y.Width), _parent.ListItemControlHeight);
-                            x.MaximumSize = new Size(_parent.DisplayPanel.DoThreadSafeFunc(y => y.Width), _parent.ListItemControlHeight);
+                            x.MinimumSize = new Size(intWidth, intHeight);
+                            x.MaximumSize = new Size(intWidth, intHeight);
                         }
                         else
                         {
-                            x.Width = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
-                            x.Height = _parent.ListItemControlHeight;
+                            x.Width = intWidth;
+                            x.Height = intHeight;
                         }
                     }
                     finally
@@ -638,16 +967,73 @@ namespace Chummer.Controls.Shared
                         x.ResumeLayout();
                     }
                 });
+                _parent.ListItemControlHeight = intHeight;
                 if (blnAddControlAfterCreation)
-                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Add(_control));
+                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Add(objNewControl));
+                return objNewControl;
+            }
+
+            private async Task<Control> CreateControlAsync(bool blnAddControlAfterCreation = true, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                Control objNewControl = await _parent.DoThreadSafeFuncAsync(x => x._funcCreateControl(Item), token: token).ConfigureAwait(false);
+                Control objOldControl = Interlocked.CompareExchange(ref _control, objNewControl, null);
+                if (objOldControl != null)
+                {
+                    await objNewControl.DoThreadSafeAsync(x => x.Dispose(), token: token).ConfigureAwait(false);
+                    objNewControl = objOldControl;
+                }
+                int intHeight = await objNewControl.DoThreadSafeFuncAsync(x => x.PreferredSize.Height, token: token).ConfigureAwait(false);
+                await objNewControl.DoThreadSafeAsync(x =>
+                {
+                    x.SuspendLayout();
+                    try
+                    {
+                        x.Visible = false;
+                        intHeight = Math.Max(_parent.ListItemControlHeight, intHeight);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
+                        if (x.AutoSize)
+                        {
+                            x.MinimumSize = new Size(intWidth, intHeight);
+                            x.MaximumSize = new Size(intWidth, intHeight);
+                        }
+                        else
+                        {
+                            x.Width = intWidth;
+                            x.Height = intHeight;
+                        }
+                    }
+                    finally
+                    {
+                        x.ResumeLayout();
+                    }
+                }, token: token).ConfigureAwait(false);
+                await _parent.SetListItemControlHeightAsync(intHeight, token).ConfigureAwait(false);
+                if (blnAddControlAfterCreation)
+                    await _parent.DisplayPanel.DoThreadSafeAsync(x => x.Controls.Add(objNewControl), token: token).ConfigureAwait(false);
+                return objNewControl;
             }
 
             public void RefreshVisible()
             {
                 _visible = _parent.DoThreadSafeFunc(x => x._visibleFilter(Item));
-                if (!_visible.Value && _control != null)
+                if (!_visible.Value)
                 {
-                    _control.DoThreadSafe(x => x.Visible = false);
+                    _control?.DoThreadSafe(x => x.Visible = false);
+                }
+            }
+
+            public async Task RefreshVisibleAsync(CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                _visible = await _parent._visibleFilterAsync(Item, token).ConfigureAwait(false);
+                if (!_visible.Value)
+                {
+                    Control objControl = _control;
+                    if (objControl != null)
+                    {
+                        await objControl.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    }
                 }
             }
 
@@ -658,49 +1044,159 @@ namespace Chummer.Controls.Shared
                 {
                     x.Visible = false;
                     x.Location = new Point(0, 0);
+                    int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
+                    int intHeight = _parent.ListItemControlHeight;
                     if (x.AutoSize)
                     {
-                        x.MinimumSize = new Size(_parent.DisplayPanel.DoThreadSafeFunc(y => y.Width), _parent.ListItemControlHeight);
-                        x.MaximumSize = new Size(_parent.DisplayPanel.DoThreadSafeFunc(y => y.Width), _parent.ListItemControlHeight);
+                        x.MinimumSize = new Size(intWidth, intHeight);
+                        x.MaximumSize = new Size(intWidth, intHeight);
                     }
                     else
                     {
-                        x.Width = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
-                        x.Height = _parent.ListItemControlHeight;
+                        x.Width = intWidth;
+                        x.Height = intHeight;
                     }
                 });
             }
 
+            public async Task ResetAsync(CancellationToken token = default)
+            {
+                _visible = null;
+                Control objControl = _control;
+                if (objControl != null)
+                {
+                    await objControl.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = false;
+                        x.Location = new Point(0, 0);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
+                        int intHeight = _parent.ListItemControlHeight;
+                        if (x.AutoSize)
+                        {
+                            x.MinimumSize = new Size(intWidth, intHeight);
+                            x.MaximumSize = new Size(intWidth, intHeight);
+                        }
+                        else
+                        {
+                            x.Width = intWidth;
+                            x.Height = intHeight;
+                        }
+                    }, token: token).ConfigureAwait(false);
+                }
+            }
+
             public void Cleanup()
             {
-                if (_control != null)
+                Control objControl = Interlocked.Exchange(ref _control, null);
+                if (objControl != null)
                 {
-                    if (Item is INotifyPropertyChanged prop)
+                    switch (Item)
                     {
-                        if (prop is IHasLockObject objHasLock)
-                        {
+                        case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
                             try
                             {
                                 using (objHasLock.LockObject.EnterWriteLock())
-                                    prop.PropertyChanged -= item_ChangedEvent;
+                                    prop.PropertyChangedAsync -= item_ChangedEventAsync;
                             }
                             catch (ObjectDisposedException)
                             {
                                 // swallow this
                             }
-                        }
-                        else
-                            prop.PropertyChanged -= item_ChangedEvent;
+
+                            break;
+                        case INotifyPropertyChangedAsync prop:
+                            prop.PropertyChangedAsync -= item_ChangedEventAsync;
+                            break;
+                        case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
+                            try
+                            {
+                                using (objHasLock.LockObject.EnterWriteLock())
+                                    prop2.PropertyChanged -= item_ChangedEvent;
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+
+                            break;
+                        case INotifyPropertyChanged prop2:
+                            prop2.PropertyChanged -= item_ChangedEvent;
+                            break;
                     }
-                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Remove(Control));
-                    _control.DoThreadSafe(x => x.Dispose());
-                    _control = null;
+                    _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Remove(objControl));
+                    objControl.DoThreadSafe(x => x.Dispose());
+                }
+            }
+
+            public async Task CleanupAsync(CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                Control objControl = Interlocked.Exchange(ref _control, null);
+                if (objControl != null)
+                {
+                    switch (Item)
+                    {
+                        case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
+                            try
+                            {
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    prop.PropertyChangedAsync -= item_ChangedEventAsync;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+
+                            break;
+                        case INotifyPropertyChangedAsync prop:
+                            prop.PropertyChangedAsync -= item_ChangedEventAsync;
+                            break;
+                        case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
+                            try
+                            {
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    prop2.PropertyChanged -= item_ChangedEvent;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+
+                            break;
+                        case INotifyPropertyChanged prop2:
+                            prop2.PropertyChanged -= item_ChangedEvent;
+                            break;
+                    }
+
+                    await _parent.DisplayPanel.DoThreadSafeAsync(x => x.Controls.Remove(objControl), token: token).ConfigureAwait(false);
+                    await objControl.DoThreadSafeAsync(x => x.Dispose(), token: token).ConfigureAwait(false);
                 }
             }
 
             public void Dispose()
             {
                 Interlocked.Exchange(ref _control, null)?.DoThreadSafe(x => x.Dispose());
+            }
+
+            public async ValueTask DisposeAsync()
+            {
+                Control objControl = Interlocked.Exchange(ref _control, null);
+                if (objControl != null)
+                    await objControl.DoThreadSafeAsync(x => x.Dispose()).ConfigureAwait(false);
             }
         }
 
@@ -743,14 +1239,34 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void BindingListDisplay_DpiChangedAfterParent(object sender, EventArgs e)
+        private Task<int> DefaultCompareAsync(IComparer<TType> objComparer, TType x, TType y, CancellationToken token = default)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<int>(token)
+                : Task.FromResult(objComparer.Compare(x, y));
+        }
+
+        private static Task<bool> DefaultVisibleAsync(TType x, CancellationToken token = default)
+        {
+            return token.IsCancellationRequested ? Task.FromCanceled<bool>(token) : Task.FromResult(true);
+        }
+
+        private Task<bool> DefaultVisibleAsync(Predicate<TType> predicate, TType x, CancellationToken token = default)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : Task.FromResult(predicate.Invoke(x));
+        }
+
+        private async void BindingListDisplay_DpiChangedAfterParent(object sender, EventArgs e)
         {
             int intMaxControlHeight = 0;
             foreach (ControlWithMetaData objControl in _lstContentList)
             {
-                intMaxControlHeight = Math.Max(objControl.Control.PreferredSize.Height, intMaxControlHeight);
+                intMaxControlHeight = Math.Max(await (await objControl.GetControlAsync().ConfigureAwait(false)).DoThreadSafeFuncAsync(x => x.PreferredSize.Height).ConfigureAwait(false), intMaxControlHeight);
             }
-            ListItemControlHeight = intMaxControlHeight;
+
+            await SetListItemControlHeightAsync(intMaxControlHeight).ConfigureAwait(false);
         }
     }
 }
