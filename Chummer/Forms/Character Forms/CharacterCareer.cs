@@ -4001,18 +4001,14 @@ namespace Chummer
                         }
                     }
 
-                    if (e.PropertyNames.Contains(nameof(CharacterSettings.AllowFreeGrids)))
+                    if (e.PropertyNames.Contains(nameof(CharacterSettings.AllowFreeGrids)) &&
+                        !await CharacterObjectSettings.BookEnabledAsync("HT", token).ConfigureAwait(false))
                     {
-                        if (!await CharacterObjectSettings.BookEnabledAsync("HT", token).ConfigureAwait(false))
-                        {
-                            {
-                                await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                                await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), token)
-                                    .ConfigureAwait(false);
-                            }
-                        }
+                        await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle,
+                                    token: token)
+                                .ConfigureAwait(false);
+                        await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), token)
+                                .ConfigureAwait(false);
                     }
 
                     if (e.PropertyNames.Contains(nameof(CharacterSettings.EnableEnemyTracking)))
@@ -5315,7 +5311,7 @@ namespace Chummer
                         }
 
                         // If the status of any Character Event flags has changed, manually trigger those events.
-                        List<string> lstTemp = new List<string>();
+                        List<string> lstTemp = new List<string>(3);
                         if (blnMAGEnabled != await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
                             lstTemp.Add(nameof(Character.MAGEnabled));
                         if (blnRESEnabled != await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -10576,11 +10572,9 @@ namespace Chummer
 
                     using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
                            = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(
-                               () => new SelectWeaponAccessory(CharacterObject)
-                               {
-                                   ParentWeapon = objWeapon
-                               }, GenericToken).ConfigureAwait(false))
+                               () => new SelectWeaponAccessory(CharacterObject), GenericToken).ConfigureAwait(false))
                     {
+                        await frmPickWeaponAccessory.MyForm.SetWeapon(objWeapon, GenericToken).ConfigureAwait(false);
                         if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                             == DialogResult.Cancel)
                             break;
@@ -11461,11 +11455,9 @@ namespace Chummer
 
                     using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
                            = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(
-                               () => new SelectWeaponAccessory(CharacterObject)
-                               {
-                                   ParentWeapon = objWeapon
-                               }, GenericToken).ConfigureAwait(false))
+                               () => new SelectWeaponAccessory(CharacterObject), GenericToken).ConfigureAwait(false))
                     {
+                        await frmPickWeaponAccessory.MyForm.SetWeapon(objWeapon, GenericToken).ConfigureAwait(false);
                         if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                             == DialogResult.Cancel)
                             break;

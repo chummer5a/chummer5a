@@ -77,11 +77,21 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
+#if DEBUG
             if (_objMyReleaseAsync != null)
-                throw new InvalidOperationException(
-                    "Tried to synchronously dispose an enumerator that was created asynchronously.");
+            {
+                // Tried to synchronously dispose an enumerator that was created asynchronously, sign of bad code.
+                Utils.BreakIfDebug();
+            }
+#endif
             _objInternalEnumerator.Dispose();
             _objMyRelease?.Dispose();
+            if (_objMyReleaseAsync != null)
+            {
+                // We need to create the task first before awaiting it because the actual assignment of AsyncLocals must happen in the right place (outside of the safe-awaiter function)
+                Task tskDispose = _objMyReleaseAsync.DisposeAsync().AsTask();
+                Utils.SafelyRunSynchronously(() => tskDispose);
+            }
         }
 
         /// <inheritdoc />

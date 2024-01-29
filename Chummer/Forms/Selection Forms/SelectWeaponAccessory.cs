@@ -268,45 +268,48 @@ namespace Chummer
         public int SelectedRating => _intSelectedRating;
 
         /// <summary>
-        /// GUID of the current weapon for which the accessory is being selected
+        /// The current weapon for which the accessory is being selected
         /// </summary>
-        public Weapon ParentWeapon
+        public async Task SetWeapon(Weapon objWeapon, CancellationToken token = default)
         {
-            set
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objParentWeapon, objWeapon) == objWeapon)
+                return;
+            _lstAllowedMounts.Clear();
+            if (objWeapon != null)
             {
-                if (Interlocked.Exchange(ref _objParentWeapon, value) == value)
-                    return;
-                _lstAllowedMounts.Clear();
-                if (value != null)
+                XPathNavigator xmlThisWeaponDataNode
+                    = _xmlBaseChummerNode.TryGetNodeById("weapons/weapon", objWeapon.SourceID);
+                if (xmlThisWeaponDataNode != null)
                 {
-                    XPathNavigator xmlThisWeaponDataNode
-                        = _xmlBaseChummerNode.TryGetNodeById("weapons/weapon", value.SourceID);
-                    if (xmlThisWeaponDataNode != null)
+                    foreach (XPathNavigator objXmlMount in xmlThisWeaponDataNode.Select("accessorymounts/mount"))
                     {
-                        foreach (XPathNavigator objXmlMount in xmlThisWeaponDataNode.Select("accessorymounts/mount"))
+                        string strLoopMount = objXmlMount.Value;
+                        // Run through the Weapon's current Accessories and filter out any used up Mount points.
+                        if (!await _objParentWeapon.WeaponAccessories.AnyAsync(objMod =>
+                                objMod.Mount == strLoopMount
+                                || objMod.ExtraMount == strLoopMount, token: token).ConfigureAwait(false))
                         {
-                            string strLoopMount = objXmlMount.Value;
-                            // Run through the Weapon's current Accessories and filter out any used up Mount points.
-                            if (!_objParentWeapon.WeaponAccessories.Any(objMod =>
-                                                                            objMod.Mount == strLoopMount
-                                                                            || objMod.ExtraMount == strLoopMount))
-                            {
-                                _lstAllowedMounts.Add(strLoopMount);
-                            }
+                            _lstAllowedMounts.Add(strLoopMount);
                         }
                     }
+                }
 
-                    //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
-                    if (_objCharacter.BlackMarketDiscount)
-                    {
-                        string strCategory = value.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
-                        _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
-                    }
-                }
-                else
+                //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
+                if (await _objCharacter.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                 {
-                    _blnIsParentWeaponBlackMarketAllowed = false;
+                    var xmlWeaponNode = await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                    string strCategory =
+                        xmlWeaponNode != null
+                            ? xmlWeaponNode.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty
+                            : string.Empty;
+                    _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) &&
+                                                           _setBlackMarketMaps.Contains(strCategory);
                 }
+            }
+            else
+            {
+                _blnIsParentWeaponBlackMarketAllowed = false;
             }
         }
 

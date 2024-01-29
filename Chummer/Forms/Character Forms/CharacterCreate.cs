@@ -2388,15 +2388,13 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.DEPEnabled)))
                 {
-                    if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                    if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false) && !await CharacterObject
+                            .AttributeSection.Attributes
+                            .ContainsAsync(CharacterObject.DEP, token)
+                            .ConfigureAwait(false))
                     {
-                        if (!await CharacterObject.AttributeSection.Attributes
-                                .ContainsAsync(CharacterObject.DEP, token)
-                                .ConfigureAwait(false))
-                        {
-                            await CharacterObject.AttributeSection.Attributes
-                                .AddAsync(CharacterObject.DEP, token).ConfigureAwait(false);
-                        }
+                        await CharacterObject.AttributeSection.Attributes
+                            .AddAsync(CharacterObject.DEP, token).ConfigureAwait(false);
                     }
 
                     await CharacterObject.AttributeSection.Attributes
@@ -4475,7 +4473,7 @@ namespace Chummer
                         }
 
                         // If the status of any Character Event flags has changed, manually trigger those events.
-                        List<string> lstTemp = new List<string>();
+                        List<string> lstTemp = new List<string>(3);
                         if (blnMAGEnabled != await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
                             lstTemp.Add(nameof(Character.MAGEnabled));
                         if (blnRESEnabled != await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -7064,11 +7062,9 @@ namespace Chummer
 
                         using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
                                = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(
-                                   () => new SelectWeaponAccessory(CharacterObject)
-                                   {
-                                       ParentWeapon = objWeapon
-                                   }, GenericToken).ConfigureAwait(false))
+                                   () => new SelectWeaponAccessory(CharacterObject), GenericToken).ConfigureAwait(false))
                         {
+                            await frmPickWeaponAccessory.MyForm.SetWeapon(objWeapon, GenericToken).ConfigureAwait(false);
                             if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 break;
@@ -7593,11 +7589,9 @@ namespace Chummer
 
                         using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
                                = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(
-                                   () => new SelectWeaponAccessory(CharacterObject)
-                                   {
-                                       ParentWeapon = objWeapon
-                                   }, GenericToken).ConfigureAwait(false))
+                                   () => new SelectWeaponAccessory(CharacterObject), GenericToken).ConfigureAwait(false))
                         {
+                            await frmPickWeaponAccessory.MyForm.SetWeapon(objWeapon, GenericToken).ConfigureAwait(false);
                             if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 break;

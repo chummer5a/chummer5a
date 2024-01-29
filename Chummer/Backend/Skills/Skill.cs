@@ -2190,11 +2190,12 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strNameToUse = DictionaryKey;
+                string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
-                List<Improvement> lstReturn = new List<Improvement>();
-                await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
+                var lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
+                List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
+                await lstImprovements.ForEachWithBreakAsync(
                     objImprovement =>
                     {
                         if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)
@@ -4316,7 +4317,7 @@ namespace Chummer.Backend.Skills
                                 .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
-                    List<Improvement> lstConditionalImprovements = new List<Improvement>();
+                    List<Improvement> lstConditionalImprovements = new List<Improvement>(lstRelevantImprovements.Count);
                     foreach (Improvement source in lstRelevantImprovements)
                     {
                         if (source.AddToRating
@@ -6574,7 +6575,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (CharacterObject?.IsLoading != false)
                 return Task.CompletedTask;
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(2);
             if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 lstProperties.Add(nameof(AttributeModifiers));
             if (e.PropertyNames.Contains(nameof(CharacterAttrib.Abbrev)))

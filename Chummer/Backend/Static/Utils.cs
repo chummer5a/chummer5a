@@ -1915,19 +1915,19 @@ namespace Chummer
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
-        /// <param name="lstfuncToRun">Codes to wait for.</param>
+        /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<T>> lstfuncToRun, CancellationToken token = default)
+        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<T>> lstFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            int intLength = lstfuncToRun.Count;
+            int intLength = lstFuncToRun.Count;
             if (intLength == 0)
                 return Array.Empty<T>();
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {
-                aobjReturn[0] = RunWithoutThreadLock(lstfuncToRun[0], token);
+                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun[0], token);
                 return aobjReturn;
             }
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
@@ -1937,7 +1937,7 @@ namespace Chummer
                     CancellationToken = token
                 };
                 Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0),
-                    (i, x, y) => new Tuple<T, int>(lstfuncToRun[i].Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
+                    (i, x, y) => new Tuple<T, int>(lstFuncToRun[i].Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
@@ -1957,7 +1957,7 @@ namespace Chummer
                     intOffset += MaxParallelBatchSize;
                     lstTasks.Clear();
                 }
-                lstTasks.Add(Task.Run(lstfuncToRun[i], token));
+                lstTasks.Add(Task.Run(lstFuncToRun[i], token));
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
@@ -2040,19 +2040,19 @@ namespace Chummer
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
-        /// <param name="lstfuncToRun">Codes to wait for.</param>
+        /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<Task<T>>> lstfuncToRun, CancellationToken token)
+        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<Task<T>>> lstFuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            int intLength = lstfuncToRun.Count;
+            int intLength = lstFuncToRun.Count;
             if (intLength == 0)
                 return Array.Empty<T>();
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {
-                aobjReturn[0] = RunWithoutThreadLock(lstfuncToRun[0], token);
+                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun[0], token);
                 return aobjReturn;
             }
 
@@ -2074,7 +2074,7 @@ namespace Chummer
                             lstMainThreadTasks.Clear();
                         }
 
-                        lstMainThreadTasks.Add(Task.Run(lstfuncToRun[i], token));
+                        lstMainThreadTasks.Add(Task.Run(lstFuncToRun[i], token));
                     }
                     await Task.Yield().ConfigureAwait(true);
                     int intMainThreadFinalBatchSize = lstMainThreadTasks.Count;
@@ -2096,7 +2096,7 @@ namespace Chummer
                 };
                 Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0), (i, x, y) =>
                 {
-                    Task<T> objSyncTask = lstfuncToRun[i].Invoke();
+                    Task<T> objSyncTask = lstFuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
                     if (objSyncTask.Exception != null)
@@ -2122,7 +2122,7 @@ namespace Chummer
                     intOffset += MaxParallelBatchSize;
                     lstTasks.Clear();
                 }
-                lstTasks.Add(Task.Run(lstfuncToRun[i], token));
+                lstTasks.Add(Task.Run(lstFuncToRun[i], token));
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
@@ -2215,10 +2215,10 @@ namespace Chummer
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
-        /// <param name="lstfuncToRun">Codes to wait for.</param>
+        /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(IEnumerable<Func<Task>> lstfuncToRun, CancellationToken token = default)
+        public static void RunWithoutThreadLock(IEnumerable<Func<Task>> lstFuncToRun, CancellationToken token = default)
         {
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
@@ -2226,7 +2226,7 @@ namespace Chummer
                 {
                     List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
                     int intMainThreadCounter = 0;
-                    foreach (Func<Task> funcToRun in lstfuncToRun)
+                    foreach (Func<Task> funcToRun in lstFuncToRun)
                     {
                         await Task.Yield().ConfigureAwait(true);
                         lstMainThreadTasks.Add(Task.Run(funcToRun, token));
@@ -2249,7 +2249,7 @@ namespace Chummer
                 {
                     CancellationToken = token
                 };
-                Parallel.ForEach(lstfuncToRun, objOptions, funcToRun =>
+                Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
                 {
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
@@ -2262,7 +2262,7 @@ namespace Chummer
             }
             List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
             int intCounter = 0;
-            foreach (Func<Task> funcToRun in lstfuncToRun)
+            foreach (Func<Task> funcToRun in lstFuncToRun)
             {
                 lstTasks.Add(Task.Run(funcToRun, token));
                 if (++intCounter != MaxParallelBatchSize)
@@ -2286,18 +2286,18 @@ namespace Chummer
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
-        /// <param name="lstfuncToRun">Codes to wait for.</param>
+        /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(IReadOnlyList<Func<Task>> lstfuncToRun, CancellationToken token = default)
+        public static void RunWithoutThreadLock(IReadOnlyList<Func<Task>> lstFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (lstfuncToRun.Count)
+            switch (lstFuncToRun.Count)
             {
                 case 0:
                     return;
                 case 1:
-                    RunWithoutThreadLock(lstfuncToRun[0], token);
+                    RunWithoutThreadLock(lstFuncToRun[0], token);
                     return;
             }
 
@@ -2307,7 +2307,7 @@ namespace Chummer
                 {
                     List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
                     int intMainThreadCounter = 0;
-                    foreach (Func<Task> funcToRun in lstfuncToRun)
+                    foreach (Func<Task> funcToRun in lstFuncToRun)
                     {
                         await Task.Yield().ConfigureAwait(true);
                         lstMainThreadTasks.Add(Task.Run(funcToRun, token));
@@ -2330,7 +2330,7 @@ namespace Chummer
                 {
                     CancellationToken = token
                 };
-                Parallel.ForEach(lstfuncToRun, objOptions, funcToRun =>
+                Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
                 {
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
@@ -2343,7 +2343,7 @@ namespace Chummer
             }
             List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
             int intCounter = 0;
-            foreach (Func<Task> funcToRun in lstfuncToRun)
+            foreach (Func<Task> funcToRun in lstFuncToRun)
             {
                 lstTasks.Add(Task.Run(funcToRun, token));
                 if (++intCounter != MaxParallelBatchSize)
