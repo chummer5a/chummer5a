@@ -1986,8 +1986,8 @@ namespace Chummer.Backend.Skills
 
         public SkillGroup(Character objCharacter, string strGroupName = "")
         {
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.SkillsSection.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.SkillsSection.LockObject);
             _objCachedBaseUnbrokenLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedHasAnyBreakingSkillsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedIsDisabledLock = new AsyncFriendlyReaderWriterLock(LockObject, true);

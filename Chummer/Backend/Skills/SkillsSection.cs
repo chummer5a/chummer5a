@@ -50,6 +50,7 @@ namespace Chummer.Backend.Skills
             _objCachedKnowledgePointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objSkillsInitializerLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objKnowledgeSkillCategoriesMapLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
+            _objDefaultKnowledgeSkillsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSkills = new ThreadSafeBindingList<Skill>(LockObject);
             _lstKnowledgeSkills = new ThreadSafeBindingList<KnowledgeSkill>(LockObject);
             _lstKnowsoftSkills = new ThreadSafeBindingList<KnowledgeSkill>(LockObject);
@@ -3662,7 +3663,7 @@ namespace Chummer.Backend.Skills
         }
 
         private List<ListItem> _lstDefaultKnowledgeSkills;
-        private readonly AsyncFriendlyReaderWriterLock _objDefaultKnowledgeSkillsLock = new AsyncFriendlyReaderWriterLock();
+        private readonly AsyncFriendlyReaderWriterLock _objDefaultKnowledgeSkillsLock;
 
         public IReadOnlyList<ListItem> MyDefaultKnowledgeSkills
         {

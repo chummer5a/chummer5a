@@ -73,12 +73,9 @@ namespace Chummer.Backend.Uniques
         {
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
-            if (objCharacter != null)
-            {
-                objCharacter.MultiplePropertiesChangedAsync += RefreshDrainExpression;
-            }
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            objCharacter.MultiplePropertiesChangedAsync += RefreshDrainExpression;
         }
 
         public override string ToString()

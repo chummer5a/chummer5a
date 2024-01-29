@@ -57,8 +57,8 @@ namespace Chummer
 
         public MartialArt(Character objCharacter)
         {
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _guiID = Guid.NewGuid();
 
             _lstTechniques.AddTaggedCollectionChanged(this, TechniquesOnCollectionChanged);

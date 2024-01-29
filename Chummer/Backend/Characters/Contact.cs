@@ -524,12 +524,9 @@ namespace Chummer
 
         public Contact(Character objCharacter, bool blnIsReadOnly = false)
         {
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
-            if (_objCharacter != null)
-            {
-                _objCharacter.MultiplePropertiesChangedAsync += CharacterObjectOnPropertyChanged;
-            }
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            _objCharacter.MultiplePropertiesChangedAsync += CharacterObjectOnPropertyChanged;
             _blnReadOnly = blnIsReadOnly;
             _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
         }

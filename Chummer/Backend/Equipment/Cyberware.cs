@@ -230,8 +230,8 @@ namespace Chummer.Backend.Equipment
         {
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }

@@ -46,8 +46,8 @@ namespace Chummer
         public StoryModule(Character objCharacter)
         {
             _guiInternalId = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
         }
 
         public void Create(XmlNode xmlStoryModuleDataNode)

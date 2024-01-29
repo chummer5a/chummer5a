@@ -587,8 +587,8 @@ namespace Chummer.Backend.Attributes
 
         public AttributeSection(Character objCharacter)
         {
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _objAttributesInitializerLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);

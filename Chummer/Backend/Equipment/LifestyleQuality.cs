@@ -123,8 +123,8 @@ namespace Chummer.Backend.Equipment
         {
             // Create the GUID for the new LifestyleQuality.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
         }
 
         /// <summary>

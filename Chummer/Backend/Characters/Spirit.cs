@@ -98,8 +98,8 @@ namespace Chummer
         {
             // Create the GUID for the new Spirit.
             _guiId = Guid.NewGuid();
-            CharacterObject = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
         }
 

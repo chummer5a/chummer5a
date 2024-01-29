@@ -154,8 +154,8 @@ namespace Chummer.Backend.Equipment
         {
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>(LockObject);
             LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChangedAsync += LifestyleQualitiesOnBeforeClearCollectionChanged;

@@ -804,10 +804,17 @@ namespace Chummer.UI.Table
             }
             set
             {
+                using (_objItemsLocker.EnterReadLock())
+                {
+                    if (_lstItems == value)
+                        return;
+                }
                 using (_objItemsLocker.EnterUpgradeableReadLock())
                 {
                     int intOldCount = 0;
                     ThreadSafeBindingList<T> lstOldItems = Interlocked.Exchange(ref _lstItems, value);
+                    if (lstOldItems == value)
+                        return;
                     if (lstOldItems != null)
                     {
                         // remove listener from old items
@@ -905,12 +912,26 @@ namespace Chummer.UI.Table
 
         public async Task SetItemsAsync(ThreadSafeBindingList<T> value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _objItemsLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _objItemsLocker.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_lstItems == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await _objItemsLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 int intOldCount = 0;
                 ThreadSafeBindingList<T> lstOldItems = Interlocked.Exchange(ref _lstItems, value);
+                if (lstOldItems == value)
+                    return;
                 if (lstOldItems != null)
                 {
                     // remove listener from old items

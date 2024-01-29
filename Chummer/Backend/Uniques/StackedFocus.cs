@@ -48,8 +48,8 @@ namespace Chummer
         {
             // Create the GUID for the new Focus.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _lstGear = new ThreadSafeList<Gear>(2, LockObject);
         }
 

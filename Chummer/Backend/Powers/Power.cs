@@ -76,8 +76,8 @@ namespace Chummer
         {
             // Create the GUID for the new Power.
             _guiID = Guid.NewGuid();
-            CharacterObject = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter?.LockObject);
+            CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
             _objCachedFreeLevelsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
