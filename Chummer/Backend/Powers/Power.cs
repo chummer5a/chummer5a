@@ -77,23 +77,15 @@ namespace Chummer
             // Create the GUID for the new Power.
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _objCachedFreeLevelsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
-            if (objCharacter != null)
-            {
-                objCharacter.PropertyChangedAsync += OnCharacterChanged;
-                objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsChanged;
-                if (objCharacter.Settings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
-                {
-                    MAGAttributeObject = objCharacter.MAGAdept;
-                }
-                else
-                {
-                    MAGAttributeObject = objCharacter.MAG;
-                }
-            }
+            objCharacter.PropertyChangedAsync += OnCharacterChanged;
+            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsChanged;
+            MAGAttributeObject = objCharacter.Settings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept
+                ? objCharacter.MAGAdept
+                : objCharacter.MAG;
         }
 
         public void DeletePower()
@@ -3154,8 +3146,6 @@ namespace Chummer
                 _objCachedPowerPointsLock.Dispose();
                 Enhancements.Dispose();
             }
-
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -3181,8 +3171,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

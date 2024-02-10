@@ -77,7 +77,7 @@ namespace Chummer
             // Create the GUID for the new Spell.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
         }
 
         /// <summary>
@@ -2391,7 +2391,6 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
                 Utils.StringHashSetPool.Return(ref _setDescriptors);
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -2406,8 +2405,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

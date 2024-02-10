@@ -51,7 +51,7 @@ namespace Chummer
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _lstChildren = new ThreadSafeObservableCollection<IHasLocation>(LockObject);
             _strName = strName;
             Parent = objParent;
@@ -428,8 +428,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

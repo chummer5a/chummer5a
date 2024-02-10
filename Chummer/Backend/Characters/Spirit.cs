@@ -99,7 +99,7 @@ namespace Chummer
             // Create the GUID for the new Spirit.
             _guiId = Guid.NewGuid();
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
         }
 
@@ -3001,7 +3001,6 @@ namespace Chummer
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -3026,8 +3025,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         #endregion IHasMugshots

@@ -525,7 +525,7 @@ namespace Chummer
         public Contact(Character objCharacter, bool blnIsReadOnly = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _objCharacter.MultiplePropertiesChangedAsync += CharacterObjectOnPropertyChanged;
             _blnReadOnly = blnIsReadOnly;
             _lstMugshots = new ThreadSafeList<Image>(3, LockObject);
@@ -3336,7 +3336,6 @@ namespace Chummer
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -3361,8 +3360,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         #endregion IHasMugshots

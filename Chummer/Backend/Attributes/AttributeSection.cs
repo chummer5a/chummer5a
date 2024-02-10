@@ -588,7 +588,7 @@ namespace Chummer.Backend.Attributes
         public AttributeSection(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _objAttributesInitializerLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
@@ -861,7 +861,6 @@ namespace Chummer.Backend.Attributes
                 _lstAttributes.Dispose();
                 _objAttributesInitializerLock.Dispose();
             }
-            LockObject.Dispose();
         }
 
         public async ValueTask DisposeAsync()
@@ -887,7 +886,6 @@ namespace Chummer.Backend.Attributes
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         internal void Save(XmlWriter objWriter, CancellationToken token = default)

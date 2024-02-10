@@ -124,7 +124,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new LifestyleQuality.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
         }
 
         /// <summary>
@@ -2067,7 +2067,6 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterWriteLock())
                 Utils.StringHashSetPool.Return(ref _setAllowedFreeLifestyles);
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -2082,7 +2081,6 @@ namespace Chummer.Backend.Equipment
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         public bool Remove(bool blnConfirmDelete = true)

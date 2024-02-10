@@ -49,7 +49,7 @@ namespace Chummer
             // Create the GUID for the new Focus.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _lstGear = new ThreadSafeList<Gear>(2, LockObject);
         }
 
@@ -573,7 +573,6 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
                 _lstGear.Dispose();
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -588,8 +587,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

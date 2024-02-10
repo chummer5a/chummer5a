@@ -231,7 +231,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new piece of Cyberware.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
@@ -11258,7 +11258,6 @@ namespace Chummer.Backend.Equipment
                 Utils.StringHashSetPool.Return(ref _lstIncludeInPairBonus);
                 Utils.StringHashSetPool.Return(ref _lstIncludeInWirelessPairBonus);
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -11294,8 +11293,6 @@ namespace Chummer.Backend.Equipment
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

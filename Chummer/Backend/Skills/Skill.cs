@@ -849,7 +849,7 @@ namespace Chummer.Backend.Skills
         protected Skill(Character objCharacter)
         {
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.SkillsSection.LockObject);
+            LockObject = objCharacter.LockObject;
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);
@@ -7866,7 +7866,6 @@ namespace Chummer.Backend.Skills
             {
                 Dispose(true);
             }
-            LockObject.Dispose();
 
             GC.SuppressFinalize(this);
         }
@@ -7938,7 +7937,6 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
         }

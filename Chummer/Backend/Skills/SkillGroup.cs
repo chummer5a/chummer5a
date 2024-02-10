@@ -87,7 +87,6 @@ namespace Chummer.Backend.Skills
                 _objCachedHasAnyBreakingSkillsLock.Dispose();
                 _objCachedToolTipLock.Dispose();
             }
-            LockObject.Dispose();
         }
 
         public async ValueTask DisposeAsync()
@@ -138,7 +137,6 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         public int Base
@@ -1987,15 +1985,13 @@ namespace Chummer.Backend.Skills
         public SkillGroup(Character objCharacter, string strGroupName = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.SkillsSection.LockObject);
+            LockObject = objCharacter.LockObject;
             _objCachedBaseUnbrokenLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedHasAnyBreakingSkillsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedIsDisabledLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedKarmaUnbrokenLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedToolTipLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _strGroupName = strGroupName;
-            if (objCharacter == null)
-                return;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
             objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
         }

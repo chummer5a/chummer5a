@@ -45,7 +45,7 @@ namespace Chummer.Backend.Skills
         public SkillsSection(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _objKnowledgeTypesLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedKnowledgePointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objSkillsInitializerLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
@@ -4198,7 +4198,6 @@ namespace Chummer.Backend.Skills
                 }
                 _objKnowledgeSkillCategoriesMapLock.Dispose();
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -4274,7 +4273,6 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         public AsyncFriendlyReaderWriterLock LockObject { get; }

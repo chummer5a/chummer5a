@@ -83,14 +83,11 @@ namespace Chummer.Backend.Attributes
         {
             _strAbbrev = abbrev;
             _eMetatypeCategory = enumCategory;
-            _objCharacter = objCharacter;
-            LockObject = new AsyncFriendlyReaderWriterLock();
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
             _objCachedTotalValueLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
-            if (objCharacter != null)
-            {
-                objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
-                objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
-            }
+            objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
+            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
         }
 
         /// <summary>
@@ -4006,7 +4003,6 @@ namespace Chummer.Backend.Attributes
                 }
                 _objCachedTotalValueLock.Dispose();
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -4043,8 +4039,6 @@ namespace Chummer.Backend.Attributes
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

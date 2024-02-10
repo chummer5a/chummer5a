@@ -42,7 +42,7 @@ namespace Chummer
         public Story(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _lstStoryModules = new ThreadSafeObservableCollection<StoryModule>(LockObject);
             _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstStoryModules.CollectionChangedAsync += StoryModulesOnCollectionChanged;
@@ -293,7 +293,6 @@ namespace Chummer
             {
                 _lstStoryModules.Dispose();
             }
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -308,7 +307,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

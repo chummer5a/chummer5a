@@ -58,7 +58,7 @@ namespace Chummer
         public MartialArt(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _guiID = Guid.NewGuid();
 
             _lstTechniques.AddTaggedCollectionChanged(this, TechniquesOnCollectionChanged);
@@ -1135,7 +1135,6 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
                 _lstTechniques.Dispose();
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -1150,8 +1149,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

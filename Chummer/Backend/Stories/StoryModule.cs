@@ -47,7 +47,7 @@ namespace Chummer
         {
             _guiInternalId = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
         }
 
         public void Create(XmlNode xmlStoryModuleDataNode)
@@ -764,13 +764,14 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            LockObject.Dispose();
+            // No disposal necessary because our LockObject is our character owner's LockObject
         }
 
         /// <inheritdoc />
         public ValueTask DisposeAsync()
         {
-            return LockObject.DisposeAsync();
+            // No disposal necessary because our LockObject is our character owner's LockObject
+            return default;
         }
 
         /// <inheritdoc />

@@ -155,7 +155,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = new AsyncFriendlyReaderWriterLock(objCharacter.LockObject);
+            LockObject = objCharacter.LockObject;
             _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>(LockObject);
             LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChangedAsync += LifestyleQualitiesOnBeforeClearCollectionChanged;
@@ -4193,8 +4193,6 @@ namespace Chummer.Backend.Equipment
                 LifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 LifestyleQualities.Dispose();
             }
-
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -4213,8 +4211,6 @@ namespace Chummer.Backend.Equipment
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
