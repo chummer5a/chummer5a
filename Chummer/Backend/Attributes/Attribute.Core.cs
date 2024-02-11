@@ -3978,7 +3978,6 @@ namespace Chummer.Backend.Attributes
         /// <inheritdoc />
         public void Dispose()
         {
-            LockObject.SetParent();
             using (LockObject.EnterWriteLock())
             {
                 if (_objCharacter != null)
@@ -4008,7 +4007,6 @@ namespace Chummer.Backend.Attributes
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            await LockObject.SetParentAsync().ConfigureAwait(false);
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {

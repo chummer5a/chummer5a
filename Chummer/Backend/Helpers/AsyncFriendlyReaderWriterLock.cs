@@ -601,7 +601,7 @@ namespace Chummer
                 if (_objParentLock == null)
                     return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                         blnIsInReadLock, this, true);
-                IDisposable objParentRelease2 = blnParentLockIsUpgradeable
+                IDisposable objParentRelease2 = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
                     ? _objParentLock.EnterUpgradeableReadLockAsync(token)
                     : _objParentLock.EnterReadLock(token);
                 return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
@@ -626,7 +626,7 @@ namespace Chummer
             if (_objParentLock == null)
                 return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                     blnIsInReadLock, this, objCurrentHelper.IsDisposed);
-            IDisposable objParentRelease = blnParentLockIsUpgradeable
+            IDisposable objParentRelease = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
                 ? _objParentLock.EnterUpgradeableReadLock(token)
                 : _objParentLock.EnterReadLock(token);
             return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
@@ -713,7 +713,7 @@ namespace Chummer
 
             if (_objParentLock != null)
             {
-                return blnParentLockIsUpgradeable
+                return !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
                     ? _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x => await TakeReadLockCoreAsync(
                             objCurrentHelper, objTopMostHeldUReader,
                             objTopMostHeldWriter, blnIsInReadLock, await x.ConfigureAwait(false), token)

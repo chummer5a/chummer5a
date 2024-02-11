@@ -975,7 +975,6 @@ namespace Chummer.Backend.Attributes
                                 default:
                                     continue;
                             }
-                            objAttribute.LockObject.SetParent(LockObject, token: token);
                         }
 
                         objBod = GetAttributeByName("BOD", token);
@@ -1188,7 +1187,6 @@ namespace Chummer.Backend.Attributes
                                     default:
                                         continue;
                                 }
-                                await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                             }
 
                             objBod = await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false);
@@ -1504,12 +1502,6 @@ namespace Chummer.Backend.Attributes
                                     continue;
                             }
 
-                            if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objAttribute.LockObject.SetParent(LockObject, token: token);
-                            else
-                                await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
-
                             if (xmlCharNodeAnimalForm == null)
                                 continue;
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
@@ -1539,12 +1531,6 @@ namespace Chummer.Backend.Attributes
                                 default:
                                     continue;
                             }
-
-                            if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverload
-                                objAttribute.LockObject.SetParent(LockObject, token: token);
-                            else
-                                await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -1578,11 +1564,6 @@ namespace Chummer.Backend.Attributes
                                     default:
                                         continue;
                                 }
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    objAttribute.LockObject.SetParent(LockObject, token: token);
-                                else
-                                    await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                             }
                         }
                     }
@@ -1640,7 +1621,6 @@ namespace Chummer.Backend.Attributes
                                     CharacterAttrib.AttributeCategory.Special);
                                 objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                 SpecialAttributeList.Add(objAttribute);
-                                objAttribute.LockObject.SetParent(LockObject, token: token);
                                 break;
 
                             case CharacterAttrib.AttributeCategory.Standard:
@@ -1648,7 +1628,6 @@ namespace Chummer.Backend.Attributes
                                     CharacterAttrib.AttributeCategory.Standard);
                                 objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                 AttributeList.Add(objAttribute);
-                                objAttribute.LockObject.SetParent(LockObject, token: token);
                                 break;
                         }
 
@@ -1661,7 +1640,6 @@ namespace Chummer.Backend.Attributes
                                         CharacterAttrib.AttributeCategory.Special);
                                     objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                     SpecialAttributeList.Add(objAttribute);
-                                    objAttribute.LockObject.SetParent(LockObject, token: token);
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Shapeshifter:
@@ -1670,7 +1648,6 @@ namespace Chummer.Backend.Attributes
                                             .Shapeshifter);
                                     objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                     AttributeList.Add(objAttribute);
-                                    objAttribute.LockObject.SetParent(LockObject, token: token);
                                     break;
                             }
                         }
@@ -2981,7 +2958,6 @@ namespace Chummer.Backend.Attributes
                             default:
                                 continue;
                         }
-                        objAttribute.LockObject.SetParent(LockObject, token: token);
                     }
 
                     ResetBindings(token);
@@ -3028,7 +3004,6 @@ namespace Chummer.Backend.Attributes
                             default:
                                 continue;
                         }
-                        await objAttribute.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                     }
 
                     await ResetBindingsAsync(token).ConfigureAwait(false);

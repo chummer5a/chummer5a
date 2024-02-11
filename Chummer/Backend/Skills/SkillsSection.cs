@@ -1705,13 +1705,6 @@ namespace Chummer.Backend.Skills
                                 if (lstTempSkillList.Count > 0)
                                 {
                                     List<Skill> lstUnsortedSkills = new List<Skill>(lstTempSkillList.Count);
-                                    Stack<IDisposable> stkSyncLockers = null;
-                                    Stack<IAsyncDisposable> stkAsyncLockers = null;
-                                    if (blnSync)
-                                        stkSyncLockers = new Stack<IDisposable>(lstTempSkillList.Count);
-                                    else
-                                        stkAsyncLockers = new Stack<IAsyncDisposable>(lstTempSkillList.Count);
-
                                     //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
                                     bool OldSkillFilter(Skill skill)
                                     {
@@ -1739,66 +1732,29 @@ namespace Chummer.Backend.Skills
                                                || await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false);
                                     }
 
-                                    try
+                                    foreach (Skill objSkill in lstTempSkillList)
                                     {
-                                        foreach (Skill objSkill in lstTempSkillList)
+                                        if (objSkill is KnowledgeSkill objKnoSkill)
                                         {
-                                            if (objSkill is KnowledgeSkill objKnoSkill)
-                                            {
-                                                if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    KnowledgeSkills.Add(objKnoSkill);
-                                                else
-                                                    await KnowledgeSkills.AddAsync(objKnoSkill, token)
-                                                        .ConfigureAwait(false);
-                                            }
-                                            else if (blnSync)
-                                            {
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                stkSyncLockers.Push(objSkill.LockObject.EnterReadLock(token));
-                                                if (OldSkillFilter(objSkill))
-                                                    lstUnsortedSkills.Add(objSkill);
-                                                else
-                                                    stkSyncLockers.Pop()?.Dispose();
-                                            }
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                KnowledgeSkills.Add(objKnoSkill);
                                             else
-                                            {
-                                                stkAsyncLockers.Push(
-                                                    await objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false));
-                                                if (await OldSkillFilterAsync(objSkill).ConfigureAwait(false))
-                                                {
-                                                    lstUnsortedSkills.Add(objSkill);
-                                                }
-                                                else
-                                                {
-                                                    IAsyncDisposable objLocker2 = stkAsyncLockers.Pop();
-                                                    if (objLocker2 != null)
-                                                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                                                }
-                                            }
+                                                await KnowledgeSkills.AddAsync(objKnoSkill, token)
+                                                    .ConfigureAwait(false);
                                         }
+                                        else if (blnSync)
+                                        {
+                                            if (OldSkillFilter(objSkill))
+                                                lstUnsortedSkills.Add(objSkill);
+                                        }
+                                        else if (await OldSkillFilterAsync(objSkill).ConfigureAwait(false))
+                                        {
+                                            lstUnsortedSkills.Add(objSkill);
+                                        }
+                                    }
 
-                                        lstUnsortedSkills.Sort(CompareSkills);
-                                    }
-                                    finally
-                                    {
-                                        if (blnSync)
-                                        {
-                                            while (stkSyncLockers.Count > 0)
-                                            {
-                                                stkSyncLockers.Pop()?.Dispose();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            while (stkAsyncLockers.Count > 0)
-                                            {
-                                                IAsyncDisposable objLocker2 = stkAsyncLockers.Pop();
-                                                if (objLocker2 != null)
-                                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                                            }
-                                        }
-                                    }
+                                    lstUnsortedSkills.Sort(CompareSkills);
 
                                     foreach (Skill objSkill in lstUnsortedSkills)
                                     {
@@ -2491,108 +2447,65 @@ namespace Chummer.Backend.Skills
                 objWriter.WriteStartElement("newskills");
 
                 objWriter.WriteElementString("skillptsmax",
-                                             SkillPointsMaximum.ToString(GlobalSettings.InvariantCultureInfo));
+                    SkillPointsMaximum.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("skillgrpsmax",
-                                             SkillGroupPointsMaximum.ToString(GlobalSettings.InvariantCultureInfo));
+                    SkillGroupPointsMaximum.ToString(GlobalSettings.InvariantCultureInfo));
 
                 objWriter.WriteStartElement("skills");
-                Stack<IDisposable> stkLockers = new Stack<IDisposable>(Skills.Count);
-                try
+                List<Skill> lstSkillsOrdered = new List<Skill>(Skills.Count);
+                foreach (Skill objSkill in Skills)
                 {
-                    List<Skill> lstSkillsOrdered = new List<Skill>(Skills.Count);
-                    foreach (Skill objSkill in Skills)
-                    {
-                        stkLockers.Push(objSkill.LockObject.EnterReadLock());
-                        lstSkillsOrdered.Add(objSkill);
-                    }
-
-                    lstSkillsOrdered.Sort(CompareSkills);
-                    foreach (Skill objSkill in lstSkillsOrdered)
-                    {
-                        objSkill.WriteTo(objWriter);
-                    }
+                    lstSkillsOrdered.Add(objSkill);
                 }
-                finally
+
+                lstSkillsOrdered.Sort(CompareSkills);
+                foreach (Skill objSkill in lstSkillsOrdered)
                 {
-                    while (stkLockers.Count > 0)
-                    {
-                        stkLockers.Pop()?.Dispose();
-                    }
+                    objSkill.WriteTo(objWriter);
                 }
 
                 objWriter.WriteEndElement();
                 objWriter.WriteStartElement("knoskills");
-                try
+                List<KnowledgeSkill> lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowledgeSkills.Count);
+                foreach (KnowledgeSkill objSkill in KnowledgeSkills)
                 {
-                    List<KnowledgeSkill> lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowledgeSkills.Count);
-                    foreach (KnowledgeSkill objSkill in KnowledgeSkills)
-                    {
-                        stkLockers.Push(objSkill.LockObject.EnterReadLock());
-                        lstKnoSkillsOrdered.Add(objSkill);
-                    }
-
-                    lstKnoSkillsOrdered.Sort(CompareSkills);
-                    foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
-                    {
-                        objKnowledgeSkill.WriteTo(objWriter);
-                    }
+                    lstKnoSkillsOrdered.Add(objSkill);
                 }
-                finally
+
+                lstKnoSkillsOrdered.Sort(CompareSkills);
+                foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
                 {
-                    while (stkLockers.Count > 0)
-                    {
-                        stkLockers.Pop()?.Dispose();
-                    }
+                    objKnowledgeSkill.WriteTo(objWriter);
                 }
 
                 objWriter.WriteEndElement();
 
                 objWriter.WriteStartElement("skilljackknowledgeskills");
-                try
+                lstKnoSkillsOrdered.Clear();
+                foreach (KnowledgeSkill objSkill in KnowsoftSkills)
                 {
-                    List<KnowledgeSkill> lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowsoftSkills.Count);
-                    foreach (KnowledgeSkill objSkill in KnowsoftSkills)
-                    {
-                        stkLockers.Push(objSkill.LockObject.EnterReadLock());
-                        lstKnoSkillsOrdered.Add(objSkill);
-                    }
-                    lstKnoSkillsOrdered.Sort(CompareSkills);
-                    foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
-                    {
-                        objKnowledgeSkill.WriteTo(objWriter);
-                    }
+                    lstKnoSkillsOrdered.Add(objSkill);
                 }
-                finally
+
+                lstKnoSkillsOrdered.Sort(CompareSkills);
+                foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
                 {
-                    while (stkLockers.Count > 0)
-                    {
-                        stkLockers.Pop()?.Dispose();
-                    }
+                    objKnowledgeSkill.WriteTo(objWriter);
                 }
 
                 objWriter.WriteEndElement();
 
                 objWriter.WriteStartElement("groups");
-                try
+                List<SkillGroup> lstSkillGroups = new List<SkillGroup>(SkillGroups.Count);
+                foreach (SkillGroup objGroup in SkillGroups)
                 {
-                    List<SkillGroup> lstSkillGroups = new List<SkillGroup>(SkillGroups.Count);
-                    foreach (SkillGroup objGroup in SkillGroups)
-                    {
-                        stkLockers.Push(objGroup.LockObject.EnterReadLock());
-                        lstSkillGroups.Add(objGroup);
-                    }
-                    lstSkillGroups.Sort(CompareSkillGroups);
-                    foreach (SkillGroup objSkillGroup in lstSkillGroups)
-                    {
-                        objSkillGroup.WriteTo(objWriter);
-                    }
+                    lstSkillGroups.Add(objGroup);
                 }
-                finally
+
+                lstSkillGroups.Sort(CompareSkillGroups);
+                foreach (SkillGroup objSkillGroup in lstSkillGroups)
                 {
-                    while (stkLockers.Count > 0)
-                    {
-                        stkLockers.Pop()?.Dispose();
-                    }
+                    objSkillGroup.WriteTo(objWriter);
                 }
 
                 objWriter.WriteEndElement();

@@ -57,6 +57,27 @@ namespace Chummer
             return new LockingEnumerator<T>(objMyRelease);
         }
 
+        public static LockingEnumerator<T> GetWithSideEffects(IHasLockObject objMyParent, CancellationToken token = default)
+        {
+            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLockWithUpgradeableParent(token);
+            return new LockingEnumerator<T>(objMyRelease);
+        }
+
+        public static async Task<LockingEnumerator<T>> GetWithSideEffectsAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        {
+            IAsyncDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+            }
+            catch
+            {
+                await objMyRelease.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
+            return new LockingEnumerator<T>(objMyRelease);
+        }
+
         private LockingEnumerator(IDisposable objMyRelease)
         {
             _objMyRelease = objMyRelease;

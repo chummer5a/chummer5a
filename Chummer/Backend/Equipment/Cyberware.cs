@@ -813,22 +813,6 @@ namespace Chummer.Backend.Equipment
             Vehicle objParentVehicle = null, bool blnSkipSelectForms = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (blnSync)
-            {
-                if (objParentVehicle != null)
-                    // ReSharper disable once MethodHasAsyncOverload
-                    LockObject.SetParent(token: token);
-                else
-                    // ReSharper disable once MethodHasAsyncOverload
-                    LockObject.SetParent(_objCharacter.LockObject, token: token);
-            }
-            else
-            {
-                if (objParentVehicle != null)
-                    await LockObject.SetParentAsync(token: token).ConfigureAwait(false);
-                else
-                    await LockObject.SetParentAsync(_objCharacter.LockObject, token: token).ConfigureAwait(false);
-            }
             IDisposable objSyncLocker = null;
             IAsyncDisposable objAsyncLocker = null;
             if (blnSync)
@@ -6380,10 +6364,6 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Interlocked.Exchange(ref _objParentVehicle, value) != value)
                     {
-                        if (value != null)
-                            LockObject.SetParent();
-                        else
-                            LockObject.SetParent(_objCharacter.LockObject);
                         bool blnEquipped = IsModularCurrentlyEquipped;
                         foreach (Gear objGear in GearChildren)
                         {

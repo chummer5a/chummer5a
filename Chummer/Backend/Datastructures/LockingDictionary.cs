@@ -93,6 +93,20 @@ namespace Chummer
             return objReturn;
         }
 
+        public IEnumerator<KeyValuePair<TKey, TValue>> EnumerateWithSideEffects()
+        {
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = LockingEnumerator<KeyValuePair<TKey, TValue>>.GetWithSideEffects(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
+        }
+
+        public async Task<IEnumerator<KeyValuePair<TKey, TValue>>> EnumerateWithSideEffectsAsync(CancellationToken token = default)
+        {
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetWithSideEffectsAsync(this, token).ConfigureAwait(false);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
+        }
+
         /// <inheritdoc />
         public void Add(KeyValuePair<TKey, TValue> item)
         {

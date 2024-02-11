@@ -119,33 +119,17 @@ namespace Chummer.Backend.Skills
 
         public KnowledgeSkill(Character objCharacter, bool blnSetProperties = true) : base(objCharacter)
         {
-            LockObject.SetParent();
-            try
-            {
-                if (blnSetProperties)
-                    DefaultAttribute = "LOG";
-                IsLoading = false;
-            }
-            finally
-            {
-                LockObject.SetParent(objCharacter.SkillsSection.LockObject);
-            }
+            if (blnSetProperties)
+                DefaultAttribute = "LOG";
+            IsLoading = false;
         }
 
         public KnowledgeSkill(Character objCharacter, string strForcedName, bool blnAllowUpgrade) : this(objCharacter)
         {
-            LockObject.SetParent();
-            try
-            {
-                WritableName = strForcedName;
-                ForcedName = true;
-                _blnAllowUpgrade = blnAllowUpgrade;
-                IsLoading = false;
-            }
-            finally
-            {
-                LockObject.SetParent(objCharacter.SkillsSection.LockObject);
-            }
+            WritableName = strForcedName;
+            ForcedName = true;
+            _blnAllowUpgrade = blnAllowUpgrade;
+            IsLoading = false;
         }
 
         public static async Task<KnowledgeSkill> NewAsync(Character objCharacter, string strForcedName,
@@ -155,18 +139,10 @@ namespace Chummer.Backend.Skills
             KnowledgeSkill objReturn = new KnowledgeSkill(objCharacter, false);
             try
             {
-                await objReturn.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
-                try
-                {
-                    await objReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
-                    await objReturn.SetWritableNameAsync(strForcedName, token).ConfigureAwait(false);
-                    objReturn.ForcedName = true;
-                    objReturn._blnAllowUpgrade = blnAllowUpgrade;
-                }
-                finally
-                {
-                    await objReturn.LockObject.SetParentAsync(objCharacter.SkillsSection.LockObject, token: token).ConfigureAwait(false);
-                }
+                await objReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
+                await objReturn.SetWritableNameAsync(strForcedName, token).ConfigureAwait(false);
+                objReturn.ForcedName = true;
+                objReturn._blnAllowUpgrade = blnAllowUpgrade;
             }
             catch
             {

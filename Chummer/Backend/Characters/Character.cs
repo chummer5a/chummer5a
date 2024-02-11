@@ -661,146 +661,134 @@ namespace Chummer
 
         public void RefreshAttributeBindings(CancellationToken token = default)
         {
-            using (AttributeSection.LockObject.EnterUpgradeableReadLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                Stack<IDisposable> stkLockers = new Stack<IDisposable>();
-                try
+                token.ThrowIfCancellationRequested();
+                // First remove all existing bindings
+                foreach (CharacterAttrib objAttribute in GetAllAttributes(token).ToList()) // ToList needed because otherwise we would be in a non-upgradeable read lock when the attribute write lock attempts to set an upgradeable read lock
                 {
-                    token.ThrowIfCancellationRequested();
-                    // First remove all existing bindings
-                    foreach (CharacterAttrib objAttribute in GetAllAttributes(token).ToList()) // ToList needed because otherwise we would be in a non-upgradeable read lock when the attribute write lock attempts to set an upgradeable read lock
+                    switch (objAttribute.Abbrev)
                     {
-                        stkLockers.Push(objAttribute.LockObject.EnterWriteLock(token));
-                        switch (objAttribute.Abbrev)
-                        {
-                            case "BOD":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
-                                break;
+                        case "BOD":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
+                            break;
 
-                            case "AGI":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshAGIDependentProperties;
-                                break;
+                        case "AGI":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshAGIDependentProperties;
+                            break;
 
-                            case "REA":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshREADependentProperties;
-                                break;
+                        case "REA":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshREADependentProperties;
+                            break;
 
-                            case "STR":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshSTRDependentProperties;
-                                break;
+                        case "STR":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshSTRDependentProperties;
+                            break;
 
-                            case "CHA":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshCHADependentProperties;
-                                break;
+                        case "CHA":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshCHADependentProperties;
+                            break;
 
-                            case "INT":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshINTDependentProperties;
-                                break;
+                        case "INT":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshINTDependentProperties;
+                            break;
 
-                            case "LOG":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshLOGDependentProperties;
-                                break;
+                        case "LOG":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshLOGDependentProperties;
+                            break;
 
-                            case "WIL":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshWILDependentProperties;
-                                break;
+                        case "WIL":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshWILDependentProperties;
+                            break;
 
-                            case "EDG":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshEDGDependentProperties;
-                                break;
+                        case "EDG":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshEDGDependentProperties;
+                            break;
 
-                            case "MAG":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
-                                break;
+                        case "MAG":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
+                            break;
 
-                            case "MAGAdept":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
-                                break;
+                        case "MAGAdept":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
+                            break;
 
-                            case "RES":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshRESDependentProperties;
-                                break;
+                        case "RES":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshRESDependentProperties;
+                            break;
 
-                            case "DEP":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshDEPDependentProperties;
-                                break;
+                        case "DEP":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshDEPDependentProperties;
+                            break;
 
-                            case "ESS":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshESSDependentProperties;
-                                break;
-                        }
-                    }
-
-                    foreach (string strAbbrev in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttribute = GetAttribute(strAbbrev, true, token);
-                        if (objAttribute == null)
-                            continue;
-                        switch (strAbbrev)
-                        {
-                            case "BOD":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
-                                break;
-
-                            case "AGI":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshAGIDependentProperties;
-                                break;
-
-                            case "REA":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshREADependentProperties;
-                                break;
-
-                            case "STR":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshSTRDependentProperties;
-                                break;
-
-                            case "CHA":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshCHADependentProperties;
-                                break;
-
-                            case "INT":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshINTDependentProperties;
-                                break;
-
-                            case "LOG":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshLOGDependentProperties;
-                                break;
-
-                            case "WIL":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshWILDependentProperties;
-                                break;
-
-                            case "EDG":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshEDGDependentProperties;
-                                break;
-
-                            case "MAG":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
-                                break;
-
-                            case "MAGAdept":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
-                                break;
-
-                            case "RES":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshRESDependentProperties;
-                                break;
-
-                            case "DEP":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshDEPDependentProperties;
-                                break;
-
-                            case "ESS":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshESSDependentProperties;
-                                break;
-                        }
+                        case "ESS":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshESSDependentProperties;
+                            break;
                     }
                 }
-                finally
+
+                foreach (string strAbbrev in AttributeSection.AttributeStrings)
                 {
-                    while (stkLockers.Count > 0)
+                    CharacterAttrib objAttribute = GetAttribute(strAbbrev, true, token);
+                    if (objAttribute == null)
+                        continue;
+                    switch (strAbbrev)
                     {
-                        stkLockers.Pop().Dispose();
+                        case "BOD":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
+                            break;
+
+                        case "AGI":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshAGIDependentProperties;
+                            break;
+
+                        case "REA":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshREADependentProperties;
+                            break;
+
+                        case "STR":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshSTRDependentProperties;
+                            break;
+
+                        case "CHA":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshCHADependentProperties;
+                            break;
+
+                        case "INT":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshINTDependentProperties;
+                            break;
+
+                        case "LOG":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshLOGDependentProperties;
+                            break;
+
+                        case "WIL":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshWILDependentProperties;
+                            break;
+
+                        case "EDG":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshEDGDependentProperties;
+                            break;
+
+                        case "MAG":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
+                            break;
+
+                        case "MAGAdept":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
+                            break;
+
+                        case "RES":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshRESDependentProperties;
+                            break;
+
+                        case "DEP":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshDEPDependentProperties;
+                            break;
+
+                        case "ESS":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshESSDependentProperties;
+                            break;
                     }
                 }
             }
@@ -815,135 +803,120 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                ConcurrentStack<IAsyncDisposable> stkLockers
-                    = new ConcurrentStack<IAsyncDisposable>();
-                try
+                // First remove all existing bindings
+                foreach (CharacterAttrib objAttribute in await GetAllAttributesAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    // First remove all existing bindings
-                    foreach (CharacterAttrib objAttribute in await GetAllAttributesAsync(token).ConfigureAwait(false))
+                    switch (objAttribute.Abbrev)
                     {
-                        stkLockers.Push(await objAttribute.LockObject.EnterWriteLockAsync(token)
-                            .ConfigureAwait(false));
-                        token.ThrowIfCancellationRequested();
-                        switch (objAttribute.Abbrev)
-                        {
-                            case "BOD":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
-                                break;
-                            case "AGI":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshAGIDependentProperties;
-                                break;
-                            case "REA":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshREADependentProperties;
-                                break;
-                            case "STR":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshSTRDependentProperties;
-                                break;
-                            case "CHA":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshCHADependentProperties;
-                                break;
-                            case "INT":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshINTDependentProperties;
-                                break;
-                            case "LOG":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshLOGDependentProperties;
-                                break;
-                            case "WIL":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshWILDependentProperties;
-                                break;
-                            case "EDG":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshEDGDependentProperties;
-                                break;
-                            case "MAG":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
-                                break;
-                            case "MAGAdept":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
-                                break;
-                            case "RES":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshRESDependentProperties;
-                                break;
-                            case "DEP":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshDEPDependentProperties;
-                                break;
-                            case "ESS":
-                                objAttribute.MultiplePropertiesChangedAsync -= RefreshESSDependentProperties;
-                                break;
-                        }
-                    }
-
-                    foreach (string strAbbrev in AttributeSection.AttributeStrings)
-                    {
-                        CharacterAttrib objAttribute =
-                            await GetAttributeAsync(strAbbrev, true, token).ConfigureAwait(false);
-                        if (objAttribute == null)
-                            continue;
-                        switch (strAbbrev)
-                        {
-                            case "BOD":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
-                                break;
-
-                            case "AGI":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshAGIDependentProperties;
-                                break;
-
-                            case "REA":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshREADependentProperties;
-                                break;
-
-                            case "STR":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshSTRDependentProperties;
-                                break;
-
-                            case "CHA":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshCHADependentProperties;
-                                break;
-
-                            case "INT":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshINTDependentProperties;
-                                break;
-
-                            case "LOG":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshLOGDependentProperties;
-                                break;
-
-                            case "WIL":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshWILDependentProperties;
-                                break;
-
-                            case "EDG":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshEDGDependentProperties;
-                                break;
-
-                            case "MAG":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
-                                break;
-
-                            case "MAGAdept":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
-                                break;
-
-                            case "RES":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshRESDependentProperties;
-                                break;
-
-                            case "DEP":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshDEPDependentProperties;
-                                break;
-
-                            case "ESS":
-                                objAttribute.MultiplePropertiesChangedAsync += RefreshESSDependentProperties;
-                                break;
-                        }
+                        case "BOD":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshBODDependentProperties;
+                            break;
+                        case "AGI":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshAGIDependentProperties;
+                            break;
+                        case "REA":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshREADependentProperties;
+                            break;
+                        case "STR":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshSTRDependentProperties;
+                            break;
+                        case "CHA":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshCHADependentProperties;
+                            break;
+                        case "INT":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshINTDependentProperties;
+                            break;
+                        case "LOG":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshLOGDependentProperties;
+                            break;
+                        case "WIL":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshWILDependentProperties;
+                            break;
+                        case "EDG":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshEDGDependentProperties;
+                            break;
+                        case "MAG":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGDependentProperties;
+                            break;
+                        case "MAGAdept":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshMAGAdeptDependentProperties;
+                            break;
+                        case "RES":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshRESDependentProperties;
+                            break;
+                        case "DEP":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshDEPDependentProperties;
+                            break;
+                        case "ESS":
+                            objAttribute.MultiplePropertiesChangedAsync -= RefreshESSDependentProperties;
+                            break;
                     }
                 }
-                finally
+
+                foreach (string strAbbrev in AttributeSection.AttributeStrings)
                 {
-                    while (stkLockers.TryPop(out IAsyncDisposable objLocker2))
+                    CharacterAttrib objAttribute =
+                        await GetAttributeAsync(strAbbrev, true, token).ConfigureAwait(false);
+                    if (objAttribute == null)
+                        continue;
+                    switch (strAbbrev)
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        case "BOD":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshBODDependentProperties;
+                            break;
+
+                        case "AGI":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshAGIDependentProperties;
+                            break;
+
+                        case "REA":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshREADependentProperties;
+                            break;
+
+                        case "STR":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshSTRDependentProperties;
+                            break;
+
+                        case "CHA":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshCHADependentProperties;
+                            break;
+
+                        case "INT":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshINTDependentProperties;
+                            break;
+
+                        case "LOG":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshLOGDependentProperties;
+                            break;
+
+                        case "WIL":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshWILDependentProperties;
+                            break;
+
+                        case "EDG":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshEDGDependentProperties;
+                            break;
+
+                        case "MAG":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshMAGDependentProperties;
+                            break;
+
+                        case "MAGAdept":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshMAGAdeptDependentProperties;
+                            break;
+
+                        case "RES":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshRESDependentProperties;
+                            break;
+
+                        case "DEP":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshDEPDependentProperties;
+                            break;
+
+                        case "ESS":
+                            objAttribute.MultiplePropertiesChangedAsync += RefreshESSDependentProperties;
+                            break;
                     }
                 }
             }
@@ -20468,7 +20441,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public IEnumerable<CharacterAttrib> GetAllAttributes(CancellationToken token = default)
         {
-            using (AttributeSection.LockObject.EnterReadLock(token))
+            using (LockObject.EnterReadLock(token))
             {
                 foreach (CharacterAttrib objAttribute in AttributeSection.AllAttributes)
                 {

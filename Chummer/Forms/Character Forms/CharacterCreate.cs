@@ -17420,7 +17420,6 @@ namespace Chummer
                                                                       strMetavariantXPath,
                                                                       xmlDoc, token).ConfigureAwait(false);
                             lstAttributesToAdd.Add(objNewAttribute);
-                            await objNewAttribute.LockObject.SetParentAsync(objAttributeSection.LockObject, token: token).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
 
                         foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)

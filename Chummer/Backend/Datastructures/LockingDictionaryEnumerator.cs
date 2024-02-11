@@ -31,15 +31,36 @@ namespace Chummer
 
         private IDictionaryEnumerator _objInternalEnumerator;
 
-        public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent)
+        public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLock();
+            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLock(token);
             return new LockingDictionaryEnumerator(objMyRelease);
         }
 
         public static async Task<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
             IAsyncDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+            }
+            catch
+            {
+                await objMyRelease.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
+            return new LockingDictionaryEnumerator(objMyRelease);
+        }
+
+        public static LockingDictionaryEnumerator GetWithSideEffects(IHasLockObject objMyParent, CancellationToken token = default)
+        {
+            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLockWithUpgradeableParent(token);
+            return new LockingDictionaryEnumerator(objMyRelease);
+        }
+
+        public static async Task<LockingDictionaryEnumerator> GetWithSideEffectsAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        {
+            IAsyncDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();

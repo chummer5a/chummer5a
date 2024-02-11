@@ -719,6 +719,20 @@ namespace Chummer
             return objReturn;
         }
 
+        public IEnumerator<T> EnumerateWithSideEffects()
+        {
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.GetWithSideEffects(this);
+            objReturn.SetEnumerator(_lstData.GetEnumerator());
+            return objReturn;
+        }
+
+        public async Task<IEnumerator<T>> EnumerateWithSideEffectsAsync(CancellationToken token = default)
+        {
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetWithSideEffectsAsync(this, token).ConfigureAwait(false);
+            objReturn.SetEnumerator(_lstData.GetEnumerator());
+            return objReturn;
+        }
+
         public int IndexOf(object value)
         {
             if (!(value is T objValue))
