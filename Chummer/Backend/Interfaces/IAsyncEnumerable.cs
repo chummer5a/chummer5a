@@ -8672,7 +8672,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -8708,6 +8709,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
@@ -8732,7 +8740,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -8768,6 +8777,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
@@ -8922,7 +8938,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -8958,6 +8975,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
@@ -8982,7 +9006,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -9018,6 +9043,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
@@ -9342,7 +9374,8 @@ namespace Chummer
             if (objParentList == null)
                 return 0;
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9351,6 +9384,13 @@ namespace Chummer
                         ++intReturn;
                     intReturn += await funcGetChildrenMethod(objLoopChild).DeepCountAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
             return intReturn;
         }
@@ -9364,7 +9404,8 @@ namespace Chummer
             if (objParentList == null)
                 return 0;
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9373,6 +9414,13 @@ namespace Chummer
                         ++intReturn;
                     intReturn += await funcGetChildrenMethod(objLoopChild).DeepCountAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
             return intReturn;
         }
@@ -9386,7 +9434,8 @@ namespace Chummer
             if (objParentList == null)
                 return 0;
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9395,6 +9444,13 @@ namespace Chummer
                         ++intReturn;
                     intReturn += await funcGetChildrenMethod(objLoopChild).DeepCountAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
             return intReturn;
         }
@@ -9408,12 +9464,20 @@ namespace Chummer
             if (objParentList == null)
                 return 0;
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
                     intReturn += 1 + await funcGetChildrenMethod(objEnumerator.Current).DeepCountAsync(funcGetChildrenMethod, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
             return intReturn;
         }
@@ -9424,7 +9488,8 @@ namespace Chummer
         public static async Task<T> DeepFirstAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9442,6 +9507,13 @@ namespace Chummer
                     }
                 }
             }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
             throw new InvalidOperationException();
         }
 
@@ -9453,7 +9525,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objParentList == null)
                 return default;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9464,6 +9537,13 @@ namespace Chummer
                     if (objReturn?.Equals(default(T)) == false)
                         return objReturn;
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
             return default;
         }
@@ -9478,7 +9558,8 @@ namespace Chummer
                 throw new InvalidOperationException();
             bool blnFoundValue = false;
             T objReturn = default;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9501,6 +9582,13 @@ namespace Chummer
                     objReturn = objTemp;
                 }
             }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
             if (blnFoundValue)
                 return objReturn;
             throw new InvalidOperationException();
@@ -9516,7 +9604,8 @@ namespace Chummer
                 throw new InvalidOperationException();
             bool blnFoundValue = false;
             T objReturn = default;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9533,6 +9622,13 @@ namespace Chummer
                     //swallow this
                 }
             }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
             if (blnFoundValue)
                 return objReturn;
             throw new InvalidOperationException();
@@ -9547,7 +9643,8 @@ namespace Chummer
             if (objParentList == null)
                 return default;
             T objReturn = default;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9558,6 +9655,13 @@ namespace Chummer
                     if (objTemp?.Equals(default(T)) == false)
                         objReturn = objTemp;
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
             return objReturn;
         }
@@ -9571,7 +9675,8 @@ namespace Chummer
             if (objParentList == null)
                 return default;
             T objReturn = default;
-            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false))
+            IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
             {
                 while (objEnumerator.MoveNext())
                 {
@@ -9582,6 +9687,13 @@ namespace Chummer
                     if (objTemp?.Equals(default(T)) == false)
                         objReturn = objTemp;
                 }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
             }
             return objReturn;
         }

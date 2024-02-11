@@ -384,7 +384,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -420,6 +421,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
@@ -444,7 +452,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -480,6 +489,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
@@ -514,7 +530,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -550,6 +567,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
@@ -574,7 +598,8 @@ namespace Chummer
                 List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
                     ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken).ConfigureAwait(false)))
                     : new List<Task>(Utils.MaxParallelBatchSize);
-                using (IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(objToken).ConfigureAwait(false))
+                IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+                try
                 {
                     bool blnMoveNext = objEnumerator.MoveNext();
                     while (blnMoveNext)
@@ -610,6 +635,13 @@ namespace Chummer
                             lstTasks.Clear();
                         }
                     }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
                 }
 
                 try
