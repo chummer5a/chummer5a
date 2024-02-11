@@ -35668,55 +35668,65 @@ namespace Chummer
                 if (BlackMarketDiscount)
                 {
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setArmorBlackMarketMaps))
+                               out HashSet<string> setArmorBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setArmorModBlackMarketMaps))
+                               out HashSet<string> setArmorModBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setBiowareBlackMarketMaps))
+                               out HashSet<string> setBiowareBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setCyberwareBlackMarketMaps))
+                               out HashSet<string> setCyberwareBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setGearBlackMarketMaps))
+                               out HashSet<string> setGearBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setVehicleBlackMarketMaps))
+                               out HashSet<string> setVehicleBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setVehicleModBlackMarketMaps))
+                               out HashSet<string> setVehicleModBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setWeaponMountBlackMarketMaps))
+                               out HashSet<string> setWeaponMountBlackMarketMaps))
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setWeaponBlackMarketMaps))
+                               out HashSet<string> setWeaponBlackMarketMaps))
                     {
-                        setArmorBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml", token: token)
-                                                             .SelectSingleNodeAndCacheExpression("/chummer", token), token));
-                        setArmorModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml", token: token)
-                                                                .SelectSingleNodeAndCacheExpression(
-                                                                    "/chummer/modcategories", token), token));
-                        setBiowareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("bioware.xml", token: token)
-                                                               .SelectSingleNodeAndCacheExpression("/chummer", token), token));
-                        setCyberwareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml", token: token)
-                                                                 .SelectSingleNodeAndCacheExpression("/chummer", token), token));
-                        setGearBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("gear.xml", token: token)
-                                                            .SelectSingleNodeAndCacheExpression("/chummer", token), token));
-                        setVehicleBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml", token: token)
-                                                               .SelectSingleNodeAndCacheExpression("/chummer", token), token));
-                        setVehicleModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml", token: token)
-                                                                  .SelectSingleNodeAndCacheExpression(
-                                                                      "/chummer/modcategories", token), token));
-                        setWeaponMountBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml", token: token)
-                                                                   .SelectSingleNodeAndCacheExpression(
-                                                                       "/chummer/weaponmountcategories", token), token));
-                        setWeaponBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("weapons.xml", token: token)
-                                                              .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setArmorBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("armor.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setArmorModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("armor.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression(
+                                    "/chummer/modcategories", token), token));
+                        setBiowareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("bioware.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setCyberwareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("cyberware.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setGearBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("gear.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setVehicleBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("vehicles.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setVehicleModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("vehicles.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression(
+                                    "/chummer/modcategories", token), token));
+                        setWeaponMountBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("vehicles.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression(
+                                    "/chummer/weaponmountcategories", token), token));
+                        setWeaponBlackMarketMaps.AddRange(GenerateBlackMarketMappings(
+                            LoadDataXPath("weapons.xml", token: token)
+                                .SelectSingleNodeAndCacheExpression("/chummer", token), token));
 
-                        Armor.ForEach(objArmor =>
+                        Armor.AsEnumerableWithSideEffects().ForEach(objArmor =>
                         {
                             objArmor.DiscountCost
                                 = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
-                            objArmor.ArmorMods.ForEach(objMod =>
+                            objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach(objMod =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setArmorModBlackMarketMaps.Contains(objMod.Category);
-                                foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children, token))
+                                foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
+                                             .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
@@ -35724,7 +35734,8 @@ namespace Chummer
                                 }
                             }, token);
 
-                            foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children, token))
+                            foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
@@ -35732,7 +35743,8 @@ namespace Chummer
                             }
                         }, token);
 
-                        foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children, token).ToList())
+                        foreach (Cyberware objCyberware in Cyberware.AsEnumerableWithSideEffects()
+                                     .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
                             token.ThrowIfCancellationRequested();
                             if (objCyberware.DiscountCost)
@@ -35743,7 +35755,8 @@ namespace Chummer
                                         : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
                             }
 
-                            foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children, token))
+                            foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
@@ -35751,30 +35764,33 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children, token))
+                        foreach (Gear objGear in Gear.AsEnumerableWithSideEffects()
+                                     .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
                             token.ThrowIfCancellationRequested();
                             objGear.DiscountCost
                                 = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                         }
 
-                        Vehicles.ForEach(objVehicle =>
+                        Vehicles.AsEnumerableWithSideEffects().ForEach(objVehicle =>
                         {
                             objVehicle.DiscountCost = objVehicle.DiscountCost
                                                       && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
-                            foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children, token))
+                            foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
 
-                            objVehicle.Mods.ForEach(objMod =>
+                            objVehicle.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setVehicleModBlackMarketMaps.Contains(objMod.Category);
-                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
-                                             x => x.Children, token))
+                                foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
+                                             .GetAllDescendants(
+                                                 x => x.Children.AsEnumerableWithSideEffects()))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     if (objCyberware.DiscountCost)
@@ -35785,8 +35801,9 @@ namespace Chummer
                                                 : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
                                     }
 
-                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                                 x => x.Children, token))
+                                    foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
+                                                 .GetAllDescendants(
+                                                     x => x.Children.AsEnumerableWithSideEffects()))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
@@ -35795,17 +35812,20 @@ namespace Chummer
                                 }
                             }, token);
 
-                            foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children, token))
+                            foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
+                                token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = objWeapon.DiscountCost
                                                          && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                                objWeapon.WeaponAccessories.ForEach(objAccessory =>
+                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
                                 {
                                     objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                 && setWeaponBlackMarketMaps
                                                                     .Contains(objWeapon.Category);
-                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                 x => x.Children, token))
+                                    foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
+                                                 .GetAllDescendants(
+                                                     x => x.Children.AsEnumerableWithSideEffects()))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
@@ -35814,17 +35834,18 @@ namespace Chummer
                                 }, token);
                             }
 
-                            objVehicle.WeaponMounts.ForEach(objMount =>
+                            objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach(objMount =>
                             {
                                 objMount.DiscountCost = objMount.DiscountCost
                                                         && setWeaponMountBlackMarketMaps
                                                             .Contains(objMount.Category);
-                                objMount.Mods.ForEach(objMod =>
+                                objMount.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
                                 {
                                     objMod.DiscountCost = objMod.DiscountCost
                                                           && setVehicleModBlackMarketMaps.Contains(objMod.Category);
-                                    foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
-                                                 x => x.Children, token))
+                                    foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
+                                                 .GetAllDescendants(
+                                                     x => x.Children.AsEnumerableWithSideEffects()))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         if (objCyberware.DiscountCost)
@@ -35835,8 +35856,9 @@ namespace Chummer
                                                     : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
                                         }
 
-                                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                                     x => x.Children, token))
+                                        foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
+                                                     .GetAllDescendants(
+                                                         x => x.Children.AsEnumerableWithSideEffects()))
                                         {
                                             token.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
@@ -35846,19 +35868,21 @@ namespace Chummer
                                     }
                                 }, token);
 
-                                foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children, token))
+                                foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
+                                             .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objWeapon.DiscountCost = objWeapon.DiscountCost
                                                              && setWeaponBlackMarketMaps.Contains(
                                                                  objWeapon.Category);
-                                    objWeapon.WeaponAccessories.ForEach(objAccessory =>
+                                    objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
                                     {
                                         objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                     && setWeaponBlackMarketMaps
                                                                         .Contains(objWeapon.Category);
-                                        foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                     x => x.Children, token))
+                                        foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
+                                                     .GetAllDescendants(
+                                                         x => x.Children.AsEnumerableWithSideEffects()))
                                         {
                                             token.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
@@ -35870,12 +35894,13 @@ namespace Chummer
                             }, token);
                         }, token);
 
-                        foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children, token))
+                        foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects()
+                                     .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = objWeapon.DiscountCost
                                                      && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                            objWeapon.WeaponAccessories.ForEach(objAccessory =>
+                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
                             {
                                 objAccessory.DiscountCost = objAccessory.DiscountCost
                                                             && setWeaponBlackMarketMaps
@@ -35894,62 +35919,70 @@ namespace Chummer
                 else
                 {
                     // Forcefully disable all Black Market Discounts that don't apply.
-                    Armor.ForEach(objArmor =>
+                    Armor.AsEnumerableWithSideEffects().ForEach(objArmor =>
                     {
                         objArmor.DiscountCost = false;
-                        objArmor.ArmorMods.ForEach(objMod =>
+                        objArmor.ArmorMods.AsEnumerableWithSideEffects().ForEach(objMod =>
                         {
                             objMod.DiscountCost = false;
-                            foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children, token))
+                            foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
                             }
                         }, token);
 
-                        foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children, token))
+                        foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
+                                     .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
                             token.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
                     }, token);
 
-                    foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children, token).ToList())
+                    foreach (Cyberware objCyberware in Cyberware.AsEnumerableWithSideEffects()
+                                 .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                     {
                         token.ThrowIfCancellationRequested();
                         objCyberware.DiscountCost = false;
-                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children, token))
+                        foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
+                                     .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
                             token.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
                     }
 
-                    foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children, token))
+                    foreach (Gear objGear in Gear.AsEnumerableWithSideEffects()
+                                 .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                     {
                         token.ThrowIfCancellationRequested();
                         objGear.DiscountCost = false;
                     }
 
-                    Vehicles.ForEach(objVehicle =>
+                    Vehicles.AsEnumerableWithSideEffects().ForEach(objVehicle =>
                     {
                         objVehicle.DiscountCost = false;
-                        foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children, token))
+                        foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
+                                     .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
                             token.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
                         }
 
-                        objVehicle.Mods.ForEach(objMod =>
+                        objVehicle.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
                         {
                             objMod.DiscountCost = false;
-                            foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
-                                         x => x.Children, token))
+                            foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(
+                                             x => x.Children.AsEnumerableWithSideEffects()))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objCyberware.DiscountCost = false;
-                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                             x => x.Children, token))
+                                foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
+                                             .GetAllDescendants(
+                                                 x => x.Children.AsEnumerableWithSideEffects()))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
@@ -35957,11 +35990,12 @@ namespace Chummer
                             }
                         }, token);
 
-                        foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children, token))
+                        foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
+                                     .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                         {
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = false;
-                            objWeapon.WeaponAccessories.ForEach(objAccessory =>
+                            objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
                             {
                                 objAccessory.DiscountCost = false;
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
@@ -35973,19 +36007,21 @@ namespace Chummer
                             }, token);
                         }
 
-                        objVehicle.WeaponMounts.ForEach(objMount =>
+                        objVehicle.WeaponMounts.AsEnumerableWithSideEffects().ForEach(objMount =>
                         {
                             objMount.DiscountCost = false;
-                            objMount.Mods.ForEach(objMod =>
+                            objMount.Mods.AsEnumerableWithSideEffects().ForEach(objMod =>
                             {
                                 objMod.DiscountCost = false;
-                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
-                                             x => x.Children, token))
+                                foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
+                                             .GetAllDescendants(
+                                                 x => x.Children.AsEnumerableWithSideEffects()))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objCyberware.DiscountCost = false;
-                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                                 x => x.Children, token))
+                                    foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
+                                                 .GetAllDescendants(
+                                                     x => x.Children.AsEnumerableWithSideEffects()))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
@@ -35993,16 +36029,18 @@ namespace Chummer
                                 }
                             }, token);
 
-                            foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(
-                                         x => x.Children, token))
+                            foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(
+                                             x => x.Children.AsEnumerableWithSideEffects()))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = false;
-                                objWeapon.WeaponAccessories.ForEach(objAccessory =>
+                                objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
                                 {
                                     objAccessory.DiscountCost = false;
-                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                 x => x.Children, token))
+                                    foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
+                                                 .GetAllDescendants(
+                                                     x => x.Children.AsEnumerableWithSideEffects()))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
@@ -36012,15 +36050,17 @@ namespace Chummer
                         }, token);
                     }, token);
 
-                    foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children, token))
+                    foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects()
+                                 .GetAllDescendants(x => x.Children.AsEnumerableWithSideEffects()))
                     {
                         token.ThrowIfCancellationRequested();
                         objWeapon.DiscountCost = false;
-                        objWeapon.WeaponAccessories.ForEach(objAccessory =>
+                        objWeapon.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
                         {
                             objAccessory.DiscountCost = false;
-                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                         x => x.Children, token))
+                            foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects()
+                                         .GetAllDescendants(
+                                             x => x.Children.AsEnumerableWithSideEffects()))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
@@ -36105,11 +36145,11 @@ namespace Chummer
                                 .SelectSingleNodeAndCacheExpression("/chummer", token),
                             token).ConfigureAwait(false));
 
-                        await Armor.ForEachAsync(async objArmor =>
+                        await Armor.ForEachWithSideEffectsAsync(async objArmor =>
                         {
                             objArmor.DiscountCost
                                 = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
-                            await objArmor.ArmorMods.ForEachAsync(async objMod =>
+                            await objArmor.ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setArmorModBlackMarketMaps.Contains(objMod.Category);
@@ -36160,7 +36200,7 @@ namespace Chummer
                                 = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                         }
 
-                        await Vehicles.ForEachAsync(async objVehicle =>
+                        await Vehicles.ForEachWithSideEffectsAsync(async objVehicle =>
                         {
                             objVehicle.DiscountCost = objVehicle.DiscountCost
                                                       && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
@@ -36172,7 +36212,7 @@ namespace Chummer
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
                             }
 
-                            await objVehicle.Mods.ForEachAsync(async objMod =>
+                            await objVehicle.Mods.ForEachWithSideEffectsAsync(async objMod =>
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setVehicleModBlackMarketMaps.Contains(objMod.Category);
@@ -36204,7 +36244,7 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = objWeapon.DiscountCost
                                                          && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                                await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                                await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                                 {
                                     objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                 && setWeaponBlackMarketMaps
@@ -36219,12 +36259,12 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                            await objVehicle.WeaponMounts.ForEachWithSideEffectsAsync(async objMount =>
                             {
                                 objMount.DiscountCost = objMount.DiscountCost
                                                         && setWeaponMountBlackMarketMaps
                                                             .Contains(objMount.Category);
-                                await objMount.Mods.ForEachAsync(async objMod =>
+                                await objMount.Mods.ForEachWithSideEffectsAsync(async objMod =>
                                 {
                                     objMod.DiscountCost = objMod.DiscountCost
                                                           && setVehicleModBlackMarketMaps.Contains(objMod.Category);
@@ -36258,7 +36298,7 @@ namespace Chummer
                                     objWeapon.DiscountCost = objWeapon.DiscountCost
                                                              && setWeaponBlackMarketMaps.Contains(
                                                                  objWeapon.Category);
-                                    await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                                    await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                                     {
                                         token.ThrowIfCancellationRequested();
                                         objAccessory.DiscountCost = objAccessory.DiscountCost
@@ -36283,7 +36323,7 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = objWeapon.DiscountCost
                                                      && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
-                            await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                            await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                             {
                                 token.ThrowIfCancellationRequested();
                                 objAccessory.DiscountCost = objAccessory.DiscountCost
@@ -36303,10 +36343,10 @@ namespace Chummer
                 else
                 {
                     // Forcefully disable all Black Market Discounts that don't apply.
-                    await Armor.ForEachAsync(async objArmor =>
+                    await Armor.ForEachWithSideEffectsAsync(async objArmor =>
                     {
                         objArmor.DiscountCost = false;
-                        await objArmor.ArmorMods.ForEachAsync(async objMod =>
+                        await objArmor.ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
                         {
                             objMod.DiscountCost = false;
                             foreach (Gear objGear in await objMod.GearChildren
@@ -36345,7 +36385,7 @@ namespace Chummer
                         objGear.DiscountCost = false;
                     }
 
-                    await Vehicles.ForEachAsync(async objVehicle =>
+                    await Vehicles.ForEachWithSideEffectsAsync(async objVehicle =>
                     {
                         objVehicle.DiscountCost = false;
                         foreach (Gear objGear in await objVehicle.GearChildren
@@ -36355,7 +36395,7 @@ namespace Chummer
                             objGear.DiscountCost = false;
                         }
 
-                        await objVehicle.Mods.ForEachAsync(async objMod =>
+                        await objVehicle.Mods.ForEachWithSideEffectsAsync(async objMod =>
                         {
                             objMod.DiscountCost = false;
                             foreach (Cyberware objCyberware in await objMod.Cyberware
@@ -36377,7 +36417,7 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = false;
-                            await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                            await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                             {
                                 objAccessory.DiscountCost = false;
                                 foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
@@ -36389,10 +36429,10 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                         }
 
-                        await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                        await objVehicle.WeaponMounts.ForEachWithSideEffectsAsync(async objMount =>
                         {
                             objMount.DiscountCost = false;
-                            await objMount.Mods.ForEachAsync(async objMod =>
+                            await objMount.Mods.ForEachWithSideEffectsAsync(async objMod =>
                             {
                                 objMod.DiscountCost = false;
                                 foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
@@ -36414,7 +36454,7 @@ namespace Chummer
                             {
                                 token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = false;
-                                await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                                await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                                 {
                                     objAccessory.DiscountCost = false;
                                     foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
@@ -36433,7 +36473,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         objWeapon.DiscountCost = false;
-                        await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                        await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                         {
                             objAccessory.DiscountCost = false;
                             foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(

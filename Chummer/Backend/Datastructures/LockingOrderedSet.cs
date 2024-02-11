@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IAsyncProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject
+    public class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IAsyncProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject, IAsyncEnumerableWithSideEffects<T>
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;

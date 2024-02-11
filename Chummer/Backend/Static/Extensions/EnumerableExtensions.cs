@@ -186,6 +186,15 @@ namespace Chummer
             return lstCollection.Where(x => predicate(x)).ToList();
         }
 
+        public static void ForEach<T>(this IEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
+        {
+            foreach (T objItem in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                objFuncToRun.Invoke(objItem);
+            }
+        }
+
         public static async Task<int> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

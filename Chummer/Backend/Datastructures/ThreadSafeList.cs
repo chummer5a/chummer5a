@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IAsyncProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T>, IHasLockObject
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; }

@@ -26,6 +26,12 @@ namespace Chummer
 {
     public static class EnumeratorExtensions
     {
+        public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> objEnumerator)
+        {
+            while (objEnumerator.MoveNext())
+                yield return objEnumerator.Current;
+        }
+
         public static void ForEach<T>(this IEnumerator<T> objEnumerator, Action<T> objFuncToRun)
         {
             while (objEnumerator.MoveNext())

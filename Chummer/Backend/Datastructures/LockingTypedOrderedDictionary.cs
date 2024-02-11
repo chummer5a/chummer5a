@@ -40,7 +40,7 @@ namespace Chummer
         ISerializable,
         IDeserializationCallback,
         IHasLockObject,
-        IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>
+        IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IAsyncEnumerableWithSideEffects<KeyValuePair<TKey, TValue>>
     {
         private readonly Dictionary<TKey, TValue> _dicUnorderedData;
         private readonly List<TKey> _lstIndexes;

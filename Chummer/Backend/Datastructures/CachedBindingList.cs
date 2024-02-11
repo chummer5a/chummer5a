@@ -251,7 +251,18 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnListChanged(ListChangedEventArgs e)
         {
-            IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
+            IDisposable objLocker = BindingListLock?.EnterReadLock();
+            try
+            {
+                // INotifyPropertyChangedAsync will call PropertyChangedAsync anyway, which does everything we would do here
+                if (e.ListChangedType == ListChangedType.ItemChanged && Count > 0 && this[0] is INotifyPropertyChangedAsync)
+                    return;
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
+            objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
             try
             {
                 // INotifyPropertyChangedAsync will call PropertyChangedAsync anyway, which does everything we would do here
@@ -647,7 +658,7 @@ namespace Chummer
         {
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
-            IDisposable objLocker = BindingListLock?.EnterReadLockWithUpgradeableParent();
+            IDisposable objLocker = BindingListLock?.EnterReadLock();
             try
             {
                 if (propertyChangedAsyncEventHandler == null)
@@ -666,7 +677,7 @@ namespace Chummer
             if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
                 return;
             IAsyncDisposable objLocker = BindingListLock != null
-                ? await BindingListLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
+                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
                 : null;
             try
             {
@@ -686,7 +697,7 @@ namespace Chummer
             CancellationToken token = default)
         {
             IAsyncDisposable objLocker = BindingListLock != null
-                ? await BindingListLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
+                ? await BindingListLock.EnterReadLockAsync(token).ConfigureAwait(false)
                 : null;
             try
             {

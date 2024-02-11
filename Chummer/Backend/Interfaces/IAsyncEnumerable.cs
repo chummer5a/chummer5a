@@ -8226,15 +8226,6 @@ namespace Chummer
             return await LastOrDefaultAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
-        public static void ForEach<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
-        {
-            foreach (T objItem in objEnumerable)
-            {
-                token.ThrowIfCancellationRequested();
-                objFuncToRun.Invoke(objItem);
-            }
-        }
-
         public static async Task ForEachAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

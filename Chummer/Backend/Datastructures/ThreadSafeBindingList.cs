@@ -32,7 +32,7 @@ namespace Chummer
     /// Use ThreadSafeObservableCollection instead for classes without INotifyPropertyChanged.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T> where T : INotifyPropertyChanged
+    public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }
