@@ -345,7 +345,7 @@ namespace Chummer.UI.Attributes
                 try
                 {
                     CharacterAttrib objAttrib = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objAttrib.LockObject.EnterUpgradeableReadLockAsync(_objMyToken)
+                    IAsyncDisposable objLocker = await objAttrib.LockObject.EnterReadLockAsync(_objMyToken)
                         .ConfigureAwait(false);
                     try
                     {
@@ -373,28 +373,8 @@ namespace Chummer.UI.Attributes
                         }
                         else
                         {
-                            int intKarmaMaximum;
-                            IAsyncDisposable objLocker2 = await objAttrib.LockObject.EnterUpgradeableReadLockAsync(_objMyToken)
-                                .ConfigureAwait(false);
-                            try
-                            {
-                                _objMyToken.ThrowIfCancellationRequested();
-                                while (await objAttrib.GetBaseAsync(_objMyToken).ConfigureAwait(false) > 0 &&
-                                       await objAttrib.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false) < 0)
-                                {
-                                    await objAttrib.ModifyBaseAsync(-1, _objMyToken).ConfigureAwait(false);
-                                }
-
-                                // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
-                                intKarmaMaximum = await objAttrib.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
-                                if (await objAttrib.GetKarmaAsync(_objMyToken).ConfigureAwait(false) > intKarmaMaximum)
-                                    await objAttrib.SetKarmaAsync(intKarmaMaximum, _objMyToken).ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await objLocker2.DisposeAsync().ConfigureAwait(false);
-                            }
-
+                            int intKarmaMaximum =
+                                await objAttrib.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
                             int intPriorityMaximum =
                                 await objAttrib.GetPriorityMaximumAsync(_objMyToken).ConfigureAwait(false);
                             await nudBase.DoThreadSafeAsync(x => x.Maximum = intPriorityMaximum, _objMyToken)

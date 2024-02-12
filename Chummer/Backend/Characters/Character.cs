@@ -10316,6 +10316,39 @@ namespace Chummer
                                     await ClearInitiationsAsync(token).ConfigureAwait(false);
                             }
 
+                            // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                            if (blnSync)
+                            {
+                                if (!Created)
+                                {
+                                    foreach (CharacterAttrib objAttrib in GetAllAttributes(token))
+                                    {
+                                        while (objAttrib.Base > 0 && objAttrib.KarmaMaximum < 0)
+                                        {
+                                            objAttrib.Base -= 1;
+                                        }
+
+                                        objAttrib.Karma = Math.Min(objAttrib.Karma, objAttrib.KarmaMaximum);
+                                    }
+                                }
+                            }
+                            else if (!await GetCreatedAsync(token))
+                            {
+                                foreach (CharacterAttrib objAttrib in await GetAllAttributesAsync(token))
+                                {
+                                    while (await objAttrib.GetBaseAsync(token).ConfigureAwait(false) > 0 &&
+                                           await objAttrib.GetKarmaMaximumAsync(token).ConfigureAwait(false) < 0)
+                                    {
+                                        await objAttrib.ModifyBaseAsync(-1, token).ConfigureAwait(false);
+                                    }
+
+                                    int intKarmaMaximum =
+                                        await objAttrib.GetKarmaMaximumAsync(token).ConfigureAwait(false);
+                                    if (await objAttrib.GetKarmaAsync(token).ConfigureAwait(false) > intKarmaMaximum)
+                                        await objAttrib.SetKarmaAsync(intKarmaMaximum, token).ConfigureAwait(false);
+                                }
+                            }
+
                             while (_setPostLoadMethods.TryTake(out Func<CancellationToken, bool> funcToCall))
                             {
                                 if (!funcToCall.Invoke(token))
