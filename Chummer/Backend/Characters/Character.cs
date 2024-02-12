@@ -10321,11 +10321,11 @@ namespace Chummer
                             {
                                 if (!Created)
                                 {
-                                    foreach (CharacterAttrib objAttrib in GetAllAttributes(token))
+                                    foreach (CharacterAttrib objAttrib in GetAllAttributes(token).ToList())
                                     {
                                         while (objAttrib.Base > 0 && objAttrib.KarmaMaximum < 0)
                                         {
-                                            objAttrib.Base -= 1;
+                                            --objAttrib.Base;
                                         }
 
                                         objAttrib.Karma = Math.Min(objAttrib.Karma, objAttrib.KarmaMaximum);
