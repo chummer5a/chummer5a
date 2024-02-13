@@ -10332,9 +10332,9 @@ namespace Chummer
                                     }
                                 }
                             }
-                            else if (!await GetCreatedAsync(token))
+                            else if (!await GetCreatedAsync(token).ConfigureAwait(false))
                             {
-                                foreach (CharacterAttrib objAttrib in await GetAllAttributesAsync(token))
+                                foreach (CharacterAttrib objAttrib in await GetAllAttributesAsync(token).ConfigureAwait(false))
                                 {
                                     while (await objAttrib.GetBaseAsync(token).ConfigureAwait(false) > 0 &&
                                            await objAttrib.GetKarmaMaximumAsync(token).ConfigureAwait(false) < 0)
@@ -40684,56 +40684,65 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(LimitPhysical),
-                    nameof(DamageResistancePool),
-                    nameof(LiftAndCarry),
-                    nameof(FatigueResist),
-                    nameof(RadiationResist),
-                    nameof(PhysiologicalAddictionResistFirstTime),
-                    nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                    nameof(StunCMNaturalRecovery),
-                    nameof(PhysicalCMNaturalRecovery),
-                    nameof(PhysicalCM),
-                    nameof(CMOverflow),
-                    nameof(SpellDefenseIndirectSoak),
-                    nameof(SpellDefenseDirectSoakPhysical),
-                    nameof(SpellDefenseDecreaseBOD),
-                    nameof(SpellDefenseManipulationPhysical)
-                });
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}", token)
-                    .ConfigureAwait(false);
-            }
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(LimitPhysical),
+                        nameof(DamageResistancePool),
+                        nameof(LiftAndCarry),
+                        nameof(FatigueResist),
+                        nameof(RadiationResist),
+                        nameof(PhysiologicalAddictionResistFirstTime),
+                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
+                        nameof(StunCMNaturalRecovery),
+                        nameof(PhysicalCMNaturalRecovery),
+                        nameof(PhysicalCM),
+                        nameof(CMOverflow),
+                        nameof(SpellDefenseIndirectSoak),
+                        nameof(SpellDefenseDirectSoakPhysical),
+                        nameof(SpellDefenseDecreaseBOD),
+                        nameof(SpellDefenseManipulationPhysical)
+                    });
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.MetatypeMaximum)) &&
-                await GetDEPEnabledAsync(token).ConfigureAwait(false))
-            {
-                lstProperties.Add(nameof(IsAI));
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.MetatypeMaximum)) &&
+                    await GetDEPEnabledAsync(token).ConfigureAwait(false))
+                {
+                    lstProperties.Add(nameof(IsAI));
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{BOD}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{BOD}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40741,34 +40750,43 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.Add(nameof(SpellDefenseDecreaseAGI));
-                lstProperties.Add(nameof(CalculatedMovement));
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}", token)
-                    .ConfigureAwait(false);
-            }
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+                {
+                    lstProperties.Add(nameof(SpellDefenseDecreaseAGI));
+                    lstProperties.Add(nameof(CalculatedMovement));
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{AGI}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{AGI}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40776,40 +40794,49 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(LimitPhysical),
-                    nameof(InitiativeValue),
-                    nameof(Dodge),
-                    nameof(SpellDefenseDecreaseREA),
-                    nameof(Surprise)
-                });
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}", token)
-                    .ConfigureAwait(false);
-            }
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(LimitPhysical),
+                        nameof(InitiativeValue),
+                        nameof(Dodge),
+                        nameof(SpellDefenseDecreaseREA),
+                        nameof(Surprise)
+                    });
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{REA}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{REA}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40817,41 +40844,50 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(LimitPhysical),
-                    nameof(LiftAndCarry),
-                    nameof(SpellDefenseDecreaseSTR),
-                    nameof(SpellDefenseManipulationPhysical),
-                    nameof(CalculatedMovement),
-                    nameof(ArmorEncumbrance)
-                });
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}", token)
-                    .ConfigureAwait(false);
-            }
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(LimitPhysical),
+                        nameof(LiftAndCarry),
+                        nameof(SpellDefenseDecreaseSTR),
+                        nameof(SpellDefenseManipulationPhysical),
+                        nameof(CalculatedMovement),
+                        nameof(ArmorEncumbrance)
+                    });
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{STR}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{STR}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40859,40 +40895,49 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(LimitSocial),
-                    nameof(Composure),
-                    nameof(JudgeIntentions),
-                    nameof(JudgeIntentionsResist),
-                    nameof(SpellDefenseDecreaseCHA)
-                });
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}", token)
-                    .ConfigureAwait(false);
-            }
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(LimitSocial),
+                        nameof(Composure),
+                        nameof(JudgeIntentions),
+                        nameof(JudgeIntentionsResist),
+                        nameof(SpellDefenseDecreaseCHA)
+                    });
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{CHA}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{CHA}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40900,46 +40945,55 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(LimitMental),
-                    nameof(JudgeIntentions),
-                    nameof(InitiativeValue),
-                    nameof(AstralInitiativeValue),
-                    nameof(MatrixInitiativeValue),
-                    nameof(MatrixInitiativeColdValue),
-                    nameof(MatrixInitiativeHotValue),
-                    nameof(Dodge),
-                    nameof(SpellDefenseDecreaseINT),
-                    nameof(SpellDefenseIllusionPhysical),
-                    nameof(Surprise)
-                });
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}", token)
-                    .ConfigureAwait(false);
-            }
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(LimitMental),
+                        nameof(JudgeIntentions),
+                        nameof(InitiativeValue),
+                        nameof(AstralInitiativeValue),
+                        nameof(MatrixInitiativeValue),
+                        nameof(MatrixInitiativeColdValue),
+                        nameof(MatrixInitiativeHotValue),
+                        nameof(Dodge),
+                        nameof(SpellDefenseDecreaseINT),
+                        nameof(SpellDefenseIllusionPhysical),
+                        nameof(Surprise)
+                    });
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{INT}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{INT}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40947,44 +41001,53 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(LimitMental),
-                    nameof(Memory),
-                    nameof(PsychologicalAddictionResistFirstTime),
-                    nameof(PsychologicalAddictionResistAlreadyAddicted),
-                    nameof(SpellDefenseDetection),
-                    nameof(SpellDefenseDecreaseLOG),
-                    nameof(SpellDefenseIllusionMana),
-                    nameof(SpellDefenseIllusionPhysical),
-                    nameof(SpellDefenseManipulationMental)
-                });
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}", token)
-                    .ConfigureAwait(false);
-            }
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(LimitMental),
+                        nameof(Memory),
+                        nameof(PsychologicalAddictionResistFirstTime),
+                        nameof(PsychologicalAddictionResistAlreadyAddicted),
+                        nameof(SpellDefenseDetection),
+                        nameof(SpellDefenseDecreaseLOG),
+                        nameof(SpellDefenseIllusionMana),
+                        nameof(SpellDefenseIllusionPhysical),
+                        nameof(SpellDefenseManipulationMental)
+                    });
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{LOG}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{LOG}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -40992,61 +41055,70 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(LimitSocial),
-                    nameof(LimitMental),
-                    nameof(Composure),
-                    nameof(Memory),
-                    nameof(JudgeIntentionsResist),
-                    nameof(FatigueResist),
-                    nameof(SonicResist),
-                    nameof(RadiationResist),
-                    nameof(PhysiologicalAddictionResistFirstTime),
-                    nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                    nameof(PsychologicalAddictionResistFirstTime),
-                    nameof(PsychologicalAddictionResistAlreadyAddicted),
-                    nameof(StunCMNaturalRecovery),
-                    nameof(StunCM),
-                    nameof(SpellDefenseDirectSoakMana),
-                    nameof(SpellDefenseDetection),
-                    nameof(SpellDefenseDecreaseBOD),
-                    nameof(SpellDefenseDecreaseAGI),
-                    nameof(SpellDefenseDecreaseREA),
-                    nameof(SpellDefenseDecreaseSTR),
-                    nameof(SpellDefenseDecreaseCHA),
-                    nameof(SpellDefenseDecreaseINT),
-                    nameof(SpellDefenseDecreaseLOG),
-                    nameof(SpellDefenseDecreaseWIL),
-                    nameof(SpellDefenseIllusionMana),
-                    nameof(SpellDefenseManipulationMental)
-                });
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}", token)
-                    .ConfigureAwait(false);
-            }
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(LimitSocial),
+                        nameof(LimitMental),
+                        nameof(Composure),
+                        nameof(Memory),
+                        nameof(JudgeIntentionsResist),
+                        nameof(FatigueResist),
+                        nameof(SonicResist),
+                        nameof(RadiationResist),
+                        nameof(PhysiologicalAddictionResistFirstTime),
+                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
+                        nameof(PsychologicalAddictionResistFirstTime),
+                        nameof(PsychologicalAddictionResistAlreadyAddicted),
+                        nameof(StunCMNaturalRecovery),
+                        nameof(StunCM),
+                        nameof(SpellDefenseDirectSoakMana),
+                        nameof(SpellDefenseDetection),
+                        nameof(SpellDefenseDecreaseBOD),
+                        nameof(SpellDefenseDecreaseAGI),
+                        nameof(SpellDefenseDecreaseREA),
+                        nameof(SpellDefenseDecreaseSTR),
+                        nameof(SpellDefenseDecreaseCHA),
+                        nameof(SpellDefenseDecreaseINT),
+                        nameof(SpellDefenseDecreaseLOG),
+                        nameof(SpellDefenseDecreaseWIL),
+                        nameof(SpellDefenseIllusionMana),
+                        nameof(SpellDefenseManipulationMental)
+                    });
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{WIL}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{WIL}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -41054,39 +41126,48 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}", token)
-                    .ConfigureAwait(false);
-                int intEdgeValue =
-                    await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
-                        .GetTotalValueAsync(token).ConfigureAwait(false);
-                if (await GetEdgeUsedAsync(token).ConfigureAwait(false) > intEdgeValue)
-                    await SetEdgeUsedAsync(intEdgeValue, token).ConfigureAwait(false);
-                else
-                    lstProperties.Add(nameof(EdgeRemaining));
-            }
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}", token)
+                        .ConfigureAwait(false);
+                    int intEdgeValue =
+                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                            .GetTotalValueAsync(token).ConfigureAwait(false);
+                    if (await GetEdgeUsedAsync(token).ConfigureAwait(false) > intEdgeValue)
+                        await SetEdgeUsedAsync(intEdgeValue, token).ConfigureAwait(false);
+                    else
+                        lstProperties.Add(nameof(EdgeRemaining));
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{EDG}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{EDG}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -41095,95 +41176,113 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}", token)
-                    .ConfigureAwait(false);
-                CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
-                if (!IsLoading)
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    int intMysticAdeptPowerPoints =
-                        await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
-                    if (intMysticAdeptPowerPoints > 0)
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}", token)
+                        .ConfigureAwait(false);
+                    CharacterAttrib objMag = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
+                    if (!IsLoading)
                     {
-                        int intMAGTotalValue = await objMag.GetTotalValueAsync(token).ConfigureAwait(false);
-                        if (intMysticAdeptPowerPoints > intMAGTotalValue)
-                            await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token)
-                                .ConfigureAwait(false);
+                        int intMysticAdeptPowerPoints =
+                            await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
+                        if (intMysticAdeptPowerPoints > 0)
+                        {
+                            int intMAGTotalValue = await objMag.GetTotalValueAsync(token).ConfigureAwait(false);
+                            if (intMysticAdeptPowerPoints > intMAGTotalValue)
+                                await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token)
+                                    .ConfigureAwait(false);
+                        }
                     }
+
+                    if (await (await GetSettingsAsync(token).ConfigureAwait(false))
+                        .GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                    if (await GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(CanAffordCareerPP));
+                    if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false)
+                        && objMag == await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(PowerPointsTotal));
+                    if (await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
                 }
 
-                if (await (await GetSettingsAsync(token).ConfigureAwait(false))
-                    .GetSpiritForceBasedOnTotalMAGAsync(token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(MaxSpiritForce));
-                if (await GetMysAdeptAllowPPCareerAsync(token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(CanAffordCareerPP));
-                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false)
-                    && objMag == await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(PowerPointsTotal));
-                if (await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{MAG}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
             }
-
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{MAG}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))))
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task RefreshMAGAdeptDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CharacterAttrib objMagAdept = await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false);
-            if (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false) == objMagAdept)
-                return;
-
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}", token)
-                    .ConfigureAwait(false);
-                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(MaxSpiritForce));
+                token.ThrowIfCancellationRequested();
+                CharacterAttrib objMagAdept = await GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false);
+                if (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false) == objMagAdept)
+                    return;
+
+                List<string> lstProperties = new List<string>();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}", token)
+                        .ConfigureAwait(false);
+                    if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                }
+
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}", token)
+                        .ConfigureAwait(false);
+                }
+
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
+
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
             }
-
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+            finally
             {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}", token)
-                    .ConfigureAwait(false);
-            }
-
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
-
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))))
-            {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -41191,35 +41290,44 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstProperties.Add(nameof(MaxSpriteLevel));
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}", token)
-                    .ConfigureAwait(false);
-                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(MaxSpiritForce));
-            }
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+                {
+                    lstProperties.Add(nameof(MaxSpriteLevel));
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}", token)
+                        .ConfigureAwait(false);
+                    if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{RES}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{RES}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -41227,38 +41335,47 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (await GetIsAIAsync(token).ConfigureAwait(false))
-                    await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
-                        .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+                {
+                    if (await GetIsAIAsync(token).ConfigureAwait(false))
+                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                            .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
+                            .ConfigureAwait(false);
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}", token)
                         .ConfigureAwait(false);
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}", token)
-                    .ConfigureAwait(false);
-                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(MaxSpiritForce));
-            }
+                    if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}", token)
-                    .ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{DEP}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))))
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{DEP}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -41266,50 +41383,59 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (await GetIsAIAsync(token).ConfigureAwait(false))
-                    await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
-                        .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
-                        .ConfigureAwait(false);
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}", token)
-                    .ConfigureAwait(false);
-                if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
-                    lstProperties.Add(nameof(MaxSpiritForce));
-            }
-
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
-            {
-                await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}", token)
-                    .ConfigureAwait(false);
-            }
-
-            // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
-            if (e.PropertyNames.Contains(nameof(CharacterAttrib.MetatypeMaximum)))
-            {
-                lstProperties.AddRange(new[]
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
-                    nameof(PrototypeTranshumanEssenceUsed),
-                    nameof(BiowareEssence),
-                    nameof(CyberwareEssence),
-                    nameof(EssenceHole)
-                });
-            }
+                    if (await GetIsAIAsync(token).ConfigureAwait(false))
+                        await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                            .OnPropertyChangedAsync(nameof(CharacterAttrib.MetatypeMaximum), token)
+                            .ConfigureAwait(false);
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}", token)
+                        .ConfigureAwait(false);
+                    if (!await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                }
 
-            if (lstProperties.Count > 0)
-            {
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)))
+                {
+                    await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}", token)
+                        .ConfigureAwait(false);
+                }
 
-            if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
-                ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
-                  && Settings.KnowledgePointsExpression.Contains("{ESS}"))
-                 || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
-                     && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))))
+                // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
+                if (e.PropertyNames.Contains(nameof(CharacterAttrib.MetatypeMaximum)))
+                {
+                    lstProperties.AddRange(new[]
+                    {
+                        nameof(PrototypeTranshumanEssenceUsed),
+                        nameof(BiowareEssence),
+                        nameof(CyberwareEssence),
+                        nameof(EssenceHole)
+                    });
+                }
+
+                if (lstProperties.Count > 0)
+                {
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
+                }
+
+                if (!await GetCreatedAsync(token).ConfigureAwait(false) &&
+                    ((e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                      && Settings.KnowledgePointsExpression.Contains("{ESS}"))
+                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value))
+                         && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))))
+                {
+                    await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
+                        .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
+                        .ConfigureAwait(false);
+                }
+            }
+            finally
             {
-                await (await GetSkillsSectionAsync(token).ConfigureAwait(false))
-                    .OnPropertyChangedAsync(nameof(SkillsSection.KnowledgeSkillPoints), token)
-                    .ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -46387,7 +46513,8 @@ namespace Chummer
                                                         .SelectSingleNodeAndCacheExpression(
                                                             "@for", token)
                                                         ?.Value ?? string.Empty, token: token).ConfigureAwait(false);
-                                                objFakeLicense.Parent = objFakeSIN;
+                                                await objFakeLicense.SetParentAsync(objFakeSIN, token)
+                                                    .ConfigureAwait(false);
                                                 await objFakeSIN.Children.AddAsync(objFakeLicense, token)
                                                     .ConfigureAwait(false);
                                             }

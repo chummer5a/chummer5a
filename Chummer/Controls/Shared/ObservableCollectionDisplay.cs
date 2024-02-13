@@ -79,7 +79,7 @@ namespace Chummer.Controls.Shared
             try
             {
                 int intMaxControlHeight = 0;
-                foreach (TType objLoopTType in Contents)
+                foreach (TType objLoopTType in Contents.AsEnumerableWithSideEffects())
                 {
                     ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false);
                     intMaxControlHeight = Math.Max(objNewControl.Control.PreferredSize.Height, intMaxControlHeight);
@@ -634,13 +634,15 @@ namespace Chummer.Controls.Shared
 
                             List<Control> lstControls = new List<Control>(_lstContentList.Count);
                             _lstContentList.Clear();
-                            foreach (TType objLoopTType in Contents)
+                            await Contents.ForEachWithSideEffectsAsync(async objLoopTType =>
                             {
                                 ControlWithMetaData objControlWithMetadata =
-                                    await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, token).ConfigureAwait(false);
+                                    await ControlWithMetaData.GetNewAsync(objLoopTType, this, false, token)
+                                        .ConfigureAwait(false);
                                 _lstContentList.Add(objControlWithMetadata);
-                                lstControls.Add(await objControlWithMetadata.GetControlAsync(token).ConfigureAwait(false));
-                            }
+                                lstControls.Add(await objControlWithMetadata.GetControlAsync(token)
+                                    .ConfigureAwait(false));
+                            }, token: token).ConfigureAwait(false);
 
                             await pnlDisplay.DoThreadSafeAsync(x => x.Controls.AddRange(lstControls.ToArray()), token: token).ConfigureAwait(false);
                         }

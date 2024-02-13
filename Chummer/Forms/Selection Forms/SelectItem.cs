@@ -76,7 +76,8 @@ namespace Chummer
                                         .Append(']');
                                 }
 
-                                if (objGear.Rating > 0)
+                                int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
+                                if (intRating > 0)
                                 {
                                     sbdAmmoName.Append(strSpace).Append('(')
                                                .AppendFormat(GlobalSettings.CultureInfo,
@@ -84,7 +85,7 @@ namespace Chummer
                                                                  .ConfigureAwait(false),
                                                              await LanguageManager.GetStringAsync(objGear.RatingLabel)
                                                                  .ConfigureAwait(false)).Append(strSpace)
-                                               .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                               .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
                                 }
 
                                 sbdAmmoName.Append(strSpace).Append('x')

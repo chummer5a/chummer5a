@@ -47,6 +47,18 @@ namespace Chummer
             _dicTaggedAddedAsyncBeforeClearDelegates =
                 new ConcurrentDictionary<object, HashSet<AsyncNotifyCollectionChangedEventHandler>>();
 
+        public TaggedObservableCollection(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(objParentLock, blnLockReadOnlyForParent)
+        {
+        }
+
+        public TaggedObservableCollection(IEnumerable<T> collection, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(collection, objParentLock, blnLockReadOnlyForParent)
+        {
+        }
+
+        public TaggedObservableCollection(List<T> list, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false) : base(list, objParentLock, blnLockReadOnlyForParent)
+        {
+        }
+
         /// <summary>
         /// Use in place of CollectionChanged Adder
         /// </summary>

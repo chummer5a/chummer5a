@@ -78,6 +78,7 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
+            Enhancements = new TaggedObservableCollection<Enhancement>(LockObject);
             _objCachedFreeLevelsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
@@ -920,7 +921,7 @@ namespace Chummer
         /// <summary>
         /// The Enhancements currently applied to the Power.
         /// </summary>
-        public TaggedObservableCollection<Enhancement> Enhancements { get; } = new TaggedObservableCollection<Enhancement>();
+        public TaggedObservableCollection<Enhancement> Enhancements { get; }
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).

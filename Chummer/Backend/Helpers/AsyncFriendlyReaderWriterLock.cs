@@ -115,6 +115,57 @@ namespace Chummer
         }
 
 #if READERLOCKSTACKTRACEDEBUG
+        public bool IsInNonUpgradeableReadLock => !string.IsNullOrEmpty(_objAsyncLocalCurrentsContainer.Value?.Item4);
+#else
+        public bool IsInNonUpgradeableReadLock => _objAsyncLocalCurrentsContainer.Value?.Item4 == true;
+#endif
+
+        public bool IsInUpgradeableReadLock => _objAsyncLocalCurrentsContainer.Value?.Item2 != null;
+
+        public bool IsInReadLock
+        {
+            get
+            {
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+                    objAsyncLocals =
+                        _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+                    return objAsyncLocals.Item2 != null
+#if READERLOCKSTACKTRACEDEBUG
+                           || !string.IsNullOrEmpty(objAsyncLocals.Item4);
+#else
+                           || objAsyncLocals.Item4;
+#endif
+                }
+                return false;
+            }
+        }
+
+        public bool IsInWriteLock => _objAsyncLocalCurrentsContainer.Value?.Item3 != null;
+
+        public bool IsInPotentialWriteLock
+        {
+            get
+            {
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+                    objAsyncLocals =
+                        _objAsyncLocalCurrentsContainer.Value;
+                if (objAsyncLocals != null)
+                {
+#if READERLOCKSTACKTRACEDEBUG
+                    if (!string.IsNullOrEmpty(objAsyncLocals.Item4))
+#else
+                    if (objAsyncLocals.Item4)
+#endif
+                        return false;
+                    return objAsyncLocals.Item2 != null || objAsyncLocals.Item3 != null;
+                }
+                return false;
+            }
+        }
+
+#if READERLOCKSTACKTRACEDEBUG
         private Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
             LinkedAsyncRWLockHelper, string> GetHelpers(bool blnForReadLock = false, CancellationToken token = default)
 #else
@@ -547,6 +598,15 @@ namespace Chummer
             return EnterReadLock(true, token);
         }
 
+        /// <summary>
+        /// Try to synchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one if the lock's parent is in a write lock or potential write lock.
+        /// </summary>
+        public IDisposable EnterReadLockWithMatchingParentLock(CancellationToken token = default)
+        {
+            return EnterReadLock(_objParentLock?.IsInPotentialWriteLock == true, token);
+        }
+
         private IDisposable EnterReadLock(bool blnParentLockIsUpgradeable, CancellationToken token = default)
         {
             if (_intDisposedStatus != 0)
@@ -650,6 +710,16 @@ namespace Chummer
         public Task<IAsyncDisposable> EnterReadLockWithUpgradeableParentAsync(CancellationToken token = default)
         {
             return EnterReadLockAsync(true, token);
+        }
+
+        /// <summary>
+        /// Try to asynchronously obtain a lock for reading and only reading and return a disposable that exits the read lock when disposed.
+        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// This version will set the lock's parent to an upgradeable read lock instead of a non-upgradeable one if the lock's parent is in a write lock or potential write lock.
+        /// </summary>
+        public Task<IAsyncDisposable> EnterReadLockWithMatchingParentLockAsync(CancellationToken token = default)
+        {
+            return EnterReadLockAsync(_objParentLock?.IsInPotentialWriteLock == true, token);
         }
 
         private Task<IAsyncDisposable> EnterReadLockAsync(bool blnParentLockIsUpgradeable, CancellationToken token = default)

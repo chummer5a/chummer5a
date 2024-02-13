@@ -33,13 +33,17 @@ namespace Chummer
 
         public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IDisposable objMyRelease = objMyParent.LockObject.EnterReadLock(token);
+            IDisposable objMyRelease = objMyParent.LockObject.IsInPotentialWriteLock
+                ? objMyParent.LockObject.EnterUpgradeableReadLock(token)
+                : objMyParent.LockObject.EnterReadLockWithMatchingParentLock(token);
             return new LockingDictionaryEnumerator(objMyRelease);
         }
 
         public static async Task<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IAsyncDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objMyRelease = objMyParent.LockObject.IsInPotentialWriteLock
+                ? await objMyParent.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
+                : await objMyParent.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();

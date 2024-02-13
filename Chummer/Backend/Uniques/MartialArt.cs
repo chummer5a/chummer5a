@@ -47,7 +47,7 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private int _intKarmaCost = 7;
-        private readonly TaggedObservableCollection<MartialArtTechnique> _lstTechniques = new TaggedObservableCollection<MartialArtTechnique>();
+        private readonly TaggedObservableCollection<MartialArtTechnique> _lstTechniques;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
@@ -60,7 +60,7 @@ namespace Chummer
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
             _guiID = Guid.NewGuid();
-
+            _lstTechniques = new TaggedObservableCollection<MartialArtTechnique>(objCharacter.LockObject);
             _lstTechniques.AddTaggedCollectionChanged(this, TechniquesOnCollectionChanged);
         }
 

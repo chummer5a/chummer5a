@@ -90,8 +90,8 @@ namespace Chummer.Backend.Equipment
         private int _intLongBurst = 6;
         private int _intFullBurst = 10;
         private int _intSuppressive = 20;
-        private readonly TaggedObservableCollection<WeaponAccessory> _lstAccessories = new TaggedObservableCollection<WeaponAccessory>();
-        private readonly TaggedObservableCollection<Weapon> _lstUnderbarrel = new TaggedObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<WeaponAccessory> _lstAccessories;
+        private readonly TaggedObservableCollection<Weapon> _lstUnderbarrel;
         private Vehicle _objMountedVehicle;
         private WeaponMount _objWeaponMount;
         private VehicleMod _objVehicleMod;
@@ -160,8 +160,9 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Weapon.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstUnderbarrel = new TaggedObservableCollection<Weapon>(objCharacter.LockObject);
             _lstUnderbarrel.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
+            _lstAccessories = new TaggedObservableCollection<WeaponAccessory>(objCharacter.LockObject);
             _lstAccessories.AddTaggedCollectionChanged(this, AccessoriesOnCollectionChanged);
         }
 
@@ -6621,7 +6622,7 @@ namespace Chummer.Backend.Equipment
                             x => x.Children,
                             x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == strDisplayName), token).ConfigureAwait(false);
 
-                        intDicePool += objAutosoft?.Rating ?? -1;
+                        intDicePool += objAutosoft != null ? await objAutosoft.GetRatingAsync(token).ConfigureAwait(false) : -1;
 
                         if (WirelessOn && HasWirelessSmartgun
                                        && await ParentVehicle.GearChildren.DeepAnyAsync(
@@ -6648,7 +6649,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     decSmartlinkBonus = Math.Max(decSmartlinkBonus, await ImprovementManager.ValueToDecAsync(
                                                                      _objCharacter, strLoopBonus,
-                                                                     objLoopGear.Rating, token).ConfigureAwait(false));
+                                                                     await objLoopGear.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false));
                                 }
                             }
 

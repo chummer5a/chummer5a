@@ -75,14 +75,14 @@ namespace Chummer.Backend.Equipment
         private int _intAddBodyModSlots;
         private int _intAddElectromagneticModSlots;
         private int _intAddCosmeticModSlots;
-        private readonly TaggedObservableCollection<VehicleMod> _lstVehicleMods = new TaggedObservableCollection<VehicleMod>();
-        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
-        private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
-        private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
+        private readonly TaggedObservableCollection<VehicleMod> _lstVehicleMods;
+        private readonly TaggedObservableCollection<Gear> _lstGear;
+        private readonly TaggedObservableCollection<Weapon> _lstWeapons;
+        private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
-        private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
+        private readonly TaggedObservableCollection<Location> _lstLocations;
         private bool _blnDiscountCost;
         private bool _blnDealerConnectionDiscount;
         private string _strParentID = string.Empty;
@@ -119,19 +119,34 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Vehicle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstGear.AddTaggedCollectionChanged(this, MatrixAttributeChildrenOnCollectionChanged);
+            _lstWeapons = new TaggedObservableCollection<Weapon>(objCharacter.LockObject);
             _lstWeapons.AddTaggedCollectionChanged(this, MatrixAttributeChildrenOnCollectionChanged);
-            _lstVehicleMods.AddTaggedCollectionChanged(this, LstVehicleModsOnCollectionChanged);
+            _lstVehicleMods = new TaggedObservableCollection<VehicleMod>(objCharacter.LockObject);
+            _lstVehicleMods.AddTaggedCollectionChanged(this, VehicleModsOnCollectionChanged);
+            _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>(objCharacter.LockObject);
+            _lstLocations = new TaggedObservableCollection<Location>(objCharacter.LockObject);
         }
 
-        private async Task LstVehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        private async Task VehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (await _objCharacter.GetIsAIAsync(token).ConfigureAwait(false)
-                && this == await _objCharacter.GetHomeNodeAsync(token).ConfigureAwait(false)
-                && e.Action != NotifyCollectionChangedAction.Move)
-                await _objCharacter.OnPropertyChangedAsync(nameof(Character.PhysicalCM), token).ConfigureAwait(false);
+            if (e.Action != NotifyCollectionChangedAction.Move)
+            {
+                // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                Gear objGear = await GearChildren
+                    .FirstOrDefaultAsync(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent,
+                        token: token).ConfigureAwait(false);
+                if (objGear != null)
+                    await objGear.SetRatingAsync(await GetCalculatedSensorAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                if (await _objCharacter.GetIsAIAsync(token).ConfigureAwait(false)
+                    && this == await _objCharacter.GetHomeNodeAsync(token).ConfigureAwait(false))
+                {
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.PhysicalCM), token)
+                        .ConfigureAwait(false);
+                }
+            }
         }
 
         private Task MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -593,7 +608,10 @@ namespace Chummer.Backend.Equipment
                                         : await objGear.CreateFromNodeAsync(objXmlDocument, objXmlVehicleGear,
                                             lstWeapons, blnCreateImprovements, blnSkipSelectForms, token).ConfigureAwait(false))
                                 {
-                                    objGear.Parent = this;
+                                    if (blnSync)
+                                        objGear.Parent = this;
+                                    else
+                                        await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                                     objGear.ParentID = InternalId;
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -2036,12 +2054,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                // Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
-                // The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
-                Gear objGear = GearChildren.FirstOrDefault(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
-                if (objGear != null)
-                    objGear.Rating = Math.Max(intTotalSensor + intTotalBonusSensor, 0);
-
                 return intTotalSensor + intTotalBonusSensor;
             }
         }
@@ -2086,12 +2098,6 @@ namespace Chummer.Backend.Equipment
 
                 return intTemp;
             }, token: token).ConfigureAwait(false);
-
-            // Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
-            // The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
-            Gear objGear = await GearChildren.FirstOrDefaultAsync(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent, token: token).ConfigureAwait(false);
-            if (objGear != null)
-                objGear.Rating = Math.Max(intTotalSensor + intTotalBonusSensor, 0);
 
             return intTotalSensor + intTotalBonusSensor;
         }
@@ -3821,7 +3827,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             Gear objGear = await GearChildren.DeepFirstOrDefaultAsync(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid(), token: token).ConfigureAwait(false);
-            return objGear?.Rating ?? 0;
+            return objGear != null ? await objGear.GetRatingAsync(token).ConfigureAwait(false) : 0;
         }
 
         private XmlNode _objCachedMyXmlNode;

@@ -66,7 +66,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private bool _blnWirelessOn = true;
         private readonly Character _objCharacter;
-        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _lstGear;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnDiscountCost;
@@ -81,7 +81,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Armor Mod.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearOnCollectionChanged);
         }
 
@@ -94,7 +94,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
@@ -104,7 +104,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
@@ -114,14 +114,14 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
 
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
@@ -358,7 +358,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 objWeapon.ParentID = InternalId;
                             }
-                            objGear.Parent = this;
+                            if (blnSync)
+                                objGear.Parent = this;
+                            else
+                                await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                             objGear.ParentID = InternalId;
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation

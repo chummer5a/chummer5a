@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnIncludeInVehicle;
         private bool _blnEquipped = true;
         private int _intWeaponCapacity = 1;
-        private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<Weapon> _lstWeapons;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private string _strExtra = string.Empty;
@@ -70,7 +70,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnStolen;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
-        private readonly TaggedObservableCollection<VehicleMod> _lstMods = new TaggedObservableCollection<VehicleMod>();
+        private readonly TaggedObservableCollection<VehicleMod> _lstMods;
 
         private readonly Character _objCharacter;
 
@@ -82,8 +82,9 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = character;
             Parent = vehicle;
-
+            _lstWeapons = new TaggedObservableCollection<Weapon>(character.LockObject);
             _lstWeapons.AddTaggedCollectionChanged(this, EnforceWeaponCapacity);
+            _lstMods = new TaggedObservableCollection<VehicleMod>(character.LockObject);
             _lstMods.AddTaggedCollectionChanged(this, SetModWeaponMountParent);
 
             void EnforceWeaponCapacity(object sender, NotifyCollectionChangedEventArgs args)

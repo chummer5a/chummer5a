@@ -958,8 +958,9 @@ namespace Chummer
                 objWriter.WriteValue(objGear.Name);
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category", objGear.Category, token: token).ConfigureAwait(false);
-                if (objGear.Rating > 0)
-                    await objWriter.WriteElementStringAsync("rating", objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
+                if (intRating > 0)
+                    await objWriter.WriteElementStringAsync("rating", intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 if (objGear.Quantity != 1)
                     await objWriter.WriteElementStringAsync("qty", objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 if (objGear.Children.Count > 0)

@@ -461,7 +461,7 @@ namespace Chummer
                             }
                         }, token: token).ConfigureAwait(false);
 
-                    return objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
+                    return await objFocus.GetRatingAsync(token).ConfigureAwait(false) * decKarmaMultiplier + decExtraKarmaCost;
                 }, token).ConfigureAwait(false);
             }
             finally

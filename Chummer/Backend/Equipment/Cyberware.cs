@@ -84,10 +84,8 @@ namespace Chummer.Backend.Equipment
         private Guid _guiVehicleID = Guid.Empty;
         private Grade _objGrade;
 
-        private readonly TaggedObservableCollection<Cyberware> _lstChildren =
-            new TaggedObservableCollection<Cyberware>();
-
-        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Cyberware> _lstChildren;
+        private readonly TaggedObservableCollection<Gear> _lstGear;
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
@@ -232,7 +230,9 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
+            _lstChildren = new TaggedObservableCollection<Cyberware>(LockObject);
             _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
+            _lstGear = new TaggedObservableCollection<Gear>(LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
 
@@ -251,12 +251,17 @@ namespace Chummer.Backend.Equipment
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
-                            foreach (Cyberware objNewItem in e.NewItems)
+                        {
+                            List<Cyberware> lstNewItems = e.NewItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
+                            foreach (Cyberware objNewItem in lstNewItems)
                                 objNewItem.Parent = this;
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Remove:
-                            foreach (Cyberware objOldItem in e.OldItems)
+                        {
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
+                            foreach (Cyberware objOldItem in lstOldItems)
                             {
                                 try
                                 {
@@ -280,10 +285,13 @@ namespace Chummer.Backend.Equipment
                             }
 
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
                             HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
-                            foreach (Cyberware objOldItem in e.OldItems)
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
+                            foreach (Cyberware objOldItem in lstOldItems)
                             {
                                 if (!setNewItems.Contains(objOldItem))
                                 {
@@ -312,6 +320,7 @@ namespace Chummer.Backend.Equipment
                             foreach (Cyberware objNewItem in setNewItems)
                                 objNewItem.Parent = this;
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Move:
                             return;
@@ -336,8 +345,9 @@ namespace Chummer.Backend.Equipment
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
-                            // ReSharper disable once PossibleNullReferenceException
-                            foreach (Cyberware objNewItem in e.NewItems)
+                        {
+                            List<Cyberware> lstNewItems = e.NewItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
+                            foreach (Cyberware objNewItem in lstNewItems)
                             {
                                 objNewItem.Parent = this;
                                 if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
@@ -388,9 +398,12 @@ namespace Chummer.Backend.Equipment
                             await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                             blnDoRedlinerRefresh = true;
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Remove:
-                            foreach (Cyberware objOldItem in e.OldItems)
+                        {
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
+                            foreach (Cyberware objOldItem in lstOldItems)
                             {
                                 if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
                                                                 && await objOldItem
@@ -444,11 +457,14 @@ namespace Chummer.Backend.Equipment
                             await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                             blnDoRedlinerRefresh = true;
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
                             // ReSharper disable once AssignNullToNotNullAttribute
                             HashSet<Cyberware> setNewItems = e.NewItems.OfType<Cyberware>().ToHashSet();
-                            foreach (Cyberware objOldItem in e.OldItems)
+                            List<Cyberware> lstOldItems = e.OldItems?.OfType<Cyberware>().ToList() ?? new List<Cyberware>();
+                            foreach (Cyberware objOldItem in lstOldItems)
                             {
                                 if (setNewItems.Contains(objOldItem))
                                     continue;
@@ -552,6 +568,7 @@ namespace Chummer.Backend.Equipment
                             await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
                             blnDoRedlinerRefresh = true;
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Reset:
                             blnDoEssenceImprovementsRefresh = true;
@@ -705,7 +722,7 @@ namespace Chummer.Backend.Equipment
                     case NotifyCollectionChangedAction.Add:
                         foreach (Gear objNewItem in e.NewItems)
                         {
-                            objNewItem.Parent = this;
+                            await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                             if (blnDoEquipped)
                                 await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                         }
@@ -715,7 +732,7 @@ namespace Chummer.Backend.Equipment
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Gear objOldItem in e.OldItems)
                         {
-                            objOldItem.Parent = null;
+                            await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                             if (blnDoEquipped)
                                 await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                         }
@@ -725,14 +742,14 @@ namespace Chummer.Backend.Equipment
                     case NotifyCollectionChangedAction.Replace:
                         foreach (Gear objOldItem in e.OldItems)
                         {
-                            objOldItem.Parent = null;
+                            await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                             if (blnDoEquipped)
                                 await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                         }
 
                         foreach (Gear objNewItem in e.NewItems)
                         {
-                            objNewItem.Parent = this;
+                            await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                             if (blnDoEquipped)
                                 await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                         }
@@ -1875,7 +1892,6 @@ namespace Chummer.Backend.Equipment
                             {
                                 objWeapon.ParentID = InternalId;
                             }
-
                             objGear.Parent = this;
                             objGear.ParentID = InternalId;
                             GearChildren.Add(objGear);
@@ -1985,7 +2001,7 @@ namespace Chummer.Backend.Equipment
                                 objWeapon.ParentID = InternalId;
                             }
 
-                            objGear.Parent = this;
+                            await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                             objGear.ParentID = InternalId;
                             await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                             lstChildWeapons.AddRange(lstWeapons);
@@ -4219,9 +4235,9 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                foreach (Cyberware objCyberware in Children)
+                foreach (Cyberware objCyberware in Children.AsEnumerableWithSideEffects())
                     objCyberware.RefreshWirelessBonuses();
-                foreach (Gear objGear in GearChildren)
+                foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     objGear.RefreshWirelessBonuses();
             }
         }
@@ -4474,10 +4490,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                foreach (Cyberware objCyberware in Children)
-                    await objCyberware.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
-                foreach (Gear objGear in GearChildren)
-                    await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                await Children.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token).ConfigureAwait(false);
+                await GearChildren.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token).ConfigureAwait(false);
             }
             finally
             {
@@ -4627,10 +4641,10 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                foreach (Gear objChildGear in GearChildren)
+                foreach (Gear objChildGear in GearChildren.AsEnumerableWithSideEffects())
                     objChildGear.ChangeEquippedStatus(blnEquip, true);
 
-                foreach (Cyberware objChild in Children)
+                foreach (Cyberware objChild in Children.AsEnumerableWithSideEffects())
                     objChild.ChangeModularEquip(blnEquip, true);
 
                 RefreshWirelessBonuses();
@@ -4799,11 +4813,10 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                foreach (Gear objChildGear in GearChildren)
-                    await objChildGear.ChangeEquippedStatusAsync(blnEquip, true, token).ConfigureAwait(false);
-
-                foreach (Cyberware objChild in Children)
-                    await objChild.ChangeModularEquipAsync(blnEquip, true, token).ConfigureAwait(false);
+                await GearChildren.ForEachWithSideEffectsAsync(x => x.ChangeEquippedStatusAsync(blnEquip, true, token),
+                    token).ConfigureAwait(false);
+                await Children.ForEachWithSideEffectsAsync(x => x.ChangeModularEquipAsync(blnEquip, true, token),
+                    token).ConfigureAwait(false);
 
                 await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
 
@@ -4967,13 +4980,12 @@ namespace Chummer.Backend.Equipment
                     return;
                 if (await GearChildren.CountAsync(token).ConfigureAwait(false) > 0)
                 {
-                    await GearChildren.ForEachAsync(objChild =>
+                    await GearChildren.ForEachAsync(async objChild =>
                     {
                         if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                         {
                             // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            int intCurrentRating = objChild.Rating;
-                            objChild.Rating = intCurrentRating;
+                            await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
                     }, token).ConfigureAwait(false);
                 }
@@ -5688,7 +5700,7 @@ namespace Chummer.Backend.Equipment
                         return;
                     bool blnGradeEssenceChanged = value == null || objOldGrade.Essence != value.Essence;
                     // Run through all of the child pieces and make sure their Grade matches.
-                    foreach (Cyberware objChild in Children)
+                    foreach (Cyberware objChild in Children.AsEnumerableWithSideEffects())
                     {
                         //Ignore child pieces that have a forcegrade specified.
                         //Generally expected to be items with <forcegrade>None</forcegrade>
@@ -5752,7 +5764,7 @@ namespace Chummer.Backend.Equipment
                     return;
                 bool blnGradeEssenceChanged = value == null || objOldGrade.Essence != value.Essence;
                 // Run through all of the child pieces and make sure their Grade matches.
-                await Children.ForEachAsync(async objChild =>
+                await Children.ForEachWithSideEffectsAsync(async objChild =>
                 {
                     //Ignore child pieces that have a forcegrade specified.
                     //Generally expected to be items with <forcegrade>None</forcegrade>
@@ -6374,7 +6386,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    foreach (Cyberware objChild in Children)
+                    foreach (Cyberware objChild in Children.AsEnumerableWithSideEffects())
                         objChild.ParentVehicle = value;
                 }
             }
@@ -6429,7 +6441,7 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.OnMultiplePropertyChanged(strOldEssencePropertyName, EssencePropertyName);
                     }
 
-                    foreach (Cyberware objCyberware in Children)
+                    foreach (Cyberware objCyberware in Children.AsEnumerableWithSideEffects())
                         objCyberware.PrototypeTranshuman = value;
                 }
             }
@@ -6483,7 +6495,7 @@ namespace Chummer.Backend.Equipment
                             await GetEssencePropertyNameAsync(token).ConfigureAwait(false)).ConfigureAwait(false);
                 }
 
-                await Children.ForEachAsync(x => x.SetPrototypeTranshumanAsync(value, token), token)
+                await Children.ForEachWithSideEffectsAsync(x => x.SetPrototypeTranshumanAsync(value, token), token)
                     .ConfigureAwait(false);
             }
             finally
@@ -7573,23 +7585,11 @@ namespace Chummer.Backend.Equipment
                             if (Children.Count + GearChildren.Count > 0 &&
                                 strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                             {
-                                int intTotalChildrenValue = 0;
-                                foreach (Cyberware objLoopCyberware in Children)
-                                {
-                                    if (objLoopCyberware.IsModularCurrentlyEquipped)
-                                    {
-                                        intTotalChildrenValue
-                                            += objLoopCyberware.GetBaseMatrixAttribute(strMatrixAttribute);
-                                    }
-                                }
-
-                                foreach (Gear objLoopGear in GearChildren)
-                                {
-                                    if (objLoopGear.Equipped)
-                                    {
-                                        intTotalChildrenValue += objLoopGear.GetBaseMatrixAttribute(strMatrixAttribute);
-                                    }
-                                }
+                                int intTotalChildrenValue =
+                                    Children.Sum(x => x.IsModularCurrentlyEquipped,
+                                        x => x.GetBaseMatrixAttribute(strMatrixAttribute)) +
+                                    GearChildren.Sum(x => x.Equipped,
+                                        x => x.GetBaseMatrixAttribute(strMatrixAttribute));
 
                                 sbdValue.Replace("{Children " + strMatrixAttribute + '}',
                                                  intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
@@ -7715,36 +7715,21 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strAttributeName))
                 return 0;
-            int intReturn = 0;
-
             using (LockObject.EnterReadLock())
             {
-                if (Overclocked == strAttributeName)
-                {
-                    ++intReturn;
-                }
+                int intReturn = Overclocked == strAttributeName ? 1 : 0;
 
                 if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                     strAttributeName = "Mod " + strAttributeName;
 
-                foreach (Cyberware objLoopCyberware in Children)
-                {
-                    if (objLoopCyberware.IsModularCurrentlyEquipped)
-                    {
-                        intReturn += objLoopCyberware.GetTotalMatrixAttribute(strAttributeName);
-                    }
-                }
+                intReturn += Children.Sum(x => x.IsModularCurrentlyEquipped,
+                    x => x.GetTotalMatrixAttribute(strAttributeName));
 
-                foreach (Gear objLoopGear in GearChildren)
-                {
-                    if (objLoopGear.Equipped)
-                    {
-                        intReturn += objLoopGear.GetTotalMatrixAttribute(strAttributeName);
-                    }
-                }
+                intReturn += GearChildren.Sum(x => x.Equipped,
+                    x => x.GetTotalMatrixAttribute(strAttributeName));
+
+                return intReturn;
             }
-
-            return intReturn;
         }
 
         public async Task<int> GetBonusMatrixAttributeAsync(string strAttributeName, CancellationToken token = default)
@@ -9231,20 +9216,8 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    int intBonusBoxes = 0;
-                    foreach (Cyberware objCyberware in Children)
-                    {
-                        intBonusBoxes += objCyberware.TotalBonusMatrixBoxes;
-                    }
-
-                    foreach (Gear objGear in GearChildren)
-                    {
-                        if (objGear.Equipped)
-                        {
-                            intBonusBoxes += objGear.TotalBonusMatrixBoxes;
-                        }
-                    }
-
+                    int intBonusBoxes = Children.Sum(x => x.TotalBonusMatrixBoxes)
+                                        + GearChildren.Sum(x => x.Equipped, x => x.TotalBonusMatrixBoxes);
                     return intBonusBoxes;
                 }
             }

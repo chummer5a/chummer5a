@@ -370,7 +370,7 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (IHasLocation objItem in Children)
+                    foreach (IHasLocation objItem in Children.AsEnumerableWithSideEffects())
                         objItem.Location = this;
                     break;
             }
@@ -381,7 +381,7 @@ namespace Chummer
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
                 return false;
 
-            foreach (IHasLocation item in Children)
+            foreach (IHasLocation item in Children.AsEnumerableWithSideEffects())
                 item.Location = null;
 
             bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
@@ -400,7 +400,7 @@ namespace Chummer
                             .ConfigureAwait(false), token).ConfigureAwait(false))
                 return false;
 
-            await Children.ForEachAsync(x => x.Location = null, token: token).ConfigureAwait(false);
+            await Children.ForEachWithSideEffectsAsync(x => x.Location = null, token: token).ConfigureAwait(false);
 
             bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
 

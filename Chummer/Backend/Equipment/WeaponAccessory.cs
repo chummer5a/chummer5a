@@ -47,7 +47,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
-        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _lstGear;
         private Weapon _objParent;
         private string _strName = string.Empty;
         private string _strMount = string.Empty;
@@ -106,7 +106,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Weapon.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
 
@@ -119,7 +119,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
@@ -129,7 +129,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
@@ -139,14 +139,14 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
 
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (blnDoEquipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
@@ -1466,14 +1466,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public TaggedObservableCollection<Gear> GearChildren
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstGear;
-            }
-        }
+        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
         /// <summary>
         /// Whether the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.

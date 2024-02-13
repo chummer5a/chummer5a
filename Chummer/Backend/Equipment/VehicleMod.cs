@@ -63,11 +63,11 @@ namespace Chummer.Backend.Equipment
         private bool _blnIncludeInVehicle;
         private bool _blnEquipped = true;
         private int _intConditionMonitor;
-        private readonly TaggedObservableCollection<Weapon> _lstVehicleWeapons = new TaggedObservableCollection<Weapon>();
+        private readonly TaggedObservableCollection<Weapon> _lstVehicleWeapons;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private string _strSubsystems = string.Empty;
-        private readonly TaggedObservableCollection<Cyberware> _lstCyberware = new TaggedObservableCollection<Cyberware>();
+        private readonly TaggedObservableCollection<Cyberware> _lstCyberware;
         private string _strExtra = string.Empty;
         private string _strWeaponMountCategories = string.Empty;
         private bool _blnDiscountCost;
@@ -92,8 +92,9 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new VehicleMod.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstVehicleWeapons = new TaggedObservableCollection<Weapon>(objCharacter.LockObject);
             _lstVehicleWeapons.AddTaggedCollectionChanged(this, ChildrenWeaponsOnCollectionChanged);
+            _lstCyberware = new TaggedObservableCollection<Cyberware>(objCharacter.LockObject);
             _lstCyberware.AddTaggedCollectionChanged(this, ChildrenCyberwareOnCollectionChanged);
         }
 
@@ -765,9 +766,20 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewRating = Math.Max(0, value);
-                if (Interlocked.Exchange(ref _intRating, intNewRating) != intNewRating && !IncludedInVehicle && Equipped
-                    && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
-                    _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                if (Interlocked.Exchange(ref _intRating, intNewRating) != intNewRating && !IncludedInVehicle && Equipped)
+                {
+                    if (_objParent != null && (Bonus?["sensor"] != null || (WirelessOn && WirelessBonus?["sensor"] != null)))
+                    {
+                        // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                        Gear objGear = _objParent.GearChildren
+                            .FirstOrDefault(x =>
+                                x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                        if (objGear != null)
+                            objGear.Rating = _objParent.CalculatedSensor;
+                    }
+                    if (_objCharacter.IsAI && _objCharacter.HomeNode is Vehicle objVehicle && objVehicle == _objParent)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
             }
         }
 
@@ -869,9 +881,21 @@ namespace Chummer.Backend.Equipment
             get => _nodBonus;
             set
             {
-                if (Interlocked.Exchange(ref _nodBonus, value) != value && !IncludedInVehicle && Equipped
-                    && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
-                    _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                XmlNode xmlOldValue = Interlocked.Exchange(ref _nodBonus, value);
+                if (xmlOldValue != value && !IncludedInVehicle && Equipped)
+                {
+                    if (_objParent != null && (xmlOldValue?["sensor"] != null || value?["sensor"] != null))
+                    {
+                        // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                        Gear objGear = _objParent.GearChildren
+                            .FirstOrDefault(x =>
+                                x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                        if (objGear != null)
+                            objGear.Rating = _objParent.CalculatedSensor;
+                    }
+                    if (_objCharacter.IsAI && _objCharacter.HomeNode is Vehicle objVehicle && objVehicle == _objParent)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
             }
         }
 
@@ -881,7 +905,24 @@ namespace Chummer.Backend.Equipment
         public XmlNode WirelessBonus
         {
             get => _nodWirelessBonus;
-            set => _nodWirelessBonus = value;
+            set
+            {
+                XmlNode xmlOldValue = Interlocked.Exchange(ref _nodWirelessBonus, value);
+                if (xmlOldValue != value && !IncludedInVehicle && Equipped && WirelessOn)
+                {
+                    if (_objParent != null && (xmlOldValue?["sensor"] != null || value?["sensor"] != null))
+                    {
+                        // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                        Gear objGear = _objParent.GearChildren
+                            .FirstOrDefault(x =>
+                                x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                        if (objGear != null)
+                            objGear.Rating = _objParent.CalculatedSensor;
+                    }
+                    if (_objCharacter.IsAI && _objCharacter.HomeNode is Vehicle objVehicle && objVehicle == _objParent)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>
@@ -890,7 +931,24 @@ namespace Chummer.Backend.Equipment
         public bool WirelessOn
         {
             get => _blnWirelessOn;
-            set => _blnWirelessOn = value;
+            set
+            {
+                _blnWirelessOn = value;
+                if (!IncludedInVehicle && Equipped)
+                {
+                    if (_objParent != null && WirelessBonus?["sensor"] != null)
+                    {
+                        // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                        Gear objGear = _objParent.GearChildren
+                            .FirstOrDefault(x =>
+                                x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                        if (objGear != null)
+                            objGear.Rating = _objParent.CalculatedSensor;
+                    }
+                    if (_objCharacter.IsAI && _objCharacter.HomeNode is Vehicle objVehicle && objVehicle == _objParent)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>
@@ -899,7 +957,24 @@ namespace Chummer.Backend.Equipment
         public bool IncludedInVehicle
         {
             get => _blnIncludeInVehicle;
-            set => _blnIncludeInVehicle = value;
+            set
+            {
+                _blnIncludeInVehicle = value;
+                if (Equipped)
+                {
+                    if (_objParent != null && (Bonus?["sensor"] != null || (WirelessOn && WirelessBonus?["sensor"] != null)))
+                    {
+                        // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                        Gear objGear = _objParent.GearChildren
+                            .FirstOrDefault(x =>
+                                x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                        if (objGear != null)
+                            objGear.Rating = _objParent.CalculatedSensor;
+                    }
+                    if (_objCharacter.IsAI && _objCharacter.HomeNode is Vehicle objVehicle && objVehicle == _objParent)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>
@@ -908,7 +983,24 @@ namespace Chummer.Backend.Equipment
         public bool Equipped
         {
             get => _blnEquipped;
-            set => _blnEquipped = value;
+            set
+            {
+                _blnEquipped = value;
+                if (!IncludedInVehicle)
+                {
+                    if (_objParent != null && (Bonus?["sensor"] != null || (WirelessOn && WirelessBonus?["sensor"] != null)))
+                    {
+                        // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                        Gear objGear = _objParent.GearChildren
+                            .FirstOrDefault(x =>
+                                x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                        if (objGear != null)
+                            objGear.Rating = _objParent.CalculatedSensor;
+                    }
+                    if (_objCharacter.IsAI && _objCharacter.HomeNode is Vehicle objVehicle && objVehicle == _objParent)
+                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
+                }
+            }
         }
 
         /// <summary>

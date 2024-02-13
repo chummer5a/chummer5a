@@ -6024,7 +6024,7 @@ namespace Chummer
                                                         ImprovementManager.ForcedValue = objFociGear.Extra;
                                                     await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
-                                                        objFociGear.Bonus, objFociGear.Rating,
+                                                        objFociGear.Bonus, await objFociGear.GetRatingAsync(token).ConfigureAwait(false),
                                                         await objFociGear.DisplayNameShortAsync(
                                                             GlobalSettings.Language, token).ConfigureAwait(false),
                                                         token: token).ConfigureAwait(false);
@@ -6033,7 +6033,7 @@ namespace Chummer
                                                             CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus,
                                                             objStack.InternalId,
-                                                            objFociGear.WirelessBonus, objFociGear.Rating,
+                                                            objFociGear.WirelessBonus, await objFociGear.GetRatingAsync(token).ConfigureAwait(false),
                                                             await objFociGear.DisplayNameShortAsync(
                                                                 GlobalSettings.Language, token).ConfigureAwait(false),
                                                             token: token).ConfigureAwait(false);
@@ -6148,7 +6148,7 @@ namespace Chummer
                                                         await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus,
-                                                            objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
+                                                            objStack.InternalId, objFociGear.Bonus, await objFociGear.GetRatingAsync(token).ConfigureAwait(false),
                                                             await objFociGear.DisplayNameShortAsync(
                                                                 GlobalSettings.Language, token).ConfigureAwait(false),
                                                             token: token).ConfigureAwait(false);
@@ -6157,7 +6157,7 @@ namespace Chummer
                                                                     CharacterObject,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.WirelessBonus,
-                                                                    objFociGear.Rating,
+                                                                    await objFociGear.GetRatingAsync(token).ConfigureAwait(false),
                                                                     await objFociGear.DisplayNameShortAsync(
                                                                             GlobalSettings.Language, token)
                                                                         .ConfigureAwait(false), token: token)
@@ -6365,7 +6365,7 @@ namespace Chummer
                                                         await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus,
-                                                            objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
+                                                            objStack.InternalId, objFociGear.Bonus, await objFociGear.GetRatingAsync(token).ConfigureAwait(false),
                                                             await objFociGear.DisplayNameShortAsync(
                                                                 GlobalSettings.Language, token).ConfigureAwait(false),
                                                             token: token).ConfigureAwait(false);
@@ -6374,7 +6374,7 @@ namespace Chummer
                                                                     CharacterObject,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.WirelessBonus,
-                                                                    objFociGear.Rating,
+                                                                    await objFociGear.GetRatingAsync(token).ConfigureAwait(false),
                                                                     await objFociGear.DisplayNameShortAsync(
                                                                             GlobalSettings.Language, token)
                                                                         .ConfigureAwait(false), token: token)
@@ -10739,7 +10739,7 @@ namespace Chummer
                                 if (objLocation != null)
                                     await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
                                 await objSelectedVehicle.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-                                objGear.Parent = objSelectedVehicle;
+                                await objGear.SetParentAsync(objSelectedVehicle, token).ConfigureAwait(false);
 
                                 foreach (Weapon objWeapon in lstWeapons)
                                 {

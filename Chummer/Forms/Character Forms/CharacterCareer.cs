@@ -8343,8 +8343,7 @@ namespace Chummer
 
                     objGear.Quantity = decMove;
                     objGear.Location = null;
-
-                    objGear.Parent = objVehicle;
+                    await objGear.SetParentAsync(objVehicle, GenericToken).ConfigureAwait(false);
                     await objVehicle.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
                 }
                 else
@@ -9899,7 +9898,7 @@ namespace Chummer
                 // Make sure the combined Force of the Foci do not exceed 6.
                 if (!CharacterObjectSettings.AllowHigherStackedFoci)
                 {
-                    int intCombined = lstStack.Sum(objGear => objGear.Rating);
+                    int intCombined = await lstStack.SumAsync(objGear => objGear.GetRatingAsync(GenericToken), GenericToken).ConfigureAwait(false);
                     if (intCombined > 6)
                     {
                         foreach (Gear objGear in lstStack)
@@ -18144,7 +18143,7 @@ namespace Chummer
                             case Gear objGear:
                             {
                                 objSelectedFocus = objGear;
-                                intFociTotal = objGear.Rating;
+                                intFociTotal = await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false);
                                 break;
                             }
                             case StackedFocus objStackedFocus:
@@ -18248,7 +18247,7 @@ namespace Chummer
                                         if (!await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.Gear,
                                                 objSelectedFocus.InternalId,
-                                                objSelectedFocus.Bonus, objSelectedFocus.Rating,
+                                                objSelectedFocus.Bonus, await objSelectedFocus.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                 await objSelectedFocus.GetCurrentDisplayNameShortAsync(GenericToken)
                                                     .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
                                         {
@@ -18273,7 +18272,7 @@ namespace Chummer
                                                                             Improvement.ImprovementSource.Gear,
                                                                             objSelectedFocus.InternalId,
                                                                             objSelectedFocus.WirelessBonus,
-                                                                            objSelectedFocus.Rating,
+                                                                            await objSelectedFocus.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                                             await objSelectedFocus
                                                                                 .GetCurrentDisplayNameShortAsync(
                                                                                     GenericToken)
@@ -18397,7 +18396,7 @@ namespace Chummer
                                         {
                                             if (!await ImprovementManager.CreateImprovementsAsync(
                                                         CharacterObject, Improvement.ImprovementSource.StackedFocus,
-                                                        objStackedFocus.InternalId, objGear.Bonus, objGear.Rating,
+                                                        objStackedFocus.InternalId, objGear.Bonus, await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                         await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
                                                             .ConfigureAwait(false), token: GenericToken)
                                                     .ConfigureAwait(false))
@@ -18416,7 +18415,7 @@ namespace Chummer
                                                                            .StackedFocus,
                                                                        objStackedFocus.InternalId,
                                                                        objGear.WirelessBonus,
-                                                                       objGear.Rating,
+                                                                       await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false),
                                                                        await objGear
                                                                            .GetCurrentDisplayNameShortAsync(
                                                                                GenericToken)
@@ -21146,8 +21145,9 @@ namespace Chummer
                             await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                    .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
+                            int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
                             await lblCyberwareRating.DoThreadSafeAsync(
-                                                        x => x.Text = objGear.Rating.ToString(
+                                                        x => x.Text = intRating.ToString(
                                                             GlobalSettings.CultureInfo), token)
                                                     .ConfigureAwait(false);
                             await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token)
@@ -22195,15 +22195,16 @@ namespace Chummer
                             await lblWeaponCategory
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
                                                      token).ConfigureAwait(false);
-                            int intGearMaxRatingValue = objGear.MaxRatingValue;
+                            int intGearMaxRatingValue = await objGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                             if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                             {
                                 await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
+                                int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
                                 await lblWeaponRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -22643,15 +22644,16 @@ namespace Chummer
                                         await lblArmorCapacity
                                               .DoThreadSafeAsync(x => x.Text = objSelectedGear.CalculatedArmorCapacity,
                                                                  token).ConfigureAwait(false);
-                                    int intMaxRatingValue = objSelectedGear.MaxRatingValue;
+                                    int intMaxRatingValue = await objSelectedGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                     if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
                                     {
                                         await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                  .ConfigureAwait(false);
+                                        int intRating = await objSelectedGear.GetRatingAsync(token).ConfigureAwait(false);
                                         await lblArmorRating.DoThreadSafeAsync(x =>
                                         {
                                             x.Visible = true;
-                                            x.Text = objSelectedGear.Rating.ToString(GlobalSettings.CultureInfo);
+                                            x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                         }, token).ConfigureAwait(false);
                                     }
                                     else
@@ -23055,15 +23057,16 @@ namespace Chummer
                         await lblGearCategory
                               .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language), token)
                               .ConfigureAwait(false);
-                        int intGearMaxRatingValue = objGear.MaxRatingValue;
+                        int intGearMaxRatingValue = await objGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
                             await lblGearRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                     .ConfigureAwait(false);
+                            int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
                             await lblGearRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                                x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                         }
                         else
@@ -23816,8 +23819,7 @@ namespace Chummer
 
                     objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
-                    objGear.Parent = blnNullParent ? null : objSelectedGear;
-
+                    await objGear.SetParentAsync(blnNullParent ? null : objSelectedGear, token).ConfigureAwait(false);
                     //Reduce the Cost for Black Market Pipeline
                     objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
 
@@ -24102,7 +24104,9 @@ namespace Chummer
                     objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                     if (objSelectedGear != null)
-                        objGear.Parent = objSelectedGear;
+                    {
+                        await objGear.SetParentAsync(objSelectedGear, token).ConfigureAwait(false);
+                    }
 
                     // Reduce the cost for Do It Yourself components.
                     if (frmPickGear.MyForm.DoItYourself)
@@ -25898,10 +25902,11 @@ namespace Chummer
                                                      token).ConfigureAwait(false);
                             await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                        .ConfigureAwait(false);
+                            int intRating = await objGear.GetRatingAsync(token).ConfigureAwait(false);
                             await lblVehicleRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                                x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                             }, token).ConfigureAwait(false);
                             await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);

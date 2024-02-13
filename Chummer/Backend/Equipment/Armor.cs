@@ -65,8 +65,8 @@ namespace Chummer.Backend.Equipment
         private int _intDamage;
         private bool _blnEquipped = true;
         private readonly Character _objCharacter;
-        private readonly TaggedObservableCollection<ArmorMod> _lstArmorMods = new TaggedObservableCollection<ArmorMod>();
-        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<ArmorMod> _lstArmorMods;
+        private readonly TaggedObservableCollection<Gear> _lstGear;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
@@ -103,8 +103,9 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new piece of Armor.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstArmorMods = new TaggedObservableCollection<ArmorMod>(objCharacter.LockObject);
             _lstArmorMods.AddTaggedCollectionChanged(this, ArmorModsOnCollectionChanged);
+            _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearOnCollectionChanged);
         }
 
@@ -270,7 +271,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (Equipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
@@ -279,7 +280,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (Equipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
@@ -288,13 +289,13 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (Equipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (Equipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
@@ -703,7 +704,10 @@ namespace Chummer.Backend.Equipment
                     {
                         objWeapon.ParentID = InternalId;
                     }
-                    objGear.Parent = this;
+                    if (blnSync)
+                        objGear.Parent = this;
+                    else
+                        await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                     objGear.ParentID = InternalId;
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -2761,15 +2765,7 @@ namespace Chummer.Backend.Equipment
                         sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}', () => "0");
                         if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                         {
-                            int intTotalChildrenValue = 0;
-                            foreach (Gear objLoopGear in Children)
-                            {
-                                if (objLoopGear.Equipped)
-                                {
-                                    intTotalChildrenValue += objLoopGear.GetBaseMatrixAttribute(strMatrixAttribute);
-                                }
-                            }
-
+                            int intTotalChildrenValue = Children.Sum(x => x.Equipped, x => x.GetBaseMatrixAttribute(strMatrixAttribute));
                             sbdValue.Replace("{Children " + strMatrixAttribute + '}',
                                              intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
                         }
@@ -2873,13 +2869,7 @@ namespace Chummer.Backend.Equipment
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                 strAttributeName = "Mod " + strAttributeName;
 
-            foreach (Gear objGear in Children)
-            {
-                if (objGear.Equipped && objGear.ParentID != InternalId)
-                {
-                    intReturn += objGear.GetTotalMatrixAttribute(strAttributeName);
-                }
-            }
+            intReturn += Children.Sum(x => x.Equipped && x.ParentID != InternalId, x => x.GetTotalMatrixAttribute(strAttributeName));
 
             return intReturn;
         }

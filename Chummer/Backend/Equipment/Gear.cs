@@ -78,7 +78,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWeaponBonus;
         private XmlNode _nodFlechetteWeaponBonus;
         private Guid _guiWeaponID = Guid.Empty;
-        private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _lstChildren;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
@@ -117,7 +117,7 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new piece of Gear.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstChildren = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstChildren.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
         }
 
@@ -255,7 +255,10 @@ namespace Chummer.Backend.Equipment
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlGear.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
-            _intRating = Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue);
+            _intRating = blnSync
+                ? Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue)
+                : Math.Max(Math.Min(intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false)),
+                    await GetMinRatingValueAsync(token).ConfigureAwait(false));
             objXmlGear.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             objXmlGear.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             objXmlGear.TryGetStringFieldQuickly("source", ref _strSource);
@@ -538,7 +541,7 @@ namespace Chummer.Backend.Equipment
                                             GlobalSettings
                                                 .InvariantCultureInfo))
                                     : await strLoopRating.CheapReplaceAsync("{Rating}",
-                                        () => Rating.ToString(
+                                        async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(
                                             GlobalSettings
                                                 .InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAddWeaponRating);
@@ -1932,7 +1935,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("capacity", Capacity, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("armorcapacity", ArmorCapacity, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("maxrating", MaxRating, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("qty", DisplayQuantity(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail_english",
@@ -2213,6 +2216,13 @@ namespace Chummer.Backend.Equipment
             set => MinRating = value.ToString(GlobalSettings.InvariantCultureInfo);
         }
 
+        public async Task<int> GetMinRatingValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strExpression = MinRating;
+            return string.IsNullOrEmpty(strExpression) ? 0 : await ProcessRatingStringAsync(strExpression, token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Maximum Rating (string form).
         /// </summary>
@@ -2224,6 +2234,13 @@ namespace Chummer.Backend.Equipment
                 return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression);
             }
             set => MaxRating = value.ToString(GlobalSettings.InvariantCultureInfo);
+        }
+
+        public async Task<int> GetMaxRatingValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strExpression = MaxRating;
+            return string.IsNullOrEmpty(strExpression) ? 0 : await ProcessRatingStringAsync(strExpression, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -2291,7 +2308,7 @@ namespace Chummer.Backend.Equipment
             {
                 string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+                strExpression = strValues[Math.Max(Math.Min((await GetRatingAsync(token).ConfigureAwait(false)), strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
@@ -2299,7 +2316,7 @@ namespace Chummer.Backend.Equipment
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
                     sbdValue.Append(strExpression);
-                    sbdValue.Replace("{Rating}", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.Replace("{Rating}", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo));
                     await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
                         () => (Parent as IHasRating)?.Rating.ToString(
                                   GlobalSettings.InvariantCultureInfo) ??
@@ -2343,15 +2360,28 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get => _intRating;
+            get
+            {
+                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+                {
+                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                    return objVehicle.CalculatedSensor;
+                }
+                return _intRating;
+            }
             set
             {
+                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+                {
+                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                    value = objVehicle.CalculatedSensor;
+                }
                 value = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
                 if (Interlocked.Exchange(ref _intRating, value) != value)
                 {
                     if (Children.Count > 0)
                     {
-                        foreach (Gear objChild in Children)
+                        foreach (Gear objChild in Children.AsEnumerableWithSideEffects())
                         {
                             if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                             {
@@ -2364,6 +2394,51 @@ namespace Chummer.Backend.Equipment
 
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+            {
+                // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                return await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
+            }
+
+            return _intRating;
+        }
+
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+            {
+                // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                value = await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
+            }
+            value = Math.Max(Math.Min(value, await GetMaxRatingValueAsync(token).ConfigureAwait(false)), await GetMinRatingValueAsync(token).ConfigureAwait(false));
+            if (Interlocked.Exchange(ref _intRating, value) != value)
+            {
+                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
+                {
+                    await Children.ForEachWithSideEffectsAsync(async objChild =>
+                    {
+                        if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
+                        {
+                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                            await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        }
+                    }, token: token).ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(Rating), token).ConfigureAwait(false);
             }
         }
 
@@ -2775,7 +2850,7 @@ namespace Chummer.Backend.Equipment
             {
                 string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
                     .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+                strExpression = strValues[Math.Max(Math.Min((await GetRatingAsync(token).ConfigureAwait(false)), strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
             if (Name == "Living Persona")
@@ -2851,13 +2926,7 @@ namespace Chummer.Backend.Equipment
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                 strAttributeName = "Mod " + strAttributeName;
 
-            foreach (Gear loopGear in Children)
-            {
-                if (loopGear.Equipped)
-                {
-                    intReturn += loopGear.GetTotalMatrixAttribute(strAttributeName);
-                }
-            }
+            intReturn += Children.Sum(x => x.Equipped, x => x.GetTotalMatrixAttribute(strAttributeName));
 
             return intReturn;
         }
@@ -2928,7 +2997,17 @@ namespace Chummer.Backend.Equipment
                 if (Interlocked.Exchange(ref _objParent, value) == value)
                     return;
                 Rating = Math.Max(MinRatingValue, Math.Min(MaxRatingValue, Rating));
+                OnPropertyChanged();
             }
+        }
+
+        public async Task SetParentAsync(object value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objParent, value) == value)
+                return;
+            await SetRatingAsync(Math.Max(await GetMinRatingValueAsync(token).ConfigureAwait(false), Math.Min(await GetMaxRatingValueAsync(token).ConfigureAwait(false), await GetRatingAsync(token).ConfigureAwait(false))), token).ConfigureAwait(false);
+            await OnPropertyChangedAsync(nameof(Parent), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -3313,7 +3392,7 @@ namespace Chummer.Backend.Equipment
                 {
                     string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
                         .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                    strAvail = strValues[Math.Max(Math.Min((await GetRatingAsync(token).ConfigureAwait(false)), strValues.Length) - 1, 0)];
                 }
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
@@ -3327,11 +3406,16 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     await sbdAvail.CheapReplaceAsync(strAvail, "MinRating",
-                                                     () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        async () =>
+                            (await GetMinRatingValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                                .InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
                     await sbdAvail.CheapReplaceAsync(strAvail, "Parent Rating",
                                                      () => (Parent as IHasRating)?.Rating.ToString(
                                                          GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Rating",
+                        async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                            .InvariantCultureInfo), token: token).ConfigureAwait(false);
                     // Keeping enumerations separate reduces heap allocations
                     AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
                     await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
@@ -3626,7 +3710,7 @@ namespace Chummer.Backend.Equipment
             {
                 string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
                                                       .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+                strCostExpression = strValues[Math.Max(Math.Min((await GetRatingAsync(token).ConfigureAwait(false)), strValues.Length) - 1, 0)].Trim('[', ']');
             }
 
             decimal decGearCost = 0;
@@ -3658,7 +3742,7 @@ namespace Chummer.Backend.Equipment
                 sbdCost.Replace("Parent Rating",
                                 (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
                                 ?? "0");
-                sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdCost.Replace("Rating", (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo));
                 sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
 
                 // Keeping enumerations separate reduces heap allocations
@@ -4057,7 +4141,8 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strQuantity))
                 strReturn = strQuantity + strSpace + strReturn;
 
-            if (Rating > 0)
+            int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+            if (intRating > 0)
                 strReturn += strSpace + '('
                                       + string.Format(
                                           objCulture,
@@ -4066,7 +4151,7 @@ namespace Chummer.Backend.Equipment
                                                 .ConfigureAwait(false),
                                           await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
                                                                .ConfigureAwait(false)) + strSpace
-                                      + Rating.ToString(objCulture) + ')';
+                                      + intRating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             if (!string.IsNullOrEmpty(GearName))
@@ -4583,7 +4668,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objGear in Children)
+            foreach (Gear objGear in Children.AsEnumerableWithSideEffects())
                 objGear.ChangeEquippedStatus(blnEquipped, true);
 
             if (!blnSkipEncumbranceOnPropertyChanged && (!string.IsNullOrEmpty(Weight)
@@ -4674,15 +4759,14 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objGear in Children)
-                await objGear.ChangeEquippedStatusAsync(blnEquipped, true, token).ConfigureAwait(false);
+            await Children.ForEachWithSideEffectsAsync(x => x.ChangeEquippedStatusAsync(blnEquipped, true, token), token).ConfigureAwait(false);
 
             if (!blnSkipEncumbranceOnPropertyChanged && (!string.IsNullOrEmpty(Weight)
                                                          || Children
                                                              .DeepAny(
                                                                  x => x.Children.Where(y => y.Equipped),
                                                                  x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
-                _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -4731,7 +4815,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objGear in Children)
+            foreach (Gear objGear in Children.AsEnumerableWithSideEffects())
                 objGear.RefreshWirelessBonuses();
         }
 
@@ -4758,7 +4842,7 @@ namespace Chummer.Backend.Equipment
 
                     if (await ImprovementManager.CreateImprovementsAsync(
                             _objCharacter, Improvement.ImprovementSource.Gear,
-                            InternalId + "Wireless", WirelessBonus, Rating,
+                            InternalId + "Wireless", WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false),
                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                             token: token).ConfigureAwait(false)
                         && !string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
@@ -4786,8 +4870,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objGear in Children)
-                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            await Children.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -4815,69 +4898,35 @@ namespace Chummer.Backend.Equipment
 
             LoadedIntoClip = null;
 
-            decimal decReturn = 0;
             // Remove any children the Gear may have.
-            foreach (Gear objChild in Children)
-                decReturn += objChild.DeleteGear(false);
+            decimal decReturn = Children.Sum(x => x.DeleteGear(false));
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                foreach (Weapon objDeleteWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
-                {
-                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
-                }
+                decReturn += _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
+                    .Sum(x => x.TotalCost + x.DeleteWeapon());
 
                 decReturn += _objCharacter.Vehicles.Sum(objVehicle =>
                 {
-                    decimal decInnerReturn = 0;
-                    foreach (Weapon objDeleteWeapon in objVehicle.Weapons
-                                                                 .DeepWhere(x => x.Children,
-                                                                            x => x.ParentID == InternalId).ToList())
-                    {
-                        decInnerReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
-                    }
-
-                    decInnerReturn += objVehicle.Mods.Sum(objMod =>
-                    {
-                        decimal decInnerReturn2 = 0;
-                        foreach (Weapon objDeleteWeapon in objMod.Weapons
-                                                                 .DeepWhere(x => x.Children,
-                                                                            x => x.ParentID == InternalId).ToList())
-                        {
-                            decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
-                        }
-
-                        return decInnerReturn2;
-                    });
-
-                    decInnerReturn += objVehicle.WeaponMounts.Sum(objMount =>
-                    {
-                        decimal decInnerReturn2 = 0;
-                        foreach (Weapon objDeleteWeapon in objMount.Weapons
-                                                                   .DeepWhere(x => x.Children,
-                                                                              x => x.ParentID == InternalId).ToList())
-                        {
-                            decInnerReturn2 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
-                        }
-
-                        decInnerReturn2 += objMount.Mods.Sum(objMod =>
-                        {
-                            decimal decInnerReturn3 = 0;
-                            foreach (Weapon objDeleteWeapon in objMod.Weapons
-                                                                     .DeepWhere(x => x.Children,
-                                                                         x => x.ParentID == InternalId).ToList())
-                            {
-                                decInnerReturn3 += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
-                            }
-
-                            return decInnerReturn3;
-                        });
-
-                        return decInnerReturn2;
-                    });
-
-                    return decInnerReturn;
+                    return objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
+                               .Sum(x => x.TotalCost + x.DeleteWeapon())
+                           + objVehicle.Mods.Sum(objMod =>
+                           {
+                               return objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
+                                   .Sum(x => x.TotalCost + x.DeleteWeapon());
+                           })
+                           + objVehicle.WeaponMounts.Sum(objMount =>
+                           {
+                               return objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId)
+                                          .ToList().Sum(x => x.TotalCost + x.DeleteWeapon())
+                                      + objMount.Mods.Sum(objMod =>
+                                      {
+                                          return objMod.Weapons
+                                              .DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
+                                              .Sum(x => x.TotalCost + x.DeleteWeapon());
+                                      });
+                           });
                 });
             }
 
@@ -5141,7 +5190,7 @@ namespace Chummer.Backend.Equipment
                         {
                             ImprovementManager.ForcedValue = Extra;
                             await ImprovementManager.CreateImprovementsAsync(
-                                                        _objCharacter, eSource, InternalId, Bonus, Rating,
+                                                        _objCharacter, eSource, InternalId, Bonus, await GetRatingAsync(token).ConfigureAwait(false),
                                                         await GetCurrentDisplayNameShortAsync(token)
                                                             .ConfigureAwait(false), token: token)
                                                     .ConfigureAwait(false);
@@ -5185,10 +5234,9 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objChild in Children)
-                await objChild
-                      .ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped,
-                                         token).ConfigureAwait(false);
+            await Children.ForEachWithSideEffectsAsync(x => x.ReaddImprovements(treGears, sbdOutdatedItems,
+                lstInternalIdFilter, eSource, blnStackEquipped,
+                token), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5434,7 +5482,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            Rating = intNewRating;
+            await SetRatingAsync(intNewRating, token).ConfigureAwait(false);
 
             switch (Category)
             {
@@ -6048,7 +6096,7 @@ namespace Chummer.Backend.Equipment
                         InternalId, WirelessBonus, Rating, CurrentDisplayNameShort);
             }
 
-            foreach (Gear objChild in Children)
+            foreach (Gear objChild in Children.AsEnumerableWithSideEffects())
                 objChild.AddGearImprovements();
         }
 

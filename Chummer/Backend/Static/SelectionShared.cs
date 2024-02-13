@@ -1620,8 +1620,8 @@ namespace Chummer
                                 x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
                                      && x.Rating == intRating)
                             : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                     && x.Rating == intRating, token).ConfigureAwait(false);
+                                async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                     && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating, token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -1637,8 +1637,8 @@ namespace Chummer
                                     x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
                                          && x.Rating >= intMinRating && x.Rating <= intMaxRating)
                                 : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && x.Rating >= intMinRating && x.Rating <= intMaxRating, token).ConfigureAwait(false);
+                                    async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
+                                         && await x.GetRatingAsync(token).ConfigureAwait(false) >= intMinRating && await x.GetRatingAsync(token).ConfigureAwait(false) <= intMaxRating, token).ConfigureAwait(false);
                         }
                         else
                         {

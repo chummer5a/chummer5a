@@ -77,7 +77,7 @@ namespace Chummer.Controls.Shared
             try
             {
                 int intMaxControlHeight = 0;
-                foreach (TType objLoopTType in Contents)
+                foreach (TType objLoopTType in Contents.AsEnumerableWithSideEffects())
                 {
                     ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false);
                     intMaxControlHeight = Math.Max(objNewControl.Control.PreferredSize.Height, intMaxControlHeight);
@@ -561,7 +561,7 @@ namespace Chummer.Controls.Shared
                             objLoopControl.Cleanup();
                         }
                         _lstContentList.Clear();
-                        foreach (TType objLoopTType in Contents)
+                        foreach (TType objLoopTType in Contents.AsEnumerableWithSideEffects())
                         {
                             _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
                         }
