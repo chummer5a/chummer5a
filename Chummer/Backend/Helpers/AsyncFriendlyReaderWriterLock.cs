@@ -126,8 +126,12 @@ namespace Chummer
         {
             get
             {
+#if READERLOCKSTACKTRACEDEBUG
                 Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
-                    objAsyncLocals =
+#else
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>
+#endif
+                objAsyncLocals =
                         _objAsyncLocalCurrentsContainer.Value;
                 if (objAsyncLocals != null)
                 {
@@ -148,7 +152,11 @@ namespace Chummer
         {
             get
             {
+#if READERLOCKSTACKTRACEDEBUG
                 Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+#else
+                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>
+#endif
                     objAsyncLocals =
                         _objAsyncLocalCurrentsContainer.Value;
                 if (objAsyncLocals != null)
