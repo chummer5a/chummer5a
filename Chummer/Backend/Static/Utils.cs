@@ -1529,7 +1529,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread)
-                JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
+                JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun());
             else
                 funcToRun.Invoke().GetAwaiter().GetResult();
         }
@@ -1545,7 +1545,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             return Program.IsMainThread
-                ? JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning)
+                ? JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun())
                 : funcToRun.Invoke().GetAwaiter().GetResult();
         }
 
@@ -1563,6 +1563,7 @@ namespace Chummer
             {
                 JoinableTaskFactory.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
                         token.ThrowIfCancellationRequested();
@@ -1570,10 +1571,11 @@ namespace Chummer
                         await Task.Yield().ConfigureAwait(true);
                         await tskToRun.ConfigureAwait(true);
                     }
-                }, JoinableTaskCreationOptions.LongRunning);
+                });
             }
             else
             {
+                token.ThrowIfCancellationRequested();
                 foreach (Func<Task> funcToRun in afuncToRun)
                 {
                     token.ThrowIfCancellationRequested();
@@ -1598,6 +1600,7 @@ namespace Chummer
             {
                 JoinableTaskFactory.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     int i = 0;
                     foreach (Func<Task<T>> funcToRun in afuncToRun)
                     {
@@ -1606,10 +1609,11 @@ namespace Chummer
                         await Task.Yield().ConfigureAwait(true);
                         aobjReturn[i++] = await tskToRun.ConfigureAwait(true);
                     }
-                }, JoinableTaskCreationOptions.LongRunning);
+                });
             }
             else
             {
+                token.ThrowIfCancellationRequested();
                 int i = 0;
                 foreach (Func<Task<T>> funcToRun in afuncToRun)
                 {
@@ -1632,7 +1636,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread)
-                JoinableTaskFactory.Run(funcToRun, eOptions);
+                JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun(), eOptions);
             else
                 funcToRun.Invoke().GetAwaiter().GetResult();
         }
@@ -1649,7 +1653,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             return Program.IsMainThread
-                ? JoinableTaskFactory.Run(funcToRun, eOptions)
+                ? JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun(), eOptions)
                 : funcToRun.Invoke().GetAwaiter().GetResult();
         }
 
@@ -1668,6 +1672,7 @@ namespace Chummer
             {
                 JoinableTaskFactory.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (Func<Task> funcToRun in afuncToRun)
                     {
                         token.ThrowIfCancellationRequested();
@@ -1704,6 +1709,7 @@ namespace Chummer
             {
                 JoinableTaskFactory.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     int i = 0;
                     foreach (Func<Task<T>> funcToRun in afuncToRun)
                     {
@@ -1716,6 +1722,7 @@ namespace Chummer
             }
             else
             {
+                token.ThrowIfCancellationRequested();
                 int i = 0;
                 foreach (Func<Task<T>> funcToRun in afuncToRun)
                 {
@@ -1760,6 +1767,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
+                token.ThrowIfCancellationRequested();
                 funcToRun.Invoke();
                 return;
             }
@@ -1782,6 +1790,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
+                token.ThrowIfCancellationRequested();
                 funcToRun.Invoke(token);
                 return;
             }
@@ -1828,6 +1837,7 @@ namespace Chummer
                     Parallel.Invoke(afuncToRun);
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     ParallelOptions objOptions = new ParallelOptions
                     {
                         CancellationToken = token
@@ -1868,6 +1878,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
+                token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke();
             }
             Task<T> objTask = Task.Run(funcToRun, token);
@@ -1890,6 +1901,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
+                token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke(token);
             }
             Task<T> objTask = Task.Run(() => funcToRun(token), token);
@@ -1932,6 +1944,7 @@ namespace Chummer
             }
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
+                token.ThrowIfCancellationRequested();
                 ParallelOptions objOptions = new ParallelOptions
                 {
                     CancellationToken = token
@@ -1985,10 +1998,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                return JoinableTaskFactory.Run(() => Task.Run(funcToRun, token), JoinableTaskCreationOptions.LongRunning);
+                return JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun());
             }
             if (!EverDoEvents)
             {
+                token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke().GetAwaiter().GetResult();
             }
             Task<T> objTask = Task.Run(funcToRun, token);
@@ -2011,10 +2025,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                return JoinableTaskFactory.Run(() => Task.Run(() => funcToRun(token), token), JoinableTaskCreationOptions.LongRunning);
+                return JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun(token));
             }
             if (!EverDoEvents)
             {
+                token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke(token).GetAwaiter().GetResult();
             }
             Task<T> objTask = Task.Run(() => funcToRun(token), token);
@@ -2058,8 +2073,10 @@ namespace Chummer
 
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
+                token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     List<Task<T>> lstMainThreadTasks = new List<Task<T>>(MaxParallelBatchSize);
                     int intMainThreadOffset = 0;
                     for (int i = 0; i < intLength; ++i)
@@ -2084,12 +2101,13 @@ namespace Chummer
                         for (int j = 0; j < intMainThreadFinalBatchSize; ++j)
                             aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(true);
                     }
-                }, JoinableTaskCreationOptions.LongRunning);
+                });
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
             }
             if (!EverDoEvents)
             {
+                token.ThrowIfCancellationRequested();
                 ParallelOptions objOptions = new ParallelOptions
                 {
                     CancellationToken = token
@@ -2150,11 +2168,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                JoinableTaskFactory.Run(() => Task.Run(funcToRun, token), JoinableTaskCreationOptions.LongRunning);
+                token.ThrowIfCancellationRequested();
+                JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun());
                 return;
             }
             if (!EverDoEvents)
             {
+                token.ThrowIfCancellationRequested();
                 Task objSyncTask = funcToRun.Invoke();
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
@@ -2181,11 +2201,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                JoinableTaskFactory.Run(() => Task.Run(() => funcToRun(token), token), JoinableTaskCreationOptions.LongRunning);
+                token.ThrowIfCancellationRequested();
+                JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun(token));
                 return;
             }
             if (!EverDoEvents)
             {
+                token.ThrowIfCancellationRequested();
                 Task objSyncTask = funcToRun.Invoke(token);
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
@@ -2220,10 +2242,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(IEnumerable<Func<Task>> lstFuncToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
+                token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
                     int intMainThreadCounter = 0;
                     foreach (Func<Task> funcToRun in lstFuncToRun)
@@ -2239,12 +2264,13 @@ namespace Chummer
 
                     await Task.Yield().ConfigureAwait(true);
                     await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
-                }, JoinableTaskCreationOptions.LongRunning);
+                });
                 token.ThrowIfCancellationRequested();
                 return;
             }
             if (!EverDoEvents)
             {
+                token.ThrowIfCancellationRequested();
                 ParallelOptions objOptions = new ParallelOptions
                 {
                     CancellationToken = token
@@ -2303,8 +2329,10 @@ namespace Chummer
 
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
+                token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(async () =>
                 {
+                    token.ThrowIfCancellationRequested();
                     List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
                     int intMainThreadCounter = 0;
                     foreach (Func<Task> funcToRun in lstFuncToRun)
@@ -2320,12 +2348,13 @@ namespace Chummer
 
                     await Task.Yield().ConfigureAwait(true);
                     await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
-                }, JoinableTaskCreationOptions.LongRunning);
+                });
                 token.ThrowIfCancellationRequested();
                 return;
             }
             if (!EverDoEvents)
             {
+                token.ThrowIfCancellationRequested();
                 ParallelOptions objOptions = new ParallelOptions
                 {
                     CancellationToken = token

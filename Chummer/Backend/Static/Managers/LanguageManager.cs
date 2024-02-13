@@ -117,9 +117,7 @@ namespace Chummer
                                             bool blnDoResumeLayout = true, CancellationToken token = default)
         {
             // Use RunOnMainThread here because we don't want redraws while we translate a form
-            Utils.RunOnMainThread(
-                () => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token),
-                JoinableTaskCreationOptions.LongRunning, token);
+            Utils.RunOnMainThread(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token: token);
         }
 
         /// <summary>
