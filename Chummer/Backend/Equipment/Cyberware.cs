@@ -10160,10 +10160,10 @@ namespace Chummer.Backend.Equipment
                     GearChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
                 }
 
-                await Children.ForEachAsync(
+                await Children.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenCyberwareCollectionChangedAsync(true, treCyberware, cmsCyberware,
                         cmsCyberwareGear, funcMakeDirty, token), token).ConfigureAwait(false);
-                await GearChildren.ForEachAsync(
+                await GearChildren.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenGearsCollectionChangedAsync(true, treCyberware, cmsCyberwareGear,
                         null, funcMakeDirty, token: token), token).ConfigureAwait(false);
             }
@@ -10173,10 +10173,10 @@ namespace Chummer.Backend.Equipment
                 await Children.RemoveTaggedAsyncCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
                 await GearChildren.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
                 await GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
-                await Children.ForEachAsync(
+                await Children.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenCyberwareCollectionChangedAsync(false, treCyberware,
                         token: token), token).ConfigureAwait(false);
-                await GearChildren.ForEachAsync(
+                await GearChildren.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenGearsCollectionChangedAsync(false, treCyberware, token: token),
                     token).ConfigureAwait(false);
             }

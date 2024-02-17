@@ -9164,11 +9164,11 @@ namespace Chummer.Backend.Equipment
                     UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
                     WeaponAccessories.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
                 }
-                await UnderbarrelWeapons.ForEachAsync(
+                await UnderbarrelWeapons.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenWeaponsCollectionChangedAsync(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, funcMakeDirty, token),
                     token).ConfigureAwait(false);
 
-                await WeaponAccessories.ForEachAsync(async objChild =>
+                await WeaponAccessories.ForEachWithSideEffectsAsync(async objChild =>
                 {
                     Task FuncWeaponAccessoryGearBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
                         CancellationToken innerToken = default) =>
@@ -9184,7 +9184,7 @@ namespace Chummer.Backend.Equipment
                     objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
                     if (funcMakeDirty != null)
                         objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
-                    await objChild.GearChildren.ForEachAsync(
+                    await objChild.GearChildren.ForEachWithSideEffectsAsync(
                         objGear => objGear.SetupChildrenGearsCollectionChangedAsync(true, treWeapons,
                             cmsWeaponAccessoryGear, null, funcMakeDirty, token),
                         token).ConfigureAwait(false);
@@ -9196,14 +9196,14 @@ namespace Chummer.Backend.Equipment
                 await UnderbarrelWeapons.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
                 await WeaponAccessories.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
                 await WeaponAccessories.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
-                await UnderbarrelWeapons.ForEachAsync(
+                await UnderbarrelWeapons.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenWeaponsCollectionChangedAsync(false, treWeapons, token: token),
                     token).ConfigureAwait(false);
-                await WeaponAccessories.ForEachAsync(async objChild =>
+                await WeaponAccessories.ForEachWithSideEffectsAsync(async objChild =>
                 {
                     await objChild.GearChildren.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
                     await objChild.GearChildren.RemoveTaggedAsyncCollectionChangedAsync(treWeapons, token).ConfigureAwait(false);
-                    await objChild.GearChildren.ForEachAsync(
+                    await objChild.GearChildren.ForEachWithSideEffectsAsync(
                         objGear => objGear.SetupChildrenGearsCollectionChangedAsync(false, treWeapons, token: token),
                         token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);

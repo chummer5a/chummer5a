@@ -69,11 +69,17 @@ namespace Chummer
             return objReturn;
         }
 
-        public async Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
+        public Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
         {
-            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this, token).ConfigureAwait(false);
-            objReturn.SetEnumerator(_setData.GetEnumerator());
-            return objReturn;
+            // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+            Task<LockingEnumerator<T>> tskReturn = LockingEnumerator<T>.GetAsync(this, token);
+            return Inner(tskReturn);
+            async Task<IEnumerator<T>> Inner(Task<LockingEnumerator<T>> tskInner)
+            {
+                LockingEnumerator<T> objResult = await tskInner.ConfigureAwait(false);
+                objResult.SetEnumerator(_setData.GetEnumerator());
+                return objResult;
+            }
         }
 
         /// <inheritdoc />
@@ -91,11 +97,17 @@ namespace Chummer
             return objReturn;
         }
 
-        public async Task<IEnumerator<T>> EnumerateWithSideEffectsAsync(CancellationToken token = default)
+        public Task<IEnumerator<T>> EnumerateWithSideEffectsAsync(CancellationToken token = default)
         {
-            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetWithSideEffectsAsync(this, token).ConfigureAwait(false);
-            objReturn.SetEnumerator(_setData.GetEnumerator());
-            return objReturn;
+            // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+            Task<LockingEnumerator<T>> tskReturn = LockingEnumerator<T>.GetWithSideEffectsAsync(this, token);
+            return Inner(tskReturn);
+            async Task<IEnumerator<T>> Inner(Task<LockingEnumerator<T>> tskInner)
+            {
+                LockingEnumerator<T> objResult = await tskInner.ConfigureAwait(false);
+                objResult.SetEnumerator(_setData.GetEnumerator());
+                return objResult;
+            }
         }
 
         /// <inheritdoc />

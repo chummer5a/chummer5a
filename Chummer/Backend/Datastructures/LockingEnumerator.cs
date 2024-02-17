@@ -44,21 +44,19 @@ namespace Chummer
             return new LockingEnumerator<T>(objMyRelease);
         }
 
-        public static async Task<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        public static Task<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IAsyncDisposable objMyRelease = objMyParent.LockObject.IsInPotentialWriteLock
-                ? await objMyParent.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
-                : await objMyParent.LockObject.EnterReadLockWithMatchingParentLockAsync(token).ConfigureAwait(false);
-            try
+            // Needs to be like this (using async inner function) to make sure AsyncLocals are set in proper location
+            Task<IAsyncDisposable> tskMyRelease = objMyParent.LockObject.IsInPotentialWriteLock
+                ? objMyParent.LockObject.EnterUpgradeableReadLockAsync(token)
+                : objMyParent.LockObject.EnterReadLockWithMatchingParentLockAsync(token);
+            return Inner(tskMyRelease);
+
+            async Task<LockingEnumerator<T>> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
             {
-                token.ThrowIfCancellationRequested();
+                // Can't dispose our disposable here (on cancellation) because it would mess up AsyncLocal assignments (since we are technically in a different async context here)
+                return new LockingEnumerator<T>(await tskInnerMyRelease.ConfigureAwait(false));
             }
-            catch
-            {
-                await objMyRelease.DisposeAsync().ConfigureAwait(false);
-                throw;
-            }
-            return new LockingEnumerator<T>(objMyRelease);
         }
 
         public static LockingEnumerator<T> GetWithSideEffects(IHasLockObject objMyParent, CancellationToken token = default)
@@ -67,19 +65,17 @@ namespace Chummer
             return new LockingEnumerator<T>(objMyRelease);
         }
 
-        public static async Task<LockingEnumerator<T>> GetWithSideEffectsAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        public static Task<LockingEnumerator<T>> GetWithSideEffectsAsync(IHasLockObject objMyParent, CancellationToken token = default)
         {
-            IAsyncDisposable objMyRelease = await objMyParent.LockObject.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
-            try
+            // Needs to be like this (using async inner function) to make sure AsyncLocals are set in proper location
+            Task<IAsyncDisposable> tskMyRelease = objMyParent.LockObject.EnterReadLockWithUpgradeableParentAsync(token);
+            return Inner(tskMyRelease);
+
+            async Task<LockingEnumerator<T>> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
             {
-                token.ThrowIfCancellationRequested();
+                // Can't dispose our disposable here (on cancellation) because it would mess up AsyncLocal assignments (since we are technically in a different async context here)
+                return new LockingEnumerator<T>(await tskInnerMyRelease.ConfigureAwait(false));
             }
-            catch
-            {
-                await objMyRelease.DisposeAsync().ConfigureAwait(false);
-                throw;
-            }
-            return new LockingEnumerator<T>(objMyRelease);
         }
 
         private LockingEnumerator(IDisposable objMyRelease)

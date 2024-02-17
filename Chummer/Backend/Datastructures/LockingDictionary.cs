@@ -86,11 +86,17 @@ namespace Chummer
             return objReturn;
         }
 
-        public async Task<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
+        public Task<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
         {
-            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token).ConfigureAwait(false);
-            objReturn.SetEnumerator(_dicData.GetEnumerator());
-            return objReturn;
+            // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+            Task<LockingEnumerator<KeyValuePair<TKey, TValue>>> tskReturn = LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token);
+            return Inner(tskReturn);
+            async Task<IEnumerator<KeyValuePair<TKey, TValue>>> Inner(Task<LockingEnumerator<KeyValuePair<TKey, TValue>>> tskInner)
+            {
+                LockingEnumerator<KeyValuePair<TKey, TValue>> objResult = await tskInner.ConfigureAwait(false);
+                objResult.SetEnumerator(_dicData.GetEnumerator());
+                return objResult;
+            }
         }
 
         public IEnumerator<KeyValuePair<TKey, TValue>> EnumerateWithSideEffects()
@@ -100,11 +106,17 @@ namespace Chummer
             return objReturn;
         }
 
-        public async Task<IEnumerator<KeyValuePair<TKey, TValue>>> EnumerateWithSideEffectsAsync(CancellationToken token = default)
+        public Task<IEnumerator<KeyValuePair<TKey, TValue>>> EnumerateWithSideEffectsAsync(CancellationToken token = default)
         {
-            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetWithSideEffectsAsync(this, token).ConfigureAwait(false);
-            objReturn.SetEnumerator(_dicData.GetEnumerator());
-            return objReturn;
+            // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+            Task<LockingEnumerator<KeyValuePair<TKey, TValue>>> tskReturn = LockingEnumerator<KeyValuePair<TKey, TValue>>.GetWithSideEffectsAsync(this, token);
+            return Inner(tskReturn);
+            async Task<IEnumerator<KeyValuePair<TKey, TValue>>> Inner(Task<LockingEnumerator<KeyValuePair<TKey, TValue>>> tskInner)
+            {
+                LockingEnumerator<KeyValuePair<TKey, TValue>> objResult = await tskInner.ConfigureAwait(false);
+                objResult.SetEnumerator(_dicData.GetEnumerator());
+                return objResult;
+            }
         }
 
         /// <inheritdoc />

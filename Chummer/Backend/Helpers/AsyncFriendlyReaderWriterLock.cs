@@ -398,14 +398,23 @@ namespace Chummer
 
             if (_objParentLock != null)
             {
-                return (_blnLockReadOnlyForParent
-                    ? _objParentLock.EnterReadLockAsync(token).ContinueWith(async x => await TakeWriteLockCoreAsync(
-                        objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                        objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)
-                    : _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x =>
-                        await TakeWriteLockCoreAsync(
-                            objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)).Unwrap();
+                // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+                Task<IAsyncDisposable> tskParent = _blnLockReadOnlyForParent
+                    ? _objParentLock.EnterReadLockAsync(token)
+                    : _objParentLock.EnterUpgradeableReadLockAsync(token);
+                return InnerAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                    tskParent, token);
+                async Task<IAsyncDisposable> InnerAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                    LinkedAsyncRWLockHelper objInnerNextHelper,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldUReader,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                    Task<IAsyncDisposable> tskInnerParent,
+                    CancellationToken innerToken = default)
+                {
+                    return await TakeWriteLockCoreAsync(
+                        objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken);
+                }
             }
 
             return TakeWriteLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
@@ -554,15 +563,23 @@ namespace Chummer
 
             if (_objParentLock != null)
             {
-                return (_blnLockReadOnlyForParent
-                    ? _objParentLock.EnterReadLockAsync(token).ContinueWith(async x =>
-                        await TakeUpgradeableReadLockCoreAsync(
-                            objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)
-                    : _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x =>
-                        await TakeUpgradeableReadLockCoreAsync(
-                            objCurrentHelper, objNextHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, null, await x.ConfigureAwait(false), token).ConfigureAwait(false), TaskScheduler.Current)).Unwrap();
+                // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+                Task<IAsyncDisposable> tskParent = _blnLockReadOnlyForParent
+                    ? _objParentLock.EnterReadLockAsync(token)
+                    : _objParentLock.EnterUpgradeableReadLockAsync(token);
+                return InnerAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
+                    tskParent, token);
+                async Task<IAsyncDisposable> InnerAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                    LinkedAsyncRWLockHelper objInnerNextHelper,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldUReader,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                    Task<IAsyncDisposable> tskInnerParent,
+                    CancellationToken innerToken = default)
+                {
+                    return await TakeUpgradeableReadLockCoreAsync(
+                        objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken);
+                }
             }
 
             return TakeUpgradeableReadLockCoreAsync(objCurrentHelper, objNextHelper, objTopMostHeldUReader,
@@ -791,15 +808,22 @@ namespace Chummer
 
             if (_objParentLock != null)
             {
-                return !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
-                    ? _objParentLock.EnterUpgradeableReadLockAsync(token).ContinueWith(async x => await TakeReadLockCoreAsync(
-                            objCurrentHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, blnIsInReadLock, await x.ConfigureAwait(false), token)
-                        .ConfigureAwait(false), TaskScheduler.Current).Unwrap()
-                    : _objParentLock.EnterReadLockAsync(token).ContinueWith(async x => await TakeReadLockCoreAsync(
-                            objCurrentHelper, objTopMostHeldUReader,
-                            objTopMostHeldWriter, blnIsInReadLock, await x.ConfigureAwait(false), token)
-                        .ConfigureAwait(false), TaskScheduler.Current).Unwrap();
+                // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+                Task<IAsyncDisposable> tskParent = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
+                    ? _objParentLock.EnterUpgradeableReadLockAsync(token)
+                    : _objParentLock.EnterReadLockAsync(token);
+                return InnerAsync(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock,
+                    tskParent, token);
+                async Task<IAsyncDisposable> InnerAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldUReader,
+                    LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
+                    bool blnInnerIsInReadLock, Task<IAsyncDisposable> tskInnerParent,
+                    CancellationToken innerToken = default)
+                {
+                    return await TakeReadLockCoreAsync(
+                        objInnerCurrentHelper, objInnerTopMostHeldUReader,
+                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, await tskInnerParent.ConfigureAwait(false), innerToken);
+                }
             }
 
             return TakeReadLockCoreAsync(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, blnIsInReadLock,

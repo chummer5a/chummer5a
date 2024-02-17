@@ -2362,37 +2362,47 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+                using (_objCharacter.LockObject.EnterReadLock())
                 {
-                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
-                    return objVehicle.CalculatedSensor;
+                    if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent &&
+                        Parent is Vehicle objVehicle)
+                    {
+                        // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                        return objVehicle.CalculatedSensor;
+                    }
+
+                    return _intRating;
                 }
-                return _intRating;
             }
             set
             {
-                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock())
                 {
-                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
-                    value = objVehicle.CalculatedSensor;
-                }
-                value = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
-                if (Interlocked.Exchange(ref _intRating, value) != value)
-                {
-                    if (Children.Count > 0)
+                    if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent &&
+                        Parent is Vehicle objVehicle)
                     {
-                        foreach (Gear objChild in Children.AsEnumerableWithSideEffects())
-                        {
-                            if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
-                            {
-                                // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                                int intCurrentRating = objChild.Rating;
-                                objChild.Rating = intCurrentRating;
-                            }
-                        }
+                        // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                        value = objVehicle.CalculatedSensor;
                     }
 
-                    OnPropertyChanged();
+                    value = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
+                    if (Interlocked.Exchange(ref _intRating, value) != value)
+                    {
+                        if (Children.Count > 0)
+                        {
+                            foreach (Gear objChild in Children.AsEnumerableWithSideEffects())
+                            {
+                                if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
+                                {
+                                    // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                                    int intCurrentRating = objChild.Rating;
+                                    objChild.Rating = intCurrentRating;
+                                }
+                            }
+                        }
+
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2403,13 +2413,22 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
-                return await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
-            }
+                token.ThrowIfCancellationRequested();
+                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+                {
+                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                    return await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
+                }
 
-            return _intRating;
+                return _intRating;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -2418,27 +2437,40 @@ namespace Chummer.Backend.Equipment
         public async Task SetRatingAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
-                value = await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
-            }
-            value = Math.Max(Math.Min(value, await GetMaxRatingValueAsync(token).ConfigureAwait(false)), await GetMinRatingValueAsync(token).ConfigureAwait(false));
-            if (Interlocked.Exchange(ref _intRating, value) != value)
-            {
-                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
+                token.ThrowIfCancellationRequested();
+                if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
                 {
-                    await Children.ForEachWithSideEffectsAsync(async objChild =>
-                    {
-                        if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
-                        {
-                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                        }
-                    }, token: token).ConfigureAwait(false);
+                    // Vehicle sensor arrays will always have the same rating as their parent vehicle's sensor rating
+                    value = await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false);
                 }
 
-                await OnPropertyChangedAsync(nameof(Rating), token).ConfigureAwait(false);
+                value = Math.Max(Math.Min(value, await GetMaxRatingValueAsync(token).ConfigureAwait(false)),
+                    await GetMinRatingValueAsync(token).ConfigureAwait(false));
+                if (Interlocked.Exchange(ref _intRating, value) != value)
+                {
+                    if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
+                    {
+                        await Children.ForEachWithSideEffectsAsync(async objChild =>
+                        {
+                            if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
+                            {
+                                // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                                await objChild
+                                    .SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token)
+                                    .ConfigureAwait(false);
+                            }
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    await OnPropertyChangedAsync(nameof(Rating), token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5443,7 +5475,7 @@ namespace Chummer.Backend.Equipment
                 Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
                 if (funcMakeDirty != null)
                     Children.AddTaggedCollectionChanged(treGear, funcMakeDirty);
-                await Children.ForEachAsync(
+                await Children.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenGearsCollectionChangedAsync(true, treGear, cmsGear, cmsCustomGear,
                         funcMakeDirty, token), token).ConfigureAwait(false);
             }
@@ -5451,7 +5483,7 @@ namespace Chummer.Backend.Equipment
             {
                 await Children.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treGear, token).ConfigureAwait(false);
                 await Children.RemoveTaggedAsyncCollectionChangedAsync(treGear, token).ConfigureAwait(false);
-                await Children.ForEachAsync(
+                await Children.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenGearsCollectionChangedAsync(false, treGear, token: token), token).ConfigureAwait(false);
             }
         }
