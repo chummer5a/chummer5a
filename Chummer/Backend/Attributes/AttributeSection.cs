@@ -418,7 +418,7 @@ namespace Chummer.Backend.Attributes
                     }
                     finally
                     {
-                        _lstAttributes.LockObject.SetParent(LockObject, true, token);
+                        _lstAttributes.LockObject.SetParent(LockObject, token: token);
                     }
                 }
             }
@@ -481,7 +481,7 @@ namespace Chummer.Backend.Attributes
                     }
                     finally
                     {
-                        await _lstAttributes.LockObject.SetParentAsync(LockObject, true, token).ConfigureAwait(false);
+                        await _lstAttributes.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                     }
                 }
                 finally
