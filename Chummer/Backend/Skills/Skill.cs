@@ -54,10 +54,37 @@ namespace Chummer.Backend.Skills
         public bool IsLoading
         {
             get => _intIsLoading > 0;
-            protected set
+            set
             {
-                if (value || Interlocked.Decrement(ref _intIsLoading) < 0)
+                if (value)
+                {
+                    LockObject.SetParent();
                     Interlocked.Increment(ref _intIsLoading);
+                }
+                else
+                {
+                    int intNewValue = Interlocked.Decrement(ref _intIsLoading);
+                    if (intNewValue < 0)
+                        Interlocked.Increment(ref _intIsLoading);
+                    LockObject.SetParent(CharacterObject.LockObject);
+                }
+            }
+        }
+
+        public async Task SetIsLoadingAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value)
+            {
+                await LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                Interlocked.Increment(ref _intIsLoading);
+            }
+            else
+            {
+                int intNewValue = Interlocked.Decrement(ref _intIsLoading);
+                if (intNewValue < 0)
+                    Interlocked.Increment(ref _intIsLoading);
+                await LockObject.SetParentAsync(CharacterObject.LockObject, token: token).ConfigureAwait(false);
             }
         }
 
@@ -754,10 +781,8 @@ namespace Chummer.Backend.Skills
             if (xmlNode["exotic"]?.InnerText == bool.TrueString)
             {
                 //load exotic skill
-                ExoticSkill objExoticReturn = new ExoticSkill(objCharacter, xmlNode, false)
-                {
-                    IsLoading = true
-                };
+                ExoticSkill objExoticReturn = new ExoticSkill(objCharacter, xmlNode, false);
+                await objExoticReturn.SetIsLoadingAsync(true, token).ConfigureAwait(false);
                 try
                 {
                     string strExoticGroup = xmlNode["skillgroup"]?.InnerText;
@@ -781,7 +806,7 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    objExoticReturn.IsLoading = false;
+                    await objExoticReturn.SetIsLoadingAsync(false, token).ConfigureAwait(false);
                 }
 
                 return objExoticReturn;
@@ -792,10 +817,8 @@ namespace Chummer.Backend.Skills
                 //TODO INIT SKILL
                 Utils.BreakIfDebug();
 
-                KnowledgeSkill objKnoSkillReturn = new KnowledgeSkill(objCharacter, false)
-                {
-                    IsLoading = true
-                };
+                KnowledgeSkill objKnoSkillReturn = new KnowledgeSkill(objCharacter, false);
+                await objKnoSkillReturn.SetIsLoadingAsync(true, token).ConfigureAwait(false);
                 try
                 {
                     await objKnoSkillReturn.SetDefaultAttributeAsync("LOG", token).ConfigureAwait(false);
@@ -807,17 +830,15 @@ namespace Chummer.Backend.Skills
                 }
                 finally
                 {
-                    objKnoSkillReturn.IsLoading = false;
+                    await objKnoSkillReturn.SetIsLoadingAsync(false, token).ConfigureAwait(false);
                 }
                 return objKnoSkillReturn;
             }
 
             //TODO INIT SKILL
 
-            Skill objReturn = new Skill(objCharacter, xmlNode, false)
-            {
-                IsLoading = true
-            };
+            Skill objReturn = new Skill(objCharacter, xmlNode, false);
+            await objReturn.SetIsLoadingAsync(true, token).ConfigureAwait(false);
             try
             {
                 string strGroup = xmlNode["skillgroup"]?.InnerText;
@@ -840,7 +861,7 @@ namespace Chummer.Backend.Skills
             }
             finally
             {
-                objReturn.IsLoading = false;
+                await objReturn.SetIsLoadingAsync(false, token).ConfigureAwait(false);
             }
 
             return objReturn;
@@ -849,7 +870,7 @@ namespace Chummer.Backend.Skills
         protected Skill(Character objCharacter)
         {
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = objCharacter.LockObject;
+            LockObject = new AsyncFriendlyReaderWriterLock(); // We need a separate lock so that we can properly disconnect ourselves from the character lock while we are loading data
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);
@@ -7961,6 +7982,7 @@ namespace Chummer.Backend.Skills
             {
                 Dispose(true);
             }
+            LockObject.Dispose();
 
             GC.SuppressFinalize(this);
         }
@@ -8032,6 +8054,8 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+
+            await objLocker.DisposeAsync().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
         }

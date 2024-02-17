@@ -413,7 +413,7 @@ namespace Chummer
                 {
                     return await TakeWriteLockCoreAsync(
                         objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken);
+                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken).ConfigureAwait(false);
                 }
             }
 
@@ -578,7 +578,7 @@ namespace Chummer
                 {
                     return await TakeUpgradeableReadLockCoreAsync(
                         objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken);
+                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken).ConfigureAwait(false);
                 }
             }
 
@@ -822,7 +822,7 @@ namespace Chummer
                 {
                     return await TakeReadLockCoreAsync(
                         objInnerCurrentHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, await tskInnerParent.ConfigureAwait(false), innerToken);
+                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, await tskInnerParent.ConfigureAwait(false), innerToken).ConfigureAwait(false);
                 }
             }
 

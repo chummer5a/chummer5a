@@ -1485,8 +1485,8 @@ namespace Chummer.Backend.Skills
                                                     SkillGroup objGroup = null;
                                                     if (!string.IsNullOrEmpty(strName))
                                                         objGroup = blnSync
-                                                            ? SkillGroups.FirstOrDefault(x => x.Name == strName)
-                                                            : await SkillGroups.FirstOrDefaultAsync(
+                                                            ? _lstSkillGroups.FirstOrDefault(x => x.Name == strName)
+                                                            : await _lstSkillGroups.FirstOrDefaultAsync(
                                                                     x => x.Name == strName, token: token)
                                                                 .ConfigureAwait(false);
                                                     if (objGroup != null)
@@ -1498,12 +1498,15 @@ namespace Chummer.Backend.Skills
                                                         if (blnSync)
                                                         {
                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            SkillGroups.Add(objGroup);
+                                                            _lstSkillGroups.Add(objGroup);
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            objGroup.LockObject.SetParent(_objCharacter.LockObject, token: token);
                                                         }
                                                         else
                                                         {
-                                                            await SkillGroups.AddAsync(objGroup, token)
+                                                            await _lstSkillGroups.AddAsync(objGroup, token)
                                                                 .ConfigureAwait(false);
+                                                            await objGroup.LockObject.SetParentAsync(_objCharacter.LockObject, token: token).ConfigureAwait(false);
                                                         }
                                                     }
                                                 }
@@ -2062,6 +2065,7 @@ namespace Chummer.Backend.Skills
                                                             objExistingSkillGroup.Add(x);
                                                         objNewSkillGroup.Dispose();
                                                     }, token);
+                            objGroup.LockObject.SetParent(_objCharacter.LockObject, token: token);
                         }
 
                         //Timekeeper.Finish("load_char_skills_groups");
@@ -2615,10 +2619,10 @@ namespace Chummer.Backend.Skills
                         return _lstSkills;
                     using (_objSkillsInitializerLock.EnterWriteLock())
                     {
-                        _lstSkills.RaiseListChangedEvents = false;
-                        _lstSkillGroups.RaiseListChangedEvents = false;
                         _lstSkills.LockObject.SetParent();
                         _lstSkillGroups.LockObject.SetParent();
+                        _lstSkills.RaiseListChangedEvents = false;
+                        _lstSkillGroups.RaiseListChangedEvents = false;
                         try
                         {
                             XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
@@ -2656,10 +2660,10 @@ namespace Chummer.Backend.Skills
                         }
                         finally
                         {
-                            _lstSkillGroups.LockObject.SetParent(LockObject);
-                            _lstSkills.LockObject.SetParent(LockObject);
                             _lstSkillGroups.RaiseListChangedEvents = true;
                             _lstSkills.RaiseListChangedEvents = true;
+                            _lstSkillGroups.LockObject.SetParent(LockObject);
+                            _lstSkills.LockObject.SetParent(LockObject);
                         }
 
                         _blnSkillsInitialized = true;
@@ -2705,14 +2709,16 @@ namespace Chummer.Backend.Skills
                     XmlDocument xmlSkillsDocument = await _objCharacter
                         .LoadDataAsync("skills.xml", token: token)
                         .ConfigureAwait(false);
-                    _lstSkills.RaiseListChangedEvents = false;
-                    _lstSkillGroups.RaiseListChangedEvents = false;
+                    await _lstSkills.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
                     try
                     {
-                        await _lstSkills.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        await _lstSkillGroups.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
                         try
                         {
-                            await _lstSkillGroups.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            _lstSkills.RaiseListChangedEvents = false;
+                            _lstSkillGroups.RaiseListChangedEvents = false;
                             try
                             {
                                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
@@ -2756,18 +2762,19 @@ namespace Chummer.Backend.Skills
                             }
                             finally
                             {
-                                await _lstSkillGroups.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
+                                _lstSkillGroups.RaiseListChangedEvents = true;
+                                _lstSkills.RaiseListChangedEvents = true;
                             }
                         }
                         finally
                         {
-                            await _lstSkills.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
+                            await _lstSkillGroups.LockObject.SetParentAsync(LockObject, token: token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        _lstSkillGroups.RaiseListChangedEvents = true;
-                        _lstSkills.RaiseListChangedEvents = true;
+                        await _lstSkills.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                     }
 
                     _blnSkillsInitialized = true;

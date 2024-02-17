@@ -87,6 +87,7 @@ namespace Chummer.Backend.Skills
                 _objCachedHasAnyBreakingSkillsLock.Dispose();
                 _objCachedToolTipLock.Dispose();
             }
+            LockObject.Dispose();
         }
 
         public async ValueTask DisposeAsync()
@@ -137,6 +138,8 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         public int Base
@@ -1487,7 +1490,7 @@ namespace Chummer.Backend.Skills
 
                     //If data file contains {4} this crashes but...
                     int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-                    string strUpgradetext =
+                    string strUpgrade =
                         string.Format(GlobalSettings.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
                                       await LanguageManager.GetStringAsync("String_ExpenseSkillGroup", token: token)
                                                            .ConfigureAwait(false),
@@ -1497,7 +1500,7 @@ namespace Chummer.Backend.Skills
                                                            .ConfigureAwait(false));
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                    objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(intPrice * -1, strUpgrade, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveSkillGroup, InternalId);
 
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
@@ -1530,37 +1533,57 @@ namespace Chummer.Backend.Skills
                 if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
                     return null;
             }
-            using (objSkill.LockObject.EnterUpgradeableReadLock())
+
+            objSkill.IsLoading = true;
+            try
             {
-                if (objSkill.SkillGroupObject != null)
-                    return objSkill.SkillGroupObject;
-
-                if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
-                    return null;
-
-                SkillGroup objSkillGroup =
-                    objSkill.CharacterObject.SkillsSection.SkillGroups.Find(x => x.Name == objSkill.SkillGroup);
-                if (objSkillGroup != null)
+                using (objSkill.LockObject.EnterUpgradeableReadLock())
                 {
-                    if (!objSkillGroup.SkillList.Contains(objSkill))
-                        objSkillGroup.Add(objSkill);
-                }
-                else
-                {
-                    objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
-                    objSkillGroup.Add(objSkill);
-                    objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objSkillGroup,
-                        SkillsSection.CompareSkillGroups,
-                        (objExistingSkillGroup, objNewSkillGroup) =>
+                    if (objSkill.SkillGroupObject != null)
+                        return objSkill.SkillGroupObject;
+
+                    if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
+                        return null;
+
+                    SkillGroup objSkillGroup =
+                        objSkill.CharacterObject.SkillsSection.SkillGroups.Find(x => x.Name == objSkill.SkillGroup);
+                    if (objSkillGroup != null)
+                    {
+                        if (!objSkillGroup.SkillList.Contains(objSkill))
                         {
-                            foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
-                                         !objExistingSkillGroup.SkillList.Contains(x)))
-                                objExistingSkillGroup.Add(x);
-                            objNewSkillGroup.Dispose();
-                        });
-                }
+                            objSkillGroup.LockObject.SetParent();
+                            try
+                            {
+                                objSkillGroup.Add(objSkill);
+                            }
+                            finally
+                            {
+                                objSkillGroup.LockObject.SetParent(objSkillGroup.CharacterObject.LockObject);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
+                        objSkillGroup.Add(objSkill);
+                        objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objSkillGroup,
+                            SkillsSection.CompareSkillGroups,
+                            (objExistingSkillGroup, objNewSkillGroup) =>
+                            {
+                                foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
+                                             !objExistingSkillGroup.SkillList.Contains(x)))
+                                    objExistingSkillGroup.Add(x);
+                                objNewSkillGroup.Dispose();
+                            });
+                        objSkillGroup.LockObject.SetParent(objSkillGroup.CharacterObject.LockObject);
+                    }
 
-                return objSkillGroup;
+                    return objSkillGroup;
+                }
+            }
+            finally
+            {
+                objSkill.IsLoading = false;
             }
         }
 
@@ -1584,44 +1607,70 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            objLocker = await objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+
+            await objSkill.SetIsLoadingAsync(true, token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                if (objSkill.SkillGroupObject != null)
-                    return objSkill.SkillGroupObject;
-
-                if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
-                    return null;
-
-                SkillGroup objSkillGroup =
-                    await (await objSkill.CharacterObject.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false))
-                        .FindAsync(x => x.Name == objSkill.SkillGroup, token).ConfigureAwait(false);
-                if (objSkillGroup != null)
+                objLocker = await objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    if (!objSkillGroup.SkillList.Contains(objSkill))
-                        await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
-                }
-                else
-                {
-                    objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
-                    await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
-                    await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
-                        (x, y) => SkillsSection.CompareSkillGroupsAsync(x, y, token),
-                        async (objExistingSkillGroup, objNewSkillGroup) =>
+                    token.ThrowIfCancellationRequested();
+                    if (objSkill.SkillGroupObject != null)
+                        return objSkill.SkillGroupObject;
+
+                    if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
+                        return null;
+
+                    SkillGroup objSkillGroup =
+                        await (await objSkill.CharacterObject.SkillsSection.GetSkillGroupsAsync(token)
+                                .ConfigureAwait(false))
+                            .FindAsync(x => x.Name == objSkill.SkillGroup, token).ConfigureAwait(false);
+                    if (objSkillGroup != null)
+                    {
+                        if (!objSkillGroup.SkillList.Contains(objSkill))
                         {
-                            foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
-                                         !objExistingSkillGroup.SkillList.Contains(x)))
-                                await objExistingSkillGroup.AddAsync(x, token).ConfigureAwait(false);
-                            await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
-                        }, token: token).ConfigureAwait(false);
-                }
+                            await objSkillGroup.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
+                            try
+                            {
+                                await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objSkillGroup.LockObject.SetParentAsync(objSkillGroup.CharacterObject.LockObject,
+                                    token: token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
+                        await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
+                        await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
+                            (x, y) => SkillsSection.CompareSkillGroupsAsync(x, y, token),
+                            async (objExistingSkillGroup, objNewSkillGroup) =>
+                            {
+                                foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
+                                             !objExistingSkillGroup.SkillList.Contains(x)))
+                                {
+                                    await objExistingSkillGroup.AddAsync(x, token).ConfigureAwait(false);
+                                }
 
-                return objSkillGroup;
+                                await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
+                            }, token: token).ConfigureAwait(false);
+                        await objSkillGroup.LockObject.SetParentAsync(objSkillGroup.CharacterObject.LockObject,
+                            token: token).ConfigureAwait(false);
+                    }
+
+                    return objSkillGroup;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objSkill.SetIsLoadingAsync(false, token).ConfigureAwait(false);
             }
         }
 
@@ -1967,7 +2016,7 @@ namespace Chummer.Backend.Skills
         public SkillGroup(Character objCharacter, string strGroupName = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            LockObject = objCharacter.LockObject;
+            LockObject = new AsyncFriendlyReaderWriterLock(); // We need a separate lock so that we can properly disconnect ourselves from the character lock while we are loading data
             _objCachedBaseUnbrokenLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedHasAnyBreakingSkillsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedIsDisabledLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
