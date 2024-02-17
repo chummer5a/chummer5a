@@ -516,7 +516,7 @@ namespace Chummer
                     }
 
                     // Flip all attribute, skill, and skill group points to karma levels (relevant when switching from Priority/Sum-to-Ten to Karma)
-                    await (await _objCharacter.AttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachAsync(async objAttrib =>
+                    await (await _objCharacter.AttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objAttrib =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objAttrib.GetBaseAsync(token).ConfigureAwait(false);
@@ -524,7 +524,7 @@ namespace Chummer
                         await objAttrib.ModifyKarmaAsync(intBase, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSkill =>
+                    await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objSkill =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objSkill.GetBasePointsAsync(token).ConfigureAwait(false);
@@ -532,7 +532,7 @@ namespace Chummer
                         await objSkill.ModifyKarmaPointsAsync(intBase, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objGroup =>
+                    await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objGroup =>
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objGroup.GetBasePointsAsync(token).ConfigureAwait(false);

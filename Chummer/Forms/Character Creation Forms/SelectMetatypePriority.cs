@@ -2033,7 +2033,7 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.TotalAttributes)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            await _objCharacter.AttributeSection.AttributeList.ForEachAsync(async objAttribute =>
+                            await _objCharacter.AttributeSection.AttributeList.ForEachWithSideEffectsAsync(async objAttribute =>
                             {
                                 if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0
                                     && (objAttributeToShift == null
@@ -2073,7 +2073,7 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.TotalSpecial)
                         {
                             CharacterAttrib objAttributeToShift = null;
-                            await _objCharacter.AttributeSection.SpecialAttributeList.ForEachAsync(async objAttribute =>
+                            await _objCharacter.AttributeSection.SpecialAttributeList.ForEachWithSideEffectsAsync(async objAttribute =>
                             {
                                 if (await objAttribute.GetKarmaAsync(token).ConfigureAwait(false) > 0
                                     && (objAttributeToShift == null
@@ -2113,7 +2113,7 @@ namespace Chummer
                         while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
                         {
                             SkillGroup objGroupToShift = null;
-                            await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objGroup =>
+                            await (await _objCharacter.SkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objGroup =>
                             {
                                 if (await objGroup.GetKarmaAsync(token).ConfigureAwait(false) > 0
                                     && (objGroupToShift == null || await objGroupToShift.GetRatingAsync(token).ConfigureAwait(false) < await objGroup.GetRatingAsync(token).ConfigureAwait(false)))
@@ -2156,7 +2156,7 @@ namespace Chummer
                         {
                             Skill objSkillToShift = null;
                             int intSkillToShiftKarma = 0;
-                            await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSkill =>
+                            await (await _objCharacter.SkillsSection.GetSkillsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objSkill =>
                             {
                                 int intLoopKarma = await objSkill.GetKarmaAsync(token).ConfigureAwait(false);
                                 if (intLoopKarma > 0 && (objSkillToShift == null
