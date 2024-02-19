@@ -11223,6 +11223,32 @@
           </discountqualities>
         </selectquality>
       </bonus>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>163</page>
     </quality>
@@ -11232,6 +11258,32 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>164</page>
     </quality>
@@ -11257,6 +11309,32 @@
       <bonus>
         <selecttext />
       </bonus>
+      <required>
+        <oneof>
+          <quality>Infected: Bandersnatch</quality>
+          <quality>Infected: Banshee</quality>
+          <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Gnawer</quality>
+          <quality>Infected: Goblin</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
+          <quality>Infected: Mutaqua</quality>
+          <quality>Infected: Nosferatu</quality>
+          <quality>Infected: Vampire (Human)</quality>
+          <quality>Infected: Vampire (Non-Human)</quality>
+          <quality>Infected: Sukuyan (Human)</quality>
+          <quality>Infected: Sukuyan (Non-Human)</quality>
+          <quality>Infected: Wendigo</quality>
+        </oneof>
+      </required>
       <source>DTR</source>
       <page>164</page>
     </quality>
