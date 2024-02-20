@@ -6754,7 +6754,7 @@ namespace Chummer
 
                         blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
                         Lifestyle objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
-                        objLifestyle.Increments = 0;
+                        await objLifestyle.SetIncrementsAsync(0, GenericToken).ConfigureAwait(false);
                         await CharacterObject.Lifestyles.AddAsync(objLifestyle, GenericToken).ConfigureAwait(false);
                     }
                 } while (blnAddAgain);
@@ -7872,7 +7872,7 @@ namespace Chummer
                     ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
 
-                --objLifestyle.Increments;
+                await objLifestyle.ModifyIncrementsAsync(-1, GenericToken).ConfigureAwait(false);
 
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
@@ -7892,7 +7892,7 @@ namespace Chummer
                                          .ConfigureAwait(false) is Lifestyle objLifestyle))
                     return;
 
-                objLifestyle.IncrementMonths();
+                objLifestyle.BuyExtraMonth();
 
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
@@ -13652,7 +13652,7 @@ namespace Chummer
                                 = await CharacterObject.Lifestyles.FirstOrDefaultAsync(x => x.InternalId == strUndoId, GenericToken)
                                                        .ConfigureAwait(false);
                             if (objLifestyle != null)
-                                --objLifestyle.Increments;
+                                await objLifestyle.ModifyIncrementsAsync(-1, GenericToken).ConfigureAwait(false);
                         }
                             break;
 
@@ -16099,11 +16099,11 @@ namespace Chummer
                     return;
 
                 string strGuid = objLifestyle.InternalId;
-                int intMonths = objLifestyle.Increments;
+                int intMonths = await objLifestyle.GetIncrementsAsync(GenericToken).ConfigureAwait(false);
                 int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(
-                                                           CharacterObject.Lifestyles.FirstOrDefault(p =>
-                                                               p.InternalId == objLifestyle.InternalId), token: GenericToken)
-                                                       .ConfigureAwait(false);
+                        await CharacterObject.Lifestyles.FirstOrDefaultAsync(p =>
+                            p.InternalId == objLifestyle.InternalId, GenericToken).ConfigureAwait(false), GenericToken)
+                    .ConfigureAwait(false);
                 string strOldLifestyleName
                     = await objLifestyle.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                 decimal decOldLifestyleTotalCost
@@ -16158,7 +16158,7 @@ namespace Chummer
                     }
                 }
 
-                objLifestyle.Increments = intMonths;
+                await objLifestyle.SetIncrementsAsync(intMonths, GenericToken).ConfigureAwait(false);
 
                 decimal decAmount
                     = Math.Max(await objLifestyle.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOldLifestyleTotalCost,
@@ -24309,8 +24309,9 @@ namespace Chummer
                             "String_NuyenSymbol", token: token).ConfigureAwait(false);
                     await lblLifestyleCost.DoThreadSafeAsync(x => x.Text = strMonthlyCost, token)
                                           .ConfigureAwait(false);
+                    int intMonths = await objLifestyle.GetIncrementsAsync(GenericToken).ConfigureAwait(false);
                     await lblLifestyleMonths
-                          .DoThreadSafeAsync(x => x.Text = objLifestyle.Increments.ToString(GlobalSettings.CultureInfo),
+                          .DoThreadSafeAsync(x => x.Text = intMonths.ToString(GlobalSettings.CultureInfo),
                                              token).ConfigureAwait(false);
                     await objLifestyle.SetSourceDetailAsync(lblLifestyleSource, token).ConfigureAwait(false);
                     string strCostLabelString;

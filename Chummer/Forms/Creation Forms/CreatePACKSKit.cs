@@ -613,7 +613,7 @@ namespace Chummer
                         await objWriter.WriteElementStringAsync("name", objLifestyle.Name).ConfigureAwait(false);
                         await objWriter
                             .WriteElementStringAsync(
-                                "months", objLifestyle.Increments.ToString(GlobalSettings.InvariantCultureInfo))
+                                "months", (await objLifestyle.GetIncrementsAsync().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo))
                             .ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                         {

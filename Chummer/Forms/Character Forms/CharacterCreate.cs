@@ -10747,7 +10747,7 @@ namespace Chummer
                     return;
 
                 string strGuid = objLifestyle.InternalId;
-                int intMonths = objLifestyle.Increments;
+                int intMonths = await objLifestyle.GetIncrementsAsync(GenericToken).ConfigureAwait(false);
                 int intPosition = await CharacterObject.Lifestyles
                                                        .IndexOfAsync(
                                                            await CharacterObject.Lifestyles.FirstOrDefaultAsync(
@@ -10805,13 +10805,13 @@ namespace Chummer
                     }
                 }
 
-                objLifestyle.Increments = intMonths;
+                await objLifestyle.SetIncrementsAsync(intMonths, GenericToken).ConfigureAwait(false);
 
                 objLifestyle.SetInternalId(strGuid);
-                CharacterObject.Lifestyles[intPosition] = objLifestyle;
 
                 await RequestCharacterUpdate().ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
+                await CharacterObject.Lifestyles.SetValueAtAsync(intPosition, objLifestyle, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -18270,7 +18270,8 @@ namespace Chummer
                     await lblLifestyleCost.DoThreadSafeAsync(x => x.Text
                                                                  = strMonthlyCost, token)
                                           .ConfigureAwait(false);
-                    await nudLifestyleMonths.DoThreadSafeAsync(x => x.Value = objLifestyle.Increments, token)
+                    int intMonths = await objLifestyle.GetIncrementsAsync(GenericToken).ConfigureAwait(false);
+                    await nudLifestyleMonths.DoThreadSafeAsync(x => x.Value = intMonths, token)
                                             .ConfigureAwait(false);
                     string strText = objLifestyle.Dice.ToString(GlobalSettings.CultureInfo)
                                      + await LanguageManager.GetStringAsync("String_D6", token: token)

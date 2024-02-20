@@ -815,28 +815,29 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("city", City, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("district", District, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("borough", Borough, token).ConfigureAwait(false);
+                    string strNuyenFormat = await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
-                            "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                            "cost", Cost.ToString(strNuyenFormat, objCulture),
                             token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("totalmonthlycost",
                             (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false))
                             .ToString(
-                                _objCharacter.Settings.NuyenFormat, objCulture), token)
+                                strNuyenFormat, objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("totalcost",
                             (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                                _objCharacter.Settings.NuyenFormat, objCulture),
+                                strNuyenFormat, objCulture),
                             token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("multiplier",
-                            Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                            Multiplier.ToString(strNuyenFormat, objCulture),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture), token)
+                    await objWriter.WriteElementStringAsync("months", (await GetIncrementsAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo),
@@ -1343,6 +1344,64 @@ namespace Chummer.Backend.Equipment
                     if (Interlocked.Exchange(ref _intIncrements, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Months/Weeks/Days purchased.
+        /// </summary>
+        public async Task<int> GetIncrementsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intIncrements;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Months/Weeks/Days purchased.
+        /// </summary>
+        public async Task SetIncrementsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intIncrements, value) != value)
+                    await OnPropertyChangedAsync(nameof(Increments), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Months/Weeks/Days purchased.
+        /// </summary>
+        public async Task ModifyIncrementsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Add(ref _intIncrements, value) != value)
+                    await OnPropertyChangedAsync(nameof(Increments), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2959,7 +3018,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * Increments;
+                return await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * await GetIncrementsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -3592,35 +3651,50 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Purchases an additional month of the selected lifestyle.
         /// </summary>
-        public void IncrementMonths()
+        public async Task BuyExtraMonth(CancellationToken token = default)
         {
-            using (LockObject.EnterUpgradeableReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 // Create the Expense Log Entry.
-                decimal decAmount = TotalMonthlyCost;
-                if (decAmount > _objCharacter.Nuyen)
+                decimal decAmount = await GetTotalMonthlyCostAsync(token).ConfigureAwait(false);
+                if (decAmount > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                 {
-                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                                     LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
-                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                using (LockObject.EnterWriteLock())
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
+                    token.ThrowIfCancellationRequested();
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount * -1,
-                        LanguageManager.GetString("String_ExpenseLifestyle") + ' ' + CurrentDisplayNameShort,
+                        await LanguageManager.GetStringAsync("String_ExpenseLifestyle", token: token).ConfigureAwait(false) + ' ' +
+                        CurrentDisplayNameShort,
                         ExpenseType.Nuyen, DateTime.Now);
-                    _objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                    _objCharacter.Nuyen -= decAmount;
+                    _objCharacter.ExpenseEntries.AddWithSort(objExpense, token: token);
+                    await _objCharacter.ModifyNuyenAsync(-decAmount, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
                     objExpense.Undo = objUndo;
 
-                    Interlocked.Increment(ref _intIncrements);
+                    await ModifyIncrementsAsync(1, token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

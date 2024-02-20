@@ -46552,7 +46552,10 @@ namespace Chummer
                                                     ?.Value,
                                                     out int intMonths))
                                             {
-                                                objLifestyle.Increments = intMonths;
+                                                if (blnSync)
+                                                    objLifestyle.Increments = intMonths;
+                                                else
+                                                    await objLifestyle.SetIncrementsAsync(intMonths, token).ConfigureAwait(false);
                                             }
 
                                             if (blnSync)
