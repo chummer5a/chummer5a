@@ -1036,7 +1036,7 @@ namespace Chummer.UI.Powers
                                     await p.DeletePowerAsync(MyToken).ConfigureAwait(false);
 
                                     if (frmParent is CharacterShared objParent)
-                                        await objParent.RequestCharacterUpdate(MyToken).ConfigureAwait(false);
+                                        objParent.RequestCharacterUpdate(MyToken);
                                 }
                                 finally
                                 {

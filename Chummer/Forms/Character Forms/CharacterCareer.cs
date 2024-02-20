@@ -1835,7 +1835,7 @@ namespace Chummer
                                        Timekeeper.StartSyncron("load_frm_career_finishingStuff", op_load_frm_career))
                                 {
                                     // Directly awaiting here so that we can properly unset the dirty flag after the update
-                                    await RequestCharacterUpdate(true).ConfigureAwait(false);
+                                    await RequestAndProcessCharacterUpdate(GenericToken).ConfigureAwait(false);
 
                                     // Clear the Dirty flag which gets set when creating a new Character.
                                     if (!await CharacterObject.GetLoadAsDirtyAsync(GenericToken).ConfigureAwait(false))
@@ -3596,7 +3596,7 @@ namespace Chummer
                     || e.PropertyNames.Contains(nameof(Character.MetatypeCategory))
                     || e.PropertyNames.Contains(nameof(Character.IsSprite)))
                 {
-                    await RequestCharacterUpdate(token).ConfigureAwait(false);
+                    RequestCharacterUpdate(token);
                 }
 
                 if (e.PropertyNames.Contains(nameof(Character.Settings)) && !IsLoading)
@@ -4045,7 +4045,7 @@ namespace Chummer
                     await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
 
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                RequestCharacterUpdate(token);
             }
             catch (OperationCanceledException)
             {
@@ -4210,8 +4210,7 @@ namespace Chummer
                                                 .ConfigureAwait(false)).Degrade(1, GenericToken).ConfigureAwait(false);
                 }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -5329,7 +5328,7 @@ namespace Chummer
                         // Immediately await character update because it re-applies essence loss improvements
                         try
                         {
-                            await RequestCharacterUpdate(true, token).ConfigureAwait(false);
+                            await RequestAndProcessCharacterUpdate(token).ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -7874,8 +7873,7 @@ namespace Chummer
 
                 await objLifestyle.ModifyIncrementsAsync(-1, GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -7894,8 +7892,7 @@ namespace Chummer
 
                 objLifestyle.BuyExtraMonth();
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8063,8 +8060,7 @@ namespace Chummer
                     string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                  .ConfigureAwait(false);
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -8252,8 +8248,7 @@ namespace Chummer
                     string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                  .ConfigureAwait(false);
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -8371,8 +8366,7 @@ namespace Chummer
                                                           .ConfigureAwait(false);
                     await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                      .ConfigureAwait(false);
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -8536,8 +8530,7 @@ namespace Chummer
                             string strText = await objSelectedGear.GetCurrentDisplayNameAsync(token: GenericToken)
                                                                   .ConfigureAwait(false);
                             await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken).ConfigureAwait(false);
-                            await RequestCharacterUpdate().ConfigureAwait(false);
-                            await SetDirty(true).ConfigureAwait(false);
+                            await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                         }
 
                         break;
@@ -8626,8 +8619,7 @@ namespace Chummer
                     string strText = await objGear.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                      .ConfigureAwait(false);
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -10029,8 +10021,7 @@ namespace Chummer
                     .ConfigureAwait(false);
             }
 
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         private async void cmdDeleteImprovement_Click(object sender, EventArgs e)
@@ -10139,8 +10130,7 @@ namespace Chummer
                     return;
                 }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10180,8 +10170,7 @@ namespace Chummer
                     return;
                 }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10223,8 +10212,7 @@ namespace Chummer
                     return;
                 await ImprovementManager.EnableImprovementsAsync(CharacterObject, lstImprovementsEnabled, GenericToken)
                                         .ConfigureAwait(false);
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10267,8 +10255,7 @@ namespace Chummer
                 await ImprovementManager
                       .DisableImprovementsAsync(CharacterObject, lstImprovementsDisabled, GenericToken)
                       .ConfigureAwait(false);
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -16188,9 +16175,7 @@ namespace Chummer
                     ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                      .ConfigureAwait(false);
-
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -16324,8 +16309,7 @@ namespace Chummer
                             return;
                     }
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -16379,8 +16363,7 @@ namespace Chummer
                         return;
                     await objWeapon.Reload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -16406,8 +16389,7 @@ namespace Chummer
                         return;
                     await objWeapon.Unload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -16459,8 +16441,7 @@ namespace Chummer
                             return;
                     }
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -16491,8 +16472,7 @@ namespace Chummer
                         = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                                    .ConfigureAwait(false);
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -16582,8 +16562,7 @@ namespace Chummer
                 objSelectedGear.Equipped = blnChecked;
                 await objSelectedGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -16607,8 +16586,7 @@ namespace Chummer
                         await cboWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
                                            .ConfigureAwait(false),
                         GlobalSettings.InvariantCultureInfo);
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -16952,8 +16930,7 @@ namespace Chummer
 
                 --objArmor.ArmorDamage;
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -16971,8 +16948,7 @@ namespace Chummer
 
                 ++objArmor.ArmorDamage;
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -17148,8 +17124,7 @@ namespace Chummer
                             CharacterObject, cboGearAttack, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17183,8 +17158,7 @@ namespace Chummer
                             CharacterObject, cboGearSleaze, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17218,8 +17192,7 @@ namespace Chummer
                             CharacterObject, cboGearDataProcessing, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17253,8 +17226,7 @@ namespace Chummer
                             CharacterObject, cboGearFirewall, cboGearAttack,
                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17288,8 +17260,7 @@ namespace Chummer
                             CharacterObject, cboVehicleAttack, cboVehicleAttack,
                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17323,8 +17294,7 @@ namespace Chummer
                             CharacterObject, cboVehicleSleaze, cboVehicleAttack,
                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17358,8 +17328,7 @@ namespace Chummer
                             CharacterObject, cboVehicleFirewall, cboVehicleAttack,
                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17393,8 +17362,7 @@ namespace Chummer
                             CharacterObject, cboVehicleDataProcessing, cboVehicleAttack,
                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17428,8 +17396,7 @@ namespace Chummer
                             CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
                             cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17463,8 +17430,7 @@ namespace Chummer
                             CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
                             cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17499,8 +17465,7 @@ namespace Chummer
                             CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
                             cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17534,8 +17499,7 @@ namespace Chummer
                             CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
                             cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17569,8 +17533,7 @@ namespace Chummer
                             CharacterObject, cboArmorAttack, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
                             cboArmorFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17604,8 +17567,7 @@ namespace Chummer
                             CharacterObject, cboArmorSleaze, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
                             cboArmorFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17640,8 +17602,7 @@ namespace Chummer
                             cboArmorDataProcessing,
                             cboArmorFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17675,8 +17636,7 @@ namespace Chummer
                             CharacterObject, cboArmorFirewall, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
                             cboArmorFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17710,8 +17670,7 @@ namespace Chummer
                             CharacterObject, cboWeaponGearAttack, cboWeaponGearAttack, cboWeaponGearSleaze,
                             cboWeaponGearDataProcessing, cboWeaponGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17745,8 +17704,7 @@ namespace Chummer
                             CharacterObject, cboWeaponGearSleaze, cboWeaponGearAttack, cboWeaponGearSleaze,
                             cboWeaponGearDataProcessing, cboWeaponGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17781,8 +17739,7 @@ namespace Chummer
                             CharacterObject, cboWeaponGearDataProcessing, cboWeaponGearAttack, cboWeaponGearSleaze,
                             cboWeaponGearDataProcessing, cboWeaponGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17816,8 +17773,7 @@ namespace Chummer
                             CharacterObject, cboWeaponGearFirewall, cboWeaponGearAttack, cboWeaponGearSleaze,
                             cboWeaponGearDataProcessing, cboWeaponGearFirewall, GenericToken).ConfigureAwait(false))
                     {
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -17944,8 +17900,7 @@ namespace Chummer
                     await objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles, GenericToken)
                                    .ConfigureAwait(false);
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -17972,8 +17927,7 @@ namespace Chummer
                     await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear, GenericToken)
                                    .ConfigureAwait(false);
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -18030,8 +17984,7 @@ namespace Chummer
                         await cboVehicleWeaponAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
                                                   .ConfigureAwait(false),
                         GlobalSettings.InvariantCultureInfo);
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -18517,8 +18470,7 @@ namespace Chummer
                                     .ConfigureAwait(false);
                             }
 
-                            await RequestCharacterUpdate().ConfigureAwait(false);
-                            await SetDirty(true).ConfigureAwait(false);
+                            await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -18592,8 +18544,7 @@ namespace Chummer
                     if (await objTradition.GetTypeAsync(GenericToken).ConfigureAwait(false) == TraditionType.MAG)
                     {
                         await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
 
                     string strSourceIDString = await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
@@ -18648,8 +18599,7 @@ namespace Chummer
                             x.Visible = true;
                         }, GenericToken).ConfigureAwait(false);
 
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                     else
                     {
@@ -18706,8 +18656,7 @@ namespace Chummer
                     await objTradition.SetSourceDetailAsync(lblTraditionSource, GenericToken)
                                          .ConfigureAwait(false);
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -18772,16 +18721,14 @@ namespace Chummer
                     .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
                 if (xmlNewStreamNode != null && await objTradition.CreateAsync(xmlNewStreamNode, true, token: GenericToken).ConfigureAwait(false))
                 {
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
                     if (eType == TraditionType.RES)
                     {
                         await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
-                        await RequestCharacterUpdate().ConfigureAwait(false);
-                        await SetDirty(true).ConfigureAwait(false);
+                        await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
 
                     string strSourceIDString = await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
@@ -19237,8 +19184,7 @@ namespace Chummer
                 objPower.CountTowardsLimit
                     = await chkCritterPowerCount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -19316,8 +19262,7 @@ namespace Chummer
                 if (blnDoRepopulateList)
                     await RepopulateKarmaExpenseList(GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -19391,8 +19336,7 @@ namespace Chummer
                 if (blnDoRepopulateList)
                     await RepopulateNuyenExpenseList(GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -19586,8 +19530,7 @@ namespace Chummer
                     await ImprovementManager.DisableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
                                             .ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -20728,7 +20671,7 @@ namespace Chummer
                     // Immediately await character update because we know it's necessary
                     try
                     {
-                        await RequestCharacterUpdate(true, GenericToken).ConfigureAwait(false);
+                        await RequestAndProcessCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -20791,79 +20734,81 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
                 try
                 {
-                    // WARNING! Under no circumstances should this be changed to a write lock or upgradeable read lock! If you write code that would make you want to do that, rethink/redesign your code!
-                    // Doing so will cause softlocks from circular logic (e.g. cyberware updates stall because they are waiting to get an upgradeable read lock on the character, but the character info update stalls because it's waiting for the cyberware updates to finish)
-                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                    // Upgradeable read lock so that we make sure all potential write locks are finished before executing
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
                         .ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        // Read lock to make sure we are not writing anything despite being in an upgradeable read lock
+                        IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                            .ConfigureAwait(false);
                         try
                         {
-                            CharacterUpdateStartingSemaphore?.Release();
-                        }
-                        catch (SemaphoreFullException)
-                        {
-                            // Potential sign of bad code, but not fatal
-                            Utils.BreakIfDebug();
-                        }
+                            token.ThrowIfCancellationRequested();
+                            ProcessCharacterUpdateHasStarted();
 
-                        Task tskAutosave = Task.CompletedTask;
-                        if (AutosaveStopwatch?.Elapsed.Minutes >= 5 && IsDirty)
-                        {
-                            tskAutosave = AutoSaveCharacter(token);
-                        }
-
-                        // TODO: DataBind these wherever possible
-                        if (await CharacterObject.GetMetatypeAsync(token).ConfigureAwait(false) == "Free Spirit"
-                            && !await CharacterObject.GetIsCritterAsync(token).ConfigureAwait(false)
-                            || (await CharacterObject.GetMetatypeCategoryAsync(token).ConfigureAwait(false))
-                            .EndsWith(
-                                "Spirits", StringComparison.Ordinal))
-                        {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                .ConfigureAwait(false);
-                            string strFreeSpiritPowerPoints = await CharacterObject
-                                .CalculateFreeSpiritPowerPointsAsync(token)
-                                .ConfigureAwait(false);
-                            await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                            Task tskAutosave = Task.CompletedTask;
+                            if (AutosaveStopwatch?.Elapsed.Minutes >= 5 && IsDirty)
                             {
-                                x.Visible = true;
-                                x.Text = strFreeSpiritPowerPoints;
-                            }, token).ConfigureAwait(false);
-                        }
-                        else if (await CharacterObject.GetIsFreeSpriteAsync(token).ConfigureAwait(false))
-                        {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                .ConfigureAwait(false);
-                            string strFreeSpritePowerPoints = await CharacterObject
-                                .CalculateFreeSpritePowerPointsAsync(token)
-                                .ConfigureAwait(false);
-                            await lblCritterPowerPoints.DoThreadSafeAsync(x =>
-                            {
-                                x.Visible = true;
-                                x.Text = strFreeSpritePowerPoints;
-                            }, token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                .ConfigureAwait(false);
-                            await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token)
-                                .ConfigureAwait(false);
-                        }
+                                tskAutosave = AutoSaveCharacter(token);
+                            }
 
-                        await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
-                            RefreshSelectedArmor(token),
-                            RefreshSelectedGear(token), RefreshSelectedDrug(token),
-                            RefreshSelectedLifestyle(token),
-                            RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
-                            RefreshSelectedSpell(token),
-                            RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
-                            RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
-                            RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
-                            RefreshSelectedImprovement(token)).ConfigureAwait(false);
-                        await tskAutosave.ConfigureAwait(false);
+                            // TODO: DataBind these wherever possible
+                            if (await CharacterObject.GetMetatypeAsync(token).ConfigureAwait(false) == "Free Spirit"
+                                && !await CharacterObject.GetIsCritterAsync(token).ConfigureAwait(false)
+                                || (await CharacterObject.GetMetatypeCategoryAsync(token).ConfigureAwait(false))
+                                .EndsWith(
+                                    "Spirits", StringComparison.Ordinal))
+                            {
+                                await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                    .ConfigureAwait(false);
+                                string strFreeSpiritPowerPoints = await CharacterObject
+                                    .CalculateFreeSpiritPowerPointsAsync(token)
+                                    .ConfigureAwait(false);
+                                await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = strFreeSpiritPowerPoints;
+                                }, token).ConfigureAwait(false);
+                            }
+                            else if (await CharacterObject.GetIsFreeSpriteAsync(token).ConfigureAwait(false))
+                            {
+                                await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                    .ConfigureAwait(false);
+                                string strFreeSpritePowerPoints = await CharacterObject
+                                    .CalculateFreeSpritePowerPointsAsync(token)
+                                    .ConfigureAwait(false);
+                                await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = strFreeSpritePowerPoints;
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                    .ConfigureAwait(false);
+                                await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token)
+                                    .ConfigureAwait(false);
+                            }
+
+                            await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
+                                RefreshSelectedArmor(token),
+                                RefreshSelectedGear(token), RefreshSelectedDrug(token),
+                                RefreshSelectedLifestyle(token),
+                                RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
+                                RefreshSelectedSpell(token),
+                                RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
+                                RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
+                                RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                                RefreshSelectedImprovement(token)).ConfigureAwait(false);
+                            await tskAutosave.ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     finally
                     {
@@ -27783,8 +27728,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -27834,8 +27778,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -27886,8 +27829,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -27938,8 +27880,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    await RequestCharacterUpdate().ConfigureAwait(false);
-                    await SetDirty(true).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -28682,8 +28623,7 @@ namespace Chummer
                 objUndo.CreateNuyen(NuyenExpenseType.AddGear, selectedDrug.InternalId);
                 objExpense.Undo = objUndo;
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -28730,8 +28670,7 @@ namespace Chummer
                                                            GenericToken).ConfigureAwait(false);
                 }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -28870,8 +28809,7 @@ namespace Chummer
                     Utils.BreakIfDebug();
                 }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

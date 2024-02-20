@@ -101,6 +101,7 @@ namespace Chummer
                 _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strCharacterFileName) ?? Path.GetPathRoot(strCharacterFileName), Path.GetFileName(strCharacterFileName));
                 _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
             }
+            _tmrCharacterUpdateRequestTimer.Elapsed += CharacterUpdateRequestTimerOnElapsed;
             AutosaveStopwatch.Start();
         }
 
@@ -151,8 +152,7 @@ namespace Chummer
                 _objCachedSettings = null;
                 try
                 {
-                    await RequestCharacterUpdate(token).ConfigureAwait(false);
-                    await SetDirty(true, token).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -2012,9 +2012,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-
-            await SetDirty(true, token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs, CancellationToken token = default)
@@ -8887,8 +8885,7 @@ namespace Chummer
                 EntityType = ContactType.Contact
             };
             await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task DeleteContact(object sender, EventArgs e, CancellationToken token = default)
@@ -8914,8 +8911,7 @@ namespace Chummer
 
                 await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
                     .ConfigureAwait(false);
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8939,8 +8935,7 @@ namespace Chummer
             };
 
             await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task DeletePet(object sender, EventArgs e, CancellationToken token = default)
@@ -8966,8 +8961,7 @@ namespace Chummer
 
                 await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
                     .ConfigureAwait(false);
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8992,8 +8986,7 @@ namespace Chummer
             };
 
             await CharacterObject.Contacts.AddAsync(objContact, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task DeleteEnemy(object sender, EventArgs e, CancellationToken token = default)
@@ -9019,8 +9012,7 @@ namespace Chummer
 
                 await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: token)
                     .ConfigureAwait(false);
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9540,8 +9532,7 @@ namespace Chummer
                 Force = await CharacterObject.GetMaxSpiritForceAsync(token).ConfigureAwait(false)
             };
             await CharacterObject.Spirits.AddAsync(objSpirit, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task AddSprite(CancellationToken token = default)
@@ -9573,8 +9564,7 @@ namespace Chummer
                 Force = await CharacterObject.GetMaxSpriteLevelAsync(token).ConfigureAwait(false)
             };
             await CharacterObject.Spirits.AddAsync(objSprite, token: token).ConfigureAwait(false);
-            await RequestCharacterUpdate(token).ConfigureAwait(false);
-            await SetDirty(true, token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
         }
 
         protected async Task DeleteSpirit(object sender, EventArgs e, CancellationToken token = default)
@@ -9604,8 +9594,7 @@ namespace Chummer
                 await objSpirit.SetFetteredAsync(false, GenericToken)
                     .ConfigureAwait(false); // Fettered spirits consume MAG.
                 await CharacterObject.Spirits.RemoveAsync(objSpirit, token: token).ConfigureAwait(false);
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
-                await SetDirty(true, token).ConfigureAwait(false);
+                await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -9953,7 +9942,7 @@ namespace Chummer
 
             try
             {
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                RequestCharacterUpdate(token);
                 await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -9972,7 +9961,7 @@ namespace Chummer
 
             try
             {
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                RequestCharacterUpdate(token);
                 await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -9985,7 +9974,7 @@ namespace Chummer
         {
             try
             {
-                await RequestCharacterUpdate(token).ConfigureAwait(false);
+                RequestCharacterUpdate(token);
                 await MakeDirty(sender, e, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -9998,8 +9987,21 @@ namespace Chummer
         {
             try
             {
-                await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
+                RequestCharacterUpdate(GenericToken);
                 await SetDirty(true, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
+        }
+
+        public async Task MakeDirtyWithCharacterUpdate(CancellationToken token = default)
+        {
+            try
+            {
+                RequestCharacterUpdate(token);
+                await SetDirty(true, token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10064,106 +10066,121 @@ namespace Chummer
             }
         }
 
-        private System.Timers.Timer _tmrCharacterUpdateRequestTimer = new System.Timers.Timer();
+        private System.Timers.Timer _tmrCharacterUpdateRequestTimer = new System.Timers.Timer(500);
 
-        public Task RequestCharacterUpdate(CancellationToken token = default)
+        private async void CharacterUpdateRequestTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            return RequestCharacterUpdate(false, token);
+            if (IsLoading)
+                return;
+            if (GenericToken.IsCancellationRequested)
+                return;
+            if (_intCharacterUpdateRequested == 0)
+                return;
+            DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
+            if (objCharacterUpdateStartingSemaphore == null)
+                return;
+            if (!await objCharacterUpdateStartingSemaphore.WaitAsync(0, GenericToken).ConfigureAwait(false))
+                return;
+            try
+            {
+                try
+                {
+                    await ActuallyRequestCharacterUpdate(false, GenericToken).ConfigureAwait(false);
+                }
+                catch
+                {
+                    objCharacterUpdateStartingSemaphore.Release();
+                    throw;
+                }
+            }
+            catch
+            {
+                objCharacterUpdateStartingSemaphore.Release();
+                throw;
+            }
         }
 
-        public async Task RequestCharacterUpdate(bool blnAlsoProcessUpdate, CancellationToken token = default)
+        protected void ProcessCharacterUpdateHasStarted()
+        {
+            _intCharacterUpdateRequested = 0;
+            try
+            {
+                CharacterUpdateStartingSemaphore?.Release();
+            }
+            catch (SemaphoreFullException)
+            {
+                // Potential sign of bad code, but not fatal
+                Utils.BreakIfDebug();
+            }
+        }
+
+        private int _intCharacterUpdateRequested;
+
+        /// <summary>
+        /// Request a character update to happen at the next convenient time.
+        /// The delay to expect should usually be around 1 second.
+        /// </summary>
+        /// <param name="token"></param>
+        public void RequestCharacterUpdate(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            GenericToken.ThrowIfCancellationRequested();
+            if (IsLoading || CharacterUpdateStartingSemaphore?.CurrentCount == 0)
+                return;
+            Interlocked.CompareExchange(ref _intCharacterUpdateRequested, 1, 0);
+        }
+
+        /// <summary>
+        /// Request a character update and then await it immediately. Because this is done so rarely, there is no delay.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task RequestAndProcessCharacterUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             GenericToken.ThrowIfCancellationRequested();
             if (IsLoading)
                 return;
-            // This sort of roundabout method using a timer is necessary to prevent hammered requests from overloading the program
-            // What this approach does is makes sure that an update request is only followed through with if no new requests come in for a short delay
-            System.Timers.Timer tmrCurrentRequestTimer = _tmrCharacterUpdateRequestTimer;
-            if (tmrCurrentRequestTimer.Enabled)
-            {
-                tmrCurrentRequestTimer.Stop();
-                tmrCurrentRequestTimer.Start();
-                if (!blnAlsoProcessUpdate)
-                    return;
-                DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
-                if (objCharacterUpdateStartingSemaphore == null)
-                    return;
-                await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
-                objCharacterUpdateStartingSemaphore.Release();
-                Task tskTemp = _tskUpdateCharacterInfo;
-                if (tskTemp != null)
-                    await tskTemp.ConfigureAwait(false);
-            }
-
-            // Obtuse stuff around creating a new request and interlocking with the current one is to keep things thread-safe if multiple requests just happen to be timed poorly
-            System.Timers.Timer tmrNewRequestTimer = new System.Timers.Timer(500)
-            {
-                AutoReset = false
-            };
-            TaskCompletionSource<bool> objReturnSource = new TaskCompletionSource<bool>();
-            if (blnAlsoProcessUpdate)
-                tmrNewRequestTimer.Elapsed += OnTmrNewRequestTimerOnElapsedTrue;
-            else
-                tmrNewRequestTimer.Elapsed += OnTmrNewRequestTimerOnElapsedFalse;
-            System.Timers.Timer tmrOldRequestTimer = Interlocked.CompareExchange(ref _tmrCharacterUpdateRequestTimer, tmrNewRequestTimer, tmrCurrentRequestTimer);
-            if (tmrOldRequestTimer != tmrCurrentRequestTimer)
-            {
-                tmrNewRequestTimer.Dispose();
-                if (tmrOldRequestTimer.Enabled)
-                {
-                    tmrOldRequestTimer.Stop();
-                    tmrOldRequestTimer.Start();
-                    if (!blnAlsoProcessUpdate)
-                        return;
-                    DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
-                    if (objCharacterUpdateStartingSemaphore == null)
-                        return;
-                    await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
-                    objCharacterUpdateStartingSemaphore.Release();
-                    Task tskTemp = _tskUpdateCharacterInfo;
-                    if (tskTemp != null)
-                        await tskTemp.ConfigureAwait(false);
-                }
+            DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
+            if (objCharacterUpdateStartingSemaphore == null)
                 return;
+            CancellationTokenSource objSource = null;
+            if (token == CancellationToken.None)
+            {
+                token = GenericToken;
+            }
+            else if (token != GenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
+                token = objSource.Token;
             }
 
-            tmrOldRequestTimer.Dispose();
-            tmrNewRequestTimer.Start();
-            await objReturnSource.Task.ConfigureAwait(false);
-
-            async void OnTmrNewRequestTimerOnElapsedTrue(object sender, ElapsedEventArgs e)
+            try
             {
+                await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
+                int intOldUpdateRequested = Interlocked.CompareExchange(ref _intCharacterUpdateRequested, 1, 0);
                 try
                 {
-                    await ActuallyRequestCharacterUpdate(true, token).ConfigureAwait(false);
-                    objReturnSource.TrySetResult(true);
+                    try
+                    {
+                        await ActuallyRequestCharacterUpdate(true, token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        objCharacterUpdateStartingSemaphore.Release();
+                        throw;
+                    }
                 }
-                catch (OperationCanceledException)
+                catch
                 {
-                    objReturnSource.TrySetCanceled(token);
-                }
-                catch (Exception exception)
-                {
-                    objReturnSource.TrySetException(exception);
+                    Interlocked.CompareExchange(ref _intCharacterUpdateRequested, intOldUpdateRequested, 1);
+                    objCharacterUpdateStartingSemaphore.Release();
+                    throw;
                 }
             }
-
-            async void OnTmrNewRequestTimerOnElapsedFalse(object sender, ElapsedEventArgs e)
+            finally
             {
-                try
-                {
-                    await ActuallyRequestCharacterUpdate(false, token).ConfigureAwait(false);
-                    objReturnSource.TrySetResult(true);
-                }
-                catch (OperationCanceledException)
-                {
-                    objReturnSource.TrySetCanceled(token);
-                }
-                catch (Exception exception)
-                {
-                    objReturnSource.TrySetException(exception);
-                }
+                objSource?.Dispose();
             }
         }
 
@@ -10187,9 +10204,6 @@ namespace Chummer
             Task tskNew;
             try
             {
-                DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
-                if (objCharacterUpdateStartingSemaphore == null || !await objCharacterUpdateStartingSemaphore.WaitAsync(0, token).ConfigureAwait(false))
-                    return; // Update request already starting and awaiting locks
                 Task tskTemp = Task.CompletedTask;
                 CancellationTokenSource objNewSource = new CancellationTokenSource();
                 CancellationToken objNewToken = objNewSource.Token;
@@ -10285,6 +10299,8 @@ namespace Chummer
         {
             get
             {
+                if (_intCharacterUpdateRequested > 0)
+                    return true;
                 // Local for thread safety
                 DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
                 if (objCharacterUpdateStartingSemaphore == null)
@@ -10758,9 +10774,7 @@ namespace Chummer
                         }
                     }
 
-                    await RequestCharacterUpdate(token).ConfigureAwait(false);
-
-                    await SetDirty(true, token).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
                 } while (blnAddAgain);
             }
             finally

@@ -872,7 +872,7 @@ namespace Chummer.UI.Skills
                         .GetFormForDialogAsync(_objSkill.CharacterObject, token)
                         .ConfigureAwait(false) is CharacterShared frmParent)
                 {
-                    await frmParent.RequestCharacterUpdate(token).ConfigureAwait(false);
+                    frmParent.RequestCharacterUpdate(token);
                 }
             }
             catch (OperationCanceledException)
