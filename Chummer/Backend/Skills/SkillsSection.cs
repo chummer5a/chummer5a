@@ -732,52 +732,70 @@ namespace Chummer.Backend.Skills
 
         internal void AddSkills(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
         {
-            List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName, token).ToList();
-            using (LockObject.EnterWriteLock(token))
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                foreach (Skill objSkill in lstSkillsToAdd)
+                token.ThrowIfCancellationRequested();
+                List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName, token).ToList();
+                using (LockObject.EnterWriteLock(token))
                 {
-                    Guid guidLoop = objSkill.SkillId;
-                    if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
+                    token.ThrowIfCancellationRequested();
+                    foreach (Skill objSkill in lstSkillsToAdd)
                     {
-                        Skill objExistingSkill = Skills.Find(x => x.SkillId == guidLoop);
-                        if (objExistingSkill != null)
+                        Guid guidLoop = objSkill.SkillId;
+                        if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
                         {
-                            MergeSkills(objExistingSkill, objSkill, token);
-                            continue;
+                            Skill objExistingSkill = Skills.Find(x => x.SkillId == guidLoop);
+                            if (objExistingSkill != null)
+                            {
+                                MergeSkills(objExistingSkill, objSkill, token);
+                                continue;
+                            }
                         }
-                    }
 
-                    Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                        Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                    }
                 }
             }
         }
 
         internal async Task AddSkillsAsync(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
         {
-            List<Skill> lstSkillsToAdd = await GetActiveSkillsFromDataAsync(eFilterOption, true, strName, token).ConfigureAwait(false);
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
+                List<Skill> lstSkillsToAdd = await GetActiveSkillsFromDataAsync(eFilterOption, true, strName, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                foreach (Skill objSkill in lstSkillsToAdd)
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    Guid guidLoop = await objSkill.GetSkillIdAsync(token).ConfigureAwait(false);
-                    if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
+                    token.ThrowIfCancellationRequested();
+                    foreach (Skill objSkill in lstSkillsToAdd)
                     {
-                        Skill objExistingSkill = await Skills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidLoop, token)
-                                                             .ConfigureAwait(false);
-                        if (objExistingSkill != null)
+                        Guid guidLoop = await objSkill.GetSkillIdAsync(token).ConfigureAwait(false);
+                        if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
                         {
-                            await MergeSkillsAsync(objExistingSkill, objSkill, token).ConfigureAwait(false);
-                            continue;
+                            Skill objExistingSkill = await Skills
+                                .FirstOrDefaultAsync(
+                                    async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidLoop, token)
+                                .ConfigureAwait(false);
+                            if (objExistingSkill != null)
+                            {
+                                await MergeSkillsAsync(objExistingSkill, objSkill, token).ConfigureAwait(false);
+                                continue;
+                            }
                         }
-                    }
 
-                    await Skills
-                          .AddWithSortAsync(objSkill, (x, y) => CompareSkillsAsync(x, y, token),
-                                            (x, y) => MergeSkillsAsync(x, y, token), token)
-                          .ConfigureAwait(false);
+                        await Skills
+                            .AddWithSortAsync(objSkill, (x, y) => CompareSkillsAsync(x, y, token),
+                                (x, y) => MergeSkillsAsync(x, y, token), token)
+                            .ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -788,35 +806,54 @@ namespace Chummer.Backend.Skills
 
         internal ExoticSkill AddExoticSkill(string strName, string strSpecific, CancellationToken token = default)
         {
-            XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml", token: token)
-                .TryGetNodeByNameOrId("/chummer/skills/skill", strName);
-            using (LockObject.EnterWriteLock(token))
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                ExoticSkill objExoticSkill = Skill.FromData(xmlSkillNode, _objCharacter, false) as ExoticSkill
-                                             ?? throw new ArgumentException("Attempted to add non-exotic skill as exotic skill");
-                objExoticSkill.Specific = strSpecific;
-                Skills.AddWithSort(objExoticSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
-                return objExoticSkill;
+                token.ThrowIfCancellationRequested();
+                XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml", token: token)
+                    .TryGetNodeByNameOrId("/chummer/skills/skill", strName);
+                using (LockObject.EnterWriteLock(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    ExoticSkill objExoticSkill = Skill.FromData(xmlSkillNode, _objCharacter, false) as ExoticSkill
+                                                 ?? throw new ArgumentException(
+                                                     "Attempted to add non-exotic skill as exotic skill");
+                    objExoticSkill.Specific = strSpecific;
+                    Skills.AddWithSort(objExoticSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
+                    return objExoticSkill;
+                }
             }
         }
 
         internal async Task<ExoticSkill> AddExoticSkillAsync(string strName, string strSpecific, CancellationToken token = default)
         {
-            XmlNode xmlSkillNode
-                = (await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false))
-                .TryGetNodeByNameOrId(
-                    "/chummer/skills/skill", strName);
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                ExoticSkill objExoticSkill = await Skill.FromDataAsync(xmlSkillNode, _objCharacter, false, token).ConfigureAwait(false) as ExoticSkill
-                                             ?? throw new ArgumentException("Attempted to add non-exotic skill as exotic skill");
-                await objExoticSkill.SetSpecificAsync(strSpecific, token).ConfigureAwait(false);
-                await Skills.AddWithSortAsync(objExoticSkill, (x, y) => CompareSkillsAsync(x, y, token),
-                    (x, y) => MergeSkillsAsync(x, y, token),
-                    token: token).ConfigureAwait(false);
-                return objExoticSkill;
+                XmlNode xmlSkillNode
+                    = (await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false))
+                    .TryGetNodeByNameOrId(
+                        "/chummer/skills/skill", strName);
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    ExoticSkill objExoticSkill =
+                        await Skill.FromDataAsync(xmlSkillNode, _objCharacter, false, token)
+                            .ConfigureAwait(false) as ExoticSkill
+                        ?? throw new ArgumentException("Attempted to add non-exotic skill as exotic skill");
+                    await objExoticSkill.SetSpecificAsync(strSpecific, token).ConfigureAwait(false);
+                    await Skills.AddWithSortAsync(objExoticSkill, (x, y) => CompareSkillsAsync(x, y, token),
+                        (x, y) => MergeSkillsAsync(x, y, token),
+                        token: token).ConfigureAwait(false);
+                    return objExoticSkill;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -826,8 +863,10 @@ namespace Chummer.Backend.Skills
 
         internal void RemoveSkills(FilterOption eSkillsToRemove, string strName = "", bool blnCreateKnowledge = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (LockObject.EnterUpgradeableReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 HashSet<Skill> setSkillsToRemove
                     = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName, token));
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
@@ -862,6 +901,7 @@ namespace Chummer.Backend.Skills
 
                 using (LockObject.EnterWriteLock(token))
                 {
+                    token.ThrowIfCancellationRequested();
                     for (int i = Skills.Count - 1; i >= 0; --i)
                     {
                         token.ThrowIfCancellationRequested();
@@ -960,6 +1000,7 @@ namespace Chummer.Backend.Skills
                     }, Utils.JoinableTaskFactory);
                 }
 
+                token.ThrowIfCancellationRequested();
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -3516,7 +3557,6 @@ namespace Chummer.Backend.Skills
 
         private static void MergeSkills(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
         {
-            using (objNewSkill.LockObject.EnterReadLock(token))
             using (objExistingSkill.LockObject.EnterUpgradeableReadLock(token))
             {
                 objExistingSkill.CopyInternalId(objNewSkill);
@@ -3536,43 +3576,34 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await objNewSkill.LockObject.EnterReadLockAsync(token)
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await objExistingSkill.LockObject.EnterUpgradeableReadLockAsync(token)
                 .ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await objExistingSkill.LockObject.EnterUpgradeableReadLockAsync(token)
+                objExistingSkill.CopyInternalId(objNewSkill);
+                int intExistingBasePoints = await objExistingSkill.GetBasePointsAsync(token).ConfigureAwait(false);
+                int intNewBasePoints = await objNewSkill.GetBasePointsAsync(token).ConfigureAwait(false);
+                if (intExistingBasePoints < intNewBasePoints)
+                    await objExistingSkill.SetBasePointsAsync(intNewBasePoints, token).ConfigureAwait(false);
+                int intExistingKarmaPoints =
+                    await objExistingSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
+                int intNewKarmaPoints = await objNewSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
+                if (intExistingKarmaPoints < intNewKarmaPoints)
+                    await objExistingSkill.SetKarmaPointsAsync(intNewKarmaPoints, token).ConfigureAwait(false);
+                await objExistingSkill
+                    .SetBuyWithKarmaAsync(await objNewSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false),
+                        token)
                     .ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    objExistingSkill.CopyInternalId(objNewSkill);
-                    int intExistingBasePoints = await objExistingSkill.GetBasePointsAsync(token).ConfigureAwait(false);
-                    int intNewBasePoints = await objNewSkill.GetBasePointsAsync(token).ConfigureAwait(false);
-                    if (intExistingBasePoints < intNewBasePoints)
-                        await objExistingSkill.SetBasePointsAsync(intNewBasePoints, token).ConfigureAwait(false);
-                    int intExistingKarmaPoints =
-                        await objExistingSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
-                    int intNewKarmaPoints = await objNewSkill.GetKarmaPointsAsync(token).ConfigureAwait(false);
-                    if (intExistingKarmaPoints < intNewKarmaPoints)
-                        await objExistingSkill.SetKarmaPointsAsync(intNewKarmaPoints, token).ConfigureAwait(false);
-                    await objExistingSkill
-                        .SetBuyWithKarmaAsync(await objNewSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false),
-                            token)
-                        .ConfigureAwait(false);
-                    objExistingSkill.Notes = await objExistingSkill.GetNotesAsync(token).ConfigureAwait(false) +
-                                             await objNewSkill.GetNotesAsync(token).ConfigureAwait(false);
-                    objExistingSkill.NotesColor = objNewSkill.NotesColor;
-                    await objExistingSkill.Specializations
-                        .AddAsyncRangeWithSortAsync(objNewSkill.Specializations,
-                            (x, y) => CompareSpecializationsAsync(x, y, token)
-                            ,
-                            token: token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+                objExistingSkill.Notes = await objExistingSkill.GetNotesAsync(token).ConfigureAwait(false) +
+                                         await objNewSkill.GetNotesAsync(token).ConfigureAwait(false);
+                objExistingSkill.NotesColor = objNewSkill.NotesColor;
+                await objExistingSkill.Specializations
+                    .AddAsyncRangeWithSortAsync(objNewSkill.Specializations,
+                        (x, y) => CompareSpecializationsAsync(x, y, token)
+                        ,
+                        token: token).ConfigureAwait(false);
             }
             finally
             {

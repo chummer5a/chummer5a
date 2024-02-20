@@ -734,14 +734,14 @@ namespace Chummer.Controls.Shared
                 // we need to create the control in the constructor (even if it isn't rendered) so that we can measure its
                 // elements' widths and/or heights
                 CreateControl(blnAddControlAfterCreation);
-                if (item is INotifyPropertyChanged prop)
+                if (item is INotifyPropertyChangedAsync objItem)
                 {
-                    if (prop is IHasLockObject objHasLock)
+                    if (objItem is IHasLockObject objHasLock)
                     {
                         try
                         {
                             using (objHasLock.LockObject.EnterWriteLock())
-                                prop.PropertyChanged += item_ChangedEvent;
+                                objItem.PropertyChangedAsync += item_ChangedEventAsync;
                         }
                         catch (ObjectDisposedException)
                         {
@@ -749,7 +749,24 @@ namespace Chummer.Controls.Shared
                         }
                     }
                     else
-                        prop.PropertyChanged += item_ChangedEvent;
+                        objItem.PropertyChangedAsync += item_ChangedEventAsync;
+                }
+                else if (item is INotifyPropertyChanged objItem2)
+                {
+                    if (objItem2 is IHasLockObject objHasLock)
+                    {
+                        try
+                        {
+                            using (objHasLock.LockObject.EnterWriteLock())
+                                objItem2.PropertyChanged += item_ChangedEvent;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
+                    }
+                    else
+                        objItem2.PropertyChanged += item_ChangedEvent;
                 }
             }
 
@@ -767,15 +784,18 @@ namespace Chummer.Controls.Shared
                 try
                 {
                     await objReturn.CreateControlAsync(blnAddControlAfterCreation, token).ConfigureAwait(false);
-                    switch (item)
+                    if (item is INotifyPropertyChangedAsync objItem)
                     {
-                        case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
+                        if (objItem is IHasLockObject objHasLock)
+                        {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
                                 try
                                 {
-                                    prop.PropertyChangedAsync += objReturn.item_ChangedEventAsync;
+                                    token.ThrowIfCancellationRequested();
+                                    objItem.PropertyChangedAsync += objReturn.item_ChangedEventAsync;
                                 }
                                 finally
                                 {
@@ -786,18 +806,22 @@ namespace Chummer.Controls.Shared
                             {
                                 // swallow this
                             }
-
-                            break;
-                        case INotifyPropertyChangedAsync prop:
-                            prop.PropertyChangedAsync += objReturn.item_ChangedEventAsync;
-                            break;
-                        case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
+                        }
+                        else
+                            objItem.PropertyChangedAsync += objReturn.item_ChangedEventAsync;
+                    }
+                    else if (item is INotifyPropertyChanged objItem2)
+                    {
+                        if (objItem2 is IHasLockObject objHasLock)
+                        {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
                                 try
                                 {
-                                    prop2.PropertyChanged += objReturn.item_ChangedEvent;
+                                    token.ThrowIfCancellationRequested();
+                                    objItem2.PropertyChanged += objReturn.item_ChangedEvent;
                                 }
                                 finally
                                 {
@@ -808,11 +832,9 @@ namespace Chummer.Controls.Shared
                             {
                                 // swallow this
                             }
-
-                            break;
-                        case INotifyPropertyChanged prop2:
-                            prop2.PropertyChanged += objReturn.item_ChangedEvent;
-                            break;
+                        }
+                        else
+                            objItem2.PropertyChanged += objReturn.item_ChangedEvent;
                     }
                 }
                 catch
@@ -1090,38 +1112,39 @@ namespace Chummer.Controls.Shared
                 Control objControl = Interlocked.Exchange(ref _control, null);
                 if (objControl != null)
                 {
-                    switch (Item)
+                    if (Item is INotifyPropertyChangedAsync objItem)
                     {
-                        case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
+                        if (objItem is IHasLockObject objHasLock)
+                        {
                             try
                             {
                                 using (objHasLock.LockObject.EnterWriteLock())
-                                    prop.PropertyChangedAsync -= item_ChangedEventAsync;
+                                    objItem.PropertyChangedAsync -= item_ChangedEventAsync;
                             }
                             catch (ObjectDisposedException)
                             {
                                 // swallow this
                             }
-
-                            break;
-                        case INotifyPropertyChangedAsync prop:
-                            prop.PropertyChangedAsync -= item_ChangedEventAsync;
-                            break;
-                        case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
+                        }
+                        else
+                            objItem.PropertyChangedAsync -= item_ChangedEventAsync;
+                    }
+                    else if (Item is INotifyPropertyChanged objItem2)
+                    {
+                        if (objItem2 is IHasLockObject objHasLock)
+                        {
                             try
                             {
                                 using (objHasLock.LockObject.EnterWriteLock())
-                                    prop2.PropertyChanged -= item_ChangedEvent;
+                                    objItem2.PropertyChanged -= item_ChangedEvent;
                             }
                             catch (ObjectDisposedException)
                             {
                                 // swallow this
                             }
-
-                            break;
-                        case INotifyPropertyChanged prop2:
-                            prop2.PropertyChanged -= item_ChangedEvent;
-                            break;
+                        }
+                        else
+                            objItem2.PropertyChanged -= item_ChangedEvent;
                     }
                     _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Remove(objControl));
                     objControl.DoThreadSafe(x => x.Dispose());
@@ -1134,15 +1157,18 @@ namespace Chummer.Controls.Shared
                 Control objControl = Interlocked.Exchange(ref _control, null);
                 if (objControl != null)
                 {
-                    switch (Item)
+                    if (Item is INotifyPropertyChangedAsync objItem)
                     {
-                        case INotifyPropertyChangedAsync prop when prop is IHasLockObject objHasLock:
+                        if (objItem is IHasLockObject objHasLock)
+                        {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
                                 try
                                 {
-                                    prop.PropertyChangedAsync -= item_ChangedEventAsync;
+                                    token.ThrowIfCancellationRequested();
+                                    objItem.PropertyChangedAsync -= item_ChangedEventAsync;
                                 }
                                 finally
                                 {
@@ -1153,18 +1179,22 @@ namespace Chummer.Controls.Shared
                             {
                                 // swallow this
                             }
-
-                            break;
-                        case INotifyPropertyChangedAsync prop:
-                            prop.PropertyChangedAsync -= item_ChangedEventAsync;
-                            break;
-                        case INotifyPropertyChanged prop2 when prop2 is IHasLockObject objHasLock:
+                        }
+                        else
+                            objItem.PropertyChangedAsync -= item_ChangedEventAsync;
+                    }
+                    else if (Item is INotifyPropertyChanged objItem2)
+                    {
+                        if (objItem2 is IHasLockObject objHasLock)
+                        {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
                                 try
                                 {
-                                    prop2.PropertyChanged -= item_ChangedEvent;
+                                    token.ThrowIfCancellationRequested();
+                                    objItem2.PropertyChanged -= item_ChangedEvent;
                                 }
                                 finally
                                 {
@@ -1175,11 +1205,9 @@ namespace Chummer.Controls.Shared
                             {
                                 // swallow this
                             }
-
-                            break;
-                        case INotifyPropertyChanged prop2:
-                            prop2.PropertyChanged -= item_ChangedEvent;
-                            break;
+                        }
+                        else
+                            objItem2.PropertyChanged -= item_ChangedEvent;
                     }
 
                     await _parent.DisplayPanel.DoThreadSafeAsync(x => x.Controls.Remove(objControl), token: token).ConfigureAwait(false);

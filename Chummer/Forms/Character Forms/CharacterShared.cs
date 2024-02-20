@@ -10235,8 +10235,10 @@ namespace Chummer
                     throw;
                 }
 
-                tskNew = Utils.RunInEmptyExecutionContext(
-                    () => Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken));
+                tskNew = blnAlsoProcessUpdate
+                    ? Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken)
+                    : Utils.RunInEmptyExecutionContext(
+                        () => Task.Run(() => DoUpdateCharacterInfo(objNewToken), objNewToken));
 
                 if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, tskTemp) != tskTemp)
                 {

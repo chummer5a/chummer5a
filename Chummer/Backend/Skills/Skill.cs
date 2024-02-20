@@ -3699,8 +3699,7 @@ namespace Chummer.Backend.Skills
 
         public void CopyInternalId(Skill objOtherSkill)
         {
-            using (objOtherSkill.LockObject.EnterReadLock())
-                Id = objOtherSkill.Id;
+            Id = objOtherSkill.Id;
         }
 
         public Guid SourceID => SkillId;

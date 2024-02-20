@@ -1139,7 +1139,7 @@ namespace Chummer
                 bool blnDoUnlock;
                 try
                 {
-                    blnDoUnlock = objCurrentHelper.ActiveUpgradeableReaderSemaphore.CurrentCount == 0;
+                    blnDoUnlock = objCurrentHelper != null && objCurrentHelper.ActiveUpgradeableReaderSemaphore.CurrentCount == 0;
                 }
                 catch
                 {
@@ -1356,7 +1356,7 @@ namespace Chummer
                 bool blnDoUnlock;
                 try
                 {
-                    blnDoUnlock = objCurrentHelper.ActiveWriterSemaphore.CurrentCount == 0;
+                    blnDoUnlock = objCurrentHelper != null && objCurrentHelper.ActiveWriterSemaphore.CurrentCount == 0;
                 }
                 catch
                 {
