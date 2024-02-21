@@ -855,11 +855,13 @@ namespace Chummer.Backend.Equipment
                 value = Math.Min(value, MaximumRating);
                 if (Interlocked.Exchange(ref _intRating, value) != value)
                 {
-                    if (Equipped && Parent.Equipped && _objCharacter != null)
+                    if (Equipped && Parent.Equipped && _objCharacter != null &&
+                        (Weight.ContainsAny("FixedValues", "Rating") ||
+                         GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"))))
                     {
-                        if (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))
-                            _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                     }
+
                     if (GearChildren.Count > 0)
                     {
                         foreach (Gear objChild in GearChildren)

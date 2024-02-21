@@ -5422,7 +5422,7 @@ namespace Chummer.Backend.Equipment
                 {
                     objParentNode.Nodes.Add(objChildNode);
                     if (objChild.ParentID != InternalId ||
-                        this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("gears/@startcollapsed")?.Value !=
+                        (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNodeAndCacheExpression("gears/@startcollapsed")?.Value !=
                         bool.TrueString)
                         blnExpandNode = true;
                 }

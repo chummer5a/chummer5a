@@ -4259,8 +4259,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                         {
-                            if (WirelessBonus != null &&
-                                WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
+                            if (WirelessBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
                                 "replace")
                             {
                                 await ImprovementManager.DisableImprovementsAsync(_objCharacter,
@@ -4324,8 +4323,7 @@ namespace Chummer.Backend.Equipment
 
                             if (intCount % 2 == 1)
                             {
-                                if (WirelessPairBonus != null &&
-                                    WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)
+                                if (WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)
                                         ?.Value == "replace")
                                 {
                                     await ImprovementManager.DisableImprovementsAsync(_objCharacter,
@@ -9797,8 +9795,7 @@ namespace Chummer.Backend.Equipment
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
                                                                          objLoopCyberware.InternalId + "WirelessPair",
                                                                          token).ConfigureAwait(false);
-                        if (objLoopCyberware.WirelessPairBonus != null
-                            && objLoopCyberware.WirelessPairBonus
+                        if (objLoopCyberware.WirelessPairBonus?
                                 .SelectSingleNodeAndCacheExpressionAsNavigator(
                                     "@mode", token)?.Value == "replace")
                         {

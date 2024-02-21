@@ -1276,7 +1276,6 @@ namespace Chummer.Backend.Skills
                                     // This is faster than doing the initialize first and then loading of all our skills afterwards
                                     using (_ = Timekeeper.StartSyncron("load_char_skills_initialize", opLoadCharSkills))
                                     {
-                                        bool blnDoInitialize;
                                         token.ThrowIfCancellationRequested();
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverload
@@ -1293,6 +1292,7 @@ namespace Chummer.Backend.Skills
                                             else
                                                 objLockerAsync2 = await _objSkillsInitializerLock
                                                     .EnterReadLockAsync(token).ConfigureAwait(false);
+                                            bool blnDoInitialize;
                                             try
                                             {
                                                 token.ThrowIfCancellationRequested();

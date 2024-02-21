@@ -3569,12 +3569,10 @@ namespace Chummer.Backend.Equipment
                 strReturn = Damage;
 
             // Translate the Damage Code.
-            strReturn = blnSync
+            return blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? ReplaceDamageStrings(strReturn, strLanguage, token)
                 : await ReplaceDamageStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
-
-            return strReturn;
         }
 
         public static string ReplaceDamageStrings(string strInput, string strLanguage,
@@ -8242,7 +8240,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && Parent?.WirelessOn != false)
                 {
-                    if (WirelessBonus != null && WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
+                    if (WirelessBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(
@@ -8259,7 +8257,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus != null && WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
+                    if (WirelessBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(

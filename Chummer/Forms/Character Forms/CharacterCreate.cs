@@ -15044,8 +15044,7 @@ namespace Chummer
                             XPathNavigator xmlCyberware
                                 = await objCyberware.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                             HashSet<string> setDisallowedGrades = null;
-                            if (xmlCyberware != null
-                                && xmlCyberware.SelectSingleNodeAndCacheExpression("bannedgrades", token) != null)
+                            if (xmlCyberware?.SelectSingleNodeAndCacheExpression("bannedgrades", token) != null)
                             {
                                 setDisallowedGrades = new HashSet<string>();
                                 foreach (XPathNavigator objNode in xmlCyberware

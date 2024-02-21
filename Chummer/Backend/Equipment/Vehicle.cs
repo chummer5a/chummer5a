@@ -4788,10 +4788,11 @@ namespace Chummer.Backend.Equipment
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Populate the list of Vehicle Locations.
-            await Locations.ForEachAsync(async objLocation =>
-            {
-                lstChildNodes.Add(await objLocation.CreateTreeNode(cmsVehicleLocation, token).ConfigureAwait(false));
-            }, token).ConfigureAwait(false);
+            await Locations
+                .ForEachAsync(
+                    async objLocation =>
+                        lstChildNodes.Add(await objLocation.CreateTreeNode(cmsVehicleLocation, token)
+                            .ConfigureAwait(false)), token).ConfigureAwait(false);
 
             // VehicleMods.
             await Mods.ForEachAsync(async objMod =>

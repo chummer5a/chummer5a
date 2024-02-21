@@ -7890,7 +7890,7 @@ namespace Chummer
                                          .ConfigureAwait(false) is Lifestyle objLifestyle))
                     return;
 
-                objLifestyle.BuyExtraMonth();
+                await objLifestyle.BuyExtraMonth(GenericToken).ConfigureAwait(false);
 
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
