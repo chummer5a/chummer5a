@@ -88,6 +88,7 @@ Data Changes:
 - Fixed Evo Proletarian not properly getting the Rigger Interface mod.
 - Fixed Spirit Hunter rank 2 and 3 not correctly requiring Astral Combat 6/8 for Adepts. Closes #5093
 - Fixed Wildcard Chimera, It Works If You Work It and Metaviral Attunement qualities not properly requiring Infected qualities. Closes #5104
+- Changed 'unknown' Spell category to 'other' on sheets. Closes #5096
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
