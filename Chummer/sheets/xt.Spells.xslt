@@ -78,7 +78,7 @@
               <xsl:value-of select="$lang.Rituals" />
             </xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="$lang.Unknown" />
+              <xsl:value-of select="$lang.Other" />
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
