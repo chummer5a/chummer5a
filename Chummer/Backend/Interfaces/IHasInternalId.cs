@@ -44,7 +44,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treGear == null)
                 return;
@@ -150,46 +150,49 @@ namespace Chummer
 
             async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objGear.CreateTreeNode(cmsGear, cmsCustomGear);
-                if (objNode == null)
-                    return;
-                if (objGear.Location == null)
+                TreeNode objNode = await objGear.CreateTreeNode(cmsGear, cmsCustomGear, token).ConfigureAwait(false);
+                if (objNode != null)
                 {
-                    await treGear.DoThreadSafeAsync(() =>
+                    if (objGear.Location == null)
                     {
-                        if (intIndex >= 0)
-                            nodParent.Nodes.Insert(intIndex, objNode);
-                        else
-                            nodParent.Nodes.Add(objNode);
-                        nodParent.Expand();
-                    }, token: token).ConfigureAwait(false);
-                }
-                else
-                {
-                    await treGear.DoThreadSafeAsync(() =>
-                    {
-                        TreeNode nodLocation = nodParent.FindNodeByTag(objGear.Location, false);
-                        if (nodLocation != null)
-                        {
-                            if (intIndex >= 0)
-                                nodLocation.Nodes.Insert(intIndex, objNode);
-                            else
-                                nodLocation.Nodes.Add(objNode);
-                            nodLocation.Expand();
-                        }
-                        // Location Updating should be part of a separate method, so just add to parent instead
-                        else
+                        await treGear.DoThreadSafeAsync(() =>
                         {
                             if (intIndex >= 0)
                                 nodParent.Nodes.Insert(intIndex, objNode);
                             else
                                 nodParent.Nodes.Add(objNode);
                             nodParent.Expand();
-                        }
-                    }, token: token).ConfigureAwait(false);
+                        }, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await treGear.DoThreadSafeAsync(() =>
+                        {
+                            TreeNode nodLocation = nodParent.FindNodeByTag(objGear.Location, false);
+                            if (nodLocation != null)
+                            {
+                                if (intIndex >= 0)
+                                    nodLocation.Nodes.Insert(intIndex, objNode);
+                                else
+                                    nodLocation.Nodes.Add(objNode);
+                                nodLocation.Expand();
+                            }
+                            // Location Updating should be part of a separate method, so just add to parent instead
+                            else
+                            {
+                                if (intIndex >= 0)
+                                    nodParent.Nodes.Insert(intIndex, objNode);
+                                else
+                                    nodParent.Nodes.Add(objNode);
+                                nodParent.Expand();
+                            }
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    if (blnSingleAdd)
+                        await treGear.DoThreadSafeAsync(x => x.SelectedNode = objNode, token: token)
+                            .ConfigureAwait(false);
                 }
-                if (blnSingleAdd)
-                    await treGear.DoThreadSafeAsync(x => x.SelectedNode = objNode, token: token).ConfigureAwait(false);
             }
         }
 
@@ -204,7 +207,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treCyberware == null)
                 return;
@@ -305,22 +308,22 @@ namespace Chummer
                     break;
             }
 
-            Task AddToTree(Cyberware objCyberware, int intIndex = -1, bool blnSingleAdd = true)
+            async ValueTask AddToTree(Cyberware objCyberware, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
-                if (objNode == null)
-                    return Task.CompletedTask;
-
-                return treCyberware.DoThreadSafeAsync(x =>
+                TreeNode objNode = await objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear, token).ConfigureAwait(false);
+                if (objNode != null)
                 {
-                    if (intIndex >= 0)
-                        nodParent.Nodes.Insert(intIndex, objNode);
-                    else
-                        nodParent.Nodes.Add(objNode);
-                    nodParent.Expand();
-                    if (blnSingleAdd)
-                        x.SelectedNode = objNode;
-                }, token: token);
+                    await treCyberware.DoThreadSafeAsync(x =>
+                    {
+                        if (intIndex >= 0)
+                            nodParent.Nodes.Insert(intIndex, objNode);
+                        else
+                            nodParent.Nodes.Add(objNode);
+                        nodParent.Expand();
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                    }, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -335,7 +338,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treWeapons == null)
                 return;
@@ -438,22 +441,22 @@ namespace Chummer
                     }
             }
 
-            Task AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
+            async ValueTask AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-                if (objNode == null)
-                    return Task.CompletedTask;
-
-                return treWeapons.DoThreadSafeAsync(x =>
+                TreeNode objNode = await objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
+                if (objNode != null)
                 {
-                    if (intIndex >= 0)
-                        nodParent.Nodes.Insert(intIndex, objNode);
-                    else
-                        nodParent.Nodes.Add(objNode);
-                    nodParent.Expand();
-                    if (blnSingleAdd)
-                        x.SelectedNode = objNode;
-                }, token: token);
+                    await treWeapons.DoThreadSafeAsync(x =>
+                    {
+                        if (intIndex >= 0)
+                            nodParent.Nodes.Insert(intIndex, objNode);
+                        else
+                            nodParent.Nodes.Add(objNode);
+                        nodParent.Expand();
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                    }, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -470,7 +473,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treWeapons == null)
                 return;
@@ -604,22 +607,22 @@ namespace Chummer
                     }
             }
 
-            Task AddToTree(WeaponAccessory objWeaponAccessory, int intIndex = -1, bool blnSingleAdd = true)
+            async ValueTask AddToTree(WeaponAccessory objWeaponAccessory, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objWeaponAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear);
-                if (objNode == null)
-                    return Task.CompletedTask;
-
-                return treWeapons.DoThreadSafeAsync(x =>
+                TreeNode objNode = await objWeaponAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
+                if (objNode != null)
                 {
-                    if (intIndex >= 0)
-                        nodParent.Nodes.Insert(intIndex, objNode);
-                    else
-                        nodParent.Nodes.Add(objNode);
-                    nodParent.Expand();
-                    if (blnSingleAdd)
-                        x.SelectedNode = objNode;
-                }, token: token);
+                    await treWeapons.DoThreadSafeAsync(x =>
+                    {
+                        if (intIndex >= 0)
+                            nodParent.Nodes.Insert(intIndex, objNode);
+                        else
+                            nodParent.Nodes.Add(objNode);
+                        nodParent.Expand();
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                    }, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -639,7 +642,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (treVehicles == null || e == null)
                 return;
@@ -800,22 +803,22 @@ namespace Chummer
                     }
             }
 
-            Task AddToTree(VehicleMod objVehicleMod, int intIndex = -1, bool blnSingleAdd = true)
+            async ValueTask AddToTree(VehicleMod objVehicleMod, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objVehicleMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                if (objNode == null)
-                    return Task.CompletedTask;
-
-                return treVehicles.DoThreadSafeAsync(x =>
+                TreeNode objNode = await objVehicleMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
+                if (objNode != null)
                 {
-                    if (intIndex >= 0)
-                        nodParent.Nodes.Insert(intIndex, objNode);
-                    else
-                        nodParent.Nodes.Add(objNode);
-                    nodParent.Expand();
-                    if (blnSingleAdd)
-                        x.SelectedNode = objNode;
-                }, token: token);
+                    await treVehicles.DoThreadSafeAsync(x =>
+                    {
+                        if (intIndex >= 0)
+                            nodParent.Nodes.Insert(intIndex, objNode);
+                        else
+                            nodParent.Nodes.Add(objNode);
+                        nodParent.Expand();
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                    }, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -851,7 +854,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, NotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (treVehicles == null || e == null)
                 return;
@@ -1178,7 +1181,7 @@ namespace Chummer
 
             async ValueTask AddToTree(WeaponMount objWeaponMount, int intIndex = -1, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod);
+                TreeNode objNode = await objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod, token).ConfigureAwait(false);
                 if (objNode == null)
                     return;
 

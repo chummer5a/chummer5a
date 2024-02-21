@@ -304,11 +304,14 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsLocation, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                string strText = CurrentDisplayName;
+                token.ThrowIfCancellationRequested();
+                string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
@@ -320,6 +323,10 @@ namespace Chummer
                 };
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -5358,23 +5358,24 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="cmsGear">ContextMenuStrip for the Gear to use.</param>
         /// <param name="cmsCustomGear">ContextMenuStrip for the Gear to use if it can be renamed the way Custom Gear can (in Create mode).</param>
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) &&
-                !_objCharacter.Settings.BookEnabled(Source))
+                !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = CurrentDisplayName,
+                Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
                 ContextMenuStrip = cmsCustomGear != null && AllowRename ? cmsCustomGear : cmsGear,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap()
             };
 
-            BuildChildrenGearTree(objNode, cmsGear, cmsCustomGear);
+            await BuildChildrenGearTree(objNode, cmsGear, cmsCustomGear, token).ConfigureAwait(false);
 
             return objNode;
         }
@@ -5408,28 +5409,30 @@ namespace Chummer.Backend.Equipment
         /// <param name="objParentNode">Parent node to which to append children gear.</param>
         /// <param name="cmsGear">ContextMenuStrip for the Gear's children to use to use.</param>
         /// <param name="cmsCustomGear">ContextMenuStrip for the Gear's children to use if they can be renamed the way Custom Gear can (in Create mode).</param>
-        public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear)
+        public async Task BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objParentNode == null)
                 return;
             bool blnExpandNode = false;
-            foreach (Gear objChild in Children)
+            await Children.ForEachAsync(async objChild =>
             {
-                TreeNode objChildNode = objChild.CreateTreeNode(cmsGear, cmsCustomGear);
+                TreeNode objChildNode = await objChild.CreateTreeNode(cmsGear, cmsCustomGear, token).ConfigureAwait(false);
                 if (objChildNode != null)
                 {
                     objParentNode.Nodes.Add(objChildNode);
                     if (objChild.ParentID != InternalId ||
-                        this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("gears/@startcollapsed")?.Value != bool.TrueString)
+                        this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("gears/@startcollapsed")?.Value !=
+                        bool.TrueString)
                         blnExpandNode = true;
                 }
-            }
+            }, token).ConfigureAwait(false);
 
             if (blnExpandNode)
                 objParentNode.Expand();
         }
 
-        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, ContextMenuStrip cmsCustomGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
+        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, ContextMenuStrip cmsCustomGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
             if (blnAdd)
             {
@@ -5460,7 +5463,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task SetupChildrenGearsCollectionChangedAsync(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, ContextMenuStrip cmsCustomGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
+        public async Task SetupChildrenGearsCollectionChangedAsync(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, ContextMenuStrip cmsCustomGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
         {
             if (blnAdd)
             {

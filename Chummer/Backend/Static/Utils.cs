@@ -2117,9 +2117,10 @@ namespace Chummer
                     Task<T> objSyncTask = lstFuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
+                    T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
-                    return new Tuple<T, int>(objSyncTask.GetAwaiter().GetResult(), i);
+                    return new Tuple<T, int>(objInnerReturn, i);
                 }, x => aobjReturn[x.Item2] = x.Item1);
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
@@ -2178,6 +2179,7 @@ namespace Chummer
                 Task objSyncTask = funcToRun.Invoke();
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
+                objSyncTask.GetAwaiter().GetResult();
                 if (objSyncTask.Exception != null)
                     throw objSyncTask.Exception;
                 return;
@@ -2211,6 +2213,7 @@ namespace Chummer
                 Task objSyncTask = funcToRun.Invoke(token);
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
+                objSyncTask.GetAwaiter().GetResult();
                 if (objSyncTask.Exception != null)
                     throw objSyncTask.Exception;
                 return;
@@ -2280,6 +2283,7 @@ namespace Chummer
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
+                    objSyncTask.GetAwaiter().GetResult();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
                 });
@@ -2364,6 +2368,7 @@ namespace Chummer
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
+                    objSyncTask.GetAwaiter().GetResult();
                     if (objSyncTask.Exception != null)
                         throw objSyncTask.Exception;
                 });

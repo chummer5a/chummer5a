@@ -547,22 +547,29 @@ namespace Chummer
 
         #region Methods
 
-        public TreeNode CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus)
+        public async Task<TreeNode> CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objGear == null)
                 throw new ArgumentNullException(nameof(objGear));
-            using (LockObject.EnterReadLock())
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus, null);
+                TreeNode objNode = await objGear.CreateTreeNode(cmsStackedFocus, null, token).ConfigureAwait(false);
 
                 objNode.Name = InternalId;
-                objNode.Text = LanguageManager.GetString("String_StackedFocus")
-                               + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space")
-                               + CurrentDisplayName;
+                objNode.Text = await LanguageManager.GetStringAsync("String_StackedFocus", token: token).ConfigureAwait(false)
+                               + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
+                               + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                               + await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 objNode.Tag = this;
                 objNode.Checked = Bonded;
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -4770,15 +4770,16 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsVehicleWeaponMount">ContextMenuStrip for Vehicle Weapon Mounts.</param>
         /// <param name="cmsCyberware">ContextMenuStrip for Cyberware.</param>
         /// <param name="cmsCyberwareGear">ContextMenuStrip for Gear in Cyberware.</param>
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, CancellationToken token = default)
         {
-            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = CurrentDisplayName,
+                Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
                 ContextMenuStrip = cmsVehicle,
                 ForeColor = PreferredColor,
@@ -4787,44 +4788,47 @@ namespace Chummer.Backend.Equipment
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Populate the list of Vehicle Locations.
-            foreach (Location objLocation in Locations)
+            await Locations.ForEachAsync(async objLocation =>
             {
-                lstChildNodes.Add(objLocation.CreateTreeNode(cmsVehicleLocation));
-            }
+                lstChildNodes.Add(await objLocation.CreateTreeNode(cmsVehicleLocation, token).ConfigureAwait(false));
+            }, token).ConfigureAwait(false);
 
             // VehicleMods.
-            foreach (VehicleMod objMod in Mods)
+            await Mods.ForEachAsync(async objMod =>
             {
-                TreeNode objLoopNode = objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                TreeNode objLoopNode = await objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear,
+                    cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
-            }
-            if (WeaponMounts.Count > 0)
+            }, token).ConfigureAwait(false);
+            if (await WeaponMounts.GetCountAsync(token).ConfigureAwait(false) > 0)
             {
                 TreeNode nodMountsNode = new TreeNode
                 {
                     Tag = "String_WeaponMounts",
-                    Text = LanguageManager.GetString("String_WeaponMounts")
+                    Text = await LanguageManager.GetStringAsync("String_WeaponMounts", token: token).ConfigureAwait(false)
                 };
 
                 // Weapon Mounts
-                foreach (WeaponMount objWeaponMount in WeaponMounts)
+                await WeaponMounts.ForEachAsync(async objWeaponMount =>
                 {
-                    TreeNode objLoopNode = objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle);
+                    TreeNode objLoopNode = await objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon,
+                        cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle, token).ConfigureAwait(false);
                     if (objLoopNode != null)
                     {
                         nodMountsNode.Nodes.Add(objLoopNode);
                         nodMountsNode.Expand();
                     }
-                }
+                }, token).ConfigureAwait(false);
 
                 if (nodMountsNode.Nodes.Count > 0)
                     lstChildNodes.Add(nodMountsNode);
             }
             // Vehicle Weapons (not attached to a mount).
-            foreach (Weapon objWeapon in Weapons)
+            await Weapons.ForEachAsync(async objWeapon =>
             {
-                TreeNode objLoopNode = objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                TreeNode objLoopNode = await objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsWeaponAccessory,
+                    cmsWeaponAccessoryGear, token).ConfigureAwait(false);
                 if (objLoopNode != null)
                 {
                     TreeNode objParent = objNode;
@@ -4832,7 +4836,8 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (TreeNode objFind in lstChildNodes)
                         {
-                            if (objFind.Tag != objWeapon.Location) continue;
+                            if (objFind.Tag != objWeapon.Location)
+                                continue;
                             objParent = objFind;
                             break;
                         }
@@ -4841,12 +4846,12 @@ namespace Chummer.Backend.Equipment
                     objParent.Nodes.Add(objLoopNode);
                     objParent.Expand();
                 }
-            }
+            }, token).ConfigureAwait(false);
 
             // Vehicle Gear.
-            foreach (Gear objGear in GearChildren)
+            await GearChildren.ForEachAsync(async objGear =>
             {
-                TreeNode objLoopNode = objGear.CreateTreeNode(cmsVehicleGear, null);
+                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsVehicleGear, null, token).ConfigureAwait(false);
                 if (objLoopNode != null)
                 {
                     TreeNode objParent = objNode;
@@ -4854,7 +4859,8 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (TreeNode objFind in lstChildNodes)
                         {
-                            if (objFind.Tag != objGear.Location) continue;
+                            if (objFind.Tag != objGear.Location)
+                                continue;
                             objParent = objFind;
                             break;
                         }
@@ -4863,7 +4869,7 @@ namespace Chummer.Backend.Equipment
                     objParent.Nodes.Add(objLoopNode);
                     objParent.Expand();
                 }
-            }
+            }, token).ConfigureAwait(false);
 
             if (lstChildNodes.Count > 0)
                 objNode.Expand();

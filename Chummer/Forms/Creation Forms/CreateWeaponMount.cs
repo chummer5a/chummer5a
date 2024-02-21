@@ -149,16 +149,17 @@ namespace Chummer
                         Tag = "Node_AdditionalMods",
                         Text = await LanguageManager.GetStringAsync("Node_AdditionalMods", token: _objGenericToken).ConfigureAwait(false)
                     };
+                    await _objMount.Mods.ForEachAsync(async objMod =>
+                    {
+                        TreeNode objLoopNode =
+                            await objMod.CreateTreeNode(null, null, null, null, null, null, _objGenericToken).ConfigureAwait(false);
+                        if (objLoopNode != null)
+                            objModsParentNode.Nodes.Add(objLoopNode);
+                    }, _objGenericToken).ConfigureAwait(false);
                     await treMods.DoThreadSafeAsync(x =>
                     {
                         x.Nodes.Add(objModsParentNode);
                         objModsParentNode.Expand();
-                        foreach (VehicleMod objMod in _objMount.Mods)
-                        {
-                            TreeNode objLoopNode = objMod.CreateTreeNode(null, null, null, null, null, null);
-                            if (objLoopNode != null)
-                                objModsParentNode.Nodes.Add(objLoopNode);
-                        }
                     }, _objGenericToken).ConfigureAwait(false);
                     await _lstMods.AddRangeAsync(_objMount.Mods, _objGenericToken).ConfigureAwait(false);
 
@@ -945,7 +946,7 @@ namespace Chummer
                             await _lstMods.AddAsync(objMod, token).ConfigureAwait(false);
                             intSlots += await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false);
 
-                            TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
+                            TreeNode objNewNode = await objMod.CreateTreeNode(null, null, null, null, null, null, token).ConfigureAwait(false);
 
                             if (objModsParentNode == null)
                             {

@@ -3044,21 +3044,22 @@ namespace Chummer
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
                             Interlocked.Add(ref intNewIndex, funcOffset.Invoke());
-                        await treSelected.DoThreadSafeAsync(x =>
+                        foreach (Location objLocation in e.NewItems)
                         {
-                            foreach (Location objLocation in e.NewItems)
+                            TreeNode objNode = await objLocation.CreateTreeNode(cmsLocation, token).ConfigureAwait(false);
+                            await treSelected.DoThreadSafeAsync(x =>
                             {
                                 int index = Interlocked.Increment(ref intNewIndex) - 1;
                                 if (rootSibling)
                                 {
-                                    x.Nodes.Insert(index, objLocation.CreateTreeNode(cmsLocation));
+                                    x.Nodes.Insert(index, objNode);
                                 }
                                 else
                                 {
-                                    nodRoot.Nodes.Insert(index, objLocation.CreateTreeNode(cmsLocation));
+                                    nodRoot.Nodes.Insert(index, objNode);
                                 }
-                            }
-                        }, token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
+                        }
                     }
                         break;
 
@@ -3258,11 +3259,14 @@ namespace Chummer
 
                         // Start by populating Locations.
                         await CharacterObject.WeaponLocations
-                                             .ForEachAsync(
-                                                 objLocation =>
-                                                     treWeapons.DoThreadSafeAsync(
-                                                         x => x.Nodes.Add(objLocation.CreateTreeNode(cmsWeaponLocation)),
-                                                         token), token).ConfigureAwait(false);
+                            .ForEachAsync(
+                                async objLocation =>
+                                {
+                                    TreeNode objNode = await objLocation.CreateTreeNode(cmsWeaponLocation, token).ConfigureAwait(false);
+                                    await treWeapons.DoThreadSafeAsync(
+                                        x => x.Nodes.Add(objNode),
+                                        token).ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
 
                         await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async objWeapon =>
                         {
@@ -3380,9 +3384,9 @@ namespace Chummer
                     }
                 }
 
-                async Task AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
                 {
-                    TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    TreeNode objNode = await objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
                     if (objNode == null)
                         return;
                     TreeNode nodParent = null;
@@ -3500,11 +3504,14 @@ namespace Chummer
 
                         // Start by populating Locations.
                         await CharacterObject.ArmorLocations
-                                             .ForEachAsync(
-                                                 objLocation =>
-                                                     treArmor.DoThreadSafeAsync(
-                                                         x => x.Nodes.Add(objLocation.CreateTreeNode(cmsArmorLocation)),
-                                                         token), token).ConfigureAwait(false);
+                            .ForEachAsync(
+                                async objLocation =>
+                                {
+                                    TreeNode objNode = await objLocation.CreateTreeNode(cmsArmorLocation, token).ConfigureAwait(false);
+                                    await treArmor.DoThreadSafeAsync(
+                                        x => x.Nodes.Add(objNode),
+                                        token).ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
 
                         // Add Armor.
                         await CharacterObject.Armor.ForEachWithSideEffectsAsync(async objArmor =>
@@ -3843,9 +3850,9 @@ namespace Chummer
                     }
                 }
 
-                async Task AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Armor objArmor, int intIndex = -1, bool blnSingleAdd = true)
                 {
-                    TreeNode objNode = objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear);
+                    TreeNode objNode = await objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear, token).ConfigureAwait(false);
                     if (objNode == null)
                         return;
                     TreeNode nodParent = null;
@@ -4058,22 +4065,22 @@ namespace Chummer
                     }
                 }
 
-                Task AddToTree(ArmorMod objArmorMod, int intIndex = -1, bool blnSingleAdd = true)
+                async ValueTask AddToTree(ArmorMod objArmorMod, int intIndex = -1, bool blnSingleAdd = true)
                 {
-                    TreeNode objNode = objArmorMod.CreateTreeNode(cmsArmorMod, cmsArmorGear);
-                    if (objNode == null)
-                        return Task.CompletedTask;
-
-                    return treArmor.DoThreadSafeAsync(x =>
+                    TreeNode objNode = await objArmorMod.CreateTreeNode(cmsArmorMod, cmsArmorGear, token).ConfigureAwait(false);
+                    if (objNode != null)
                     {
-                        if (intIndex >= 0)
-                            nodArmor.Nodes.Insert(intIndex, objNode);
-                        else
-                            nodArmor.Nodes.Add(objNode);
-                        nodArmor.Expand();
-                        if (blnSingleAdd)
-                            x.SelectedNode = objNode;
-                    }, token);
+                        await treArmor.DoThreadSafeAsync(x =>
+                        {
+                            if (intIndex >= 0)
+                                nodArmor.Nodes.Insert(intIndex, objNode);
+                            else
+                                nodArmor.Nodes.Add(objNode);
+                            nodArmor.Expand();
+                            if (blnSingleAdd)
+                                x.SelectedNode = objNode;
+                        }, token).ConfigureAwait(false);
+                    }
                 }
             }
             finally
@@ -4125,11 +4132,14 @@ namespace Chummer
 
                         // Start by populating Locations.
                         await CharacterObject.GearLocations
-                                             .ForEachAsync(
-                                                 objLocation =>
-                                                     treGear.DoThreadSafeAsync(
-                                                         x => x.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation)),
-                                                         token), token).ConfigureAwait(false);
+                            .ForEachAsync(
+                                async objLocation =>
+                                {
+                                    TreeNode objNode = await objLocation.CreateTreeNode(cmsGearLocation, token).ConfigureAwait(false);
+                                    await treGear.DoThreadSafeAsync(
+                                        x => x.Nodes.Add(objNode),
+                                        token).ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
 
                         // Add Gear.
                         await CharacterObject.Gear.ForEachWithSideEffectsAsync(async objGear =>
@@ -4222,7 +4232,7 @@ namespace Chummer
                     }
                 }
 
-                async Task AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     if (blnCommlinksOnly && !await objGear.GetIsCommlinkAsync(token).ConfigureAwait(false))
                         return;
@@ -4230,7 +4240,7 @@ namespace Chummer
                     if (blnHideLoadedAmmo && objGear.LoadedIntoClip != null)
                         return;
 
-                    TreeNode objNode = objGear.CreateTreeNode(cmsGear, cmsCustomGear);
+                    TreeNode objNode = await objGear.CreateTreeNode(cmsGear, cmsCustomGear, token).ConfigureAwait(false);
                     if (objNode == null)
                         return;
                     TreeNode nodParent = null;
@@ -4561,11 +4571,17 @@ namespace Chummer
                 {
                     if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceHoleGUID)
                     {
+                        bool blnAddHoleNode = false;
+                        if (objHoleNode == null)
+                        {
+                            blnAddHoleNode = true;
+                            objHoleNode = await objCyberware.CreateTreeNode(null, null, token).ConfigureAwait(false);
+                        }
+
                         await treCyberware.DoThreadSafeAsync(x =>
                         {
-                            if (objHoleNode == null)
+                            if (blnAddHoleNode)
                             {
-                                objHoleNode = objCyberware.CreateTreeNode(null, null);
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objHoleNode);
                             }
@@ -4578,11 +4594,17 @@ namespace Chummer
 
                     if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceAntiHoleGUID)
                     {
+                        bool blnAddAntiHoleNode = false;
+                        if (objAntiHoleNode == null)
+                        {
+                            blnAddAntiHoleNode = true;
+                            objAntiHoleNode = await objCyberware.CreateTreeNode(null, null, token).ConfigureAwait(false);
+                        }
+
                         await treCyberware.DoThreadSafeAsync(x =>
                         {
-                            if (objAntiHoleNode == null)
+                            if (blnAddAntiHoleNode)
                             {
-                                objAntiHoleNode = objCyberware.CreateTreeNode(null, null);
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objAntiHoleNode);
                             }
@@ -4593,7 +4615,7 @@ namespace Chummer
                         return;
                     }
 
-                    TreeNode objNode = objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear);
+                    TreeNode objNode = await objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear, token).ConfigureAwait(false);
                     if (objNode == null)
                         return;
 
@@ -4872,11 +4894,14 @@ namespace Chummer
 
                         // Start by populating Locations.
                         await CharacterObject.VehicleLocations
-                                             .ForEachAsync(
-                                                 objLocation =>
-                                                     treVehicles.DoThreadSafeAsync(
-                                                         x => x.Nodes.Add(objLocation.CreateTreeNode(cmsVehicleLocation)),
-                                                         token), token).ConfigureAwait(false);
+                            .ForEachAsync(
+                                async objLocation =>
+                                {
+                                    TreeNode objNode = await objLocation.CreateTreeNode(cmsVehicleLocation, token).ConfigureAwait(false);
+                                    await treVehicles.DoThreadSafeAsync(
+                                        x => x.Nodes.Add(objNode),
+                                        token).ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
 
                         // Add Vehicles.
                         await CharacterObject.Vehicles.ForEachWithSideEffectsAsync(async objVehicle =>
@@ -5883,13 +5908,13 @@ namespace Chummer
                     }
                 }
 
-                async Task AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
                 {
-                    TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon,
-                                                                 cmsVehicleWeaponAccessory,
-                                                                 cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
-                                                                 cmsVehicleWeaponMount,
-                                                                 cmsCyberware, cmsCyberwareGear);
+                    TreeNode objNode = await objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon,
+                        cmsVehicleWeaponAccessory,
+                        cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
+                        cmsVehicleWeaponMount,
+                        cmsCyberware, cmsCyberwareGear, token).ConfigureAwait(false);
                     if (objNode == null)
                         return;
 
@@ -5969,7 +5994,7 @@ namespace Chummer
                                 case "Foci":
                                 case "Metamagic Foci":
                                 {
-                                    TreeNode objNode = objGear.CreateTreeNode(cmsFocus, null);
+                                    TreeNode objNode = await objGear.CreateTreeNode(cmsFocus, null, token).ConfigureAwait(false);
                                     if (objNode == null)
                                         return;
                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
@@ -6038,7 +6063,7 @@ namespace Chummer
                                                 }
                                             }
 
-                                            await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false)
+                                            await AddToTree(await objStack.CreateTreeNode(objGear, cmsFocus, token).ConfigureAwait(false), false)
                                                 .ConfigureAwait(false);
                                         }
                                     }, token).ConfigureAwait(false);
@@ -6084,7 +6109,7 @@ namespace Chummer
                                     case "Foci":
                                     case "Metamagic Foci":
                                     {
-                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus, null);
+                                        TreeNode objNode = await objGear.CreateTreeNode(cmsFocus, null, token).ConfigureAwait(false);
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
@@ -6163,7 +6188,7 @@ namespace Chummer
                                                     }
                                                 }
 
-                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus))
+                                                await AddToTree(await objStack.CreateTreeNode(objGear, cmsFocus, token).ConfigureAwait(false))
                                                     .ConfigureAwait(false);
                                             }
                                         }, token).ConfigureAwait(false);
@@ -6301,7 +6326,7 @@ namespace Chummer
                                     case "Foci":
                                     case "Metamagic Foci":
                                     {
-                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus, null);
+                                        TreeNode objNode = await objGear.CreateTreeNode(cmsFocus, null, token).ConfigureAwait(false);
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
@@ -6380,7 +6405,7 @@ namespace Chummer
                                                     }
                                                 }
 
-                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus))
+                                                await AddToTree(await objStack.CreateTreeNode(objGear, cmsFocus, token).ConfigureAwait(false))
                                                     .ConfigureAwait(false);
                                             }
                                         }, token).ConfigureAwait(false);

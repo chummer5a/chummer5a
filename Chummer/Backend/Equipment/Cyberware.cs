@@ -10012,20 +10012,21 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Build up the Tree for the current piece of Cyberware and all of its children.
         /// </summary>
-        /// <param name="cmsCyberware">ContextMenuStrip that the new Cyberware TreeNodes should use.</param>
-        /// <param name="cmsGear">ContextMenuStrip that the new Gear TreeNodes should use.</param>
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsCyberware, ContextMenuStrip cmsGear)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsCyberware, ContextMenuStrip cmsGear, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) &&
-                    !_objCharacter.Settings.BookEnabled(Source))
+                    !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = CurrentDisplayName,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsCyberware,
                     ForeColor = PreferredColor,
@@ -10033,24 +10034,28 @@ namespace Chummer.Backend.Equipment
                 };
 
                 TreeNodeCollection lstChildNodes = objNode.Nodes;
-                foreach (Cyberware objChild in Children)
+                await Children.ForEachAsync(async objChild =>
                 {
-                    TreeNode objLoopNode = objChild.CreateTreeNode(cmsCyberware, cmsGear);
+                    TreeNode objLoopNode = await objChild.CreateTreeNode(cmsCyberware, cmsGear, token).ConfigureAwait(false);
                     if (objLoopNode != null)
                         lstChildNodes.Add(objLoopNode);
-                }
+                }, token).ConfigureAwait(false);
 
-                foreach (Gear objGear in GearChildren)
+                await GearChildren.ForEachAsync(async objGear =>
                 {
-                    TreeNode objLoopNode = objGear.CreateTreeNode(cmsGear, null);
+                    TreeNode objLoopNode = await objGear.CreateTreeNode(cmsGear, null, token).ConfigureAwait(false);
                     if (objLoopNode != null)
                         lstChildNodes.Add(objLoopNode);
-                }
+                }, token).ConfigureAwait(false);
 
                 if (lstChildNodes.Count > 0)
                     objNode.Expand();
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10075,7 +10080,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public void SetupChildrenCyberwareCollectionChanged(bool blnAdd, TreeView treCyberware,
-            ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
+            ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null, AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
             if (blnAdd)
             {
@@ -10130,7 +10135,7 @@ namespace Chummer.Backend.Equipment
 
         public async Task SetupChildrenCyberwareCollectionChangedAsync(bool blnAdd, TreeView treCyberware,
             ContextMenuStrip cmsCyberware = null, ContextMenuStrip cmsCyberwareGear = null,
-            NotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
+            AsyncNotifyCollectionChangedEventHandler funcMakeDirty = null, CancellationToken token = default)
         {
             if (blnAdd)
             {
