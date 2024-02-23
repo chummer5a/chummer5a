@@ -4943,16 +4943,16 @@ namespace Chummer.Backend.Equipment
                 {
                     return objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
                                .Sum(x => x.TotalCost + x.DeleteWeapon())
-                           + objVehicle.Mods.Sum(objMod =>
+                           + objVehicle.Mods.AsEnumerableWithSideEffects().Sum(objMod =>
                            {
                                return objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
                                    .Sum(x => x.TotalCost + x.DeleteWeapon());
                            })
-                           + objVehicle.WeaponMounts.Sum(objMount =>
+                           + objVehicle.WeaponMounts.AsEnumerableWithSideEffects().Sum(objMount =>
                            {
                                return objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId)
                                           .ToList().Sum(x => x.TotalCost + x.DeleteWeapon())
-                                      + objMount.Mods.Sum(objMod =>
+                                      + objMount.Mods.AsEnumerableWithSideEffects().Sum(objMod =>
                                       {
                                           return objMod.Weapons
                                               .DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
