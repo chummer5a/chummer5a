@@ -4191,6 +4191,9 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
                         return false;
+                    LifestyleQualities.AsEnumerableWithSideEffects().ForEach(x => ImprovementManager.RemoveImprovements(
+                        _objCharacter,
+                        Improvement.ImprovementSource.Quality, x.InternalId));
                 }
             }
 
@@ -4215,6 +4218,10 @@ namespace Chummer.Backend.Equipment
                     if (await _objCharacter.Lifestyles.ContainsAsync(this, token).ConfigureAwait(false)
                         && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))
                         return false;
+
+                    await LifestyleQualities.ForEachWithSideEffectsAsync(x => ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.Quality, x.InternalId, token), token: token)
+                        .ConfigureAwait(false);
                 }
                 finally
                 {
