@@ -1791,16 +1791,8 @@ namespace Chummer.Backend.Equipment
             if (blnDoRemoval)
                 Parent.WeaponMounts.Remove(this);
 
-            decimal decReturn = 0;
-
-            foreach (Weapon objLoopWeapon in Weapons)
-            {
-                decReturn += objLoopWeapon.DeleteWeapon(false);
-            }
-            foreach (VehicleMod objLoopMod in Mods)
-            {
-                decReturn += objLoopMod.DeleteVehicleMod(false);
-            }
+            decimal decReturn = Weapons.AsEnumerableWithSideEffects().Sum(x => x.DeleteWeapon(false))
+                                + Mods.AsEnumerableWithSideEffects().Sum(x => x.DeleteVehicleMod(false));
 
             DisposeSelf();
 
@@ -1813,9 +1805,9 @@ namespace Chummer.Backend.Equipment
             if (blnDoRemoval)
                 await Parent.WeaponMounts.RemoveAsync(this, token).ConfigureAwait(false);
 
-            decimal decReturn = await Weapons.SumAsync(x => x.DeleteWeaponAsync(false, token), token)
+            decimal decReturn = await Weapons.SumWithSideEffectsAsync(x => x.DeleteWeaponAsync(false, token), token)
                                              .ConfigureAwait(false)
-                                + await Mods.SumAsync(x => x.DeleteVehicleModAsync(false, token), token)
+                                + await Mods.SumWithSideEffectsAsync(x => x.DeleteVehicleModAsync(false, token), token)
                                             .ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);

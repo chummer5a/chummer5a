@@ -664,5 +664,2425 @@ namespace Chummer
         {
             await ForEachWithSideEffectsParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    intReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    intReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    lngReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    lngReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    fltReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    fltReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    dblReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    dblReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        intReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        intReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        lngReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        lngReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        fltReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        fltReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        dblReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        dblReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        decReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate(objEnumerator.Current))
+                        decReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        intReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        intReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        lngReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        lngReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        fltReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        fltReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        dblReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        dblReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        decReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate(objEnumerator.Current).ConfigureAwait(false))
+                        decReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop.ConfigureAwait(false);
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop.ConfigureAwait(false);
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop.ConfigureAwait(false);
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop.ConfigureAwait(false);
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token).ConfigureAwait(false)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
+                {
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop.ConfigureAwait(false);
+                        lstTasks.Clear();
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop.ConfigureAwait(false);
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
+        }
     }
 }

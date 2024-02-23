@@ -4931,7 +4931,7 @@ namespace Chummer.Backend.Equipment
             LoadedIntoClip = null;
 
             // Remove any children the Gear may have.
-            decimal decReturn = Children.Sum(x => x.DeleteGear(false));
+            decimal decReturn = Children.AsEnumerableWithSideEffects().Sum(x => x.DeleteGear(false));
 
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
@@ -4939,7 +4939,7 @@ namespace Chummer.Backend.Equipment
                 decReturn += _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
                     .Sum(x => x.TotalCost + x.DeleteWeapon());
 
-                decReturn += _objCharacter.Vehicles.Sum(objVehicle =>
+                decReturn += _objCharacter.Vehicles.AsEnumerableWithSideEffects().Sum(objVehicle =>
                 {
                     return objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
                                .Sum(x => x.TotalCost + x.DeleteWeapon())
@@ -5043,7 +5043,7 @@ namespace Chummer.Backend.Equipment
             LoadedIntoClip = null;
 
             // Remove any children the Gear may have.
-            decimal decReturn = await Children.SumAsync(x => x.DeleteGearAsync(false, token), token)
+            decimal decReturn = await Children.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token)
                                               .ConfigureAwait(false);
 
             // Remove the Gear Weapon created by the Gear if applicable.
@@ -5059,7 +5059,7 @@ namespace Chummer.Backend.Equipment
                                  + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                 }
 
-                decReturn += await _objCharacter.Vehicles.SumAsync(async objVehicle =>
+                decReturn += await _objCharacter.Vehicles.SumWithSideEffectsAsync(async objVehicle =>
                 {
                     decimal decInner = 0;
                     foreach (Weapon objDeleteWeapon in await objVehicle.Weapons
@@ -5072,7 +5072,7 @@ namespace Chummer.Backend.Equipment
                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                     }
 
-                    decInner += await objVehicle.Mods.SumAsync(async objMod =>
+                    decInner += await objVehicle.Mods.SumWithSideEffectsAsync(async objMod =>
                     {
                         decimal decInner2 = 0;
                         foreach (Weapon objDeleteWeapon in await objMod.Weapons
@@ -5088,7 +5088,7 @@ namespace Chummer.Backend.Equipment
                         return decInner2;
                     }, token).ConfigureAwait(false);
 
-                    decInner += await objVehicle.WeaponMounts.SumAsync(async objMount =>
+                    decInner += await objVehicle.WeaponMounts.SumWithSideEffectsAsync(async objMount =>
                     {
                         decimal decInner2 = 0;
                         foreach (Weapon objDeleteWeapon in await objMount.Weapons
@@ -5101,7 +5101,7 @@ namespace Chummer.Backend.Equipment
                                          + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                         }
 
-                        decInner2 += await objMount.Mods.SumAsync(async objMod =>
+                        decInner2 += await objMount.Mods.SumWithSideEffectsAsync(async objMod =>
                         {
                             decimal decInner3 = 0;
                             foreach (Weapon objDeleteWeapon in await objMod.Weapons

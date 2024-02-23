@@ -2301,15 +2301,8 @@ namespace Chummer.Backend.Equipment
                     Parent.Mods.Remove(this);
             }
 
-            decimal decReturn = 0;
-            foreach (Weapon objLoopWeapon in Weapons)
-            {
-                decReturn += objLoopWeapon.DeleteWeapon(false);
-            }
-            foreach (Cyberware objLoopCyberware in Cyberware)
-            {
-                decReturn += objLoopCyberware.DeleteCyberware(false);
-            }
+            decimal decReturn = Weapons.AsEnumerableWithSideEffects().Sum(x => x.DeleteWeapon(false))
+                                + Cyberware.AsEnumerableWithSideEffects().Sum(x => x.DeleteCyberware(false));
 
             DisposeSelf();
 
@@ -2327,9 +2320,9 @@ namespace Chummer.Backend.Equipment
                     await Parent.Mods.RemoveAsync(this, token).ConfigureAwait(false);
             }
 
-            decimal decReturn = await Weapons.SumAsync(x => x.DeleteWeaponAsync(false, token), token)
+            decimal decReturn = await Weapons.SumWithSideEffectsAsync(x => x.DeleteWeaponAsync(false, token), token)
                                              .ConfigureAwait(false)
-                                + await Cyberware.SumAsync(x => x.DeleteCyberwareAsync(false, token: token),
+                                + await Cyberware.SumWithSideEffectsAsync(x => x.DeleteCyberwareAsync(false, token: token),
                                                            token).ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);

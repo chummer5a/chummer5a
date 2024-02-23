@@ -4607,24 +4607,10 @@ namespace Chummer.Backend.Equipment
         {
             _objCharacter.Vehicles.Remove(this);
 
-            decimal decReturn = 0;
-
-            foreach (Gear objGear in GearChildren)
-            {
-                decReturn += objGear.DeleteGear(false);
-            }
-            foreach (Weapon objLoopWeapon in Weapons)
-            {
-                decReturn += objLoopWeapon.DeleteWeapon(false);
-            }
-            foreach (VehicleMod objLoopMod in Mods)
-            {
-                decReturn += objLoopMod.DeleteVehicleMod(false);
-            }
-            foreach (WeaponMount objLoopMount in WeaponMounts)
-            {
-                decReturn += objLoopMount.DeleteWeaponMount(false);
-            }
+            decimal decReturn = GearChildren.AsEnumerableWithSideEffects().Sum(x => x.DeleteGear(false))
+                                + Weapons.AsEnumerableWithSideEffects().Sum(x => x.DeleteWeapon(false))
+                                + Mods.AsEnumerableWithSideEffects().Sum(x => x.DeleteVehicleMod(false))
+                                + WeaponMounts.AsEnumerableWithSideEffects().Sum(x => x.DeleteWeaponMount(false));
 
             DisposeSelf();
 
@@ -4635,14 +4621,14 @@ namespace Chummer.Backend.Equipment
         {
             await _objCharacter.Vehicles.RemoveAsync(this, token).ConfigureAwait(false);
 
-            decimal decReturn = await GearChildren.SumAsync(x => x.DeleteGearAsync(false, token), token)
+            decimal decReturn = await GearChildren.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token)
                                                   .ConfigureAwait(false)
-                                + await Weapons.SumAsync(x => x.DeleteWeaponAsync(false, token), token)
+                                + await Weapons.SumWithSideEffectsAsync(x => x.DeleteWeaponAsync(false, token), token)
                                                .ConfigureAwait(false)
-                                + await Mods.SumAsync(x => x.DeleteVehicleModAsync(false, token), token)
+                                + await Mods.SumWithSideEffectsAsync(x => x.DeleteVehicleModAsync(false, token), token)
                                             .ConfigureAwait(false)
                                 + await WeaponMounts
-                                        .SumAsync(x => x.DeleteWeaponMountAsync(false, token), token)
+                                        .SumWithSideEffectsAsync(x => x.DeleteWeaponMountAsync(false, token), token)
                                         .ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);
