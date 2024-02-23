@@ -598,18 +598,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal IEnumerable<Skill> GetActiveSkillsFromData(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
+        internal IEnumerable<Skill> GetActiveSkillsFromData(FilterOption eFilterOption,
+            bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
         {
-            XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
-            using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                       .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                    _objCharacter.Settings.BookXPath(token: token)
-                                    + ')'
-                                    + SkillFilter(eFilterOption, strName) + ']'))
+            token.ThrowIfCancellationRequested();
+            // Lock is upgradeable because retrieving a new skill requires creating it, which requires adding it to the character
+            // Yes, this is counterintuitive. TODO: Fix this by allowing skills to be loaded in without necessarily adding them to their character first
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (xmlSkillList?.Count > 0)
+                token.ThrowIfCancellationRequested();
+                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
+                using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
+                                        _objCharacter.Settings.BookXPath(token: token)
+                                        + ')'
+                                        + SkillFilter(eFilterOption, strName) + ']'))
                 {
-                    using (LockObject.EnterReadLock(token))
+                    if (xmlSkillList?.Count > 0)
                     {
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
@@ -637,9 +642,9 @@ namespace Chummer.Backend.Skills
                                 }
                             }
                             else if (!_dicSkillBackups.IsEmpty
-                                && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId)
-                                && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill)
-                                && objSkill != null)
+                                     && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId)
+                                     && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill)
+                                     && objSkill != null)
                             {
                                 yield return objSkill;
                             }
@@ -666,19 +671,22 @@ namespace Chummer.Backend.Skills
             List<Skill> lstReturn;
             XmlDocument xmlSkillsDocument =
                 await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
-            using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                       .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
-                                    await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                    + ')'
-                                    + SkillFilter(eFilterOption, strName) + ']'))
+            token.ThrowIfCancellationRequested();
+            // Lock is upgradeable because retrieving a new skill requires creating it, which requires adding it to the character
+            // Yes, this is counterintuitive. TODO: Fix this by allowing skills to be loaded in without necessarily adding them to their character first
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                lstReturn = new List<Skill>(xmlSkillList?.Count ?? 0);
-                if (xmlSkillList?.Count > 0)
+                token.ThrowIfCancellationRequested();
+                using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" +
+                                        await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                        + ')'
+                                        + SkillFilter(eFilterOption, strName) + ']'))
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    lstReturn = new List<Skill>(xmlSkillList?.Count ?? 0);
+                    if (xmlSkillList?.Count > 0)
                     {
-                        token.ThrowIfCancellationRequested();
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
                             if (blnDeleteSkillsFromBackupIfFound)
@@ -698,7 +706,9 @@ namespace Chummer.Backend.Skills
                                                   + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
                                               ?.Value
                                           != "active";
-                                    lstReturn.Add(await Skill.FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token).ConfigureAwait(false));
+                                    lstReturn.Add(await Skill
+                                        .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
+                                        .ConfigureAwait(false));
                                 }
                             }
                             else if (!_dicSkillBackups.IsEmpty
@@ -716,15 +726,17 @@ namespace Chummer.Backend.Skills
                                               + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token)
                                           ?.Value
                                       != "active";
-                                lstReturn.Add(await Skill.FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token).ConfigureAwait(false));
+                                lstReturn.Add(await Skill
+                                    .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
+                                    .ConfigureAwait(false));
                             }
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return lstReturn;

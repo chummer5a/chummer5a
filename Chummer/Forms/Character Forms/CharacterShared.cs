@@ -102,6 +102,7 @@ namespace Chummer
                 _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
             }
             _tmrCharacterUpdateRequestTimer.Elapsed += CharacterUpdateRequestTimerOnElapsed;
+            _tmrCharacterUpdateRequestTimer.Start();
             AutosaveStopwatch.Start();
         }
 

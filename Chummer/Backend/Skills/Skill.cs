@@ -3467,13 +3467,18 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (RelevantImprovements(
-                        x => x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
-                             || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
-                             || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault,
-                        blnExitAfterFirst: true).Any())
+                List<Improvement> lstRelevantImprovements = await RelevantImprovementsAsync(x =>
+                        x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
+                        || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
+                        || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault
+                        || x.ImproveType == Improvement.ImprovementType.AllowSkillDefault,
+                    blnExitAfterFirst: true, token: token).ConfigureAwait(false);
+                if (lstRelevantImprovements.Exists(x =>
+                        x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
+                        || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
+                        || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault))
                     return false;
-                if (!RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.AllowSkillDefault, blnExitAfterFirst: true).Any())
+                if (lstRelevantImprovements.TrueForAll(x => x.ImproveType != Improvement.ImprovementType.AllowSkillDefault))
                 {
                     if (!_blnDefault)
                         return false;
