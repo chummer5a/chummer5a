@@ -2509,12 +2509,7 @@ namespace Chummer.Backend.Skills
                     SkillGroupPointsMaximum.ToString(GlobalSettings.InvariantCultureInfo));
 
                 objWriter.WriteStartElement("skills");
-                List<Skill> lstSkillsOrdered = new List<Skill>(Skills.Count);
-                foreach (Skill objSkill in Skills)
-                {
-                    lstSkillsOrdered.Add(objSkill);
-                }
-
+                List<Skill> lstSkillsOrdered = new List<Skill>(Skills);
                 lstSkillsOrdered.Sort(CompareSkills);
                 foreach (Skill objSkill in lstSkillsOrdered)
                 {
@@ -2523,12 +2518,7 @@ namespace Chummer.Backend.Skills
 
                 objWriter.WriteEndElement();
                 objWriter.WriteStartElement("knoskills");
-                List<KnowledgeSkill> lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowledgeSkills.Count);
-                foreach (KnowledgeSkill objSkill in KnowledgeSkills)
-                {
-                    lstKnoSkillsOrdered.Add(objSkill);
-                }
-
+                List<KnowledgeSkill> lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowledgeSkills);
                 lstKnoSkillsOrdered.Sort(CompareSkills);
                 foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
                 {
@@ -2539,11 +2529,7 @@ namespace Chummer.Backend.Skills
 
                 objWriter.WriteStartElement("skilljackknowledgeskills");
                 lstKnoSkillsOrdered.Clear();
-                foreach (KnowledgeSkill objSkill in KnowsoftSkills)
-                {
-                    lstKnoSkillsOrdered.Add(objSkill);
-                }
-
+                lstKnoSkillsOrdered.AddRange(KnowsoftSkills);
                 lstKnoSkillsOrdered.Sort(CompareSkills);
                 foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
                 {
@@ -2553,12 +2539,7 @@ namespace Chummer.Backend.Skills
                 objWriter.WriteEndElement();
 
                 objWriter.WriteStartElement("groups");
-                List<SkillGroup> lstSkillGroups = new List<SkillGroup>(SkillGroups.Count);
-                foreach (SkillGroup objGroup in SkillGroups)
-                {
-                    lstSkillGroups.Add(objGroup);
-                }
-
+                List<SkillGroup> lstSkillGroups = new List<SkillGroup>(SkillGroups);
                 lstSkillGroups.Sort(CompareSkillGroups);
                 foreach (SkillGroup objSkillGroup in lstSkillGroups)
                 {
