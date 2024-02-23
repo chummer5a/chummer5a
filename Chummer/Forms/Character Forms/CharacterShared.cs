@@ -10183,8 +10183,20 @@ namespace Chummer
 
             try
             {
-                await objCharacterUpdateStartingSemaphore.WaitAsync(token).ConfigureAwait(false);
-                int intOldUpdateRequested = Interlocked.CompareExchange(ref _intCharacterUpdateRequested, 1, 0);
+                int intOldUpdateRequested;
+                if (await objCharacterUpdateStartingSemaphore.WaitAsync(0, token).ConfigureAwait(false))
+                    intOldUpdateRequested = Interlocked.CompareExchange(ref _intCharacterUpdateRequested, 1, 0);
+                else
+                {
+                    intOldUpdateRequested = Interlocked.Exchange(ref _intCharacterUpdateRequested, -1);
+                    do
+                    {
+                        _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false);
+                    } while (!await objCharacterUpdateStartingSemaphore.WaitAsync(1000, token).ConfigureAwait(false));
+
+                    _intCharacterUpdateRequested = 1;
+                }
+
                 try
                 {
                     try
