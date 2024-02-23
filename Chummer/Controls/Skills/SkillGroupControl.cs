@@ -278,12 +278,21 @@ namespace Chummer.UI.Skills
 
         private int _intLoaded;
 
-        public Task DoLoad(CancellationToken token)
+        public async Task DoLoad(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
-                return Task.CompletedTask;
-            return DoDataBindingsAsync(token);
+                return;
+            IAsyncDisposable objLocker = await _skillGroup.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await DoDataBindingsAsync(token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private async void SkillGroupControl_Load(object sender, EventArgs e)

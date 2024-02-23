@@ -224,6 +224,7 @@ namespace Chummer
 #if LINKEDSEMAPHOREDEBUG
             if (!_setChildren.IsEmpty)
                 Utils.BreakIfDebug();
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
@@ -323,6 +324,7 @@ namespace Chummer
 #if LINKEDSEMAPHOREDEBUG
             if (!_setChildren.IsEmpty)
                 Utils.BreakIfDebug();
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;

@@ -681,7 +681,17 @@ namespace Chummer.UI.Skills
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
                 return;
-            await DoDataBindingsAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await DoDataBindingsAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
             Interlocked.Decrement(ref _intUpdatingName);
             Interlocked.Decrement(ref _intUpdatingSpec);
         }

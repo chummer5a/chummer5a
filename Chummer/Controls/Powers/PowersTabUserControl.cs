@@ -132,79 +132,89 @@ namespace Chummer.UI.Powers
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
-            ThreadSafeBindingList<Power> lstPowers = await _objCharacter.GetPowersAsync(token).ConfigureAwait(false);
-#if DEBUG
-            Stopwatch sw = Utils.StopwatchPool.Get();
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
-                sw.Start();
-#endif
-                //Keep everything visible until ready to display everything. This
-                //seems to prevent redrawing everything each time anything is added
-                //Not benched, but should be faster
-
-                //Might also be useless horseshit, 2 lines
-
-                //Visible = false;
-                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                ThreadSafeBindingList<Power>
+                    lstPowers = await _objCharacter.GetPowersAsync(token).ConfigureAwait(false);
+#if DEBUG
+                Stopwatch sw = Utils.StopwatchPool.Get();
                 try
                 {
-                    using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
+                    sw.Start();
+#endif
+                    //Keep everything visible until ready to display everything. This
+                    //seems to prevent redrawing everything each time anything is added
+                    //Not benched, but should be faster
+
+                    //Might also be useless horseshit, 2 lines
+
+                    //Visible = false;
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+                    try
                     {
-                        parts.Start();
-                        parts.TaskEnd("MakePowerDisplay()");
-
-                        await cboDisplayFilter.DoThreadSafeAsync(x =>
+                        using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
                         {
-                            x.BeginUpdate();
-                            try
+                            parts.Start();
+                            parts.TaskEnd("MakePowerDisplay()");
+
+                            await cboDisplayFilter.DoThreadSafeAsync(x =>
                             {
-                                x.DataSource = null;
-                                x.ValueMember = "Item2";
-                                x.DisplayMember = "Item1";
-                                x.DataSource = _dropDownList;
-                                x.SelectedIndex = 1;
-                                x.MaxDropDownItems = _dropDownList.Count;
-                            }
-                            finally
-                            {
-                                x.EndUpdate();
-                            }
-                        }, token: token).ConfigureAwait(false);
+                                x.BeginUpdate();
+                                try
+                                {
+                                    x.DataSource = null;
+                                    x.ValueMember = "Item2";
+                                    x.DisplayMember = "Item1";
+                                    x.DataSource = _dropDownList;
+                                    x.SelectedIndex = 1;
+                                    x.MaxDropDownItems = _dropDownList.Count;
+                                }
+                                finally
+                                {
+                                    x.EndUpdate();
+                                }
+                            }, token: token).ConfigureAwait(false);
 
-                        parts.TaskEnd("_ddl databind");
+                            parts.TaskEnd("_ddl databind");
 
-                        //Visible = true;
-                        //this.ResumeLayout(false);
-                        //this.PerformLayout();
-                        parts.TaskEnd("visible");
+                            //Visible = true;
+                            //this.ResumeLayout(false);
+                            //this.PerformLayout();
+                            parts.TaskEnd("visible");
 
-                        await _table.SetItemsAsync(lstPowers, token).ConfigureAwait(false);
+                            await _table.SetItemsAsync(lstPowers, token).ConfigureAwait(false);
 
-                        parts.TaskEnd("resize");
+                            parts.TaskEnd("resize");
+                        }
                     }
+                    finally
+                    {
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout(true), token: token).ConfigureAwait(false);
+                    }
+
+                    await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
+                        nameof(Character.DisplayPowerPointsRemaining),
+                        x => x.GetDisplayPowerPointsRemainingAsync(MyToken),
+                        token).ConfigureAwait(false);
+#if DEBUG
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout(true), token: token).ConfigureAwait(false);
+                    sw.Stop();
+                    Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+                    Utils.StopwatchPool.Return(ref sw);
                 }
+#endif
 
-                await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
-                    nameof(Character.DisplayPowerPointsRemaining),
-                    x => x.GetDisplayPowerPointsRemainingAsync(MyToken),
-                    token).ConfigureAwait(false);
-#if DEBUG
+                lstPowers.ListChangedAsync += OnPowersListChanged;
+                _objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
             }
             finally
             {
-                sw.Stop();
-                Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
-                Utils.StopwatchPool.Return(ref sw);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-#endif
-
-            lstPowers.ListChangedAsync += OnPowersListChanged;
-            _objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
         }
 
         private void UnbindPowersTabUserControl()
