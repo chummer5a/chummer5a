@@ -309,26 +309,14 @@ namespace Chummer.Backend.Attributes
             new PropertyDependencyGraph<AttributeSection>(
             );
 
-        private bool _blnAttributesInitialized;
-        private readonly AsyncFriendlyReaderWriterLock _objAttributesInitializerLock;
         private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstAttributes;
 
         public ThreadSafeObservableCollection<CharacterAttrib> Attributes
         {
             get
             {
-                using (_objAttributesInitializerLock.EnterReadLock())
-                {
-                    if (_blnAttributesInitialized)
-                        return _lstAttributes;
-                }
-
-                using (_objAttributesInitializerLock.EnterUpgradeableReadLock())
-                {
-                    if (!_blnAttributesInitialized)
-                        InitializeAttributesList();
+                using (LockObject.EnterReadLock())
                     return _lstAttributes;
-                }
             }
         }
 
@@ -336,25 +324,10 @@ namespace Chummer.Backend.Attributes
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objAttributesInitializerLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_blnAttributesInitialized)
-                    return _lstAttributes;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-
-            objLocker = await _objAttributesInitializerLock.EnterUpgradeableReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                if (!_blnAttributesInitialized)
-                    await InitializeAttributesListAsync(token).ConfigureAwait(false);
                 return _lstAttributes;
             }
             finally
@@ -365,10 +338,8 @@ namespace Chummer.Backend.Attributes
 
         private void InitializeAttributesList(CancellationToken token = default)
         {
-            using (_objAttributesInitializerLock.EnterWriteLock(token))
+            using (LockObject.EnterWriteLock(token))
             {
-                _blnAttributesInitialized = true;
-
                 _lstAttributes.LockObject.SetParent(token: token);
                 try
                 {
@@ -408,12 +379,10 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker =
-                await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                _blnAttributesInitialized = true;
-
                 await _lstAttributes.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
                 try
                 {
@@ -561,7 +530,6 @@ namespace Chummer.Backend.Attributes
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
-            _objAttributesInitializerLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
             _lstSpecialAttributes = new ThreadSafeObservableCollection<CharacterAttrib>(LockObject);
@@ -831,7 +799,6 @@ namespace Chummer.Backend.Attributes
                 _lstNormalAttributes.Dispose();
                 _lstSpecialAttributes.Dispose();
                 _lstAttributes.Dispose();
-                _objAttributesInitializerLock.Dispose();
             }
         }
 
@@ -852,7 +819,6 @@ namespace Chummer.Backend.Attributes
                 await _lstNormalAttributes.DisposeAsync().ConfigureAwait(false);
                 await _lstSpecialAttributes.DisposeAsync().ConfigureAwait(false);
                 await _lstAttributes.DisposeAsync().ConfigureAwait(false);
-                await _objAttributesInitializerLock.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -875,7 +841,6 @@ namespace Chummer.Backend.Attributes
         {
             if (charNode == null)
                 return;
-            using (_objCharacter.LockObject.EnterWriteLock(token))
             using (LockObject.EnterWriteLock(token))
             {
                 Interlocked.Increment(ref _intLoading);
@@ -1082,283 +1047,324 @@ namespace Chummer.Backend.Attributes
             if (charNode == null)
                 return;
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    Interlocked.Increment(ref _intLoading);
-                    try
+                    using (Timekeeper.StartSyncron("create_char_attrib", null,
+                               CustomActivity.OperationType.RequestOperation,
+                               charNode.InnerText))
                     {
-                        using (Timekeeper.StartSyncron("create_char_attrib", null,
-                                   CustomActivity.OperationType.RequestOperation,
-                                   charNode.InnerText))
+                        CharacterAttrib objBod = await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false);
+                        int intOldBODBase = objBod != null ? await objBod.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldBODKarma =
+                            objBod != null ? await objBod.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objAgi = await GetAttributeByNameAsync("AGI", token).ConfigureAwait(false);
+                        int intOldAGIBase = objAgi != null ? await objAgi.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldAGIKarma =
+                            objAgi != null ? await objAgi.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objRea = await GetAttributeByNameAsync("REA", token).ConfigureAwait(false);
+                        int intOldREABase = objRea != null ? await objRea.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldREAKarma =
+                            objRea != null ? await objRea.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objStr = await GetAttributeByNameAsync("STR", token).ConfigureAwait(false);
+                        int intOldSTRBase = objStr != null ? await objStr.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldSTRKarma =
+                            objStr != null ? await objStr.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objCha = await GetAttributeByNameAsync("CHA", token).ConfigureAwait(false);
+                        int intOldCHABase = objCha != null ? await objCha.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldCHAKarma =
+                            objCha != null ? await objCha.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objInt = await GetAttributeByNameAsync("INT", token).ConfigureAwait(false);
+                        int intOldINTBase = objInt != null ? await objInt.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldINTKarma =
+                            objInt != null ? await objInt.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objLog = await GetAttributeByNameAsync("LOG", token).ConfigureAwait(false);
+                        int intOldLOGBase = objLog != null ? await objLog.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldLOGKarma =
+                            objLog != null ? await objLog.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objWil = await GetAttributeByNameAsync("WIL", token).ConfigureAwait(false);
+                        int intOldWILBase = objWil != null ? await objWil.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldWILKarma =
+                            objWil != null ? await objWil.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objEdg = await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false);
+                        int intOldEDGBase = objEdg != null ? await objEdg.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldEDGKarma =
+                            objEdg != null ? await objEdg.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objMag = await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false);
+                        int intOldMAGBase = objMag != null ? await objMag.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldMAGKarma =
+                            objMag != null ? await objMag.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objMagAdept =
+                            await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false);
+                        int intOldMAGAdeptBase = objMagAdept != null
+                            ? await objMagAdept.GetBaseAsync(token).ConfigureAwait(false)
+                            : 0;
+                        int intOldMAGAdeptKarma = objMagAdept != null
+                            ? await objMagAdept.GetKarmaAsync(token).ConfigureAwait(false)
+                            : 0;
+                        CharacterAttrib objRes = await GetAttributeByNameAsync("RES", token).ConfigureAwait(false);
+                        int intOldRESBase = objRes != null ? await objRes.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldRESKarma =
+                            objRes != null ? await objRes.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        CharacterAttrib objDep = await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false);
+                        int intOldDEPBase = objDep != null ? await objDep.GetBaseAsync(token).ConfigureAwait(false) : 0;
+                        int intOldDEPKarma =
+                            objDep != null ? await objDep.GetKarmaAsync(token).ConfigureAwait(false) : 0;
+                        await AttributeList.ClearAsync(token).ConfigureAwait(false);
+                        await SpecialAttributeList.ClearAsync(token).ConfigureAwait(false);
+
+                        foreach (string strAttribute in AttributeStrings)
                         {
-                            CharacterAttrib objBod = await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false);
-                            int intOldBODBase = objBod != null ? await objBod.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldBODKarma = objBod != null ? await objBod.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objAgi = await GetAttributeByNameAsync("AGI", token).ConfigureAwait(false);
-                            int intOldAGIBase = objAgi != null ? await objAgi.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldAGIKarma = objAgi != null ? await objAgi.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objRea = await GetAttributeByNameAsync("REA", token).ConfigureAwait(false);
-                            int intOldREABase = objRea != null ? await objRea.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldREAKarma = objRea != null ? await objRea.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objStr = await GetAttributeByNameAsync("STR", token).ConfigureAwait(false);
-                            int intOldSTRBase = objStr != null ? await objStr.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldSTRKarma = objStr != null ? await objStr.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objCha = await GetAttributeByNameAsync("CHA", token).ConfigureAwait(false);
-                            int intOldCHABase = objCha != null ? await objCha.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldCHAKarma = objCha != null ? await objCha.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objInt = await GetAttributeByNameAsync("INT", token).ConfigureAwait(false);
-                            int intOldINTBase = objInt != null ? await objInt.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldINTKarma = objInt != null ? await objInt.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objLog = await GetAttributeByNameAsync("LOG", token).ConfigureAwait(false);
-                            int intOldLOGBase = objLog != null ? await objLog.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldLOGKarma = objLog != null ? await objLog.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objWil = await GetAttributeByNameAsync("WIL", token).ConfigureAwait(false);
-                            int intOldWILBase = objWil != null ? await objWil.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldWILKarma = objWil != null ? await objWil.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objEdg = await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false);
-                            int intOldEDGBase = objEdg != null ? await objEdg.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldEDGKarma = objEdg != null ? await objEdg.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objMag = await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false);
-                            int intOldMAGBase = objMag != null ? await objMag.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldMAGKarma = objMag != null ? await objMag.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objMagAdept = await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false);
-                            int intOldMAGAdeptBase = objMagAdept != null ? await objMagAdept.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldMAGAdeptKarma = objMagAdept != null ? await objMagAdept.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objRes = await GetAttributeByNameAsync("RES", token).ConfigureAwait(false);
-                            int intOldRESBase = objRes != null ? await objRes.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldRESKarma = objRes != null ? await objRes.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            CharacterAttrib objDep = await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false);
-                            int intOldDEPBase = objDep != null ? await objDep.GetBaseAsync(token).ConfigureAwait(false) : 0;
-                            int intOldDEPKarma = objDep != null ? await objDep.GetKarmaAsync(token).ConfigureAwait(false) : 0;
-                            await AttributeList.ClearAsync(token).ConfigureAwait(false);
-                            await SpecialAttributeList.ClearAsync(token).ConfigureAwait(false);
-
-                            foreach (string strAttribute in AttributeStrings)
+                            CharacterAttrib objAttribute;
+                            switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                             {
-                                CharacterAttrib objAttribute;
-                                switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
-                                {
-                                    case CharacterAttrib.AttributeCategory.Special:
-                                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                            CharacterAttrib.AttributeCategory.Special);
-                                        await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
-                                        break;
+                                case CharacterAttrib.AttributeCategory.Special:
+                                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                        CharacterAttrib.AttributeCategory.Special);
+                                    await SpecialAttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    break;
 
-                                    case CharacterAttrib.AttributeCategory.Standard:
-                                        objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
-                                            CharacterAttrib.AttributeCategory.Standard);
-                                        await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
-                                        break;
+                                case CharacterAttrib.AttributeCategory.Standard:
+                                    objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
+                                        CharacterAttrib.AttributeCategory.Standard);
+                                    await AttributeList.AddAsync(objAttribute, token).ConfigureAwait(false);
+                                    break;
 
-                                    default:
-                                        continue;
-                                }
+                                default:
+                                    continue;
                             }
-
-                            objBod = await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false);
-                            objAgi = await GetAttributeByNameAsync("AGI", token).ConfigureAwait(false);
-                            objRea = await GetAttributeByNameAsync("REA", token).ConfigureAwait(false);
-                            objStr = await GetAttributeByNameAsync("STR", token).ConfigureAwait(false);
-                            objCha = await GetAttributeByNameAsync("CHA", token).ConfigureAwait(false);
-                            objInt = await GetAttributeByNameAsync("INT", token).ConfigureAwait(false);
-                            objLog = await GetAttributeByNameAsync("LOG", token).ConfigureAwait(false);
-                            objWil = await GetAttributeByNameAsync("WIL", token).ConfigureAwait(false);
-                            objEdg = await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false);
-                            objMag = await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false);
-                            objMagAdept = await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false);
-                            objRes = await GetAttributeByNameAsync("RES", token).ConfigureAwait(false);
-                            objDep = await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false);
-
-                            await objBod.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["bodmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["bodmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["bodaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objAgi.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["agimin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["agimax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["agiaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objRea.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["reamin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["reamax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["reaaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objStr.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["strmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["strmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["straug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objCha.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["chamin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["chamax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["chaaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objInt.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["intmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["intmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["intaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objLog.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["logmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["logmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["logaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objWil.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["wilmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["wilmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["wilaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objMag.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objRes.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["resmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["resmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["resaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objEdg.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["edgmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["edgmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["edgaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objDep.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["depmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["depmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["depaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await objMagAdept.AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerText, intValue,
-                                    intMinModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerText, intValue,
-                                    intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            await (await GetAttributeByNameAsync("ESS", token).ConfigureAwait(false)).AssignLimitsAsync(
-                                await CommonFunctions.ExpressionToIntAsync(charNode["essmin"]?.InnerText, intValue,
-                                    token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["essmax"]?.InnerText, intValue,
-                                    token: token).ConfigureAwait(false),
-                                await CommonFunctions.ExpressionToIntAsync(charNode["essaug"]?.InnerText, intValue,
-                                    token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-
-                            await objBod.SetBaseAsync(
-                                Math.Min(intOldBODBase, await objBod.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objBod.SetKarmaAsync(
-                                Math.Min(intOldBODKarma, await objBod.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objAgi.SetBaseAsync(
-                                Math.Min(intOldAGIBase, await objAgi.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objAgi.SetKarmaAsync(
-                                Math.Min(intOldAGIKarma, await objAgi.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objRea.SetBaseAsync(
-                                Math.Min(intOldREABase, await objRea.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objRea.SetKarmaAsync(
-                                Math.Min(intOldREAKarma, await objRea.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objStr.SetBaseAsync(
-                                Math.Min(intOldSTRBase, await objStr.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objStr.SetKarmaAsync(
-                                Math.Min(intOldSTRKarma, await objStr.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objCha.SetBaseAsync(
-                                Math.Min(intOldCHABase, await objCha.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objCha.SetKarmaAsync(
-                                Math.Min(intOldCHAKarma, await objCha.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objInt.SetBaseAsync(
-                                Math.Min(intOldINTBase, await objInt.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objInt.SetKarmaAsync(
-                                Math.Min(intOldINTKarma, await objInt.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objLog.SetBaseAsync(
-                                Math.Min(intOldLOGBase, await objLog.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objLog.SetKarmaAsync(
-                                Math.Min(intOldLOGKarma, await objLog.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objWil.SetBaseAsync(
-                                Math.Min(intOldWILBase, await objWil.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objWil.SetKarmaAsync(
-                                Math.Min(intOldWILKarma, await objWil.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objEdg.SetBaseAsync(
-                                Math.Min(intOldEDGBase, await objEdg.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            await objEdg.SetKarmaAsync(
-                                Math.Min(intOldEDGKarma, await objEdg.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-
-                            if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
-                            {
-                                await objMag.SetBaseAsync(
-                                    Math.Min(intOldMAGBase, await objMag.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                                await objMag.SetKarmaAsync(
-                                    Math.Min(intOldMAGKarma, await objMag.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                                if (await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
-                                    && await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
-                                {
-                                    await objMagAdept.SetBaseAsync(
-                                        Math.Min(intOldMAGAdeptBase, await objMagAdept.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
-                                        token).ConfigureAwait(false);
-                                    await objMagAdept.SetKarmaAsync(
-                                        Math.Min(intOldMAGAdeptKarma, await objMagAdept.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
-                                        token).ConfigureAwait(false);
-                                }
-                            }
-
-                            if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
-                            {
-                                await objRes.SetBaseAsync(
-                                    Math.Min(intOldRESBase, await objRes.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                                await objRes.SetKarmaAsync(
-                                    Math.Min(intOldRESKarma, await objRes.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            }
-
-                            if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false))
-                            {
-                                await objDep.SetBaseAsync(
-                                    Math.Min(intOldDEPBase, await objDep.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                                await objDep.SetKarmaAsync(
-                                    Math.Min(intOldDEPKarma, await objDep.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                            }
-
-                            await InitializeAttributesListAsync(token).ConfigureAwait(false);
-                            await ResetBindingsAsync(token).ConfigureAwait(false);
-
-                            //Timekeeper.Finish("create_char_attrib");
                         }
-                    }
-                    finally
-                    {
-                        Interlocked.Decrement(ref _intLoading);
+
+                        objBod = await GetAttributeByNameAsync("BOD", token).ConfigureAwait(false);
+                        objAgi = await GetAttributeByNameAsync("AGI", token).ConfigureAwait(false);
+                        objRea = await GetAttributeByNameAsync("REA", token).ConfigureAwait(false);
+                        objStr = await GetAttributeByNameAsync("STR", token).ConfigureAwait(false);
+                        objCha = await GetAttributeByNameAsync("CHA", token).ConfigureAwait(false);
+                        objInt = await GetAttributeByNameAsync("INT", token).ConfigureAwait(false);
+                        objLog = await GetAttributeByNameAsync("LOG", token).ConfigureAwait(false);
+                        objWil = await GetAttributeByNameAsync("WIL", token).ConfigureAwait(false);
+                        objEdg = await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false);
+                        objMag = await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false);
+                        objMagAdept = await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false);
+                        objRes = await GetAttributeByNameAsync("RES", token).ConfigureAwait(false);
+                        objDep = await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false);
+
+                        await objBod.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["bodmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["bodmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["bodaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objAgi.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["agimin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["agimax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["agiaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objRea.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["reamin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["reamax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["reaaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objStr.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["strmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["strmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["straug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objCha.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["chamin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["chamax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["chaaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objInt.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["intmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["intmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["intaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objLog.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["logmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["logmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["logaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objWil.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["wilmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["wilmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["wilaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objMag.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objRes.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["resmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["resmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["resaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objEdg.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["edgmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["edgmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["edgaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objDep.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["depmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["depmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["depaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objMagAdept.AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmin"]?.InnerText, intValue,
+                                intMinModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magmax"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["magaug"]?.InnerText, intValue,
+                                intMaxModifier, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await (await GetAttributeByNameAsync("ESS", token).ConfigureAwait(false)).AssignLimitsAsync(
+                            await CommonFunctions.ExpressionToIntAsync(charNode["essmin"]?.InnerText, intValue,
+                                token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["essmax"]?.InnerText, intValue,
+                                token: token).ConfigureAwait(false),
+                            await CommonFunctions.ExpressionToIntAsync(charNode["essaug"]?.InnerText, intValue,
+                                token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+
+                        await objBod.SetBaseAsync(
+                            Math.Min(intOldBODBase, await objBod.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objBod.SetKarmaAsync(
+                            Math.Min(intOldBODKarma, await objBod.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objAgi.SetBaseAsync(
+                            Math.Min(intOldAGIBase, await objAgi.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objAgi.SetKarmaAsync(
+                            Math.Min(intOldAGIKarma, await objAgi.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objRea.SetBaseAsync(
+                            Math.Min(intOldREABase, await objRea.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objRea.SetKarmaAsync(
+                            Math.Min(intOldREAKarma, await objRea.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objStr.SetBaseAsync(
+                            Math.Min(intOldSTRBase, await objStr.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objStr.SetKarmaAsync(
+                            Math.Min(intOldSTRKarma, await objStr.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objCha.SetBaseAsync(
+                            Math.Min(intOldCHABase, await objCha.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objCha.SetKarmaAsync(
+                            Math.Min(intOldCHAKarma, await objCha.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objInt.SetBaseAsync(
+                            Math.Min(intOldINTBase, await objInt.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objInt.SetKarmaAsync(
+                            Math.Min(intOldINTKarma, await objInt.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objLog.SetBaseAsync(
+                            Math.Min(intOldLOGBase, await objLog.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objLog.SetKarmaAsync(
+                            Math.Min(intOldLOGKarma, await objLog.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objWil.SetBaseAsync(
+                            Math.Min(intOldWILBase, await objWil.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objWil.SetKarmaAsync(
+                            Math.Min(intOldWILKarma, await objWil.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objEdg.SetBaseAsync(
+                            Math.Min(intOldEDGBase, await objEdg.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+                        await objEdg.SetKarmaAsync(
+                            Math.Min(intOldEDGKarma, await objEdg.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                            token).ConfigureAwait(false);
+
+                        if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await objMag.SetBaseAsync(
+                                    Math.Min(intOldMAGBase,
+                                        await objMag.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token)
+                                .ConfigureAwait(false);
+                            await objMag.SetKarmaAsync(
+                                    Math.Min(intOldMAGKarma,
+                                        await objMag.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token)
+                                .ConfigureAwait(false);
+                            if (await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token)
+                                    .ConfigureAwait(false)
+                                && await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
+                            {
+                                await objMagAdept.SetBaseAsync(
+                                    Math.Min(intOldMAGAdeptBase,
+                                        await objMagAdept.GetPriorityMaximumAsync(token).ConfigureAwait(false)),
+                                    token).ConfigureAwait(false);
+                                await objMagAdept.SetKarmaAsync(
+                                    Math.Min(intOldMAGAdeptKarma,
+                                        await objMagAdept.GetKarmaMaximumAsync(token).ConfigureAwait(false)),
+                                    token).ConfigureAwait(false);
+                            }
+                        }
+
+                        if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await objRes.SetBaseAsync(
+                                    Math.Min(intOldRESBase,
+                                        await objRes.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token)
+                                .ConfigureAwait(false);
+                            await objRes.SetKarmaAsync(
+                                    Math.Min(intOldRESKarma,
+                                        await objRes.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token)
+                                .ConfigureAwait(false);
+                        }
+
+                        if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                        {
+                            await objDep.SetBaseAsync(
+                                    Math.Min(intOldDEPBase,
+                                        await objDep.GetPriorityMaximumAsync(token).ConfigureAwait(false)), token)
+                                .ConfigureAwait(false);
+                            await objDep.SetKarmaAsync(
+                                    Math.Min(intOldDEPKarma,
+                                        await objDep.GetKarmaMaximumAsync(token).ConfigureAwait(false)), token)
+                                .ConfigureAwait(false);
+                        }
+
+                        await InitializeAttributesListAsync(token).ConfigureAwait(false);
+                        await ResetBindingsAsync(token).ConfigureAwait(false);
+
+                        //Timekeeper.Finish("create_char_attrib");
                     }
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    Interlocked.Decrement(ref _intLoading);
                 }
             }
             finally
@@ -2932,6 +2938,8 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
+                    if (blnFirstTime)
+                        InitializeAttributesList(token);
                     ResetBindings(token);
                 }
                 finally
@@ -2978,6 +2986,8 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
+                    if (blnFirstTime)
+                        await InitializeAttributesListAsync(token).ConfigureAwait(false);
                     await ResetBindingsAsync(token).ConfigureAwait(false);
                 }
                 finally

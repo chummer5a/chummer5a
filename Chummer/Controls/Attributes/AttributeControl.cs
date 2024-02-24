@@ -57,10 +57,8 @@ namespace Chummer.UI.Attributes
 
         public AttributeControl(CharacterAttrib attribute, CancellationToken objMyToken = default)
         {
-            if (attribute == null)
-                return;
             _objMyToken = objMyToken;
-            _strAttributeName = attribute.Abbrev;
+            _strAttributeName = attribute?.Abbrev ?? throw new ArgumentNullException(nameof(attribute));
             _objCharacter = attribute.CharacterObject;
 
             InitializeComponent();
@@ -794,10 +792,7 @@ namespace Chummer.UI.Attributes
         }
 
         [UsedImplicitly]
-        public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth);
-
-        [UsedImplicitly]
-        public Task<int> GetNameWidthAsync(CancellationToken token = default) => lblName.DoThreadSafeFuncAsync(x => x.PreferredWidth, token);
+        public int NameWidth => lblName.PreferredWidth;
 
         private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {

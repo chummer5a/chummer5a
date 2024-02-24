@@ -559,9 +559,23 @@ namespace Chummer.Backend.Attributes
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // No need to write lock because interlocked guarantees safety
-                    if (Interlocked.Exchange(ref _intBase, value) == value)
+                    if (_intBase == value)
                         return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intBase = value;
+                        int intKarmaMaximum = KarmaMaximum;
+                        while (intKarmaMaximum < 0 && _intBase > 0)
+                        {
+                            --_intBase;
+                            intKarmaMaximum = KarmaMaximum;
+                        }
+
+                        // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                        if (Karma > intKarmaMaximum)
+                            Karma = intKarmaMaximum;
+                    }
+
                     OnPropertyChanged();
                 }
             }
@@ -593,6 +607,29 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
+                if (_intBase == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _intBase = value;
+                    int intKarmaMaximum = await GetKarmaMaximumAsync(token).ConfigureAwait(false);
+                    while (intKarmaMaximum < 0 && _intBase > 0)
+                    {
+                        --_intBase;
+                        intKarmaMaximum = await GetKarmaMaximumAsync(token).ConfigureAwait(false);
+                    }
+
+                    // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                    if (await GetKarmaAsync(token).ConfigureAwait(false) > intKarmaMaximum)
+                        await SetKarmaAsync(intKarmaMaximum, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _intBase, value) == value)
                     return;
