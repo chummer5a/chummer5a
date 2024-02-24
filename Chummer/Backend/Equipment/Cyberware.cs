@@ -1494,7 +1494,7 @@ namespace Chummer.Backend.Equipment
                                     return;
                             }
 
-                            if (string.IsNullOrEmpty(BlocksMounts))
+                            if (string.IsNullOrEmpty(BlocksMounts) || lstCyberwareToCheck.Count == 0)
                                 return;
                             using (new FetchSafelyFromPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
@@ -1502,7 +1502,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowLeft = lstCyberwareToCheck.Any(x =>
+                                blnAllowLeft = !lstCyberwareToCheck.Any(x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
@@ -1538,7 +1538,7 @@ namespace Chummer.Backend.Equipment
                                     return;
                             }
 
-                            if (string.IsNullOrEmpty(BlocksMounts))
+                            if (string.IsNullOrEmpty(BlocksMounts) || lstCyberwareToCheck.Count == 0)
                                 return;
                             using (new FetchSafelyFromPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
@@ -1546,7 +1546,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowRight = lstCyberwareToCheck.Any(x =>
+                                blnAllowRight = !lstCyberwareToCheck.Any(x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
@@ -1678,7 +1678,7 @@ namespace Chummer.Backend.Equipment
                                     return;
                             }
 
-                            if (string.IsNullOrEmpty(BlocksMounts))
+                            if (string.IsNullOrEmpty(BlocksMounts) || lstCyberwareToCheck.Count == 0)
                                 return;
                             using (new FetchSafelyFromPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
@@ -1686,7 +1686,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowLeft = await lstCyberwareToCheck.AnyAsync(async x =>
+                                blnAllowLeft = !await lstCyberwareToCheck.AnyAsync(async x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
@@ -1724,7 +1724,7 @@ namespace Chummer.Backend.Equipment
                                     return;
                             }
 
-                            if (string.IsNullOrEmpty(BlocksMounts))
+                            if (string.IsNullOrEmpty(BlocksMounts) || lstCyberwareToCheck.Count == 0)
                                 return;
                             using (new FetchSafelyFromPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
@@ -1732,7 +1732,7 @@ namespace Chummer.Backend.Equipment
                                 setBlocksMounts.AddRange(BlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
-                                blnAllowRight = await lstCyberwareToCheck.AnyAsync(async x =>
+                                blnAllowRight = !await lstCyberwareToCheck.AnyAsync(async x =>
                                 {
                                     if (string.IsNullOrEmpty(x.HasModularMount))
                                         return false;
