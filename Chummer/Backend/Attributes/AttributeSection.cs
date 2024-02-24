@@ -1897,7 +1897,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_objCharacter.MetatypeCategory == "Shapeshifter")
+                if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Shapeshifter")
                 {
                     XPathNavigator xmlNode = await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false);
 
@@ -1908,14 +1908,14 @@ namespace Chummer.Backend.Attributes
                                                                     ? xmlNode
                                                                         .SelectSingleNodeAndCacheExpression(
                                                                             "name/@translate", token: token)
-                                                                    ?.Value ?? _objCharacter.Metatype
-                                                                    : _objCharacter.Metatype, token: token).ConfigureAwait(false);
+                                                                    ?.Value ?? await _objCharacter.DisplayMetatypeAsync(strLanguageToPrint, token).ConfigureAwait(false)
+                                                                    : await _objCharacter.DisplayMetatypeAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     }
                     else
                     {
-                        xmlNode = xmlNode?.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
+                        xmlNode = xmlNode?.TryGetNodeById("metavariants/metavariant", await _objCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false));
                         await objWriter.WriteElementStringAsync("attributecategory",
-                                                                xmlNode?.Value ?? _objCharacter.Metavariant, token: token).ConfigureAwait(false);
+                            xmlNode?.Value ?? await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     }
                 }
 

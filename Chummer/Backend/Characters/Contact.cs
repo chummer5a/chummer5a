@@ -1338,7 +1338,7 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                string strReturn = Metatype;
+                string strReturn;
                 if (LinkedCharacter != null)
                 {
                     // Update character information fields.
@@ -1363,7 +1363,7 @@ namespace Chummer
                                  + ')';
                 }
                 else
-                    strReturn = _objCharacter.TranslateExtra(strReturn, strLanguage, "metatypes.xml");
+                    strReturn = _objCharacter.TranslateExtra(Metatype, strLanguage, "metatypes.xml");
 
                 return strReturn;
             }
@@ -1375,7 +1375,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strReturn = Metatype;
+                string strReturn;
                 if (LinkedCharacter != null)
                 {
                     // Update character information fields.
@@ -1392,11 +1392,13 @@ namespace Chummer
                     if (guiMetavariant == Guid.Empty)
                         return strReturn;
                     objMetatypeNode
-                        = objMetatypeNode.TryGetNodeById("metavariants/metavariant", LinkedCharacter.MetavariantGuid);
+                        = objMetatypeNode.TryGetNodeById("metavariants/metavariant",
+                            await LinkedCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false));
 
-                    string strMetatypeTranslate = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value;
+                    string strMetatypeTranslate = objMetatypeNode
+                        ?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value;
                     strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                      .ConfigureAwait(false)
+                                     .ConfigureAwait(false)
                                  + '('
                                  + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                      ? strMetatypeTranslate
@@ -1407,8 +1409,9 @@ namespace Chummer
                                  + ')';
                 }
                 else
-                    strReturn = await _objCharacter.TranslateExtraAsync(strReturn, strLanguage, "metatypes.xml", token)
-                                                   .ConfigureAwait(false);
+                    strReturn = await _objCharacter.TranslateExtraAsync(
+                            await GetMetatypeAsync(token).ConfigureAwait(false), strLanguage, "metatypes.xml", token)
+                        .ConfigureAwait(false);
 
                 return strReturn;
             }
@@ -1445,8 +1448,7 @@ namespace Chummer
                     if (LinkedCharacter != null)
                     {
                         string strMetatype = LinkedCharacter.Metatype;
-
-                        if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant) && LinkedCharacter.Metavariant != "None")
+                        if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
                         {
                             strMetatype += LanguageManager.GetString("String_Space") + '(' + LinkedCharacter.Metavariant
                                            + ')';
@@ -1482,7 +1484,7 @@ namespace Chummer
                     string strMetatype = await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
                     string strMetavariant = await LinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
 
-                    if (!string.IsNullOrEmpty(strMetavariant) && strMetavariant != "None")
+                    if (!string.IsNullOrEmpty(strMetavariant))
                     {
                         strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token)
                                                             .ConfigureAwait(false) + '('

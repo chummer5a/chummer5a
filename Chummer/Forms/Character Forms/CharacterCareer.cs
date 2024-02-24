@@ -911,7 +911,9 @@ namespace Chummer
                                                     node?
                                                         .SelectSingleNodeAndCacheExpression(
                                                             "name/@translate", GenericToken)?.Value
-                                                    ?? CharacterObject.Metatype));
+                                                    ?? await CharacterObject
+                                                        .DisplayMetatypeAsync(GlobalSettings.Language, GenericToken)
+                                                        .ConfigureAwait(false)));
 
                                                 node = node?.SelectSingleNode(
                                                     "metavariants/metavariant[name = "
@@ -920,8 +922,9 @@ namespace Chummer
 
                                                 //The Shapeshifter attribute category is treated as the METAHUMAN form of a shapeshifter.
                                                 lstAttributeCategories.Add(new ListItem("Shapeshifter",
-                                                    node?.Value ?? CharacterObject
-                                                        .Metavariant));
+                                                    node?.Value ?? await CharacterObject
+                                                        .DisplayMetavariantAsync(GlobalSettings.Language, GenericToken)
+                                                        .ConfigureAwait(false)));
 
                                                 lstAttributeCategories.Sort(CompareListItems.CompareNames);
                                                 await cboAttributeCategory.PopulateWithListItemsAsync(

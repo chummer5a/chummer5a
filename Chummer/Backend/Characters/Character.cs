@@ -2783,7 +2783,7 @@ namespace Chummer
                 Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
                 MetatypeCategory = strSelectedMetatypeCategory;
                 MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
-                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? "None" : "None";
+                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? string.Empty : string.Empty;
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")
                 {
@@ -3473,7 +3473,7 @@ namespace Chummer
                 Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
                 MetatypeCategory = strSelectedMetatypeCategory;
                 MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
-                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? "None" : "None";
+                Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? string.Empty : string.Empty;
                 // We only reverted to the base metatype to get the attributes.
                 if (strSelectedMetatypeCategory == "Shapeshifter")
                 {
@@ -7138,9 +7138,10 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
                                 //Shim for characters created prior to Run Faster Errata
                                 if (_strMetavariant == "Cyclopean")
-                                {
                                     _strMetavariant = "Cyclops";
-                                }
+                                // Legacy shim for characters with no metavariant still saved with "None" as their metavariant
+                                else if (_strMetavariant == "None")
+                                    _strMetavariant = string.Empty;
 
                                 //Shim for metavariants that were saved with an incorrect metatype string.
                                 if (!string.IsNullOrEmpty(_strMetavariant) && _strMetatype == _strMetavariant)
@@ -7152,9 +7153,12 @@ namespace Chummer
                                         ?.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? "Human";
                                 }
 
-                                if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid",
-                                        ref _guiMetavariant) &&
-                                    !string.IsNullOrEmpty(_strMetavariant))
+                                if (string.IsNullOrEmpty(_strMetavariant))
+                                {
+                                    _guiMetavariant = Guid.Empty;
+                                }
+                                else if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid",
+                                        ref _guiMetavariant))
                                 {
                                     XPathNavigator objMetavariantNode = blnSync
                                         // ReSharper disable once MethodHasAsyncOverload
@@ -7162,10 +7166,17 @@ namespace Chummer
                                         : await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                     if (objMetavariantNode != null)
                                     {
-                                        _guiMetavariant
-                                            = Guid.Parse(objMetavariantNode
-                                                .SelectSingleNodeAndCacheExpression("id", token)?.Value);
+                                        Guid.TryParse(objMetavariantNode
+                                                .SelectSingleNodeAndCacheExpression("id", token)?.Value,
+                                            out _guiMetavariant);
                                     }
+                                    else
+                                        _guiMetavariant = Guid.Empty;
+                                }
+                                // Empty metavariant GUID takes precedence over non-empty metavariant name
+                                else if (_guiMetavariant == Guid.Empty)
+                                {
+                                    _strMetavariant = string.Empty;
                                 }
 
                                 bool blnDoSourceFetch =
@@ -37280,7 +37291,7 @@ namespace Chummer
                         }
 
                         // Do it all over again for Metavariants.
-                        if (!string.IsNullOrEmpty(_strMetavariant))
+                        if (!string.IsNullOrEmpty(Metavariant))
                         {
                             objXmlMetatype =
                                 objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
@@ -37559,7 +37570,7 @@ namespace Chummer
                         }
 
                         // Do it all over again for Metavariants.
-                        if (!string.IsNullOrEmpty(_strMetavariant))
+                        if (!string.IsNullOrEmpty(Metavariant))
                         {
                             objXmlMetatype =
                                 objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
@@ -44276,7 +44287,7 @@ namespace Chummer
                                                 _strMetatypeCategory = xmlMetatype
                                                                        .SelectSingleNodeAndCacheExpression("category", token)
                                                                        .Value;
-                                                _strMetavariant = "None";
+                                                _strMetavariant = string.Empty;
                                                 
                                                 XPathNavigator objRunNode
                                                     = xmlMetatype.SelectSingleNodeAndCacheExpression("run", token);
@@ -44365,7 +44376,7 @@ namespace Chummer
                                                 _strMetatypeCategory = xmlMetatype
                                                     .SelectSingleNodeAndCacheExpression("category", token)
                                                     .Value;
-                                                _strMetavariant = "None";
+                                                _strMetavariant = string.Empty;
 
                                                 XPathNavigator objRunNode
                                                     = xmlMetatype.SelectSingleNodeAndCacheExpression("run", token);
