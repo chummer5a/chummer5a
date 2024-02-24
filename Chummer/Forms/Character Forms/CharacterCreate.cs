@@ -10058,13 +10058,13 @@ namespace Chummer
                 Quality objQuality = await treQualities
                                            .DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Quality, token)
                                            .ConfigureAwait(false);
-                await UpdateQualityLevelValue(objQuality, token).ConfigureAwait(false);
                 if (objQuality == null)
                 {
                     await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await lblQualitySource.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await lblQualityBP.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                    await UpdateQualityLevelValue(null, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -10072,13 +10072,28 @@ namespace Chummer
                     await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                    await objQuality.SetSourceDetailAsync(lblQualitySource, token).ConfigureAwait(false);
-                    string strText
-                        = (await objQuality.GetBPAsync(token).ConfigureAwait(false) * await objQuality.GetLevelsAsync(token).ConfigureAwait(false) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false)).ToString(
-                              GlobalSettings.CultureInfo) +
-                          await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                          + await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
-                    await lblQualityBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await objQuality.LockObject.EnterReadLockAsync(token)
+                        .ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await UpdateQualityLevelValue(objQuality, token).ConfigureAwait(false);
+                        await objQuality.SetSourceDetailAsync(lblQualitySource, token).ConfigureAwait(false);
+                        string strText
+                            = (await objQuality.GetBPAsync(token).ConfigureAwait(false) *
+                               await objQuality.GetLevelsAsync(token).ConfigureAwait(false) *
+                               await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false))
+                              .ToString(
+                                  GlobalSettings.CultureInfo) +
+                              await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                              + await LanguageManager.GetStringAsync("String_Karma", token: token)
+                                  .ConfigureAwait(false);
+                        await lblQualityBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
             finally
@@ -10091,47 +10106,100 @@ namespace Chummer
                                                         CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objSelectedQuality == null
-                || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Improvement
-                || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Metatype
-                || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Heritage
-                || await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false) == 0)
+            if (objSelectedQuality == null)
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
                 {
-                    x.Value = 1;
-                    x.Enabled = false;
+                    Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                    try
+                    {
+                        x.Value = 1;
+                        x.Enabled = false;
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                    }
                 }, token).ConfigureAwait(false);
                 return;
             }
 
-            token.ThrowIfCancellationRequested();
-            XPathNavigator objQualityNode
-                = await objSelectedQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-            string strLimitString =
-                objQualityNode?.SelectSingleNodeAndCacheExpression("chargenlimit", token: token)?.Value
-                ?? objQualityNode?.SelectSingleNodeAndCacheExpression("limit", token: token)?.Value
-                ?? string.Empty;
-            token.ThrowIfCancellationRequested();
-            if (!string.IsNullOrWhiteSpace(strLimitString)
-                && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels", token: token) == null
-                && int.TryParse(strLimitString, out int intMaxRating))
+            IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterReadLockAsync(token);
+            try
             {
-                int intLevels = await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
-                await nudQualityLevel.DoThreadSafeAsync(x =>
+                token.ThrowIfCancellationRequested();
+                if (await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) ==
+                    QualitySource.Improvement
+                    || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) ==
+                    QualitySource.Metatype
+                    || await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) ==
+                    QualitySource.Heritage
+                    || await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false) == 0)
                 {
-                    x.Maximum = intMaxRating;
-                    x.Value = intLevels;
-                    x.Enabled = true;
-                }, token).ConfigureAwait(false);
+                    await nudQualityLevel.DoThreadSafeAsync(x =>
+                    {
+                        Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                        try
+                        {
+                            x.Value = 1;
+                            x.Enabled = false;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                        }
+                    }, token).ConfigureAwait(false);
+                    return;
+                }
+
+                token.ThrowIfCancellationRequested();
+                XPathNavigator objQualityNode
+                    = await objSelectedQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                string strLimitString =
+                    objQualityNode?.SelectSingleNodeAndCacheExpression("chargenlimit", token: token)?.Value
+                    ?? objQualityNode?.SelectSingleNodeAndCacheExpression("limit", token: token)?.Value
+                    ?? string.Empty;
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrWhiteSpace(strLimitString)
+                    && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels", token: token) == null
+                    && int.TryParse(strLimitString, out int intMaxRating))
+                {
+                    int intLevels = await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
+                    await nudQualityLevel.DoThreadSafeAsync(x =>
+                    {
+                        Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                        try
+                        {
+                            x.Maximum = intMaxRating;
+                            x.Value = intLevels;
+                            x.Enabled = true;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    await nudQualityLevel.DoThreadSafeAsync(x =>
+                    {
+                        Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                        try
+                        {
+                            x.Value = 1;
+                            x.Enabled = false;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                        }
+                    }, token).ConfigureAwait(false);
+                }
             }
-            else
+            finally
             {
-                await nudQualityLevel.DoThreadSafeAsync(x =>
-                {
-                    x.Value = 1;
-                    x.Enabled = false;
-                }, token).ConfigureAwait(false);
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -13593,6 +13661,18 @@ namespace Chummer
                 int intKarmaQuality = await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                 ThreadSafeObservableCollection<Quality> lstQualities
                     = await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false);
+                HashSet<Quality> setVisibleQualities = new HashSet<Quality>();
+                await treQualities.DoThreadSafeAsync(x =>
+                {
+                    foreach (TreeNode objCategoryNode in x.Nodes)
+                    {
+                        foreach (TreeNode objQualityNode in objCategoryNode.Nodes)
+                        {
+                            if (objQualityNode.Tag is Quality objLoop)
+                                setVisibleQualities.Add(objLoop);
+                        }
+                    }
+                }, token).ConfigureAwait(false);
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdPositiveQualityTooltip))
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -13600,18 +13680,23 @@ namespace Chummer
                 {
                     await lstQualities.ForEachAsync(async objLoopQuality =>
                     {
+                        if (!setVisibleQualities.Contains(objLoopQuality))
+                            return;
                         if (!await objLoopQuality.GetContributeToBPAsync(token).ConfigureAwait(false))
                             return;
                         QualityType eType = await objLoopQuality.GetTypeAsync(token).ConfigureAwait(false);
+                        int intLoopCost = await objLoopQuality.GetBPAsync(token).ConfigureAwait(false) *
+                                          await objLoopQuality.GetLevelsAsync(token).ConfigureAwait(false) *
+                                          intKarmaQuality;
                         if (await objLoopQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.LifeModule)
                         {
-                            intLifeModuleQualities += await objLoopQuality.GetBPAsync(token).ConfigureAwait(false) * intKarmaQuality;
+                            intLifeModuleQualities += intLoopCost;
                             if (blnDoUIUpdate)
                             {
                                 sbdPositiveQualityTooltip.AppendFormat(
                                     GlobalSettings.CultureInfo, "{0}{1}({2})",
                                     await objLoopQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                    strSpace, await objLoopQuality.GetBPAsync(token).ConfigureAwait(false) * intKarmaQuality).AppendLine();
+                                    strSpace, intLoopCost).AppendLine();
                             }
                         }
                         else if (blnDoUIUpdate)
@@ -13622,14 +13707,14 @@ namespace Chummer
                                     sbdPositiveQualityTooltip.AppendFormat(
                                         GlobalSettings.CultureInfo, "{0}{1}({2})",
                                         await objLoopQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                        strSpace, await objLoopQuality.GetBPAsync(token).ConfigureAwait(false) * intKarmaQuality).AppendLine();
+                                        strSpace, intLoopCost).AppendLine();
                                     break;
 
                                 case QualityType.Negative:
                                     sbdNegativeQualityTooltip.AppendFormat(
                                         GlobalSettings.CultureInfo, "{0}{1}({2})",
                                         await objLoopQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                                        strSpace, await objLoopQuality.GetBPAsync(token).ConfigureAwait(false) * intKarmaQuality).AppendLine();
+                                        strSpace, intLoopCost).AppendLine();
                                     break;
                             }
                         }
@@ -13682,7 +13767,7 @@ namespace Chummer
                 }
 
                 int intQualityPointsUsed = intLifeModuleQualities
-                                           - await CharacterObject.GetNegativeQualityKarmaAsync(token)
+                                           - await CharacterObject.GetNegativeQualityKarmaAsync(token: token)
                                                .ConfigureAwait(false)
                                            + await CharacterObject.GetPositiveQualityKarmaAsync(token)
                                                .ConfigureAwait(false);

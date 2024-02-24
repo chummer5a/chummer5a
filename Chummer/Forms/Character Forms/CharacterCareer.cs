@@ -9238,13 +9238,21 @@ namespace Chummer
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
                 {
-                    x.Value = 1;
-                    x.Enabled = false;
+                    Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                    try
+                    {
+                        x.Value = 1;
+                        x.Enabled = false;
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                    }
                 }, token).ConfigureAwait(false);
                 return;
             }
 
-            IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -9254,8 +9262,16 @@ namespace Chummer
                 {
                     await nudQualityLevel.DoThreadSafeAsync(x =>
                     {
-                        x.Value = 1;
-                        x.Enabled = false;
+                        Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                        try
+                        {
+                            x.Value = 1;
+                            x.Enabled = false;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                        }
                     }, token).ConfigureAwait(false);
                     return;
                 }
@@ -9271,17 +9287,33 @@ namespace Chummer
                     int intLevels = await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
                     await nudQualityLevel.DoThreadSafeAsync(x =>
                     {
-                        x.Maximum = intMaxRating;
-                        x.Value = intLevels;
-                        x.Enabled = true;
+                        Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                        try
+                        {
+                            x.Maximum = intMaxRating;
+                            x.Value = intLevels;
+                            x.Enabled = true;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                        }
                     }, token).ConfigureAwait(false);
                 }
                 else
                 {
                     await nudQualityLevel.DoThreadSafeAsync(x =>
                     {
-                        x.Value = 1;
-                        x.Enabled = false;
+                        Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                        try
+                        {
+                            x.Value = 1;
+                            x.Enabled = false;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                        }
                     }, token).ConfigureAwait(false);
                 }
             }
@@ -9291,8 +9323,12 @@ namespace Chummer
             }
         }
 
+        private int _intSkipQualityLevelChanged;
+
         private async void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
+            if (_intSkipQualityLevelChanged > 0)
+                return;
             try
             {
                 // Locate the selected Quality.
@@ -9508,7 +9544,17 @@ namespace Chummer
                             }
 
                             // Add the Quality to the appropriate parent node.
-                            await CharacterObject.Qualities.AddAsync(objQuality, GenericToken).ConfigureAwait(false);
+                            //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
+                            Interlocked.Increment(ref _intSkipQualityLevelChanged);
+                            try
+                            {
+                                await CharacterObject.Qualities.AddAsync(objQuality, GenericToken)
+                                    .ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipQualityLevelChanged);
+                            }
 
                             // Add any created Weapons to the character.
                             foreach (Weapon objWeapon in lstWeapons)
@@ -15879,7 +15925,6 @@ namespace Chummer
                 Quality objQuality = await treQualities
                                            .DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Quality, token)
                                            .ConfigureAwait(false);
-                await UpdateQualityLevelValue(objQuality, token).ConfigureAwait(false);
                 if (objQuality == null)
                 {
                     await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = false, token)
@@ -15887,19 +15932,21 @@ namespace Chummer
                     await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await lblQualitySource.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await lblQualityBP.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                    await UpdateQualityLevelValue(null, token).ConfigureAwait(false);
                 }
                 else
                 {
+                    await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                        .ConfigureAwait(false);
+                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                    await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                    await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     IAsyncDisposable objLocker = await objQuality.LockObject.EnterReadLockAsync(token)
                         .ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                   .ConfigureAwait(false);
-                        await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                        await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                        await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        await UpdateQualityLevelValue(objQuality, token).ConfigureAwait(false);
                         await objQuality.SetSourceDetailAsync(lblQualitySource, token).ConfigureAwait(false);
                         string strText
                             = (await objQuality.GetBPAsync(token).ConfigureAwait(false) * await objQuality.GetLevelsAsync(token).ConfigureAwait(false) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false)).ToString(

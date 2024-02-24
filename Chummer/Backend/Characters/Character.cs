@@ -47286,7 +47286,7 @@ namespace Chummer
             }
         }
 
-        public async Task<int> GetNegativeQualityKarmaAsync(CancellationToken token = default)
+        public async Task<int> GetNegativeQualityKarmaAsync(bool blnApplyLimit = true, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -47317,6 +47317,7 @@ namespace Chummer
                         .ConfigureAwait(false) * intKarmaQuality)
                     .StandardRound();
 
+                bool blnCacheValue = true;
                 // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
                 if (await objSettings.GetExceedNegativeQualitiesNoBonusAsync(token).ConfigureAwait(false))
                 {
@@ -47324,7 +47325,9 @@ namespace Chummer
                         -await objSettings.GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                     if (intNewValue < intNegativeQualityLimit)
                     {
-                        intNewValue = intNegativeQualityLimit;
+                        if (blnApplyLimit)
+                            intNewValue = intNegativeQualityLimit;
+                        blnCacheValue = false;
                     }
                 }
 
@@ -47337,7 +47340,7 @@ namespace Chummer
                                    objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false) *
                                intKarmaQuality;
 
-                return _intCachedNegativeQualities = -intNewValue;
+                return blnCacheValue ? _intCachedNegativeQualities = -intNewValue : -intNewValue;
             }
             finally
             {
@@ -47469,7 +47472,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 int intLimitKarma = await GetNegativeQualityLimitKarmaAsync(token).ConfigureAwait(false);
-                int intQualityKarma = await GetNegativeQualityKarmaAsync(token).ConfigureAwait(false);
+                int intQualityKarma = await GetNegativeQualityKarmaAsync(false, token: token).ConfigureAwait(false);
                 int intQualityKarmaLimit = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                 if (intLimitKarma != intQualityKarma)
                 {
