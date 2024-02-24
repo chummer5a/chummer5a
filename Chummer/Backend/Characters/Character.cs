@@ -47121,13 +47121,16 @@ namespace Chummer
                 // Qualities that count towards the Quality Limit are checked first to support the house rule allowing zeroing of qualities over said limit.
                 int intNewValue
                     = await lstQualities.SumAsync(
-                          objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP
-                              && objQuality.ContributeToLimit, objQuality => objQuality.BP, token: token).ConfigureAwait(false)
+                              async objQuality => await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive &&
+                                                  await objQuality.GetContributeToBPAsync(token).ConfigureAwait(false)
+                                                  && await objQuality.GetContributeToLimitAsync(token).ConfigureAwait(false),
+                              objQuality => objQuality.GetBPAsync(token), token: token)
+                          .ConfigureAwait(false)
                       * intKarmaQuality;
                 // Group contacts are counted as positive qualities
                 intNewValue += await (await GetContactsAsync(token).ConfigureAwait(false)).SumAsync(
                                    x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free,
-                                   x => x.ContactPoints, token: token).ConfigureAwait(false)
+                                   x => x.GetContactPointsAsync(token), token: token).ConfigureAwait(false)
                                * await objSettings.GetKarmaContactAsync(token).ConfigureAwait(false);
 
                 // Deduct the amount for free Qualities.
@@ -47173,9 +47176,10 @@ namespace Chummer
 
                 // Qualities that don't count towards the cap are added afterwards.
                 intNewValue += await lstQualities.SumAsync(
-                    objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP
-                                                                          && !objQuality.ContributeToLimit,
-                    objQuality => objQuality.BP, token: token).ConfigureAwait(false) * intKarmaQuality;
+                    async objQuality => await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive &&
+                                        await objQuality.GetContributeToBPAsync(token).ConfigureAwait(false)
+                                        && !await objQuality.GetContributeToLimitAsync(token).ConfigureAwait(false),
+                    objQuality => objQuality.GetBPAsync(token), token: token).ConfigureAwait(false) * intKarmaQuality;
 
                 return _intCachedPositiveQualities = intNewValue;
             }
@@ -47193,7 +47197,7 @@ namespace Chummer
                 {
                     if (PositiveQualityLimitKarma != PositiveQualityKarma)
                     {
-                        return string.Format(GlobalSettings.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
+                        return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
                                              PositiveQualityLimitKarma,
                                              Settings.QualityKarmaLimit,
                                              LanguageManager.GetString("String_Space"),
@@ -47222,7 +47226,7 @@ namespace Chummer
                 int intQualityKarmaLimit = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                 if (intLimitKarma != intQualityKarma)
                 {
-                    return string.Format(GlobalSettings.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
+                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
                         intLimitKarma,
                         intQualityKarmaLimit,
                         await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
@@ -47447,7 +47451,7 @@ namespace Chummer
                 {
                     if (NegativeQualityLimitKarma != NegativeQualityKarma)
                     {
-                        return string.Format(GlobalSettings.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
+                        return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
                                              NegativeQualityLimitKarma,
                                              Settings.QualityKarmaLimit,
                                              LanguageManager.GetString("String_Space"),
@@ -47476,7 +47480,7 @@ namespace Chummer
                 int intQualityKarmaLimit = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                 if (intLimitKarma != intQualityKarma)
                 {
-                    return string.Format(GlobalSettings.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
+                    return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}({3}){2}{4}",
                         intLimitKarma,
                         intQualityKarmaLimit,
                         await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),

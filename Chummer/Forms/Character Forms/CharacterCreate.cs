@@ -10124,7 +10124,7 @@ namespace Chummer
                 return;
             }
 
-            IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterReadLockAsync(token);
+            IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
