@@ -326,13 +326,9 @@ namespace Chummer.Backend.Attributes
                 using (_objAttributesInitializerLock.EnterUpgradeableReadLock())
                 {
                     if (!_blnAttributesInitialized)
-                    {
-                        using (_objAttributesInitializerLock.EnterWriteLock())
-                            InitializeAttributesList();
-                    }
+                        InitializeAttributesList();
+                    return _lstAttributes;
                 }
-
-                return _lstAttributes;
             }
         }
 
@@ -358,68 +354,52 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 if (!_blnAttributesInitialized)
-                {
-                    IAsyncDisposable objLocker2 = await _objAttributesInitializerLock.EnterWriteLockAsync(token)
-                        .ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        await InitializeAttributesListAsync(token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
+                    await InitializeAttributesListAsync(token).ConfigureAwait(false);
+                return _lstAttributes;
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            return _lstAttributes;
         }
 
         private void InitializeAttributesList(CancellationToken token = default)
         {
-            using (_objCharacter.LockObject.EnterReadLock(token))
+            using (_objAttributesInitializerLock.EnterWriteLock(token))
             {
-                using (_objAttributesInitializerLock.EnterWriteLock(token))
+                _blnAttributesInitialized = true;
+
+                _lstAttributes.LockObject.SetParent(token: token);
+                try
                 {
-                    _blnAttributesInitialized = true;
+                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                    _lstAttributes.Clear();
 
-                    _lstAttributes.LockObject.SetParent(token: token);
-                    try
+                    foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
+                        _lstAttributes.Add(GetAttributeByName(strAbbrev, token));
+
+                    _lstAttributes.Add(GetAttributeByName("EDG", token));
+
+                    if (_objCharacter.MAGEnabled)
                     {
-                        // Not creating a new collection here so that CollectionChanged events from previous list are kept
-                        _lstAttributes.Clear();
-
-                        foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
-                            _lstAttributes.Add(GetAttributeByName(strAbbrev, token));
-
-                        _lstAttributes.Add(GetAttributeByName("EDG", token));
-
-                        if (_objCharacter.MAGEnabled)
-                        {
-                            _lstAttributes.Add(GetAttributeByName("MAG", token));
-                            if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                                _lstAttributes.Add(GetAttributeByName("MAGAdept", token));
-                        }
-
-                        if (_objCharacter.RESEnabled)
-                        {
-                            _lstAttributes.Add(GetAttributeByName("RES", token));
-                        }
-
-                        if (_objCharacter.DEPEnabled)
-                        {
-                            _lstAttributes.Add(GetAttributeByName("DEP", token));
-                        }
+                        _lstAttributes.Add(GetAttributeByName("MAG", token));
+                        if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                            _lstAttributes.Add(GetAttributeByName("MAGAdept", token));
                     }
-                    finally
+
+                    if (_objCharacter.RESEnabled)
                     {
-                        _lstAttributes.LockObject.SetParent(LockObject, token: token);
+                        _lstAttributes.Add(GetAttributeByName("RES", token));
                     }
+
+                    if (_objCharacter.DEPEnabled)
+                    {
+                        _lstAttributes.Add(GetAttributeByName("DEP", token));
+                    }
+                }
+                finally
+                {
+                    _lstAttributes.LockObject.SetParent(LockObject, token: token);
                 }
             }
         }
@@ -427,66 +407,58 @@ namespace Chummer.Backend.Attributes
         private async Task InitializeAttributesListAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker =
+                await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await _objAttributesInitializerLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                _blnAttributesInitialized = true;
+
+                await _lstAttributes.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    _blnAttributesInitialized = true;
+                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                    await _lstAttributes.ClearAsync(token).ConfigureAwait(false);
 
-                    await _lstAttributes.LockObject.SetParentAsync(token: token).ConfigureAwait(false);
-                    try
-                    {
-                        // Not creating a new collection here so that CollectionChanged events from previous list are kept
-                        await _lstAttributes.ClearAsync(token).ConfigureAwait(false);
-
-                        foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
-                            await _lstAttributes
-                                .AddAsync(await GetAttributeByNameAsync(strAbbrev, token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-
+                    foreach (string strAbbrev in PhysicalAttributes.Concat(MentalAttributes))
                         await _lstAttributes
-                            .AddAsync(await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false), token)
+                            .AddAsync(await GetAttributeByNameAsync(strAbbrev, token).ConfigureAwait(false), token)
                             .ConfigureAwait(false);
 
-                        if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
-                        {
-                            await _lstAttributes
-                                .AddAsync(await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                                    .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) &&
-                                await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
-                                await _lstAttributes
-                                    .AddAsync(await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false),
-                                        token).ConfigureAwait(false);
-                        }
+                    await _lstAttributes
+                        .AddAsync(await GetAttributeByNameAsync("EDG", token).ConfigureAwait(false), token)
+                        .ConfigureAwait(false);
 
-                        if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
-                        {
-                            await _lstAttributes
-                                .AddAsync(await GetAttributeByNameAsync("RES", token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                        }
-
-                        if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false))
-                        {
-                            await _lstAttributes
-                                .AddAsync(await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                        }
-                    }
-                    finally
+                    if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
                     {
-                        await _lstAttributes.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
+                        await _lstAttributes
+                            .AddAsync(await GetAttributeByNameAsync("MAG", token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false) &&
+                            await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false))
+                            await _lstAttributes
+                                .AddAsync(await GetAttributeByNameAsync("MAGAdept", token).ConfigureAwait(false),
+                                    token).ConfigureAwait(false);
+                    }
+
+                    if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        await _lstAttributes
+                            .AddAsync(await GetAttributeByNameAsync("RES", token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                    }
+
+                    if (await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        await _lstAttributes
+                            .AddAsync(await GetAttributeByNameAsync("DEP", token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    await _lstAttributes.LockObject.SetParentAsync(LockObject, token: token).ConfigureAwait(false);
                 }
             }
             finally

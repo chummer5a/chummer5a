@@ -382,8 +382,14 @@ namespace Chummer
 #endif
             {
                 return Task.FromException<IAsyncDisposable>(
+#if READERLOCKSTACKTRACEDEBUG
+                    new InvalidOperationException(
+                        "Attempted to take a write lock while inside of a non-upgradeable read lock. Read lock stacktrace:" +
+                        Environment.NewLine + strReadLockStacktrace));
+#else
                     new InvalidOperationException(
                         "Attempted to take a write lock while inside of a non-upgradeable read lock."));
+#endif
             }
 
 #if READERLOCKSTACKTRACEDEBUG
@@ -547,8 +553,14 @@ namespace Chummer
             if (blnIsInReadLock)
             {
                 return Task.FromException<IAsyncDisposable>(
+#if READERLOCKSTACKTRACEDEBUG
+                    new InvalidOperationException(
+                        "Attempted to take an upgradeable read lock while inside of a non-upgradeable read lock. Read lock stacktrace:" +
+                        Environment.NewLine + strReadLockStacktrace));
+#else
                     new InvalidOperationException(
                         "Attempted to take an upgradeable read lock while inside of a non-upgradeable read lock."));
+#endif
             }
 
 #if READERLOCKSTACKTRACEDEBUG

@@ -459,9 +459,13 @@ namespace Chummer
 
         public const int DefaultSleepDuration = 1;
 
-        public const int SleepEmergencyReleaseMaxTicks = 60000 / 5; // About 1 minute in ticks (assuming 15 ms timer frequency)
+#if DEBUG
+        public const int SleepEmergencyReleaseMaxTicks = WaitEmergencyReleaseMaxTicks; // About 1 minute in ticks (assuming 15 ms timer frequency)
+#else
+        public const int SleepEmergencyReleaseMaxTicks = 60000 / DefaultSleepDuration; // About 1 minute in ticks (assuming 15 ms timer frequency)
+#endif
 
-        public const int WaitEmergencyReleaseMaxTicks = 1800000 / 5; // About 30 minutes in ticks (assuming 15 ms timer frequency)
+        public const int WaitEmergencyReleaseMaxTicks = 1800000 / DefaultSleepDuration; // About 30 minutes in ticks (assuming 15 ms timer frequency)
 
         /// <summary>
         /// Can the current user context write to a given file path?
