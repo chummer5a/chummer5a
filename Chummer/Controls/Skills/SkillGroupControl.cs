@@ -287,7 +287,7 @@ namespace Chummer.UI.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                await DoDataBindingsAsync(token);
+                await DoDataBindingsAsync(token).ConfigureAwait(false);
             }
             finally
             {

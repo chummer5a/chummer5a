@@ -2835,9 +2835,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (Interlocked.Exchange(ref _objMountedVehicle, value) != value)
                 {
-                    foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                    foreach (WeaponAccessory objAccessory in WeaponAccessories.AsEnumerableWithSideEffects())
                     {
-                        foreach (Gear objGear in objAccessory.GearChildren)
+                        foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects())
                         {
                             if (value != null)
                                 objGear.ChangeEquippedStatus(false);
@@ -2916,17 +2916,86 @@ namespace Chummer.Backend.Equipment
                 if (_blnEquipped == value)
                     return;
                 _blnEquipped = value;
-                if (ParentVehicle == null && _objCharacter?.IsLoading == false && (!string.IsNullOrEmpty(Weight)
+                if (ParentVehicle == null && _objCharacter?.IsLoading == false)
+                {
+                    if (WeaponAccessories.Any(x => x.Equipped && x.GearChildren.Count > 0))
+                    {
+                        if (value)
+                        {
+                            WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                            {
+                                objAccessory.GearChildren.AsEnumerableWithSideEffects().ForEach(objGear =>
+                                {
+                                    if (objGear.Equipped)
+                                        objGear.ChangeEquippedStatus(objAccessory.Equipped, true);
+                                });
+                            });
+                        }
+                        else
+                        {
+                            WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                objAccessory.GearChildren.AsEnumerableWithSideEffects()
+                                    .ForEach(objGear => objGear.ChangeEquippedStatus(false, true)));
+                        }
+                    }
+
+                    if (Children.Count > 0)
+                    {
+                        if (value)
+                        {
+                            foreach (Weapon objChild in Children.DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0).ToList())
+                            {
+                                bool blnAllParentsEquipped = objChild.Equipped;
+                                Weapon objLoopParent = objChild.Parent;
+                                while (blnAllParentsEquipped && objLoopParent != null)
+                                {
+                                    blnAllParentsEquipped = objLoopParent.Equipped;
+                                    objLoopParent = objLoopParent.Parent;
+                                }
+
+                                if (blnAllParentsEquipped)
+                                {
+                                    objChild.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                    {
+                                        objAccessory.GearChildren.AsEnumerableWithSideEffects().ForEach(objGear =>
+                                        {
+                                            if (objGear.Equipped)
+                                                objGear.ChangeEquippedStatus(objAccessory.Equipped, true);
+                                        });
+                                    });
+                                }
+                                else
+                                {
+                                    objChild.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                        objAccessory.GearChildren.AsEnumerableWithSideEffects()
+                                            .ForEach(objGear => objGear.ChangeEquippedStatus(false, true)));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (Weapon objChild in Children
+                                         .DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0).ToList())
+                            {
+                                objChild.WeaponAccessories.AsEnumerableWithSideEffects().ForEach(objAccessory =>
+                                    objAccessory.GearChildren.AsEnumerableWithSideEffects()
+                                        .ForEach(objGear => objGear.ChangeEquippedStatus(false, true)));
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(Weight)
                         || WeaponAccessories.Any(x => !string.IsNullOrEmpty(x.Weight)
                                                       || x.GearChildren.DeepAny(
                                                           y => y.Children, y => !string.IsNullOrEmpty(y.Weight)))
                         || Children.DeepAny(x => x.Children,
-                                            z => !string.IsNullOrEmpty(z.Weight)
-                                                 || WeaponAccessories.Any(
-                                                     x => !string.IsNullOrEmpty(x.Weight)
-                                                          || x.GearChildren.DeepAny(
-                                                              y => y.Children, y => !string.IsNullOrEmpty(y.Weight))))))
-                    _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                            z => !string.IsNullOrEmpty(z.Weight)
+                                 || WeaponAccessories.Any(
+                                     x => !string.IsNullOrEmpty(x.Weight)
+                                          || x.GearChildren.DeepAny(
+                                              y => y.Children, y => !string.IsNullOrEmpty(y.Weight)))))
+                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                }
             }
         }
 

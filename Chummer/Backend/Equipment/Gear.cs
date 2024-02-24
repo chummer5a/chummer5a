@@ -4738,7 +4738,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     // Stacked Foci need to be handled a little differently.
-                    await _objCharacter.StackedFoci.ForEachAsync(async objStack =>
+                    await _objCharacter.StackedFoci.ForEachWithSideEffectsAsync(async objStack =>
                     {
                         if (objStack.GearId == InternalId && objStack.Bonded)
                         {
@@ -4768,7 +4768,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     // Stacked Foci need to be handled a little differently.
-                    await _objCharacter.StackedFoci.ForEachAsync(async objStack =>
+                    await _objCharacter.StackedFoci.ForEachWithSideEffectsAsync(async objStack =>
                     {
                         if (objStack.GearId == InternalId)
                         {

@@ -6322,7 +6322,7 @@ namespace Chummer.Backend.Equipment
                     ParentVehicle = value?.ParentVehicle;
                     if (IsModularCurrentlyEquipped == blnOldEquipped)
                         return;
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         if (blnOldEquipped)
                             objGear.ChangeEquippedStatus(false);
@@ -6375,7 +6375,7 @@ namespace Chummer.Backend.Equipment
                     if (Interlocked.Exchange(ref _objParentVehicle, value) != value)
                     {
                         bool blnEquipped = IsModularCurrentlyEquipped;
-                        foreach (Gear objGear in GearChildren)
+                        foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                         {
                             if (value != null)
                                 objGear.ChangeEquippedStatus(false);

@@ -1006,12 +1006,12 @@ namespace Chummer.Backend.Equipment
                     if (Parent?.Equipped == true)
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
-                                                              _objCharacter.Improvements.Where(
-                                                                  x => x.ImproveSource
-                                                                       == Improvement.ImprovementSource.ArmorMod
-                                                                       && x.SourceName == InternalId));
+                            _objCharacter.Improvements.Where(
+                                x => x.ImproveSource
+                                     == Improvement.ImprovementSource.ArmorMod
+                                     && x.SourceName == InternalId));
                         // Add the Improvements from any Gear in the Armor.
-                        foreach (Gear objGear in GearChildren)
+                        foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                         {
                             if (objGear.Equipped)
                             {
@@ -1023,11 +1023,11 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     ImprovementManager.DisableImprovements(_objCharacter,
-                                                           _objCharacter.Improvements.Where(
-                                                               x => x.ImproveSource == Improvement.ImprovementSource
-                                                                   .ArmorMod && x.SourceName == InternalId));
+                        _objCharacter.Improvements.Where(
+                            x => x.ImproveSource == Improvement.ImprovementSource
+                                .ArmorMod && x.SourceName == InternalId));
                     // Add the Improvements from any Gear in the Armor.
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(false, true);
                     }
@@ -1035,7 +1035,8 @@ namespace Chummer.Backend.Equipment
 
                 if (Parent?.Equipped == true && _objCharacter?.IsLoading == false)
                 {
-                    _objCharacter.OnMultiplePropertyChanged(nameof(Character.ArmorEncumbrance), nameof(Character.TotalCarriedWeight), nameof(Character.GetArmorRating));
+                    _objCharacter.OnMultiplePropertyChanged(nameof(Character.ArmorEncumbrance),
+                        nameof(Character.TotalCarriedWeight), nameof(Character.GetArmorRating));
                 }
             }
         }

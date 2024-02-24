@@ -1225,7 +1225,7 @@ namespace Chummer.Backend.Equipment
                 Weapon objParent = Parent;
                 if (objParent.Equipped && objParent.ParentVehicle == null)
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         if (objGear.Equipped)
                         {
@@ -1241,7 +1241,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(false);
                     }
@@ -1489,14 +1489,14 @@ namespace Chummer.Backend.Equipment
                     return;
                 if (value.ParentVehicle != null)
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(false);
                     }
                 }
                 else if (Equipped)
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(true);
                     }

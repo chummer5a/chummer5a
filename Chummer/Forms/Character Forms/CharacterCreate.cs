@@ -4217,7 +4217,7 @@ namespace Chummer
                                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                                         }
 
-                                        if (!objCyberware.IsModularCurrentlyEquipped)
+                                        if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                             await objCyberware.ChangeModularEquipAsync(false, token: token)
                                                               .ConfigureAwait(false);
                                         else
@@ -10501,7 +10501,7 @@ namespace Chummer
                                 }
                             }
 
-                            if (!objCyberware.IsModularCurrentlyEquipped)
+                            if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false))
                                 await objCyberware.ChangeModularEquipAsync(false, token: GenericToken)
                                                   .ConfigureAwait(false);
                         }
@@ -12405,18 +12405,20 @@ namespace Chummer
                                     Gear objStackGear = CharacterObject.Gear.DeepFindById(objStack.GearId);
                                     if (objStackGear.Equipped)
                                     {
-                                        foreach (Gear objGear in objStack.Gear)
+                                        await objStack.Gear.ForEachWithSideEffectsWithBreakAsync(async objGear =>
                                         {
                                             if (objGear.Bonus == null &&
                                                 (!objGear.WirelessOn || objGear.WirelessBonus == null))
-                                                continue;
+                                                return true;
                                             if (!string.IsNullOrEmpty(objGear.Extra))
                                                 ImprovementManager.ForcedValue = objGear.Extra;
                                             if (objGear.Bonus != null)
                                             {
                                                 if (!await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject, Improvement.ImprovementSource.StackedFocus,
-                                                            objStack.InternalId, objGear.Bonus, await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false),
+                                                            objStack.InternalId, objGear.Bonus,
+                                                            await objGear.GetRatingAsync(GenericToken)
+                                                                .ConfigureAwait(false),
                                                             await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
                                                                 .ConfigureAwait(false), token: GenericToken)
                                                         .ConfigureAwait(false))
@@ -12429,7 +12431,7 @@ namespace Chummer
                                                         .ChangeEquippedStatusAsync(true, token: GenericToken)
                                                         .ConfigureAwait(false);
                                                     e.Cancel = true;
-                                                    return;
+                                                    return false;
                                                 }
 
                                                 objGear.Extra = ImprovementManager.SelectedValue;
@@ -12439,7 +12441,9 @@ namespace Chummer
                                                 && objGear.WirelessBonus != null
                                                 && !await ImprovementManager.CreateImprovementsAsync(
                                                         CharacterObject, Improvement.ImprovementSource.StackedFocus,
-                                                        objStack.InternalId, objGear.WirelessBonus, await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false),
+                                                        objStack.InternalId, objGear.WirelessBonus,
+                                                        await objGear.GetRatingAsync(GenericToken)
+                                                            .ConfigureAwait(false),
                                                         await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
                                                             .ConfigureAwait(false), token: GenericToken)
                                                     .ConfigureAwait(false))
@@ -12450,9 +12454,13 @@ namespace Chummer
                                                 await objStackGear.ChangeEquippedStatusAsync(true, token: GenericToken)
                                                     .ConfigureAwait(false);
                                                 e.Cancel = true;
-                                                return;
+                                                return false;
                                             }
-                                        }
+
+                                            return true;
+                                        }, GenericToken).ConfigureAwait(false);
+                                        if (e.Cancel)
+                                            return;
                                     }
 
                                     objStack.Bonded = true;

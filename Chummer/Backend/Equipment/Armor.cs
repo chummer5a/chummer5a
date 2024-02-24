@@ -1589,13 +1589,13 @@ namespace Chummer.Backend.Equipment
                     // Add the Armor's Improvements to the character.
                     ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId));
                     // Add the Improvements from any Armor Mods in the Armor.
-                    foreach (ArmorMod objMod in ArmorMods)
+                    foreach (ArmorMod objMod in ArmorMods.AsEnumerableWithSideEffects())
                     {
                         if (objMod.Equipped)
                         {
                             ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId));
                             // Add the Improvements from any Gear in the Armor.
-                            foreach (Gear objGear in objMod.GearChildren)
+                            foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects())
                             {
                                 if (objGear.Equipped)
                                 {
@@ -1605,7 +1605,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     // Add the Improvements from any Gear in the Armor.
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         if (objGear.Equipped)
                         {
@@ -1622,7 +1622,7 @@ namespace Chummer.Backend.Equipment
                                                                     == Improvement.ImprovementSource.Armor
                                                                     && x.SourceName == InternalId));
                     // Add the Improvements from any Armor Mods in the Armor.
-                    foreach (ArmorMod objMod in ArmorMods)
+                    foreach (ArmorMod objMod in ArmorMods.AsEnumerableWithSideEffects())
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                                                                _objCharacter.Improvements.Where(
@@ -1630,13 +1630,13 @@ namespace Chummer.Backend.Equipment
                                                                         == Improvement.ImprovementSource.ArmorMod
                                                                         && x.SourceName == InternalId));
                         // Add the Improvements from any Gear in the Armor.
-                        foreach (Gear objGear in objMod.GearChildren)
+                        foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects())
                         {
                             objGear.ChangeEquippedStatus(false, true);
                         }
                     }
                     // Add the Improvements from any Gear in the Armor.
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(false, true);
                     }

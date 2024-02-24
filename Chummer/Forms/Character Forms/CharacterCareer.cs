@@ -16840,22 +16840,22 @@ namespace Chummer
                 await CharacterObject.Weapons.RemoveAsync(objWeapon, GenericToken).ConfigureAwait(false);
 
                 // Remove any Improvements from the Character.
-                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                {
-                    foreach (Gear objGear in objAccessory.GearChildren)
-                        await objGear.ChangeEquippedStatusAsync(false, token: GenericToken).ConfigureAwait(false);
-                }
+                await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(objAccessory =>
+                        objAccessory.GearChildren.ForEachWithSideEffectsAsync(objGear =>
+                            objGear.ChangeEquippedStatusAsync(false, token: GenericToken), GenericToken), GenericToken)
+                    .ConfigureAwait(false);
 
                 if (objWeapon.UnderbarrelWeapons.Count > 0)
                 {
-                    foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+                    foreach (Weapon objUnderbarrelWeapon in await objWeapon.UnderbarrelWeapons
+                                 .GetAllDescendantsAsync(objUnderbarrelWeapon => objUnderbarrelWeapon.Children)
+                                 .ConfigureAwait(false))
                     {
-                        foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
-                        {
-                            foreach (Gear objGear in objAccessory.GearChildren)
-                                await objGear.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                             .ConfigureAwait(false);
-                        }
+                        await objUnderbarrelWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(objAccessory =>
+                                    objAccessory.GearChildren.ForEachWithSideEffectsAsync(objGear =>
+                                        objGear.ChangeEquippedStatusAsync(false, token: GenericToken), GenericToken),
+                                GenericToken)
+                            .ConfigureAwait(false);
                     }
                 }
 
@@ -18339,58 +18339,63 @@ namespace Chummer
                                 }
 
                                 bool blnOldEquipped = objStackGear.Equipped;
-                                foreach (Gear objGear in objStackedFocus.Gear)
+
+                                await objStackedFocus.Gear.ForEachWithSideEffectsWithBreakAsync(async objGear =>
                                 {
-                                    if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
+                                    if (objGear.Bonus == null && (!objGear.WirelessOn || objGear.WirelessBonus == null))
+                                        return true;
+                                    if (!string.IsNullOrEmpty(objGear.Extra))
+                                        ImprovementManager.ForcedValue = objGear.Extra;
+                                    if (objGear.Bonus != null)
                                     {
-                                        if (!string.IsNullOrEmpty(objGear.Extra))
-                                            ImprovementManager.ForcedValue = objGear.Extra;
-                                        if (objGear.Bonus != null)
-                                        {
-                                            if (!await ImprovementManager.CreateImprovementsAsync(
-                                                        CharacterObject, Improvement.ImprovementSource.StackedFocus,
-                                                        objStackedFocus.InternalId, objGear.Bonus, await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false),
-                                                        await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                            .ConfigureAwait(false), token: GenericToken)
-                                                    .ConfigureAwait(false))
-                                            {
-                                                e.Cancel = true;
-                                                break;
-                                            }
-
-                                            objGear.Extra = ImprovementManager.SelectedValue;
-                                        }
-
-                                        if (objGear.WirelessOn && objGear.WirelessBonus != null
-                                                               && !await ImprovementManager.CreateImprovementsAsync(
-                                                                       CharacterObject,
-                                                                       Improvement.ImprovementSource
-                                                                           .StackedFocus,
-                                                                       objStackedFocus.InternalId,
-                                                                       objGear.WirelessBonus,
-                                                                       await objGear.GetRatingAsync(GenericToken).ConfigureAwait(false),
-                                                                       await objGear
-                                                                           .GetCurrentDisplayNameShortAsync(
-                                                                               GenericToken)
-                                                                           .ConfigureAwait(false), token: GenericToken)
-                                                                   .ConfigureAwait(false))
+                                        if (!await ImprovementManager.CreateImprovementsAsync(
+                                                    CharacterObject, Improvement.ImprovementSource.StackedFocus,
+                                                    objStackedFocus.InternalId, objGear.Bonus,
+                                                    await objGear.GetRatingAsync(GenericToken)
+                                                        .ConfigureAwait(false),
+                                                    await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
+                                                        .ConfigureAwait(false), token: GenericToken)
+                                                .ConfigureAwait(false))
                                         {
                                             e.Cancel = true;
-                                            break;
+                                            return false;
                                         }
+
+                                        objGear.Extra = ImprovementManager.SelectedValue;
                                     }
-                                }
+
+                                    if (objGear.WirelessOn && objGear.WirelessBonus != null
+                                                           && !await ImprovementManager.CreateImprovementsAsync(
+                                                                   CharacterObject,
+                                                                   Improvement.ImprovementSource
+                                                                       .StackedFocus,
+                                                                   objStackedFocus.InternalId,
+                                                                   objGear.WirelessBonus,
+                                                                   await objGear.GetRatingAsync(GenericToken)
+                                                                       .ConfigureAwait(false),
+                                                                   await objGear
+                                                                       .GetCurrentDisplayNameShortAsync(
+                                                                           GenericToken)
+                                                                       .ConfigureAwait(false), token: GenericToken)
+                                                               .ConfigureAwait(false))
+                                    {
+                                        e.Cancel = true;
+                                        return false;
+                                    }
+
+                                    return true;
+                                }, GenericToken).ConfigureAwait(false);
 
                                 if (e.Cancel)
                                 {
                                     // Clear created improvements
-                                    foreach (Gear objGear in objStackedFocus.Gear)
-                                        await objGear.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                            .ConfigureAwait(false);
+                                    await objStackedFocus.Gear.ForEachWithSideEffectsAsync(objGear =>
+                                            objGear.ChangeEquippedStatusAsync(false, token: GenericToken), GenericToken)
+                                        .ConfigureAwait(false);
                                     if (blnOldEquipped)
-                                        foreach (Gear objGear in objStackedFocus.Gear)
-                                            await objGear.ChangeEquippedStatusAsync(true, token: GenericToken)
-                                                .ConfigureAwait(false);
+                                        await objStackedFocus.Gear.ForEachWithSideEffectsAsync(objGear =>
+                                                objGear.ChangeEquippedStatusAsync(true, token: GenericToken), GenericToken)
+                                            .ConfigureAwait(false);
                                     return;
                                 }
 
