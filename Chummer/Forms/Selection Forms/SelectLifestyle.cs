@@ -205,6 +205,9 @@ namespace Chummer
                 string strCity = await _objSourceLifestyle.GetCityAsync().ConfigureAwait(false);
                 string strDistrict = await _objSourceLifestyle.GetDistrictAsync().ConfigureAwait(false);
                 string strBorough = await _objSourceLifestyle.GetBoroughAsync().ConfigureAwait(false);
+                await _objLifestyle.SetCityAsync(strCity);
+                await _objLifestyle.SetDistrictAsync(strDistrict);
+                await _objLifestyle.SetBoroughAsync(strBorough);
                 await cboCity.DoThreadSafeAsync(x =>
                 {
                     x.SelectedValue = strCity;
@@ -710,7 +713,7 @@ namespace Chummer
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
             if (await Lifestyle.StaticIsTrustFundEligibleAsync(_objCharacter, strBaseLifestyle, token).ConfigureAwait(false))
             {
-                bool blnTrustFund = _objSourceLifestyle?.TrustFund ?? !await _objCharacter.Lifestyles
+                bool blnTrustFund = _objLifestyle?.TrustFund ?? !await _objCharacter.Lifestyles
                     .AnyAsync(x => x.TrustFund, token: token).ConfigureAwait(false);
                 await chkTrustFund.DoThreadSafeAsync(x =>
                 {

@@ -650,6 +650,9 @@ namespace Chummer
                 (x, y) => x.SetBoroughAsync(y)).ConfigureAwait(false);
 
             Interlocked.Decrement(ref _intSkipRefresh);
+            Interlocked.Decrement(ref _intUpdatingCity);
+            Interlocked.Decrement(ref _intUpdatingDistrict);
+            Interlocked.Decrement(ref _intUpdatingBorough);
             await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
