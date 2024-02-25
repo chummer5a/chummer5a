@@ -494,21 +494,21 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(')
-                         .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
-                         .Append(')');
+                    .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
+                    .Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || await txtSearch
-                                                                    .DoThreadSafeFuncAsync(
-                                                                        x => x.TextLength, token: token)
-                                                                    .ConfigureAwait(false) == 0))
+                                                               .DoThreadSafeFuncAsync(
+                                                                   x => x.TextLength, token: token)
+                                                               .ConfigureAwait(false) == 0))
                 {
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 }
                 else
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCategoryFilter))
+                               out StringBuilder sbdCategoryFilter))
                     {
                         foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                         {
@@ -529,59 +529,62 @@ namespace Chummer
                     sbdFilter.Append(" and (metagenic = 'True' or required/oneof[contains(., 'Changeling')])");
                 }
                 else if (await chkNotMetagenic.DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                              .ConfigureAwait(false))
+                             .ConfigureAwait(false))
                 {
                     sbdFilter.Append(" and not(metagenic = 'True') and not(required/oneof[contains(., 'Changeling')])");
                 }
 
                 decimal decValueBP = await nudValueBP.DoThreadSafeFuncAsync(x => x.Value, token: token)
-                                                     .ConfigureAwait(false);
+                    .ConfigureAwait(false);
                 if (decValueBP != 0)
                 {
                     string strValueBP = decValueBP.ToString(GlobalSettings.InvariantCultureInfo);
-                    if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases
-                                              && decValueBP > 0)
+                    if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                        && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false)
+                        && decValueBP > 0)
                     {
                         string strValueBPHalved = (decValueBP / 2).ToString(GlobalSettings.InvariantCultureInfo);
                         sbdFilter.Append(" and ((doublecareer = 'False' and (karma = ").Append(strValueBP)
-                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
-                                 .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
-                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ")
-                                 .Append(strValueBPHalved)
-                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
-                                 .Append("))))");
+                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP)
+                            .Append("))) or (not(doublecareer = 'False') and (karma = ").Append(strValueBPHalved)
+                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ")
+                            .Append(strValueBPHalved)
+                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBPHalved)
+                            .Append("))))");
                     }
                     else
                     {
                         sbdFilter.Append(" and (karma = ").Append(strValueBP)
-                                 .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
-                                 .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
+                            .Append(" or (not(nolevels) and limit != 'False' and (karma mod ").Append(strValueBP)
+                            .Append(") = 0 and karma * karma * limit <= karma * ").Append(strValueBP).Append("))");
                     }
                 }
                 else
                 {
                     int intMinimumBP = await nudMinimumBP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token)
-                                                         .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     int intMaximumBP = await nudMaximumBP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token)
-                                                         .ConfigureAwait(false);
+                        .ConfigureAwait(false);
                     if (intMinimumBP != 0 || intMaximumBP != 0)
                     {
                         if (intMinimumBP < 0 == intMaximumBP < 0)
                         {
                             sbdFilter.Append(" and (")
-                                     .Append(GetKarmaRangeString(intMaximumBP, intMinimumBP))
-                                     .Append(')');
+                                .Append(await GetKarmaRangeString(intMaximumBP, intMinimumBP).ConfigureAwait(false))
+                                .Append(')');
                         }
                         else
                         {
-                            sbdFilter.Append("and ((").Append(GetKarmaRangeString(intMaximumBP, 0))
-                                     .Append(") or (")
-                                     .Append(GetKarmaRangeString(-1, intMinimumBP)).Append("))");
+                            sbdFilter.Append("and ((")
+                                .Append(await GetKarmaRangeString(intMaximumBP, 0).ConfigureAwait(false))
+                                .Append(") or (")
+                                .Append(await GetKarmaRangeString(-1, intMinimumBP).ConfigureAwait(false)).Append("))");
                         }
 
-                        string GetKarmaRangeString(int intMax, int intMin)
+                        async Task<string> GetKarmaRangeString(int intMax, int intMin)
                         {
+                            token.ThrowIfCancellationRequested();
                             string strMax = intMax.ToString(GlobalSettings.InvariantCultureInfo);
                             string strMin = intMin.ToString(GlobalSettings.InvariantCultureInfo);
                             string strMostExtremeValue
@@ -589,7 +592,9 @@ namespace Chummer
                             string strValueDiff
                                 = (intMax > 0 ? intMax - intMin : intMin - intMax).ToString(
                                     GlobalSettings.InvariantCultureInfo);
-                            if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                            if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                                && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token)
+                                    .ConfigureAwait(false))
                             {
                                 return "((doublecareer = 'False' or karma < 0) and ((karma >= " + strMin
                                     + " and karma <= "
@@ -602,9 +607,9 @@ namespace Chummer
                                     strMin + ") or (karma < 0 and karma * limit <= " + strMax +
                                     "))))) or (not(doublecareer = 'False' or karma < 0) and ((2 * karma >= " + strMin +
                                     " and 2 * karma <= " + strMax +
-                                    ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= 2 * karma * " +
+                                    ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= karma * " +
                                     strMostExtremeValue + " and (2 * karma * (" + strMostExtremeValue +
-                                    " mod (2 * karma)) <= 2 * karma * " + strValueDiff +
+                                    " mod (2 * karma)) <= karma * " + strValueDiff +
                                     ") and ((karma >= 0 and 2 * karma * limit >= " + strMin +
                                     ") or (karma < 0 and 2 * karma * limit <= " + strMax + ")))))";
                             }
