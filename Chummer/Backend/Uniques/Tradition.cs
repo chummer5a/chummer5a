@@ -161,7 +161,7 @@ namespace Chummer.Backend.Uniques
                 Extra = string.Empty;
                 Source = string.Empty;
                 _strPage = string.Empty;
-                DrainExpression = string.Empty;
+                await SetDrainExpressionAsync(string.Empty, token).ConfigureAwait(false);
                 SpiritForm = "Materialization";
                 _lstAvailableSpirits.Clear();
                 Type = TraditionType.None;
@@ -229,7 +229,7 @@ namespace Chummer.Backend.Uniques
                 }
 
                 RebuildSpiritList(false);
-                this.OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page),
+                this.OnMultiplePropertyChanged(nameof(Name), nameof(Extra), nameof(Source), nameof(Page), nameof(Bonus),
                     nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection), nameof(SpiritHealth),
                     nameof(SpiritIllusion), nameof(SpiritManipulation));
                 return true;
@@ -263,7 +263,7 @@ namespace Chummer.Backend.Uniques
                 xmlTraditionNode.TryGetStringFieldQuickly("page", ref _strPage);
                 string strTemp = string.Empty;
                 if (xmlTraditionNode.TryGetStringFieldQuickly("drain", ref strTemp))
-                    DrainExpression = strTemp;
+                    await SetDrainExpressionAsync(strTemp, token).ConfigureAwait(false);
                 if (xmlTraditionNode.TryGetStringFieldQuickly("spiritform", ref strTemp))
                     SpiritForm = strTemp;
                 _nodBonus = xmlTraditionNode["bonus"];
@@ -299,7 +299,7 @@ namespace Chummer.Backend.Uniques
 
                 await RebuildSpiritListAsync(false, token).ConfigureAwait(false);
                 await this.OnMultiplePropertyChangedAsync(token, nameof(Name), nameof(Extra), nameof(Source),
-                    nameof(Page), nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection),
+                    nameof(Page), nameof(Bonus), nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection),
                     nameof(SpiritHealth), nameof(SpiritIllusion), nameof(SpiritManipulation)).ConfigureAwait(false);
                 return true;
             }
@@ -2349,22 +2349,6 @@ namespace Chummer.Backend.Uniques
                     new DependencyGraphNode<string, Tradition>(nameof(SpiritManipulation))
                 )
             );
-
-        public static IEnumerable<Tradition> GetTraditions(Character character)
-        {
-            using (XmlNodeList xmlTraditions = character.LoadData("traditions.xml").SelectNodes("/chummer/traditions/tradition[" + character.Settings.BookXPath() + ']'))
-            {
-                if (xmlTraditions?.Count > 0)
-                {
-                    foreach (XmlNode node in xmlTraditions)
-                    {
-                        Tradition tradition = new Tradition(character);
-                        tradition.Create(node);
-                        yield return tradition;
-                    }
-                }
-            }
-        }
 
         #endregion static
 
