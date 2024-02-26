@@ -651,7 +651,7 @@ namespace Chummer
                             strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + ']') == null)
                         continue;
                     if (!blnLimitList
-                        || await objXmlQuality.RequirementsMetAsync(_objCharacter, string.Empty, string.Empty, IgnoreQuality, token: token).ConfigureAwait(false))
+                        || await objXmlQuality.RequirementsMetAsync(_objCharacter, strIgnoreQuality: IgnoreQuality, token: token).ConfigureAwait(false))
                     {
                         lstQuality.Add(new ListItem(
                                            objXmlQuality
@@ -693,7 +693,7 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", strSelectedQuality);
 
-            if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false), IgnoreQuality, token: token).ConfigureAwait(false))
+            if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false), strIgnoreQuality: IgnoreQuality, token: token).ConfigureAwait(false))
                 return;
 
             _strSelectedQuality = strSelectedQuality;

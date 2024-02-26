@@ -1899,7 +1899,7 @@ namespace Chummer
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync(_eMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+            if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync(_eMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNodeAndCacheExpression("forcegrade", token: token)?.Value;

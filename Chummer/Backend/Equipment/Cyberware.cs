@@ -1479,9 +1479,7 @@ namespace Chummer.Backend.Equipment
                     Utils.RunWithoutThreadLock(
                         () =>
                         {
-                            blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty,
-                                string.Empty,
-                                string.Empty, "Left");
+                            blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, strLocation: "Left");
                             if (!blnAllowLeft)
                                 return;
                             if (!string.IsNullOrEmpty(HasModularMount)
@@ -1524,8 +1522,7 @@ namespace Chummer.Backend.Equipment
                         () =>
                         {
                             blnAllowRight = xpnCyberware.RequirementsMet(
-                                _objCharacter, Parent, string.Empty, string.Empty,
-                                string.Empty, "Right");
+                                _objCharacter, Parent, strLocation: "Right");
                             if (!blnAllowRight)
                                 return;
                             if (!string.IsNullOrEmpty(HasModularMount)
@@ -1662,9 +1659,7 @@ namespace Chummer.Backend.Equipment
                     await Task.WhenAll(
                         Task.Run(async () =>
                         {
-                            blnAllowLeft = await xpnCyberware.RequirementsMetAsync(_objCharacter, Parent, string.Empty,
-                                string.Empty,
-                                string.Empty, "Left", token: token).ConfigureAwait(false);
+                            blnAllowLeft = await xpnCyberware.RequirementsMetAsync(_objCharacter, Parent, strLocation: "Left", token: token).ConfigureAwait(false);
                             if (!blnAllowLeft)
                                 return;
                             if (!string.IsNullOrEmpty(HasModularMount)
@@ -1709,8 +1704,7 @@ namespace Chummer.Backend.Equipment
                         Task.Run(async () =>
                         {
                             blnAllowRight = await xpnCyberware.RequirementsMetAsync(
-                                _objCharacter, Parent, string.Empty, string.Empty,
-                                string.Empty, "Right", token: token).ConfigureAwait(false);
+                                _objCharacter, Parent, strLocation: "Right", token: token).ConfigureAwait(false);
                             if (!blnAllowRight)
                                 return;
                             if (!string.IsNullOrEmpty(HasModularMount)

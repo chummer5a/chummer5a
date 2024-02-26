@@ -9359,7 +9359,7 @@ namespace Chummer
                             XPathNavigator objXmlSelectedQuality
                                 = await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
                             if (!await objXmlSelectedQuality.RequirementsMetAsync(CharacterObject,
-                                    await LanguageManager.GetStringAsync(
+                                    strLocalName: await LanguageManager.GetStringAsync(
                                             "String_Quality", token: GenericToken)
                                         .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
                             {

@@ -295,7 +295,7 @@ namespace Chummer
                 // Check to see if the user needs to select anything for the Power.
                 XPathNavigator objXmlPower = _xmlBasePowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedId);
 
-                if (await objXmlPower.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power", token: token).ConfigureAwait(false), string.Empty, string.Empty, string.Empty, IgnoreLimits, token: token).ConfigureAwait(false))
+                if (await objXmlPower.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync("String_Power", token: token).ConfigureAwait(false), blnIgnoreLimit: IgnoreLimits, token: token).ConfigureAwait(false))
                 {
                     SelectedPower = strSelectedId;
                     await this.DoThreadSafeAsync(x =>

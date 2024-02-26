@@ -500,7 +500,7 @@ namespace Chummer
                         return;
                     }
                 }
-                if (!await objXmlSpell.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_DescSpell", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                if (!await objXmlSpell.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync("String_DescSpell", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     return;
                 }

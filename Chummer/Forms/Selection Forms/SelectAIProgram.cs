@@ -385,7 +385,7 @@ namespace Chummer
                     return;
 
                 // Check to make sure requirement is met
-                if (!await xmlProgram.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Program", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                if (!await xmlProgram.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync("String_Program", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     return;
                 }

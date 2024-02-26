@@ -1468,8 +1468,8 @@ namespace Chummer.Backend.Equipment
                         // Makes sure we aren't over our limits for this particular quality from this overall source
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
                             await xpnSelectedQuality.RequirementsMetAsync(_objCharacter,
-                                await LanguageManager.GetStringAsync("String_Quality", token: token)
-                                    .ConfigureAwait(false), string.Empty, Name, token: token).ConfigureAwait(false))
+                                strLocalName: await LanguageManager.GetStringAsync("String_Quality", token: token)
+                                    .ConfigureAwait(false), strIgnoreQuality: Name, token: token).ConfigureAwait(false))
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objAddQuality = new Quality(_objCharacter);

@@ -10373,7 +10373,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty))
+            if (!objXmlAccessory.RequirementsMet(_objCharacter, this))
                 return false;
 
             XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("forbidden/weapondetails");
@@ -10421,7 +10421,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, string.Empty, string.Empty, token: token).ConfigureAwait(false))
+            if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, token: token).ConfigureAwait(false))
                 return false;
 
             XPathNavigator xmlTestNode = objXmlAccessory

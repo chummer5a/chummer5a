@@ -10234,7 +10234,7 @@ namespace Chummer
                         {
                             if (!await (await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))
                                     .RequirementsMetAsync(CharacterObject,
-                                        await LanguageManager.GetStringAsync("String_Quality", token: GenericToken)
+                                        strLocalName: await LanguageManager.GetStringAsync("String_Quality", token: GenericToken)
                                             .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
                             {
                                 await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);

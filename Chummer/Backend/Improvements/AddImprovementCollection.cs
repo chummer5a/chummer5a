@@ -4376,7 +4376,7 @@ namespace Chummer
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedArt?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Art"), string.Empty, _strFriendlyName) == true)
+                objXmlSelectedArt?.CreateNavigator().RequirementsMet(_objCharacter, strLocalName: _strFriendlyName) == true)
             {
                 Art objAddArt = new Art(_objCharacter);
                 objAddArt.Create(objXmlSelectedArt, Improvement.ImprovementSource.Metamagic);
@@ -4412,9 +4412,7 @@ namespace Chummer
                             XmlNode objXmlArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/arts/art", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
                             if (objXmlArt != null && objXmlAddArt.CreateNavigator()
-                                    .RequirementsMet(
-                                        _objCharacter, string.Empty, string.Empty,
-                                        _strFriendlyName))
+                                    .RequirementsMet(_objCharacter, strLocalName: _strFriendlyName))
                             {
                                 lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText,
                                     objXmlArt["translate"]?.InnerText ?? strLoopName));
@@ -4479,7 +4477,7 @@ namespace Chummer
             XmlNode objXmlSelectedMetamagic = _objCharacter.LoadData("metamagic.xml").TryGetNodeByNameOrId("/chummer/metamagics/metamagic", bonusNode.InnerText);
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic"), string.Empty, _strFriendlyName) == true)
+                objXmlSelectedMetamagic?.CreateNavigator().RequirementsMet(_objCharacter, strLocalName: _strFriendlyName) == true)
             {
                 string strForcedValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
@@ -4518,9 +4516,7 @@ namespace Chummer
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
                             if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator()
-                                    .RequirementsMet(
-                                        _objCharacter, string.Empty,
-                                        string.Empty, _strFriendlyName))
+                                    .RequirementsMet(_objCharacter, strLocalName: _strFriendlyName))
                             {
                                 lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText,
                                     objXmlMetamagic["translate"]?.InnerText
@@ -4597,7 +4593,7 @@ namespace Chummer
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                objXmlSelectedEcho?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo"), string.Empty, _strFriendlyName) == true)
+                objXmlSelectedEcho?.CreateNavigator().RequirementsMet(_objCharacter, strLocalName: _strFriendlyName) == true)
             {
                 string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
@@ -4636,9 +4632,7 @@ namespace Chummer
                                 "/chummer/metamagics/metamagic", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
                             if (objXmlEcho != null && objXmlAddEcho.CreateNavigator()
-                                    .RequirementsMet(
-                                        _objCharacter, string.Empty, string.Empty,
-                                        _strFriendlyName))
+                                    .RequirementsMet(_objCharacter, strLocalName: _strFriendlyName))
                             {
                                 lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText,
                                     objXmlEcho["translate"]?.InnerText ?? strLoopName));
@@ -6175,8 +6169,7 @@ namespace Chummer
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strName);
                             // Makes sure we aren't over our limits for this particular quality from this overall source
                             if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                                objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter, string.Empty,
-                                    string.Empty, _strFriendlyName) == true)
+                                objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter, strLocalName: _strFriendlyName) == true)
                             {
                                 lstQualities.Add(
                                     new ListItem(strName, objXmlQuality?["translate"]?.InnerText ?? strName));
@@ -7699,8 +7692,7 @@ namespace Chummer
             for (int i = 0; i < intCount; ++i)
             {
                 // Makes sure we aren't over our limits for this particular quality from this overall source
-                if (blnForced || objXmlSelectedQuality?.CreateNavigator().RequirementsMet(_objCharacter,
-                        LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName) == true)
+                if (blnForced || objXmlSelectedQuality?.CreateNavigator().RequirementsMet(_objCharacter, strLocalName: _strFriendlyName) == true)
                 {
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Quality objAddQuality = new Quality(_objCharacter);

@@ -40,12 +40,11 @@ namespace Chummer
         /// <param name="objParent">Parent object to be compared to.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [Obsolete("This method is a wrapper that calls XPathNavigator instead. Where possible, refactor the calling object to an XPathNavigator instead.", false)]
-        public static bool RequirementsMet(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
+        public static bool RequirementsMet(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             if (xmlNode == null || objCharacter == null)
                 return false;
@@ -55,7 +54,7 @@ namespace Chummer
             XPathNavigator objNavigator = xmlNode.CreateNavigator();
             return Utils.SafelyRunSynchronously(() => objNavigator.RequirementsMetCoreAsync(
                                                     true, objCharacter, objParent, strLocalName,
-                                                    strIgnoreQuality, strSourceName, strLocation,
+                                                    strIgnoreQuality, strLocation,
                                                     blnIgnoreLimit, token), token);
         }
 
@@ -65,12 +64,11 @@ namespace Chummer
         /// <param name="objParent">Parent object to be compared to.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [Obsolete("This method is a wrapper that calls XPathNavigator instead. Where possible, refactor the calling object to an XPathNavigator instead.", false)]
-        public static Task<bool> RequirementsMetAsync(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
+        public static Task<bool> RequirementsMetAsync(this XmlNode xmlNode, Character objCharacter, object objParent = null, string strLocalName = "", string strIgnoreQuality = "", string strLocation = "", bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             if (xmlNode == null || objCharacter == null)
                 return Task.FromResult(false);
@@ -79,7 +77,7 @@ namespace Chummer
                 return Task.FromResult(true);
             XPathNavigator objNavigator = xmlNode.CreateNavigator();
             return objNavigator.RequirementsMetCoreAsync(false, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                         strSourceName, strLocation, blnIgnoreLimit, token);
+                                                         strLocation, blnIgnoreLimit, token);
         }
 
         //TODO: Might be a better location for this; Class names are screwy.
@@ -89,18 +87,17 @@ namespace Chummer
         /// <param name="objParent">Parent object against which to check.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name (or ID) of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static bool RequirementsMet(this XPathNavigator xmlNode, Character objCharacter, object objParent = null,
                                            string strLocalName = "", string strIgnoreQuality = "",
-                                           string strSourceName = "", string strLocation = "",
+                                           string strLocation = "",
                                            bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
                 () => xmlNode.RequirementsMetCoreAsync(true, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                       strSourceName, strLocation, blnIgnoreLimit, token), token);
+                                                       strLocation, blnIgnoreLimit, token), token);
         }
 
         //TODO: Might be a better location for this; Class names are screwy.
@@ -110,23 +107,22 @@ namespace Chummer
         /// <param name="objParent">Parent object against which to check.</param>
         /// <param name="strLocalName">Name of the type of item being checked for displaying messages. If empty or null, no message is displayed.</param>
         /// <param name="strIgnoreQuality">Name (or ID) of a Quality that should be ignored. Typically used when swapping Qualities in career mode.</param>
-        /// <param name="strSourceName">Name of the improvement that called this (if it was called by an improvement adding it)</param>
         /// <param name="strLocation">Limb side to use if we need a specific limb side (Left or Right)</param>
         /// <param name="blnIgnoreLimit">Whether to ignore checking for limits on the total amount of this item the character can have.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task<bool> RequirementsMetAsync(this XPathNavigator xmlNode, Character objCharacter, object objParent = null,
                                            string strLocalName = "", string strIgnoreQuality = "",
-                                           string strSourceName = "", string strLocation = "",
+                                           string strLocation = "",
                                            bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             return xmlNode.RequirementsMetCoreAsync(false, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                    strSourceName, strLocation, blnIgnoreLimit, token);
+                                                    strLocation, blnIgnoreLimit, token);
         }
 
         private static async Task<bool> RequirementsMetCoreAsync(this XPathNavigator xmlNode, bool blnSync,
                                                                  Character objCharacter, object objParent = null,
                                                                  string strLocalName = "", string strIgnoreQuality = "",
-                                                                 string strSourceName = "", string strLocation = "",
+                                                                 string strLocation = "",
                                                                  bool blnIgnoreLimit = false,
                                                                  CancellationToken token = default)
         {
@@ -316,11 +312,8 @@ namespace Chummer
                         case "characterquality":
                         case "quality":
                         {
-                            objListToCheck = objCharacter.Qualities.Where(
-                                objQuality =>
-                                    objQuality.SourceName == strSourceName && objQuality.Name != strIgnoreQuality
-                                                                           && objQuality.SourceIDString
-                                                                           != strIgnoreQuality);
+                            objListToCheck = objCharacter.Qualities.Where(objQuality =>
+                                objQuality.Name != strIgnoreQuality && objQuality.SourceIDString != strIgnoreQuality);
                             break;
                         }
                         case "lifestylequality":

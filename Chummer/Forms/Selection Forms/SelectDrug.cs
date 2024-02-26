@@ -986,7 +986,7 @@ namespace Chummer
             if (objDrugNode == null)
                 return;
 
-            if (!await objDrugNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_SelectPACKSKit_Drug", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+            if (!await objDrugNode.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync("String_SelectPACKSKit_Drug", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return;
 
             string strForceGrade = objDrugNode.SelectSingleNodeAndCacheExpression("forcegrade", token)?.Value;

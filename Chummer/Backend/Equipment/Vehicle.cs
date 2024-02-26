@@ -4719,7 +4719,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlMod == null)
                 return false;
 
-            if (!await objXmlMod.RequirementsMetAsync(_objCharacter, this, string.Empty, string.Empty, token: token)
+            if (!await objXmlMod.RequirementsMetAsync(_objCharacter, this, token: token)
                     .ConfigureAwait(false))
                 return false;
 
