@@ -205,9 +205,9 @@ namespace Chummer
                 string strCity = await _objSourceLifestyle.GetCityAsync().ConfigureAwait(false);
                 string strDistrict = await _objSourceLifestyle.GetDistrictAsync().ConfigureAwait(false);
                 string strBorough = await _objSourceLifestyle.GetBoroughAsync().ConfigureAwait(false);
-                await _objLifestyle.SetCityAsync(strCity);
-                await _objLifestyle.SetDistrictAsync(strDistrict);
-                await _objLifestyle.SetBoroughAsync(strBorough);
+                await _objLifestyle.SetCityAsync(strCity).ConfigureAwait(false);
+                await _objLifestyle.SetDistrictAsync(strDistrict).ConfigureAwait(false);
+                await _objLifestyle.SetBoroughAsync(strBorough).ConfigureAwait(false);
                 await cboCity.DoThreadSafeAsync(x =>
                 {
                     x.SelectedValue = strCity;

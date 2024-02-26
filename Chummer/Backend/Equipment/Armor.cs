@@ -3118,9 +3118,9 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (ArmorMod objArmorMod in ArmorMods)
+            foreach (ArmorMod objArmorMod in ArmorMods.AsEnumerableWithSideEffects())
                 objArmorMod.RefreshWirelessBonuses();
-            foreach (Gear objGear in GearChildren)
+            foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                 objGear.RefreshWirelessBonuses();
         }
 
@@ -3171,10 +3171,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (ArmorMod objArmorMod in ArmorMods)
-                await objArmorMod.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
-            foreach (Gear objGear in GearChildren)
-                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            await ArmorMods.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
+            await GearChildren.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
         }
 
         #region UI Methods

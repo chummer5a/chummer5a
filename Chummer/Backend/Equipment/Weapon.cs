@@ -8294,9 +8294,9 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Weapon objWeapon in Children)
+            foreach (Weapon objWeapon in Children.AsEnumerableWithSideEffects())
                 objWeapon.RefreshWirelessBonuses();
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            foreach (WeaponAccessory objAccessory in WeaponAccessories.AsEnumerableWithSideEffects())
                 objAccessory.RefreshWirelessBonuses();
         }
 
@@ -8345,10 +8345,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Weapon objWeapon in Children)
-                await objWeapon.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                await objAccessory.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            await Children.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
+            await WeaponAccessories.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
