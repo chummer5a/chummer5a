@@ -1311,7 +1311,7 @@ namespace Chummer.Controls.Shared
             return token.IsCancellationRequested ? Task.FromCanceled<bool>(token) : Task.FromResult(true);
         }
 
-        private Task<bool> DefaultVisibleAsync(Predicate<TType> predicate, TType x, CancellationToken token = default)
+        private static Task<bool> DefaultVisibleAsync(Predicate<TType> predicate, TType x, CancellationToken token = default)
         {
             return token.IsCancellationRequested
                 ? Task.FromCanceled<bool>(token)

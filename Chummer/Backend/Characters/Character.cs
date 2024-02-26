@@ -7164,13 +7164,9 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ? this.GetNodeXPath(token: token)
                                         : await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                                    if (objMetavariantNode != null)
-                                    {
-                                        Guid.TryParse(objMetavariantNode
-                                                .SelectSingleNodeAndCacheExpression("id", token)?.Value,
-                                            out _guiMetavariant);
-                                    }
-                                    else
+                                    if (!Guid.TryParse(
+                                            objMetavariantNode?.SelectSingleNodeAndCacheExpression("id", token)?.Value,
+                                            out _guiMetavariant))
                                         _guiMetavariant = Guid.Empty;
                                 }
                                 // Empty metavariant GUID takes precedence over non-empty metavariant name

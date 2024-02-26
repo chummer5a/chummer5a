@@ -3472,34 +3472,32 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.InitiationEnabled)))
                 {
+                    // Change the status of the Initiation tab being show.
+                    if (CharacterObject.InitiationEnabled)
                     {
-                        // Change the status of the Initiation tab being show.
-                        if (CharacterObject.InitiationEnabled)
+                        await tabCharacterTabs.DoThreadSafeAsync(x =>
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x =>
-                            {
-                                if (!x.TabPages.Contains(tabInitiation))
-                                    x.TabPages.Insert(3, tabInitiation);
-                            }, token).ConfigureAwait(false);
-                            await gpbInitiationType
-                                .DoThreadSafeAsync(x => x.Visible = true, token)
-                                .ConfigureAwait(false);
-                            await gpbInitiationGroup
-                                .DoThreadSafeAsync(x => x.Visible = true, token)
-                                .ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await tabCharacterTabs
-                                .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
-                                .ConfigureAwait(false);
-                            await gpbInitiationType
-                                .DoThreadSafeAsync(x => x.Visible = false, token)
-                                .ConfigureAwait(false);
-                            await gpbInitiationGroup
-                                .DoThreadSafeAsync(x => x.Visible = false, token)
-                                .ConfigureAwait(false);
-                        }
+                            if (!x.TabPages.Contains(tabInitiation))
+                                x.TabPages.Insert(3, tabInitiation);
+                        }, token).ConfigureAwait(false);
+                        await gpbInitiationType
+                            .DoThreadSafeAsync(x => x.Visible = true, token)
+                            .ConfigureAwait(false);
+                        await gpbInitiationGroup
+                            .DoThreadSafeAsync(x => x.Visible = true, token)
+                            .ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await tabCharacterTabs
+                            .DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), token)
+                            .ConfigureAwait(false);
+                        await gpbInitiationType
+                            .DoThreadSafeAsync(x => x.Visible = false, token)
+                            .ConfigureAwait(false);
+                        await gpbInitiationGroup
+                            .DoThreadSafeAsync(x => x.Visible = false, token)
+                            .ConfigureAwait(false);
                     }
                 }
 
