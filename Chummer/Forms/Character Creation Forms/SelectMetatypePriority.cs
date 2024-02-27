@@ -1526,7 +1526,7 @@ namespace Chummer
 
                     if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
                         strSelectedMetatype
-                        || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
+                        || (await _objCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false)).ToString("D", GlobalSettings.InvariantCultureInfo) !=
                         strSelectedMetavariant)
                     {
                         // Remove qualities that require the old metatype
@@ -1923,13 +1923,13 @@ namespace Chummer
                                 = xmlBaseMetatypePriority.TryGetNodeByNameOrId(
                                       "metatypes/metatype", strSelectedMetatype)
                                   ?? xmlBaseMetatypePriority.TryGetNodeByNameOrId(
-                                      "metatypes/metatype", _objCharacter.Metatype);
+                                      "metatypes/metatype", await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false));
                             if (strSelectedMetavariant != Guid.Empty.ToString("D"))
                                 objXmlMetatypePriorityNode
                                     = objXmlMetatypePriorityNode?.TryGetNodeByNameOrId(
                                           "metavariants/metavariant", strSelectedMetavariant)
                                       ?? objXmlMetatypePriorityNode?.TryGetNodeByNameOrId(
-                                          "metavariants/metavariant", (await _objCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false)).ToString("D"));
+                                          "metavariants/metavariant", await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false));
                             if (objXmlMetatypePriorityNode != null)
                             {
                                 if (int.TryParse(objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpression("value", token)?.Value, out int intTemp))
