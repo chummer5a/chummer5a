@@ -1943,7 +1943,7 @@ namespace Chummer
                     }
 
                     _objCharacter.Special = intSpecialAttribPoints;
-                    _objCharacter.TotalSpecial = _objCharacter.Special;
+                    _objCharacter.TotalSpecial = intSpecialAttribPoints;
                     _objCharacter.MetatypeBP = intMetatypeBP;
 
                     // Set Attributes
