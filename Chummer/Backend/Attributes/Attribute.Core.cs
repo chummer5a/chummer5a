@@ -630,9 +630,6 @@ namespace Chummer.Backend.Attributes
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
-                // No need to write lock because interlocked guarantees safety
-                if (Interlocked.Exchange(ref _intBase, value) == value)
-                    return;
                 await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
             }
             finally
