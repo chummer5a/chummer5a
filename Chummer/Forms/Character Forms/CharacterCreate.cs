@@ -15200,7 +15200,7 @@ namespace Chummer
                                       x => x.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount), token)
                                   .ConfigureAwait(false);
                             // Enable and set the Rating values as needed.
-                            await intMaxRating = await objCyberware.GetMaxRatingAsync(token).ConfigureAwait(false);
+                            int intMaxRating = await objCyberware.GetMaxRatingAsync(token).ConfigureAwait(false);
                             if (intMaxRating == 0)
                             {
                                 await nudCyberwareRating.DoThreadSafeAsync(x =>
@@ -22917,7 +22917,7 @@ namespace Chummer
                         return false;
                     string strLoop = (await objCyberware.GetGradeAsync(token).ConfigureAwait(false)).ToString();
                     if (string.IsNullOrEmpty(strGrade))
-                        strGrade = strLoop
+                        strGrade = strLoop;
                     else if (strGrade != strLoop)
                     {
                         Program.ShowScrollableMessageBox(
