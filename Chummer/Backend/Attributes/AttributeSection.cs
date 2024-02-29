@@ -2494,7 +2494,17 @@ namespace Chummer.Backend.Attributes
                                                   (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
                                                       ? dicValueOverrides[strCharAttributeName + "Base"]
                                                       : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
-                                                  .ToString(GlobalSettings.InvariantCultureInfo));
+                                                  .ToString(GlobalSettings.InvariantCultureInfo))
+                                .CheapReplace('{' + strCharAttributeName + "Minimum}", () =>
+                                    (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
+                                        ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                                        : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMinimum)
+                                    .ToString(GlobalSettings.InvariantCultureInfo))
+                                .CheapReplace('{' + strCharAttributeName + "Maximum}", () =>
+                                    (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
+                                        ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                                        : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMaximum)
+                                    .ToString(GlobalSettings.InvariantCultureInfo));
                 }
 
                 return strReturn;
@@ -2512,20 +2522,30 @@ namespace Chummer.Backend.Attributes
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () =>
-                                              (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
-                                                  ? dicValueOverrides[strCharAttributeName]
-                                                  : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
-                                              .ToString(GlobalSettings.InvariantCultureInfo));
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                            ? dicValueOverrides[strCharAttributeName]
+                            : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
+                        .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () =>
-                                              (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
-                                                  ? dicValueOverrides[strCharAttributeName + "Unaug"]
-                                                  : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
-                                              .ToString(GlobalSettings.InvariantCultureInfo));
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
+                            ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                            : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
+                        .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () =>
-                                              (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
-                                                  ? dicValueOverrides[strCharAttributeName + "Base"]
-                                                  : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
-                                              .ToString(GlobalSettings.InvariantCultureInfo));
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                            ? dicValueOverrides[strCharAttributeName + "Base"]
+                            : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
+                        .ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Minimum}", () =>
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
+                            ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                            : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMinimum)
+                        .ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Maximum}", () =>
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
+                            ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                            : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMaximum)
+                        .ToString(GlobalSettings.InvariantCultureInfo));
                 }
             }
         }
@@ -2541,24 +2561,37 @@ namespace Chummer.Backend.Attributes
                 string strReturn = strInput;
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
-                    CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
-                    strReturn = await (await (await strReturn
-                                                    .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
-                                                                           (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
-                                                                               ? dicValueOverrides[strCharAttributeName]
-                                                                               : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
-                                                                           .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
-                                             .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
-                                                                    (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug")
-                                                                     == true
-                                                                        ? dicValueOverrides[strCharAttributeName + "Unaug"]
-                                                                        : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
-                                      .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
-                                                             (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
-                                                                 ? dicValueOverrides[strCharAttributeName + "Base"]
-                                                                 : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
-                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    CharacterAttrib objAttribute = await _objCharacter
+                        .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
+                    strReturn = await (await (await (await (await strReturn
+                                        .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
+                                            (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                                                ? dicValueOverrides[strCharAttributeName]
+                                                : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
+                                            .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .ConfigureAwait(false))
+                                    .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
+                                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug")
+                                         == true
+                                            ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                                            : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
+                                        .ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .ConfigureAwait(false))
+                                .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
+                                    (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                                        ? dicValueOverrides[strCharAttributeName + "Base"]
+                                        : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
+                                    .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
+                            .CheapReplaceAsync('{' + strCharAttributeName + "Minimum}", async () =>
+                                (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
+                                    ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                                    : await objAttribute.GetTotalMinimumAsync(token).ConfigureAwait(false))
+                                .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
+                        .CheapReplaceAsync('{' + strCharAttributeName + "Maximum}", async () =>
+                            (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
+                                ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                                : await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
 
                 return strReturn;
@@ -2581,22 +2614,33 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
-                    CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
+                    CharacterAttrib objAttribute = await _objCharacter
+                        .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
-                                                         (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
-                                                             ? dicValueOverrides[strCharAttributeName]
-                                                             : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                            ? dicValueOverrides[strCharAttributeName]
+                            : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
+                        .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
-                                                         (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
-                                                             ? dicValueOverrides[strCharAttributeName + "Unaug"]
-                                                             : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
+                            ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                            : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
+                        .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
-                                                         (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
-                                                             ? dicValueOverrides[strCharAttributeName + "Base"]
-                                                             : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
-                                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                            ? dicValueOverrides[strCharAttributeName + "Base"]
+                            : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
+                        .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Minimum}", async () =>
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
+                            ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                            : await objAttribute.GetTotalMinimumAsync(token).ConfigureAwait(false))
+                        .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Maximum}", async () =>
+                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
+                            ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                            : await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false))
+                        .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
             }
             finally
@@ -2673,6 +2717,44 @@ namespace Chummer.Backend.Attributes
                                     return string.Format(objCultureInfo,
                                                          LanguageManager.GetString("String_BaseAttribute", strLanguage, token: token),
                                                          strInnerReturn);
+                                })
+                                .CheapReplace('{' + strCharAttributeName + "Minimum}", () =>
+                                {
+                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
+                                        .DisplayNameShort(strLanguage);
+                                    if (blnShowValues)
+                                    {
+                                        if (dicValueOverrides == null
+                                            || !dicValueOverrides.TryGetValue(
+                                                strCharAttributeName + "Minimum", out int intAttributeValue))
+                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token)
+                                                .TotalMinimum;
+                                        strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                                          + ')';
+                                    }
+
+                                    return string.Format(objCultureInfo,
+                                        LanguageManager.GetString("String_MinimumAttribute", strLanguage, token: token),
+                                        strInnerReturn);
+                                })
+                                .CheapReplace('{' + strCharAttributeName + "Maximum}", () =>
+                                {
+                                    string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
+                                        .DisplayNameShort(strLanguage);
+                                    if (blnShowValues)
+                                    {
+                                        if (dicValueOverrides == null
+                                            || !dicValueOverrides.TryGetValue(
+                                                strCharAttributeName + "Maximum", out int intAttributeValue))
+                                            intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token)
+                                                .TotalMaximum;
+                                        strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                                          + ')';
+                                    }
+
+                                    return string.Format(objCultureInfo,
+                                        LanguageManager.GetString("String_MaximumAttribute", strLanguage, token: token),
+                                        strInnerReturn);
                                 });
                 }
             }
@@ -2743,6 +2825,40 @@ namespace Chummer.Backend.Attributes
                                              LanguageManager.GetString("String_BaseAttribute", strLanguage, token: token),
                                              strInnerReturn);
                     });
+                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Minimum}", () =>
+                    {
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
+                            .DisplayNameShort(strLanguage);
+                        if (blnShowValues)
+                        {
+                            if (dicValueOverrides == null
+                                || !dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum",
+                                    out int intAttributeValue))
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMinimum;
+                            strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
+                        }
+
+                        return string.Format(objCultureInfo,
+                            LanguageManager.GetString("String_MinimumAttribute", strLanguage, token: token),
+                            strInnerReturn);
+                    });
+                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Maximum}", () =>
+                    {
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
+                            .DisplayNameShort(strLanguage);
+                        if (blnShowValues)
+                        {
+                            if (dicValueOverrides == null
+                                || !dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum",
+                                    out int intAttributeValue))
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMaximum;
+                            strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
+                        }
+
+                        return string.Format(objCultureInfo,
+                            LanguageManager.GetString("String_MaximumAttribute", strLanguage, token: token),
+                            strInnerReturn);
+                    });
                 }
             }
         }
@@ -2764,66 +2880,123 @@ namespace Chummer.Backend.Attributes
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     strReturn = await strReturn
-                                      .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
-                                      {
-                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                                        .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
-                                          if (blnShowValues)
-                                          {
-                                              if (dicValueOverrides == null
-                                                  || !dicValueOverrides.TryGetValue(
-                                                      strCharAttributeName, out int intAttributeValue))
-                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                                            .GetTotalValueAsync(token).ConfigureAwait(false);
-                                              strInnerReturn
-                                                  += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
-                                                     + ')';
-                                          }
+                        .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
+                        {
+                            string strInnerReturn = await (await _objCharacter
+                                    .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                            if (blnShowValues)
+                            {
+                                if (dicValueOverrides == null
+                                    || !dicValueOverrides.TryGetValue(
+                                        strCharAttributeName, out int intAttributeValue))
+                                    intAttributeValue = await (await _objCharacter
+                                            .GetAttributeAsync(strCharAttributeName, token: token)
+                                            .ConfigureAwait(false))
+                                        .GetTotalValueAsync(token).ConfigureAwait(false);
+                                strInnerReturn
+                                    += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                       + ')';
+                            }
 
-                                          return strInnerReturn;
-                                      }, token: token)
-                                      .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
-                                      {
-                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                                        .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
-                                          if (blnShowValues)
-                                          {
-                                              if (dicValueOverrides == null
-                                                  || !dicValueOverrides.TryGetValue(
-                                                      strCharAttributeName + "Unaug", out int intAttributeValue))
-                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                                            .GetValueAsync(token).ConfigureAwait(false);
-                                              strInnerReturn
-                                                  += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
-                                                     + ')';
-                                          }
+                            return strInnerReturn;
+                        }, token: token)
+                        .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
+                        {
+                            string strInnerReturn = await (await _objCharacter
+                                    .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                            if (blnShowValues)
+                            {
+                                if (dicValueOverrides == null
+                                    || !dicValueOverrides.TryGetValue(
+                                        strCharAttributeName + "Unaug", out int intAttributeValue))
+                                    intAttributeValue = await (await _objCharacter
+                                            .GetAttributeAsync(strCharAttributeName, token: token)
+                                            .ConfigureAwait(false))
+                                        .GetValueAsync(token).ConfigureAwait(false);
+                                strInnerReturn
+                                    += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                       + ')';
+                            }
 
-                                          return string.Format(objCultureInfo,
-                                                               await LanguageManager.GetStringAsync(
-                                                                   "String_NaturalAttribute", strLanguage, token: token).ConfigureAwait(false),
-                                                               strInnerReturn);
-                                      }, token: token)
-                                      .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
-                                      {
-                                          string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                                        .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
-                                          if (blnShowValues)
-                                          {
-                                              if (dicValueOverrides == null
-                                                  || !dicValueOverrides.TryGetValue(
-                                                      strCharAttributeName + "Base", out int intAttributeValue))
-                                                  intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                                            .GetTotalBaseAsync(token).ConfigureAwait(false);
-                                              strInnerReturn
-                                                  += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
-                                                     + ')';
-                                          }
+                            return string.Format(objCultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "String_NaturalAttribute", strLanguage, token: token).ConfigureAwait(false),
+                                strInnerReturn);
+                        }, token: token)
+                        .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
+                        {
+                            string strInnerReturn = await (await _objCharacter
+                                    .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                            if (blnShowValues)
+                            {
+                                if (dicValueOverrides == null
+                                    || !dicValueOverrides.TryGetValue(
+                                        strCharAttributeName + "Base", out int intAttributeValue))
+                                    intAttributeValue = await (await _objCharacter
+                                            .GetAttributeAsync(strCharAttributeName, token: token)
+                                            .ConfigureAwait(false))
+                                        .GetTotalBaseAsync(token).ConfigureAwait(false);
+                                strInnerReturn
+                                    += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                       + ')';
+                            }
 
-                                          return string.Format(objCultureInfo,
-                                                               await LanguageManager.GetStringAsync(
-                                                                   "String_BaseAttribute", strLanguage, token: token).ConfigureAwait(false),
-                                                               strInnerReturn);
-                                      }, token: token).ConfigureAwait(false);
+                            return string.Format(objCultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "String_BaseAttribute", strLanguage, token: token).ConfigureAwait(false),
+                                strInnerReturn);
+                        }, token: token)
+                        .CheapReplaceAsync('{' + strCharAttributeName + "Minimum}", async () =>
+                        {
+                            string strInnerReturn = await (await _objCharacter
+                                    .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                            if (blnShowValues)
+                            {
+                                if (dicValueOverrides == null
+                                    || !dicValueOverrides.TryGetValue(
+                                        strCharAttributeName + "Minimum", out int intAttributeValue))
+                                    intAttributeValue = await (await _objCharacter
+                                            .GetAttributeAsync(strCharAttributeName, token: token)
+                                            .ConfigureAwait(false))
+                                        .GetTotalMinimumAsync(token).ConfigureAwait(false);
+                                strInnerReturn
+                                    += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                       + ')';
+                            }
+
+                            return string.Format(objCultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "String_MinimumAttribute", strLanguage, token: token).ConfigureAwait(false),
+                                strInnerReturn);
+                        }, token: token)
+                        .CheapReplaceAsync('{' + strCharAttributeName + "Maximum}", async () =>
+                        {
+                            string strInnerReturn = await (await _objCharacter
+                                    .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                                .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                            if (blnShowValues)
+                            {
+                                if (dicValueOverrides == null
+                                    || !dicValueOverrides.TryGetValue(
+                                        strCharAttributeName + "Maximum", out int intAttributeValue))
+                                    intAttributeValue = await (await _objCharacter
+                                            .GetAttributeAsync(strCharAttributeName, token: token)
+                                            .ConfigureAwait(false))
+                                        .GetTotalMaximumAsync(token).ConfigureAwait(false);
+                                strInnerReturn
+                                    += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                       + ')';
+                            }
+
+                            return string.Format(objCultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "String_MaximumAttribute", strLanguage, token: token).ConfigureAwait(false),
+                                strInnerReturn);
+                        }, token: token).ConfigureAwait(false);
                 }
             }
             finally
@@ -2834,7 +3007,9 @@ namespace Chummer.Backend.Attributes
             return strReturn;
         }
 
-        public async Task ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public async Task ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "",
+            CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true,
+            IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -2844,7 +3019,8 @@ namespace Chummer.Backend.Attributes
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                .ConfigureAwait(false);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -2853,13 +3029,16 @@ namespace Chummer.Backend.Attributes
                 {
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
                     {
-                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                      .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        string strInnerReturn = await (await _objCharacter
+                                .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                            .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
-                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
+                                intAttributeValue =
+                                    await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)
+                                        .ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
@@ -2867,37 +3046,87 @@ namespace Chummer.Backend.Attributes
                     }, token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                     {
-                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                      .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        string strInnerReturn = await (await _objCharacter
+                                .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                            .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug",
-                                                                  out int intAttributeValue))
-                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false)).GetValueAsync(token).ConfigureAwait(false);
+                                    out int intAttributeValue))
+                                intAttributeValue =
+                                    await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)
+                                        .ConfigureAwait(false)).GetValueAsync(token).ConfigureAwait(false);
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
                         return string.Format(objCultureInfo,
-                                             await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: token).ConfigureAwait(false),
-                                             strInnerReturn);
+                            await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: token)
+                                .ConfigureAwait(false),
+                            strInnerReturn);
                     }, token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                     {
-                        string strInnerReturn = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
-                                                      .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        string strInnerReturn = await (await _objCharacter
+                                .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                            .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
                                 || !dicValueOverrides.TryGetValue(strCharAttributeName + "Base",
-                                                                  out int intAttributeValue))
-                                intAttributeValue = await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false)).GetTotalBaseAsync(token).ConfigureAwait(false);
+                                    out int intAttributeValue))
+                                intAttributeValue =
+                                    await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)
+                                        .ConfigureAwait(false)).GetTotalBaseAsync(token).ConfigureAwait(false);
                             strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
                         }
 
                         return string.Format(objCultureInfo,
-                                             await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: token).ConfigureAwait(false),
-                                             strInnerReturn);
+                            await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: token)
+                                .ConfigureAwait(false),
+                            strInnerReturn);
+                    }, token: token).ConfigureAwait(false);
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Minimum}", async () =>
+                    {
+                        string strInnerReturn = await (await _objCharacter
+                                .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                            .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        if (blnShowValues)
+                        {
+                            if (dicValueOverrides == null
+                                || !dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum",
+                                    out int intAttributeValue))
+                                intAttributeValue =
+                                    await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)
+                                        .ConfigureAwait(false)).GetTotalMinimumAsync(token).ConfigureAwait(false);
+                            strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
+                        }
+
+                        return string.Format(objCultureInfo,
+                            await LanguageManager.GetStringAsync("String_MinimumAttribute", strLanguage, token: token)
+                                .ConfigureAwait(false),
+                            strInnerReturn);
+                    }, token: token).ConfigureAwait(false);
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Maximum}", async () =>
+                    {
+                        string strInnerReturn = await (await _objCharacter
+                                .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
+                            .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        if (blnShowValues)
+                        {
+                            if (dicValueOverrides == null
+                                || !dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum",
+                                    out int intAttributeValue))
+                                intAttributeValue =
+                                    await (await _objCharacter.GetAttributeAsync(strCharAttributeName, token: token)
+                                        .ConfigureAwait(false)).GetTotalMaximumAsync(token).ConfigureAwait(false);
+                            strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
+                        }
+
+                        return string.Format(objCultureInfo,
+                            await LanguageManager.GetStringAsync("String_MaximumAttribute", strLanguage, token: token)
+                                .ConfigureAwait(false),
+                            strInnerReturn);
                     }, token: token).ConfigureAwait(false);
                 }
             }

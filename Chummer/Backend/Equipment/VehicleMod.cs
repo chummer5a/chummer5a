@@ -1204,17 +1204,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
-                                              () => objLoopAttribute.TotalValue.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
-                                              () => objLoopAttribute.TotalBase.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                     // If the availability is determined by the Rating, evaluate the expression.
                     sbdAvail.CheapReplace(strAvail, "Vehicle Cost",
                                           () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
@@ -1327,33 +1317,7 @@ namespace Chummer.Backend.Equipment
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
 
                     // If the availability is determined by the Rating, evaluate the expression.
                     await sbdAvail.CheapReplaceAsync(strAvail, "Vehicle Cost",
@@ -1421,7 +1385,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strReturn = _strCapacity;
+                string strReturn = Capacity;
                 if (string.IsNullOrEmpty(strReturn))
                     return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
 
@@ -1510,58 +1474,201 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Calculated Capacity of the Vehicle Mod.
+        /// </summary>
+        public async Task<string> GetCalculatedCapacityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strReturn = Capacity;
+            if (string.IsNullOrEmpty(strReturn))
+                return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
+
+            if (strReturn.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strReturn.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strReturn = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
+            int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
+            if (intPos != -1)
+            {
+                string strFirstHalf = strReturn.Substring(0, intPos);
+                string strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
+                bool blnSquareBrackets = strFirstHalf.StartsWith('[');
+
+                if (blnSquareBrackets && strFirstHalf.Length > 2)
+                    strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
+
+                if (strFirstHalf == "[*]")
+                    strReturn = "*";
+                else
+                {
+                    if (strFirstHalf.StartsWith("FixedValues(", StringComparison.Ordinal))
+                    {
+                        string[] strValues = strFirstHalf.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        strFirstHalf = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                    }
+
+                    try
+                    {
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strFirstHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                        strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strFirstHalf;
+                    }
+                    catch (OverflowException) // Result is text and not a double
+                    {
+                        strReturn = strFirstHalf;
+                    }
+                    catch (InvalidCastException) // Result is text and not a double
+                    {
+                        strReturn = strFirstHalf;
+                    }
+                }
+
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
+
+                if (strSecondHalf.Contains("Rating"))
+                {
+                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                    try
+                    {
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strSecondHalf.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                        strSecondHalf = '[' + (blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strSecondHalf) + ']';
+                    }
+                    catch (OverflowException) // Result is text and not a double
+                    {
+                        strSecondHalf = '[' + strSecondHalf + ']';
+                    }
+                    catch (InvalidCastException) // Result is text and not a double
+                    {
+                        strSecondHalf = '[' + strSecondHalf + ']';
+                    }
+                }
+
+                strReturn += '/' + strSecondHalf;
+            }
+            else if (strReturn.Contains("Rating"))
+            {
+                // If the Capacity is determined by the Rating, evaluate the expression.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                bool blnSquareBrackets = strReturn.StartsWith('[');
+                string strCapacity = strReturn;
+                if (blnSquareBrackets)
+                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
+            }
+            else if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn))
+                return decReturn.ToString("#,0.##", GlobalSettings.CultureInfo);
+
+            return strReturn;
+        }
+
+        /// <summary>
         /// The amount of Capacity remaining in the Cyberware.
         /// </summary>
         public decimal CapacityRemaining
         {
             get
             {
-                if (string.IsNullOrEmpty(_strCapacity))
+                if (string.IsNullOrEmpty(Capacity))
                     return 0.0m;
                 decimal decCapacity = 0;
-                if (_strCapacity.Contains("/["))
+                if (Capacity.Contains("/["))
                 {
                     // Get the Cyberware base Capacity.
                     string strBaseCapacity = CalculatedCapacity;
                     strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
-                    decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo);
-
-                    // Run through its Children and deduct the Capacity costs.
-                    foreach (string strLoopCapacity in Cyberware.Select(x => x.CalculatedCapacity))
-                    {
-                        string strCapacity = strLoopCapacity;
-                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                        if (intPos != -1)
-                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
-                        else if (strCapacity.StartsWith('['))
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                        if (strCapacity == "*")
-                            strCapacity = "0";
-                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
-                    }
+                    decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
+                                  // Run through its Children and deduct the Capacity costs.
+                                  - Cyberware.Sum(objCyberware =>
+                                  {
+                                      string strCapacity = objCyberware.CalculatedCapacity;
+                                      int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                      if (intPos != -1)
+                                          strCapacity = strCapacity.Substring(intPos + 2,
+                                              strCapacity.LastIndexOf(']') - intPos - 2);
+                                      else if (strCapacity.StartsWith('['))
+                                          strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                                      if (strCapacity == "*")
+                                          strCapacity = "0";
+                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                  });
                 }
-                else if (!_strCapacity.Contains('['))
+                else if (!Capacity.Contains('['))
                 {
                     // Get the Cyberware base Capacity.
-                    decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalSettings.CultureInfo);
-
-                    // Run through its Children and deduct the Capacity costs.
-                    foreach (string strLoopCapacity in Cyberware.Select(x => x.CalculatedCapacity))
-                    {
-                        string strCapacity = strLoopCapacity;
-                        int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                        if (intPos != -1)
-                            strCapacity = strCapacity.Substring(intPos + 2, strCapacity.LastIndexOf(']') - intPos - 2);
-                        else if (strCapacity.StartsWith('['))
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                        if (strCapacity == "*")
-                            strCapacity = "0";
-                        decCapacity -= Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
-                    }
+                    decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalSettings.CultureInfo)
+                                  // Run through its Children and deduct the Capacity costs.
+                                  - Cyberware.Sum(objCyberware =>
+                                  {
+                                      string strCapacity = objCyberware.CalculatedCapacity;
+                                      int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                      if (intPos != -1)
+                                          strCapacity = strCapacity.Substring(intPos + 2,
+                                              strCapacity.LastIndexOf(']') - intPos - 2);
+                                      else if (strCapacity.StartsWith('['))
+                                          strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                                      if (strCapacity == "*")
+                                          strCapacity = "0";
+                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                                  });
                 }
 
                 return decCapacity;
             }
+        }
+
+        /// <summary>
+        /// The amount of Capacity remaining in the Cyberware.
+        /// </summary>
+        public async Task<decimal> GetCapacityRemainingAsync(CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(Capacity))
+                return 0.0m;
+            decimal decCapacity = 0;
+            if (Capacity.Contains("/["))
+            {
+                // Get the Cyberware base Capacity.
+                string strBaseCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
+                decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
+                              // Run through its Children and deduct the Capacity costs.
+                              - await Cyberware.SumAsync(async objCyberware =>
+                              {
+                                  string strCapacity = await objCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                  int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                  if (intPos != -1)
+                                      strCapacity = strCapacity.Substring(intPos + 2,
+                                          strCapacity.LastIndexOf(']') - intPos - 2);
+                                  else if (strCapacity.StartsWith('['))
+                                      strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                                  if (strCapacity == "*") strCapacity = "0";
+                                  return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                              }, token).ConfigureAwait(false);
+            }
+            else if (!Capacity.Contains('['))
+            {
+                // Get the Cyberware base Capacity.
+                decCapacity = Convert.ToDecimal(await GetCalculatedCapacityAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                              // Run through its Children and deduct the Capacity costs.
+                              - await Cyberware.SumAsync(async objCyberware =>
+                              {
+                                  string strCapacity = await objCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                  int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                  if (intPos != -1)
+                                      strCapacity = strCapacity.Substring(intPos + 2,
+                                          strCapacity.LastIndexOf(']') - intPos - 2);
+                                  else if (strCapacity.StartsWith('['))
+                                      strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                                  if (strCapacity == "*") strCapacity = "0";
+                                  return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                              }, token).ConfigureAwait(false);
+            }
+
+            return decCapacity;
         }
 
         public string DisplayCapacity
@@ -1573,6 +1680,15 @@ namespace Chummer.Backend.Equipment
                 return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
                     CalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
             }
+        }
+
+        public async Task<string> GetDisplayCapacityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Capacity.Contains('[') && !Capacity.Contains("/["))
+                return await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+            return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
+                await GetCalculatedCapacityAsync(token).ConfigureAwait(false), (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##", GlobalSettings.CultureInfo));
         }
 
         /// <summary>
@@ -1597,36 +1713,7 @@ namespace Chummer.Backend.Equipment
                     sbdCost.Append(strCostExpr.TrimStart('+'));
                     sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    AttributeSection objAttributeSection
-                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
-                        async objLoopAttribute =>
-                        {
-                            await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                            async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                                .ConfigureAwait(false)).ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                         .ConfigureAwait(false);
-                            await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                            async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                                .ConfigureAwait(false)).ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                         .ConfigureAwait(false);
-                        }, token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
-                          .ForEachAsync(async objLoopAttribute =>
-                          {
-                              await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                              async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                                  .ConfigureAwait(false)).ToString(
-                                                                  GlobalSettings.InvariantCultureInfo), token: token)
-                                           .ConfigureAwait(false);
-                              await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                              async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                                  .ConfigureAwait(false)).ToString(
-                                                                  GlobalSettings.InvariantCultureInfo), token: token)
-                                           .ConfigureAwait(false);
-                          }, token).ConfigureAwait(false);
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpr, token: token).ConfigureAwait(false);
 
                     await sbdCost.CheapReplaceAsync(strCostExpr, "Vehicle Cost",
                                                     async () => Parent != null
@@ -1716,17 +1803,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdCost.Append(strCostExpr.TrimStart('+'));
                     sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
-                                             () => objLoopAttribute.TotalValue.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                             () => objLoopAttribute.TotalBase.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpr);
                     sbdCost.CheapReplace(strCostExpr, "Vehicle Cost",
                                          () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
                     // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
@@ -1788,38 +1865,7 @@ namespace Chummer.Backend.Equipment
             {
                 sbdCost.Append(strCostExpr.TrimStart('+'));
                 sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                AttributeSection objAttributeSection
-                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopAttribute =>
-                    {
-                        await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                        async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                            .ConfigureAwait(false)).ToString(
-                                                            GlobalSettings.InvariantCultureInfo), token: token)
-                                     .ConfigureAwait(false);
-                        await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                        async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                            .ConfigureAwait(false)).ToString(
-                                                            GlobalSettings.InvariantCultureInfo), token: token)
-                                     .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
-                      .ForEachAsync(async objLoopAttribute =>
-                      {
-                          await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                          async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                          await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                          async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                      }, token).ConfigureAwait(false);
-
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpr, token: token).ConfigureAwait(false);
                 await sbdCost.CheapReplaceAsync(strCostExpr, "Vehicle Cost",
                                                 async () => Parent != null
                                                     ? (await Parent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
@@ -1892,17 +1938,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdReturn.Append(strSlotsExpression.TrimStart('+'));
                     sbdReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdReturn.CheapReplace(strSlotsExpression, objLoopAttribute.Abbrev,
-                                               () => objLoopAttribute.TotalValue.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                        sbdReturn.CheapReplace(strSlotsExpression, objLoopAttribute.Abbrev + "Base",
-                                               () => objLoopAttribute.TotalBase.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdReturn, strSlotsExpression);
                     sbdReturn.CheapReplace(strSlotsExpression, "Vehicle Cost",
                                            () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
                     // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
@@ -1947,39 +1983,7 @@ namespace Chummer.Backend.Equipment
             {
                 sbdReturn.Append(strSlotsExpression.TrimStart('+'));
                 sbdReturn.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                AttributeSection objAttributeSection
-                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopAttribute =>
-                    {
-                        await sbdReturn.CheapReplaceAsync(strSlotsExpression, objLoopAttribute.Abbrev,
-                                                          async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                        await sbdReturn.CheapReplaceAsync(strSlotsExpression, objLoopAttribute.Abbrev + "Base",
-                                                          async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
-                      .ForEachAsync(async objLoopAttribute =>
-                      {
-                          await sbdReturn.CheapReplaceAsync(strSlotsExpression, objLoopAttribute.Abbrev,
-                                                            async () => (await objLoopAttribute
-                                                                               .GetTotalValueAsync(token)
-                                                                               .ConfigureAwait(false)).ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                         .ConfigureAwait(false);
-                          await sbdReturn.CheapReplaceAsync(strSlotsExpression, objLoopAttribute.Abbrev + "Base",
-                                                            async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                                .ConfigureAwait(false)).ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                         .ConfigureAwait(false);
-                      }, token).ConfigureAwait(false);
-
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdReturn, strSlotsExpression, token: token).ConfigureAwait(false);
                 await sbdReturn.CheapReplaceAsync(strSlotsExpression, "Vehicle Cost",
                                                   async () => Parent != null
                                                       ? (await Parent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(

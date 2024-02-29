@@ -212,6 +212,28 @@ namespace Chummer
                 string strForceGrade;
                 if (xmlDrug != null)
                 {
+                    Dictionary<string, int> dicVehicleValues;
+                    if (ParentVehicle != null)
+                    {
+                        int intVehicleBody = await ParentVehicle.GetTotalBodyAsync().ConfigureAwait(false);
+                        int intVehiclePilot = await ParentVehicle.GetPilotAsync().ConfigureAwait(false);
+                        dicVehicleValues = new Dictionary<string, int>(4)
+                        {
+                            { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
+                            { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
+                            { "{STRMinimum}", Math.Max(1, intVehicleBody) },
+                            { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
+                        };
+                    }
+                    else
+                    {
+                        dicVehicleValues = new Dictionary<string, int>(2)
+                        {
+                            { "{STRMinimum}", 3 },
+                            { "{AGIMinimum}", 3 }
+                        };
+                    }
+
                     strForceGrade = xmlDrug.SelectSingleNodeAndCacheExpression("forcegrade")?.Value;
                     // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
                     XPathNavigator xmlRatingNode = xmlDrug.SelectSingleNodeAndCacheExpression("rating");
@@ -222,27 +244,7 @@ namespace Chummer
                         // Not a simple integer, so we need to start mucking around with strings
                         if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                         {
-                            strMinRating = await strMinRating
-                                .CheapReplaceAsync("MaximumSTR",
-                                    async () => (ParentVehicle != null
-                                            ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync().ConfigureAwait(false) * 2)
-                                            : await _objCharacter.STR.GetTotalMaximumAsync().ConfigureAwait(false))
-                                        .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplaceAsync("MaximumAGI",
-                                    async () => (ParentVehicle != null
-                                            ? Math.Max(1, await ParentVehicle.GetPilotAsync().ConfigureAwait(false) * 2)
-                                            : await _objCharacter.AGI.GetTotalMaximumAsync().ConfigureAwait(false))
-                                        .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplaceAsync("MinimumSTR",
-                                    async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync().ConfigureAwait(false) : 3)
-                                        .ToString(
-                                            GlobalSettings.InvariantCultureInfo))
-                                .CheapReplaceAsync("MinimumAGI",
-                                    async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync().ConfigureAwait(false) : 3)
-                                        .ToString(
-                                            GlobalSettings.InvariantCultureInfo))
-                                .ConfigureAwait(false);
-
+                            strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                            .EvaluateInvariantXPathAsync(strMinRating)
                                                                            .ConfigureAwait(false);
@@ -256,27 +258,7 @@ namespace Chummer
                         // Not a simple integer, so we need to start mucking around with strings
                         if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                         {
-                            strMaxRating = await strMaxRating
-                                .CheapReplaceAsync("MaximumSTR",
-                                    async () => (ParentVehicle != null
-                                            ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync().ConfigureAwait(false) * 2)
-                                            : await _objCharacter.STR.GetTotalMaximumAsync().ConfigureAwait(false))
-                                        .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplaceAsync("MaximumAGI",
-                                    async () => (ParentVehicle != null
-                                            ? Math.Max(1, await ParentVehicle.GetPilotAsync().ConfigureAwait(false) * 2)
-                                            : await _objCharacter.AGI.GetTotalMaximumAsync().ConfigureAwait(false))
-                                        .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplaceAsync("MinimumSTR",
-                                    async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync().ConfigureAwait(false) : 3)
-                                        .ToString(
-                                            GlobalSettings.InvariantCultureInfo))
-                                .CheapReplaceAsync("MinimumAGI",
-                                    async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync().ConfigureAwait(false) : 3)
-                                        .ToString(
-                                            GlobalSettings.InvariantCultureInfo))
-                                .ConfigureAwait(false);
-
+                            strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                            .EvaluateInvariantXPathAsync(strMaxRating)
                                                                            .ConfigureAwait(false);

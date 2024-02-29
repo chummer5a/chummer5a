@@ -534,24 +534,34 @@ namespace Chummer
                         XPathNavigator xmlRatingNode = xmlCyberware.SelectSingleNodeAndCacheExpression("rating", token);
                         if (xmlRatingNode != null)
                         {
+                            Dictionary<string, int> dicVehicleValues;
+                            if (ParentVehicle != null)
+                            {
+                                int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                                dicVehicleValues = new Dictionary<string, int>(4)
+                                {
+                                    { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
+                                    { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
+                                    { "{STRMinimum}", Math.Max(1, intVehicleBody) },
+                                    { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
+                                };
+                            }
+                            else
+                            {
+                                dicVehicleValues = new Dictionary<string, int>(2)
+                                {
+                                    { "{STRMinimum}", 3 },
+                                    { "{AGIMinimum}", 3 }
+                                };
+                            }
+
                             string strMinRating = xmlCyberware.SelectSingleNodeAndCacheExpression("minrating", token)?.Value;
                             int intMinRating = 1;
                             // Not a simple integer, so we need to start mucking around with strings
                             if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                             {
-                                strMinRating = await strMinRating.CheapReplaceAsync("MaximumSTR",
-                                                                     async () => (ParentVehicle != null
-                                                                         ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2)
-                                                                         : await _objCharacter.STR.GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                                                 .CheapReplaceAsync("MaximumAGI",
-                                                                     async () => (ParentVehicle != null
-                                                                         ? Math.Max(1, await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) * 2)
-                                                                         : await _objCharacter.AGI.GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                                                 .CheapReplaceAsync("MinimumSTR",
-                                                                     async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 3).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                                                 .CheapReplaceAsync("MinimumAGI",
-                                                                     async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 3).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
+                                strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues, token).ConfigureAwait(false);
                                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token).ConfigureAwait(false);
                                 intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                             }
@@ -562,19 +572,7 @@ namespace Chummer
                             // Not a simple integer, so we need to start mucking around with strings
                             if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                             {
-                                strMaxRating = await strMaxRating.CheapReplaceAsync("MaximumSTR",
-                                                                     async () => (ParentVehicle != null
-                                                                         ? Math.Max(1, await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) * 2)
-                                                                         : await _objCharacter.STR.GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                                                 .CheapReplaceAsync("MaximumAGI",
-                                                                     async () => (ParentVehicle != null
-                                                                         ? Math.Max(1, await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) * 2)
-                                                                         : await _objCharacter.AGI.GetTotalMaximumAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                                                 .CheapReplaceAsync("MinimumSTR",
-                                                                     async () => (ParentVehicle != null ? await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false) : 3).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                                                 .CheapReplaceAsync("MinimumAGI",
-                                                                     async () => (ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 3).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
+                                strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues, token).ConfigureAwait(false);
                                 (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token).ConfigureAwait(false);
                                 intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                             }
@@ -1627,80 +1625,36 @@ namespace Chummer
                         if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating))
                             || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
                         {
-                            strMinRating = await strMinRating.CheapReplaceAsync("MaximumSTR",
-                                                                 async () => (ParentVehicle != null
-                                                                         ? Math.Max(
-                                                                             1,
-                                                                             await ParentVehicle.GetTotalBodyAsync(
-                                                                                 token).ConfigureAwait(false) * 2)
-                                                                         : await _objCharacter.STR.GetTotalMaximumAsync(
-                                                                             token).ConfigureAwait(false))
-                                                                     .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                 token: token)
-                                                             .CheapReplaceAsync("MaximumAGI",
-                                                                 async () => (ParentVehicle != null
-                                                                         ? Math.Max(
-                                                                             1,
-                                                                             await ParentVehicle.GetPilotAsync(token)
-                                                                                 .ConfigureAwait(false)
-                                                                             * 2)
-                                                                         : await _objCharacter.AGI.GetTotalMaximumAsync(
-                                                                             token).ConfigureAwait(false))
-                                                                     .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                 token: token)
-                                                             .CheapReplaceAsync("MinimumSTR",
-                                                                 async () => (ParentVehicle != null
-                                                                     ? await ParentVehicle.GetTotalBodyAsync(token)
-                                                                         .ConfigureAwait(false)
-                                                                     : 3).ToString(
-                                                                     GlobalSettings.InvariantCultureInfo), token: token)
-                                                             .CheapReplaceAsync("MinimumAGI",
-                                                                 async () => (ParentVehicle != null
-                                                                     ? await ParentVehicle.GetPilotAsync(token)
-                                                                         .ConfigureAwait(false)
-                                                                     : 3).ToString(
-                                                                     GlobalSettings.InvariantCultureInfo),
-                                                                 token: token).ConfigureAwait(false);
+                            Dictionary<string, int> dicVehicleValues;
+                            if (ParentVehicle != null && (strMinRating.ContainsAny("Maximum}", "Minimum}") || strMaxRating.ContainsAny("Maximum}", "Minimum}")))
+                            {
+                                int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                                int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                                dicVehicleValues = new Dictionary<string, int>(4)
+                                {
+                                    { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
+                                    { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
+                                    { "{STRMinimum}", Math.Max(1, intVehicleBody) },
+                                    { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
+                                };
+                            }
+                            else
+                            {
+                                dicVehicleValues = new Dictionary<string, int>(2)
+                                {
+                                    { "{STRMinimum}", 3 },
+                                    { "{AGIMinimum}", 3 }
+                                };
+                            }
+
+                            strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues, token).ConfigureAwait(false);
 
                             (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(strMinRating, token)
                                                        .ConfigureAwait(false);
                             intMinRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
 
-                            strMaxRating = await strMaxRating.CheapReplaceAsync("MaximumSTR",
-                                                                 async () => (ParentVehicle != null
-                                                                         ? Math.Max(
-                                                                             1,
-                                                                             await ParentVehicle.GetTotalBodyAsync(
-                                                                                 token).ConfigureAwait(false) * 2)
-                                                                         : await _objCharacter.STR.GetTotalMaximumAsync(
-                                                                             token).ConfigureAwait(false))
-                                                                     .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                 token: token)
-                                                             .CheapReplaceAsync("MaximumAGI",
-                                                                 async () => (ParentVehicle != null
-                                                                         ? Math.Max(
-                                                                             1,
-                                                                             await ParentVehicle.GetPilotAsync(token)
-                                                                                 .ConfigureAwait(false)
-                                                                             * 2)
-                                                                         : await _objCharacter.AGI.GetTotalMaximumAsync(
-                                                                             token).ConfigureAwait(false))
-                                                                     .ToString(GlobalSettings.InvariantCultureInfo),
-                                                                 token: token)
-                                                             .CheapReplaceAsync("MinimumSTR",
-                                                                 async () => (ParentVehicle != null
-                                                                     ? await ParentVehicle.GetTotalBodyAsync(token)
-                                                                         .ConfigureAwait(false)
-                                                                     : 3).ToString(
-                                                                     GlobalSettings.InvariantCultureInfo), token: token)
-                                                             .CheapReplaceAsync("MinimumAGI",
-                                                                 async () => (ParentVehicle != null
-                                                                     ? await ParentVehicle.GetPilotAsync(token)
-                                                                         .ConfigureAwait(false)
-                                                                     : 3).ToString(
-                                                                     GlobalSettings.InvariantCultureInfo),
-                                                                 token: token).ConfigureAwait(false);
+                            strMaxRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues, token).ConfigureAwait(false);
 
                             (blnIsSuccess, objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(strMaxRating, token)
@@ -1886,8 +1840,13 @@ namespace Chummer
                         if (blnIsSuccess)
                             decCapacity = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                     }
-                    
-                    decimal decMaximumCapacityUsed = blnAddToParentCapacity ? (_objParentObject as Cyberware)?.Parent?.CapacityRemaining ?? decimal.MaxValue : MaximumCapacity;
+
+                    Cyberware objGrandparent = (_objParentObject as Cyberware)?.Parent;
+                    decimal decMaximumCapacityUsed = blnAddToParentCapacity
+                        ? objGrandparent != null
+                            ? await objGrandparent.GetCapacityRemainingAsync(token).ConfigureAwait(false)
+                            : decimal.MaxValue
+                        : MaximumCapacity;
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {

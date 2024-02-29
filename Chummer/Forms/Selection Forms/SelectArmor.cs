@@ -613,9 +613,9 @@ namespace Chummer
 
                                 string strArmorGuid = objArmor.SourceIDString;
                                 string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                int intArmor = objArmor.TotalArmor;
+                                int intArmor = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
                                 decimal decCapacity
-                                    = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
+                                    = Convert.ToDecimal(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
                                 AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdAccessories))
@@ -831,10 +831,10 @@ namespace Chummer
                                         .ConfigureAwait(false);
 
                     await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                    string strArmorValue = objSelectedArmor.DisplayArmorValue;
+                    string strArmorValue = await objSelectedArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false);
                     await lblArmorValue.DoThreadSafeAsync(x => x.Text = strArmorValue, token).ConfigureAwait(false);
                     await lblCapacityLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                    string strCapacity = objSelectedArmor.DisplayCapacity;
+                    string strCapacity = await objSelectedArmor.GetDisplayCapacityAsync(token).ConfigureAwait(false);
                     await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token).ConfigureAwait(false);
 
                     await lblCostLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);

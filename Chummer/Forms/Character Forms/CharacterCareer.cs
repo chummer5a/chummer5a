@@ -3423,7 +3423,7 @@ namespace Chummer
                                      x => x.Children, async x =>
                                          x.SourceID != Cyberware.EssenceHoleGUID
                                          && x.SourceID != Cyberware.EssenceAntiHoleGUID
-                                         && x.Grade.Name != "None"
+                                         && (await x.GetGradeAsync(token).ConfigureAwait(false)).Name != "None"
                                          && await x.GetIsModularCurrentlyEquippedAsync(token)
                                              .ConfigureAwait(false)
                                          && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
@@ -10888,7 +10888,7 @@ namespace Chummer
                         await objArmor.ArmorMods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
 
                         // Do not allow the user to add a new piece of Armor if its Capacity has been reached.
-                        if (CharacterObjectSettings.EnforceCapacity && objArmor.CapacityRemaining < 0)
+                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false) && await objArmor.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false) < 0)
                         {
                             Program.ShowScrollableMessageBox(
                                 this,
@@ -14177,14 +14177,14 @@ namespace Chummer
                         }
                         else
                         {
-                            frmPickCyberware.MyForm.ForcedGrade = objCyberwareParent.Grade;
+                            frmPickCyberware.MyForm.ForcedGrade = await objCyberwareParent.GetGradeAsync(GenericToken).ConfigureAwait(false);
                             // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                             if (!objCyberwareParent.Capacity.Contains('['))
                             {
-                                frmPickCyberware.MyForm.MaximumCapacity = objCyberwareParent.CapacityRemaining;
+                                frmPickCyberware.MyForm.MaximumCapacity = await objCyberwareParent.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                                if (CharacterObjectSettings.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
+                                if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false) && frmPickCyberware.MyForm.MaximumCapacity < 0)
                                 {
                                     Program.ShowScrollableMessageBox(
                                         this,
@@ -20976,7 +20976,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             await lblCyberwareGrade.DoThreadSafeAsync(x => x.Visible = true, token)
                                                    .ConfigureAwait(false);
-                            string strGradeName = await objCyberware.Grade.GetCurrentDisplayNameAsync(token)
+                            string strGradeName = await (await objCyberware.GetGradeAsync(token).ConfigureAwait(false)).GetCurrentDisplayNameAsync(token)
                                                                     .ConfigureAwait(false);
                             await lblCyberwareGrade
                                   .DoThreadSafeAsync(x => x.Text = strGradeName, token)
@@ -21013,12 +21013,14 @@ namespace Chummer
                                                                  = !string.IsNullOrEmpty(objCyberware
                                                                      .PlugsIntoModularMount), token)
                                                          .ConfigureAwait(false);
+                            int intRating = await objCyberware.GetRatingAsync(token).ConfigureAwait(false);
                             await lblCyberwareRating.DoThreadSafeAsync(
-                                                        x => x.Text = objCyberware.Rating.ToString(GlobalSettings
+                                                        x => x.Text = intRating.ToString(GlobalSettings
                                                             .CultureInfo), token)
                                                     .ConfigureAwait(false);
+                            string strCapacity = await objCyberware.GetDisplayCapacityAsync(token).ConfigureAwait(false);
                             await lblCyberwareCapacity
-                                  .DoThreadSafeAsync(x => x.Text = objCyberware.DisplayCapacity, token)
+                                  .DoThreadSafeAsync(x => x.Text = strCapacity, token)
                                   .ConfigureAwait(false);
                             string strCost = (await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
                                                                     await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false),
@@ -21148,8 +21150,9 @@ namespace Chummer
                                                         x => x.Text = intRating.ToString(
                                                             GlobalSettings.CultureInfo), token)
                                                     .ConfigureAwait(false);
-                            await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token)
-                                                      .ConfigureAwait(false);
+                            string strCapacity = await objGear.GetDisplayCapacityAsync(token).ConfigureAwait(false);
+                            await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token)
+                                .ConfigureAwait(false);
                             string strCost = (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
                                                  await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false),
                                                  GlobalSettings.CultureInfo)
@@ -22216,10 +22219,11 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
+                            string strCapacity = await objGear.GetDisplayCapacityAsync(token).ConfigureAwait(false);
                             await lblWeaponCapacity.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = objGear.DisplayCapacity;
+                                x.Text = strCapacity;
                             }, token).ConfigureAwait(false);
                             string strAvail = await objGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                             await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
@@ -22464,16 +22468,18 @@ namespace Chummer
                         // gpbArmorCommon
                         await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await flpArmorValue.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                        await lblArmorValue.DoThreadSafeAsync(x => x.Text = objArmor.DisplayArmorValue, token)
+                        string strArmorValue = await objArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false);
+                        await lblArmorValue.DoThreadSafeAsync(x => x.Text = strArmorValue, token)
                                            .ConfigureAwait(false);
-                        if (CharacterObjectSettings.ArmorDegradation)
+                        if (await CharacterObjectSettings.GetArmorDegradationAsync(token).ConfigureAwait(false))
                         {
                             bool blnArmorIncreaseEnabled = objArmor.ArmorDamage > 0;
-                            bool blnArmorDecreaseEnabled = objArmor.ArmorDamage < objArmor.TotalArmor &&
-                                                           objArmor.ArmorDamage
-                                                           < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue)
-                                                               ? int.MaxValue
-                                                               : objArmor.TotalOverrideArmor);
+                            bool blnArmorDecreaseEnabled =
+                                objArmor.ArmorDamage < await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false) &&
+                                objArmor.ArmorDamage
+                                < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue)
+                                    ? int.MaxValue
+                                    : await objArmor.GetTotalOverrideArmorAsync(token).ConfigureAwait(false));
                             await cmdArmorIncrease.DoThreadSafeAsync(x =>
                                                   {
                                                       x.Visible = true;
@@ -22491,7 +22497,8 @@ namespace Chummer
                         string strAvail = await objArmor.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                         await lblArmorAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                            .ConfigureAwait(false);
-                        await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objArmor.DisplayCapacity, token)
+                        string strCapacity = await objArmor.GetDisplayCapacityAsync(token).ConfigureAwait(false);
+                        await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token)
                                               .ConfigureAwait(false);
                         await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                  .ConfigureAwait(false);
@@ -22555,13 +22562,16 @@ namespace Chummer
                                                .ConfigureAwait(false);
                             string strCapacity = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
                                 ? "[0]"
-                                : objArmorMod.CalculatedCapacity;
+                                : await objArmorMod.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
+                            {
                                 strCapacity = objArmorMod.GearCapacity + '/' + strCapacity + strSpace + '('
-                                              + objArmorMod.GearCapacityRemaining.ToString(
+                                              + (await objArmorMod.GetGearCapacityRemainingAsync(token).ConfigureAwait(false)).ToString(
                                                   "#,0.##", GlobalSettings.CultureInfo) + strSpace
                                               + await LanguageManager.GetStringAsync("String_Remaining", token: token)
-                                                                     .ConfigureAwait(false) + ')';
+                                                  .ConfigureAwait(false) + ')';
+                            }
+
                             await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token)
                                                   .ConfigureAwait(false);
                             if (objArmorMod.MaximumRating > 1)
@@ -22705,7 +22715,7 @@ namespace Chummer
                                                                         .ConfigureAwait(false))
                                                             .Append(strSpace)
                                                             .Append('(')
-                                                            .Append(objLoopArmor.DisplayArmorValue)
+                                                            .Append(await objLoopArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false))
                                                             .AppendLine(')');
                                         }, token).ConfigureAwait(false);
 
@@ -22756,7 +22766,7 @@ namespace Chummer
                                                                               .ConfigureAwait(false))
                                                                 .Append(strSpace)
                                                                 .Append('(')
-                                                                .Append(objLoopArmor.DisplayArmorValue)
+                                                                .Append(await objLoopArmor.GetDisplayArmorValueAsync(token).ConfigureAwait(false))
                                                                 .AppendLine(')');
                                             }, token).ConfigureAwait(false);
 
@@ -23123,8 +23133,8 @@ namespace Chummer
                         }
                         await lblGearCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                          .ConfigureAwait(false);
-
-                        await lblGearCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token)
+                        string strCapacity = await objGear.GetDisplayCapacityAsync(token).ConfigureAwait(false);
+                        await lblGearCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token)
                                              .ConfigureAwait(false);
                         await chkGearEquipped.DoThreadSafeAsync(x =>
                         {
@@ -23507,16 +23517,16 @@ namespace Chummer
                 Dictionary<string, int> dicHasMounts = new Dictionary<string, int>(6);
                 if (objSelectedCyberware != null)
                 {
-                    frmPickCyberware.MyForm.ForcedGrade = objSelectedCyberware.Grade;
+                    frmPickCyberware.MyForm.ForcedGrade = await objSelectedCyberware.GetGradeAsync(token).ConfigureAwait(false);
                     frmPickCyberware.MyForm.LockGrade();
                     frmPickCyberware.MyForm.Subsystems = objSelectedCyberware.AllowedSubsystems;
                     // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                     if (!objSelectedCyberware.Capacity.Contains('[') || objSelectedCyberware.Capacity.Contains("/["))
                     {
-                        frmPickCyberware.MyForm.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
+                        frmPickCyberware.MyForm.MaximumCapacity = await objSelectedCyberware.GetCapacityRemainingAsync(token).ConfigureAwait(false);
 
                         // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                        if (CharacterObjectSettings.EnforceCapacity && objSelectedCyberware.CapacityRemaining < 0)
+                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && frmPickCyberware.MyForm.MaximumCapacity < 0)
                         {
                             Program.ShowScrollableMessageBox(
                                 this,
@@ -24061,10 +24071,10 @@ namespace Chummer
                         }
                         else if (objSelectedMod != null)
                         {
-                            frmPickGear.MyForm.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
+                            frmPickGear.MyForm.MaximumCapacity = await objSelectedMod.GetGearCapacityRemainingAsync(token).ConfigureAwait(false);
 
                             // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
-                            if (CharacterObjectSettings.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
+                            if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && await objSelectedMod.GetGearCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
                             {
                                 Program.ShowScrollableMessageBox(
                                     this,
@@ -24148,7 +24158,7 @@ namespace Chummer
                         objMatchingGear.Quantity += decGearQuantity;
 
                         await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
-                        if (CharacterObjectSettings.EnforceCapacity && objMatchingGear.CapacityRemaining < 0)
+                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && await objMatchingGear.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
                         {
                             objMatchingGear.Quantity -= decGearQuantity;
                             Program.ShowScrollableMessageBox(
@@ -24165,7 +24175,7 @@ namespace Chummer
                     else if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                     {
                         await objSelectedGear.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                        if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
                         {
                             await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             Program.ShowScrollableMessageBox(
@@ -24181,7 +24191,7 @@ namespace Chummer
                     else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                     {
                         await objSelectedMod.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-                        if (CharacterObjectSettings.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
+                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && await objSelectedMod.GetGearCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
                         {
                             await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             Program.ShowScrollableMessageBox(
@@ -24197,7 +24207,7 @@ namespace Chummer
                     else
                     {
                         await objSelectedArmor.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-                        if (CharacterObjectSettings.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
+                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && await objSelectedArmor.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
                         {
                             await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             Program.ShowScrollableMessageBox(
@@ -25794,7 +25804,8 @@ namespace Chummer
                                                                .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            if (objCyberware.MaxRating == 0)
+                            int intMaxRating = await objCyberware.GetMaxRatingAsync(token).ConfigureAwait(false);
+                            if (intMaxRating == 0)
                             {
                                 await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token)
                                                       .ConfigureAwait(false);
@@ -25803,10 +25814,11 @@ namespace Chummer
                             }
                             else
                             {
+                                int intRating = await objCyberware.GetRatingAsync(token).ConfigureAwait(false);
                                 await lblVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objCyberware.Rating.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = intRating.ToString(GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                            .ConfigureAwait(false);

@@ -1460,7 +1460,7 @@ namespace Chummer
                                     x => x.Grade.Name.ContainsAny(setEssNodeGradeAttributeText), x => x.CalculatedESS,
                                     token)
                                 : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).SumAsync(
-                                    x => x.Grade.Name.ContainsAny(setEssNodeGradeAttributeText),
+                                    async x => (await x.GetGradeAsync(token).ConfigureAwait(false)).Name.ContainsAny(setEssNodeGradeAttributeText),
                                     x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
                         }
 

@@ -7646,7 +7646,7 @@
       <conceal>0</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
-      <damage>(MAG*2)P</damage>
+      <damage>({MAG}*2)P</damage>
       <ap>-{MAG}*0.5</ap>
       <mode>0</mode>
       <rc>0</rc>

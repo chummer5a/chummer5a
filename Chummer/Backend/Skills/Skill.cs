@@ -4465,9 +4465,10 @@ namespace Chummer.Backend.Skills
 
                             sb.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(objCyberware.CurrentDisplayName);
-                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            Grade objGrade = objCyberware.Grade;
+                            if (objGrade.Name != "Standard" && objGrade.Name != "None")
                             {
-                                sb.Append(strSpace).Append('(').Append(objCyberware.Grade.CurrentDisplayName)
+                                sb.Append(strSpace).Append('(').Append(objGrade.CurrentDisplayName)
                                     .Append(')');
                             }
 
@@ -4559,9 +4560,10 @@ namespace Chummer.Backend.Skills
                                 .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
                                 .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
                                 .Append(objCyberware.CurrentDisplayName);
-                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            Grade objGrade = objCyberware.Grade;
+                            if (objGrade.Name != "Standard" && objGrade.Name != "None")
                             {
-                                sbdLoop.Append(strSpace).Append('(').Append(objCyberware.Grade.CurrentDisplayName)
+                                sbdLoop.Append(strSpace).Append('(').Append(objGrade.CurrentDisplayName)
                                     .Append(')');
                             }
 
@@ -4809,9 +4811,10 @@ namespace Chummer.Backend.Skills
 
                             sb.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            Grade objGrade = await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                            if (objGrade.Name != "Standard" && objGrade.Name != "None")
                             {
-                                sb.Append(strSpace).Append('(').Append(await objCyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                                sb.Append(strSpace).Append('(').Append(await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                                     .Append(')');
                             }
 
@@ -4916,9 +4919,10 @@ namespace Chummer.Backend.Skills
                                     .GetObjectNameAsync(objSwapSkillAttribute, token: token)
                                     .ConfigureAwait(false)).Append(strSpace)
                                 .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            if (objCyberware.Grade.Name != "Standard" && objCyberware.Grade.Name != "None")
+                            Grade objGrade = await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                            if (objGrade.Name != "Standard" && objGrade.Name != "None")
                             {
-                                sb.Append(strSpace).Append('(').Append(await objCyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                                sb.Append(strSpace).Append('(').Append(await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                                     .Append(')');
                             }
 

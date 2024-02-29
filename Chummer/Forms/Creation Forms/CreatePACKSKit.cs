@@ -465,7 +465,7 @@ namespace Chummer
                                             "rating",
                                             intRating.ToString(GlobalSettings.InvariantCultureInfo))
                                         .ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name)
+                                await objWriter.WriteElementStringAsync("grade", (await objCyberware.GetGradeAsync().ConfigureAwait(false)).Name)
                                     .ConfigureAwait(false);
                                 if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
@@ -542,7 +542,7 @@ namespace Chummer
                                             "rating",
                                             intRating.ToString(GlobalSettings.InvariantCultureInfo))
                                         .ConfigureAwait(false);
-                                await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name)
+                                await objWriter.WriteElementStringAsync("grade", (await objCyberware.GetGradeAsync().ConfigureAwait(false)).Name)
                                     .ConfigureAwait(false);
                                 if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
                                 {

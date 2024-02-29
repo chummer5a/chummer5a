@@ -1108,15 +1108,15 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category", DisplayCategory(strLanguageToPrint), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("armor", DisplayArmorValue, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("totalarmorcapacity", TotalArmorCapacity(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("calculatedcapacity", CalculatedCapacity(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("capacityremaining", CapacityRemaining.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("armor", await GetDisplayArmorValueAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("totalarmorcapacity", await TotalArmorCapacityAsync(objCulture, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("calculatedcapacity", await CalculatedCapacityAsync(objCulture, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("capacityremaining", (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(await _objCharacter.Settings.GetWeightFormatAsync(token).ConfigureAwait(false), objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(await _objCharacter.Settings.GetWeightFormatAsync(token).ConfigureAwait(false), objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("armorname", CustomName, token).ConfigureAwait(false);
@@ -1371,6 +1371,15 @@ namespace Chummer.Backend.Equipment
         public string TotalArmorCapacity(CultureInfo objCultureInfo)
         {
             string strArmorCapacity = ArmorCapacity;
+            if (string.IsNullOrEmpty(strArmorCapacity))
+                return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
+            if (strArmorCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strArmorCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strArmorCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
             if (strArmorCapacity.Contains("Rating"))
             {
                 // If the Capacity is determined by the Rating, evaluate the expression.
@@ -1394,7 +1403,50 @@ namespace Chummer.Backend.Equipment
                 : strArmorCapacity;
         }
 
+        /// <summary>
+        /// Armor's Capacity.
+        /// </summary>
+        public async Task<string> TotalArmorCapacityAsync(CultureInfo objCultureInfo, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strArmorCapacity = ArmorCapacity;
+            if (string.IsNullOrEmpty(strArmorCapacity))
+                return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
+            if (strArmorCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strArmorCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strArmorCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+            if (strArmorCapacity.Contains("Rating"))
+            {
+                // If the Capacity is determined by the Rating, evaluate the expression.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                bool blnSquareBrackets = strArmorCapacity.StartsWith('[');
+                string strCapacity = strArmorCapacity;
+                if (blnSquareBrackets)
+                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                    strCapacity.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                string strReturn = blnIsSuccess
+                    ? ((double)objProcess).ToString("#,0.##", objCultureInfo)
+                    : objProcess.ToString();
+                if (blnSquareBrackets)
+                    strReturn = '[' + strReturn + ']';
+
+                return strReturn;
+            }
+
+            return decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                out decimal decReturn)
+                ? decReturn.ToString("#,0.##", objCultureInfo)
+                : strArmorCapacity;
+        }
+
         public string CurrentTotalArmorCapacity => TotalArmorCapacity(GlobalSettings.CultureInfo);
+
+        public Task<string> GetCurrentTotalArmorCapacityAsync(CancellationToken token = default) => TotalArmorCapacityAsync(GlobalSettings.CultureInfo, token);
 
         /// <summary>
         /// Armor's Availability.
@@ -1667,7 +1719,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Armor's armor value excluding modifications
         /// </summary>
-        private int GetOwnArmor(bool blnUseOverrideValue = false)
+        private int GetOwnArmorValue(bool blnUseOverrideValue = false)
         {
             string strArmorExpression = blnUseOverrideValue ? ArmorOverrideValue : ArmorValue;
             if (string.IsNullOrEmpty(strArmorExpression))
@@ -1680,23 +1732,13 @@ namespace Chummer.Backend.Equipment
                 strArmorExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
             }
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdArmor))
             {
-                sbdWeight.Append(strArmorExpression.TrimStart('+'));
-                sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                {
-                    sbdWeight.CheapReplace(strArmorExpression, objLoopAttribute.Abbrev,
-                                           () => objLoopAttribute.TotalValue.ToString(
-                                               GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.CheapReplace(strArmorExpression, objLoopAttribute.Abbrev + "Base",
-                                           () => objLoopAttribute.TotalBase.ToString(
-                                               GlobalSettings.InvariantCultureInfo));
-                }
-
+                sbdArmor.Append(strArmorExpression.TrimStart('+'));
+                sbdArmor.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdArmor, strArmorExpression);
                 (bool blnIsSuccess, object objProcess)
-                    = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
+                    = CommonFunctions.EvaluateInvariantXPath(sbdArmor.ToString());
                 if (blnIsSuccess)
                     intReturn = ((double) objProcess).StandardRound();
             }
@@ -1707,7 +1749,43 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Armor's armor value excluding modifications
         /// </summary>
-        public int OwnArmor => GetOwnArmor();
+        private async Task<int> GetOwnArmorValueAsync(bool blnUseOverrideValue = false, CancellationToken token = default)
+        {
+            string strArmorExpression = blnUseOverrideValue ? ArmorOverrideValue : ArmorValue;
+            if (string.IsNullOrEmpty(strArmorExpression))
+                return 0;
+            int intReturn = 0;
+            if (strArmorExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strArmorExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strArmorExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+            {
+                sbdWeight.Append(strArmorExpression.TrimStart('+'));
+                sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdWeight, strArmorExpression,
+                    token: token).ConfigureAwait(false);
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdWeight.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    intReturn = ((double)objProcess).StandardRound();
+            }
+
+            return intReturn;
+        }
+
+        /// <summary>
+        /// The Armor's armor value excluding modifications
+        /// </summary>
+        public int OwnArmor => GetOwnArmorValue();
+
+        /// <summary>
+        /// The Armor's armor value excluding modifications
+        /// </summary>
+        public Task<int> GetOwnArmorAsync(CancellationToken token = default) => GetOwnArmorValueAsync(token: token);
 
         /// <summary>
         /// The Armor's total Armor value including Modifications.
@@ -1726,9 +1804,27 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The Armor's total Armor value including Modifications.
+        /// </summary>
+        public async Task<int> GetTotalArmorAsync(CancellationToken token = default)
+        {
+            // Go through all of the Mods for this piece of Armor and add the Armor value.
+            int intTotalArmor = await GetOwnArmorAsync(token).ConfigureAwait(false) + await ArmorMods.SumAsync(o => o.Equipped, o => o.Armor, token: token).ConfigureAwait(false);
+            if (_objCharacter != null && await _objCharacter.Settings.GetArmorDegradationAsync(token).ConfigureAwait(false))
+                intTotalArmor -= ArmorDamage;
+
+            return Math.Max(intTotalArmor, 0);
+        }
+
+        /// <summary>
         /// The Armor's bonus armor value excluding modifications
         /// </summary>
-        public int OwnOverrideArmor => GetOwnArmor(true);
+        public int OwnOverrideArmor => GetOwnArmorValue(true);
+
+        /// <summary>
+        /// The Armor's bonus armor value excluding modifications
+        /// </summary>
+        public Task<int> GetOwnOverrideArmorAsync(CancellationToken token = default) => GetOwnArmorValueAsync(true, token);
 
         /// <summary>
         /// The Armor's total bonus Armor value including Modifications.
@@ -1746,24 +1842,56 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// The Armor's total bonus Armor value including Modifications.
+        /// </summary>
+        public async Task<int> GetTotalOverrideArmorAsync(CancellationToken token = default)
+        {
+            // Go through all of the Mods for this piece of Armor and add the Armor value.
+            int intTotalArmor = await GetOwnOverrideArmorAsync(token).ConfigureAwait(false) + await ArmorMods.SumAsync(o => o.Equipped, o => o.Armor, token: token).ConfigureAwait(false);
+            if (_objCharacter != null && await _objCharacter.Settings.GetArmorDegradationAsync(token).ConfigureAwait(false))
+                intTotalArmor -= ArmorDamage;
+
+            return Math.Max(intTotalArmor, 0);
+        }
+
         public string DisplayArmorValue
         {
             get
             {
                 string strArmorOverrideValue = ArmorOverrideValue;
+                int intArmor = TotalArmor;
                 if (!string.IsNullOrWhiteSpace(strArmorOverrideValue))
                 {
-                    return TotalArmor.ToString(GlobalSettings.CultureInfo) + '/' + strArmorOverrideValue;
+                    return intArmor.ToString(GlobalSettings.CultureInfo) + '/' + strArmorOverrideValue;
                 }
 
                 string strArmor = ArmorValue;
                 char chrFirstArmorChar = strArmor.Length > 0 ? strArmor[0] : ' ';
                 if (chrFirstArmorChar == '+' || chrFirstArmorChar == '-')
                 {
-                    return TotalArmor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+                    return intArmor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
                 }
-                return TotalArmor.ToString(GlobalSettings.CultureInfo);
+                return intArmor.ToString(GlobalSettings.CultureInfo);
             }
+        }
+
+        public async Task<string> GetDisplayArmorValueAsync(CancellationToken token = default)
+        {
+            string strArmorOverrideValue = ArmorOverrideValue;
+            int intArmor = await GetTotalArmorAsync(token).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(strArmorOverrideValue))
+            {
+                return intArmor.ToString(GlobalSettings.CultureInfo) + '/' + strArmorOverrideValue;
+            }
+
+            string strArmor = ArmorValue;
+            char chrFirstArmorChar = strArmor.Length > 0 ? strArmor[0] : ' ';
+            if (chrFirstArmorChar == '+' || chrFirstArmorChar == '-')
+            {
+                return intArmor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+            }
+            return intArmor.ToString(GlobalSettings.CultureInfo);
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -1840,17 +1968,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdCost.Append(strCostExpression.TrimStart('+'));
                     sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev,
-                                             () => objLoopAttribute.TotalValue.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                                             () => objLoopAttribute.TotalBase.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
@@ -1878,38 +1996,7 @@ namespace Chummer.Backend.Equipment
             {
                 sbdCost.Append(strCostExpression.TrimStart('+'));
                 sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                AttributeSection objAttributeSection
-                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopAttribute =>
-                    {
-                        await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
-                                                        async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                            .ConfigureAwait(false)).ToString(
-                                                            GlobalSettings.InvariantCultureInfo), token: token)
-                                     .ConfigureAwait(false);
-                        await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                                                        async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                            .ConfigureAwait(false)).ToString(
-                                                            GlobalSettings.InvariantCultureInfo), token: token)
-                                     .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
-                      .ForEachAsync(async objLoopAttribute =>
-                      {
-                          await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
-                                                          async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                          await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
-                                                          async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                      }, token).ConfigureAwait(false);
-
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
                 if (blnIsSuccess)
@@ -1949,17 +2036,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
                     sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
-                                               () => objLoopAttribute.TotalValue.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
-                                               () => objLoopAttribute.TotalBase.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)
@@ -2318,17 +2395,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
-                                              () => objLoopAttribute.TotalValue.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
-                                              () => objLoopAttribute.TotalBase.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
@@ -2405,35 +2472,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -2517,7 +2556,50 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        /// <summary>
+        /// Calculated Capacity of the Armor.
+        /// </summary>
+        public async Task<string> CalculatedCapacityAsync(CultureInfo objCultureInfo, CancellationToken token = default)
+        {
+            string strReturn = await TotalArmorCapacityAsync(objCultureInfo, token).ConfigureAwait(false);
+
+            // If an Armor Capacity is specified for the Armor, use that value.
+            if (string.IsNullOrEmpty(strReturn) || strReturn == "0")
+                strReturn = 0.0m.ToString("#,0.##", objCultureInfo);
+            else if (strReturn == "Rating")
+                strReturn = Rating.ToString(objCultureInfo);
+            else if (decimal.TryParse(strReturn, NumberStyles.Any, objCultureInfo, out decimal decReturn))
+                strReturn = decReturn.ToString("#,0.##", objCultureInfo);
+
+            foreach (string strArmorModCapacity in ArmorMods.Select(x => x.ArmorCapacity))
+            {
+                if (!strArmorModCapacity.StartsWith('-')
+                    && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
+                    continue;
+                // If the Capacity is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
+                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                string strCapacity = (await strArmorModCapacity
+                        .FastEscape('[', ']')
+                        .CheapReplaceAsync("Capacity", () => TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token), token: token).ConfigureAwait(false))
+                    .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                {
+                    strCapacity = (Convert.ToDecimal(strReturn, objCultureInfo)
+                                   - Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo))
+                        .ToString("#,0.##", objCultureInfo);
+                }
+
+                strReturn = strCapacity;
+            }
+
+            return strReturn;
+        }
+
         public string CurrentCalculatedCapacity => CalculatedCapacity(GlobalSettings.CultureInfo);
+
+        public Task<string> GetCurrentCalculatedCapacityAsync(CancellationToken token = default) => CalculatedCapacityAsync(GlobalSettings.CultureInfo, token);
 
         /// <summary>
         /// The amount of Capacity remaining in the Armor.
@@ -2549,22 +2631,51 @@ namespace Chummer.Backend.Equipment
                 else // if (_objCharacter.Settings.MaximumArmorModifications)
                 {
                     // Run through its Armor Mods and deduct the Rating (or 1 if it has no Rating).
-                    foreach (ArmorMod objMod in ArmorMods)
-                    {
-                        if (!objMod.IncludedInArmor)
-                            decCapacity -= objMod.Rating > 0 ? objMod.Rating : 1;
-                    }
+                    decCapacity -= ArmorMods.Sum(x => !x.IncludedInArmor, x => x.Rating > 0 ? x.Rating : 1);
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                    foreach (Gear objGear in GearChildren)
-                    {
-                        if (!objGear.IncludedInParent)
-                            decCapacity -= objGear.Rating > 0 ? objGear.Rating : 1;
-                    }
+                    decCapacity -= GearChildren.Sum(x => !x.IncludedInParent, x => x.Rating > 0 ? x.Rating : 1);
                 }
 
                 return decCapacity;
             }
+        }
+
+        /// <summary>
+        /// The amount of Capacity remaining in the Armor.
+        /// </summary>
+        public async Task<decimal> GetCapacityRemainingAsync(CancellationToken token = default)
+        {
+            // Get the Armor base Capacity.
+            decimal decCapacity = Convert.ToDecimal(await CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
+
+            // If there is no Capacity (meaning that the Armor Suit Capacity or Maximum Armor Modification rule is turned off depending on the type of Armor), don't bother to calculate the remaining
+            // Capacity since it's disabled and return 0 instead.
+            if (decCapacity == 0)
+                return 0;
+
+            // Calculate the remaining Capacity for a Suit of Armor.
+            string strArmorCapacity = await TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false);
+            if (strArmorCapacity != "0" && !string.IsNullOrEmpty(strArmorCapacity)) // && _objCharacter.Settings.ArmorSuitCapacity)
+            {
+                // Run through its Armor Mods and deduct the Capacity costs. Mods that confer capacity (ie negative values) are excluded, as they're processed in TotalArmorCapacity.
+                if (await ArmorMods.GetCountAsync(token).ConfigureAwait(false) > 0)
+                    decCapacity -= await ArmorMods.SumAsync(x => !x.IncludedInArmor, async x => Math.Max(await x.GetTotalCapacityAsync(token).ConfigureAwait(false), 0), token: token).ConfigureAwait(false);
+                // Run through its Gear and deduct the Armor Capacity costs.
+                if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
+                    decCapacity -= await GearChildren.SumAsync(x => !x.IncludedInParent, async x => await x.GetPluginArmorCapacityAsync(token).ConfigureAwait(false) * x.Quantity, token: token).ConfigureAwait(false);
+            }
+            // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
+            else // if (_objCharacter.Settings.MaximumArmorModifications)
+            {
+                // Run through its Armor Mods and deduct the Rating (or 1 if it has no Rating).
+                decCapacity -= await ArmorMods.SumAsync(x => !x.IncludedInArmor, x => Math.Min(x.Rating, 1), token: token).ConfigureAwait(false);
+
+                // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
+                decCapacity -= await GearChildren.SumAsync(x => !x.IncludedInParent, async x => Math.Min(await x.GetRatingAsync(token).ConfigureAwait(false), 1), token: token).ConfigureAwait(false);
+            }
+
+            return decCapacity;
         }
 
         public string DisplayCapacity
@@ -2577,6 +2688,15 @@ namespace Chummer.Backend.Equipment
                 return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
                                      strCalculatedCapacity, CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo));
             }
+        }
+
+        public async Task<string> GetDisplayCapacityAsync(CancellationToken token = default)
+        {
+            string strCalculatedCapacity = await GetCurrentCalculatedCapacityAsync(token).ConfigureAwait(false);
+            if (strCalculatedCapacity.Contains('[') && !strCalculatedCapacity.Contains("/["))
+                return strCalculatedCapacity;
+            return string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
+                strCalculatedCapacity, (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##", GlobalSettings.CultureInfo));
         }
 
         /// <summary>

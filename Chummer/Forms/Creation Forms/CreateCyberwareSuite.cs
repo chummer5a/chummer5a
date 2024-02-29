@@ -21,6 +21,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -142,9 +143,10 @@ namespace Chummer
                     }
 
                     // Determine the Grade of Cyberware.
+                    Cyberware objFirstWare = await _objCharacter.Cyberware.FirstOrDefaultAsync(x => x.SourceType == _eSource)
+                        .ConfigureAwait(false);
                     string strGrade
-                        = (await _objCharacter.Cyberware.FirstOrDefaultAsync(x => x.SourceType == _eSource)
-                                              .ConfigureAwait(false))?.Grade.Name ?? string.Empty;
+                        = objFirstWare != null ? (await objFirstWare.GetGradeAsync().ConfigureAwait(false)).Name : string.Empty;
 
                     // <suite>
                     await objWriter.WriteStartElementAsync("suite").ConfigureAwait(false);
@@ -167,10 +169,11 @@ namespace Chummer
                         // ReSharper disable AccessToDisposedClosure
                         await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
-                        if (objCyberware.Rating > 0)
+                        int intRating = await objCyberware.GetRatingAsync().ConfigureAwait(false);
+                        if (intRating > 0)
                             await objWriter
                                   .WriteElementStringAsync(
-                                      "rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                      "rating", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                                   .ConfigureAwait(false);
                         // Write out child items.
                         if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
@@ -185,11 +188,12 @@ namespace Chummer
                                     await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objChild.Name)
                                                    .ConfigureAwait(false);
-                                    if (objChild.Rating > 0)
+                                    int intChildRating = await objChild.GetRatingAsync().ConfigureAwait(false);
+                                    if (intChildRating > 0)
                                         await objWriter
                                               .WriteElementStringAsync(
                                                   "rating",
-                                                  objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                  intChildRating.ToString(GlobalSettings.InvariantCultureInfo))
                                               .ConfigureAwait(false);
                                     // </cyberware>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);

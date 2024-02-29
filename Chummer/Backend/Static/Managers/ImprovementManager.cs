@@ -4806,20 +4806,24 @@ namespace Chummer
                             if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
                                 foreach (Cyberware objCyberware in blnSync
-                                             ? objCharacter.Cyberware.DeepWhere(
-                                                 x => x.Children, x => x.Grade.Adapsin, token)
-                                             : await objCharacter.Cyberware.DeepWhereAsync(
-                                                 x => x.Children, x => x.Grade.Adapsin, token).ConfigureAwait(false))
+                                             ? objCharacter.Cyberware.GetAllDescendants(
+                                                 x => x.Children, token)
+                                             : await objCharacter.Cyberware.GetAllDescendantsAsync(
+                                                 x => x.Children, token).ConfigureAwait(false))
                                 {
-                                    string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
-                                                                    .Trim();
-                                    // Determine which GradeList to use for the Cyberware.
-                                    Grade objNewGrade = objCharacter.GetGrades(objCyberware.SourceType, true, token)
-                                        .FirstOrDefault(x => x.Name == strNewName);
-                                    if (blnSync)
-                                        objCyberware.Grade = objNewGrade;
-                                    else
-                                        await objCyberware.SetGradeAsync(objNewGrade, token).ConfigureAwait(false);
+                                    Grade objOldGrade = blnSync ? objCyberware.Grade : await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                                    if (objOldGrade.Adapsin)
+                                    {
+                                        string strNewName = objOldGrade.Name.FastEscapeOnceFromEnd("(Adapsin)")
+                                            .Trim();
+                                        // Determine which GradeList to use for the Cyberware.
+                                        Grade objNewGrade = objCharacter.GetGrades(objCyberware.SourceType, true, token)
+                                            .FirstOrDefault(x => x.Name == strNewName);
+                                        if (blnSync)
+                                            objCyberware.Grade = objNewGrade;
+                                        else
+                                            await objCyberware.SetGradeAsync(objNewGrade, token).ConfigureAwait(false);
+                                    }
                                 }
                             }
                         }

@@ -14456,13 +14456,14 @@ namespace Chummer
 
             using (LockObject.EnterReadLock(token))
             {
+                Grade objGrade = objModularCyberware.Grade;
                 foreach (Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children, token))
                 {
                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                     if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                         && (objLoopCyberware.Location == objModularCyberware.Location
                             || string.IsNullOrEmpty(objModularCyberware.Location))
-                        && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                        && objLoopCyberware.Grade.Name == objGrade.Name
                         && objLoopCyberware != objModularCyberware
                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
                         && objLoopCyberware.Children.All(
@@ -14484,7 +14485,7 @@ namespace Chummer
                             // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                             if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                                 && objLoopCyberware.Location == objModularCyberware.Location
-                                && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                && objLoopCyberware.Grade.Name == objGrade.Name
                                 && objLoopCyberware != objModularCyberware
                                 // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                 && objLoopCyberware.Children.All(
@@ -14508,7 +14509,7 @@ namespace Chummer
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                                 if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                                     && objLoopCyberware.Location == objModularCyberware.Location
-                                    && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                    && objLoopCyberware.Grade.Name == objGrade.Name
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                     && objLoopCyberware.Children.All(
@@ -14542,6 +14543,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
                 await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
                     .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(
                     async objLoopCyberware =>
@@ -14550,7 +14552,7 @@ namespace Chummer
                         if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                             && (objLoopCyberware.Location == objModularCyberware.Location
                                 || string.IsNullOrEmpty(objModularCyberware.Location))
-                            && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                            && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
                             && objLoopCyberware != objModularCyberware
                             // Make sure it's not the place where the mount is already occupied (either by us or something else)
                             && await objLoopCyberware.Children.AllAsync(
@@ -14575,7 +14577,7 @@ namespace Chummer
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                                 if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                                     && objLoopCyberware.Location == objModularCyberware.Location
-                                    && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                     && await objLoopCyberware.Children.AllAsync(
@@ -14606,7 +14608,7 @@ namespace Chummer
                                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                                     if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                                         && objLoopCyberware.Location == objModularCyberware.Location
-                                        && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
                                         && objLoopCyberware != objModularCyberware
                                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                         && await objLoopCyberware.Children.AllAsync(
@@ -28773,15 +28775,7 @@ namespace Chummer
                         && !objArmor.ArmorOverrideValue.StartsWith('+')
                         && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         continue;
-                    string strCustomFitName = string.Empty;
-                    foreach (ArmorMod objMod in objArmor.ArmorMods)
-                    {
-                        if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
-                        {
-                            strCustomFitName = objMod.Extra;
-                            break;
-                        }
-                    }
+                    string strCustomFitName = objArmor.ArmorMods.FirstOrDefault(x => x.Name == "Custom Fit (Stack)" && x.Equipped)?.Extra ?? string.Empty;
 
                     foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
@@ -28906,15 +28900,7 @@ namespace Chummer
                         && !objArmor.ArmorOverrideValue.StartsWith('+')
                         && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         continue;
-                    string strCustomFitName = string.Empty;
-                    foreach (ArmorMod objMod in objArmor.ArmorMods)
-                    {
-                        if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
-                        {
-                            strCustomFitName = objMod.Extra;
-                            break;
-                        }
-                    }
+                    string strCustomFitName = (await objArmor.ArmorMods.FirstOrDefaultAsync(x => x.Name == "Custom Fit (Stack)" && x.Equipped, token: token).ConfigureAwait(false))?.Extra ?? string.Empty;
 
                     foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
@@ -28925,18 +28911,18 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strCustomFitName) || strCustomFitName != objInnerArmor.Name)
                         {
                             if (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-'))
-                                dicArmorStackingValues[objInnerArmor] += objArmor.TotalArmor;
+                                dicArmorStackingValues[objInnerArmor] += await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
                         }
                         else if (objArmor.ArmorOverrideValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('-'))
                         {
-                            dicArmorStackingValues[objInnerArmor] += objArmor.TotalOverrideArmor;
+                            dicArmorStackingValues[objInnerArmor] += await objArmor.GetTotalOverrideArmorAsync(token).ConfigureAwait(false);
                         }
                     }
 
                     if (intNakedStackingValue < intAverageStrength
                         && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                         intNakedStackingValue
-                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intAverageStrength);
+                            = Math.Min(intNakedStackingValue + await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false), intAverageStrength);
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
@@ -28955,7 +28941,7 @@ namespace Chummer
                         || objArmor.ArmorValue.StartsWith('-'))
                         continue;
 
-                    int intArmorValue = objArmor.TotalArmor + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
+                    int intArmorValue = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false) + dicArmorStackingValues[objArmor] + dicArmorImprovementValues[objArmor].StandardRound();
                     if (intArmorValue > intHighest)
                     {
                         intHighest = intArmorValue;
@@ -30967,15 +30953,7 @@ namespace Chummer
                             && !objArmor.ArmorOverrideValue.StartsWith('+')
                             && !objArmor.ArmorOverrideValue.StartsWith('-'))
                             continue;
-                        string strCustomFitName = string.Empty;
-                        foreach (ArmorMod objMod in objArmor.ArmorMods)
-                        {
-                            if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
-                            {
-                                strCustomFitName = objMod.Extra;
-                                break;
-                            }
-                        }
+                        string strCustomFitName = objArmor.ArmorMods.FirstOrDefault(x => x.Name == "Custom Fit (Stack)" && x.Equipped)?.Extra ?? string.Empty;
 
                         int intLoopStack = objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')
                             ? objArmor.TotalArmor
@@ -31082,18 +31060,11 @@ namespace Chummer
                         && !objArmor.ArmorOverrideValue.StartsWith('+')
                         && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         continue;
-                    string strCustomFitName = string.Empty;
-                    foreach (ArmorMod objMod in objArmor.ArmorMods)
-                    {
-                        if (objMod.Name == "Custom Fit (Stack)" && objMod.Equipped)
-                        {
-                            strCustomFitName = objMod.Extra;
-                            break;
-                        }
-                    }
+                    string strCustomFitName = (await objArmor.ArmorMods.FirstOrDefaultAsync(x => x.Name == "Custom Fit (Stack)" && x.Equipped, token: token).ConfigureAwait(false))?.Extra ?? string.Empty;
+
 
                     int intLoopStack = objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')
-                        ? objArmor.TotalArmor
+                        ? await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false)
                         : 0;
                     foreach (Armor objInnerArmor in lstArmorsToConsider)
                     {
@@ -31114,7 +31085,7 @@ namespace Chummer
                         else if (objArmor.ArmorOverrideValue.StartsWith('+')
                                  || objArmor.ArmorOverrideValue.StartsWith('-'))
                         {
-                            int intLoopCustomFitStack = objArmor.TotalOverrideArmor;
+                            int intLoopCustomFitStack = await objArmor.GetTotalOverrideArmorAsync(token).ConfigureAwait(false);
                             (int intI, int intJ) = dicArmorStackingValues[objInnerArmor];
                             if (objArmor.Encumbrance)
                                 dicArmorStackingValues[objInnerArmor]
@@ -31152,7 +31123,7 @@ namespace Chummer
                         || objArmor.ArmorValue.StartsWith('-'))
                         continue;
                     (int intLoopStack, int intLoopEncumbrance) = dicArmorStackingValues[objArmor];
-                    int intLoopTotal = objArmor.TotalArmor + intLoopStack;
+                    int intLoopTotal = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false) + intLoopStack;
                     if (intLoopTotal >= intHighest
                         && (intLoopTotal > intHighest || intLoopEncumbrance < intLowestEncumbrance))
                     {
@@ -45824,7 +45795,7 @@ namespace Chummer
                                             objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
                                                 "description", token)?.Value;
                                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd,
-                                                objPlugin.Grade,
+                                                blnSync ? objPlugin.Grade : await objPlugin.GetGradeAsync(token).ConfigureAwait(false),
                                                 lstWeapons,
                                                 lstVehicles);
                                         }
@@ -45866,7 +45837,7 @@ namespace Chummer
                                             objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
                                                 "description", token)?.Value;
                                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd,
-                                                objPlugin.Grade,
+                                                blnSync ? objPlugin.Grade : await objPlugin.GetGradeAsync(token).ConfigureAwait(false),
                                                 lstWeapons,
                                                 lstVehicles);
                                         }

@@ -1741,8 +1741,8 @@
       <cost>(Rating - MinRating + 1) * 5000</cost>
       <source>SR5</source>
       <page>456</page>
-      <minrating>MinimumSTR+1</minrating>
-      <rating>MaximumSTR</rating>
+      <minrating>{STRMinimum}+1</minrating>
+      <rating>{STRMaximum}</rating>
       <requireparent />
     </cyberware>
     <cyberware>
@@ -1756,8 +1756,8 @@
       <cost>(Rating - MinRating + 1) * 5000</cost>
       <source>SR5</source>
       <page>456</page>
-      <minrating>MinimumAGI+1</minrating>
-      <rating>MaximumAGI</rating>
+      <minrating>{AGIMinimum}+1</minrating>
+      <rating>{AGIMaximum}</rating>
       <requireparent />
     </cyberware>
     <cyberware>
@@ -7821,8 +7821,8 @@
       <cost>(Rating - MinRating + 1) * 2000</cost>
       <source>2050</source>
       <page>203</page>
-      <minrating>MinimumSTR+1</minrating>
-      <rating>MaximumSTR</rating>
+      <minrating>{STRMinimum}+1</minrating>
+      <rating>{STRMaximum}</rating>
       <requireparent />
     </cyberware>
     <cyberware>
@@ -7836,8 +7836,8 @@
       <cost>(Rating - MinRating + 1) * 2000</cost>
       <source>2050</source>
       <page>203</page>
-      <minrating>MinimumAGI+1</minrating>
-      <rating>MaximumAGI</rating>
+      <minrating>{AGIMinimum}+1</minrating>
+      <rating>{AGIMaximum}</rating>
       <requireparent />
     </cyberware>
     <cyberware>

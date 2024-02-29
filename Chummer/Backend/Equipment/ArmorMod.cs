@@ -1186,17 +1186,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
-                                              () => objLoopAttribute.TotalValue.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
-                                              () => objLoopAttribute.TotalBase.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdAvail, strAvail);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
                     if (blnIsSuccess)
@@ -1258,35 +1248,7 @@ namespace Chummer.Backend.Equipment
                 {
                     sbdAvail.Append(strAvail.TrimStart('+'));
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-
+                    await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -1346,10 +1308,40 @@ namespace Chummer.Backend.Equipment
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCapacity);
-                string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
-
-                return strReturn;
+                return blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
             }
+        }
+
+        /// <summary>
+        /// Calculated Gear Capacity of the Armor Mod.
+        /// </summary>
+        public async Task<string> GetCalculatedGearCapacityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strCapacity = GearCapacity;
+            if (string.IsNullOrEmpty(strCapacity))
+                return "0";
+            if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
+            strCapacity = (await strCapacity
+                    .CheapReplaceAsync(
+                        "Capacity",
+                        async () => Parent != null
+                            ? Convert.ToDecimal(
+                                    await Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
+                                    GlobalSettings.InvariantCultureInfo)
+                                .ToString(GlobalSettings.InvariantCultureInfo)
+                            : "0", token: token).ConfigureAwait(false))
+                .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+            //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
+            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
+            return blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
         }
 
         /// <summary>
@@ -1373,7 +1365,7 @@ namespace Chummer.Backend.Equipment
                     decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
 
                 // Run through its Children and deduct the Capacity costs.
-                foreach (Gear objChildGear in GearChildren)
+                decCapacity -= GearChildren.Sum(objChildGear =>
                 {
                     string strCapacity = objChildGear.CalculatedArmorCapacity;
                     intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
@@ -1385,11 +1377,49 @@ namespace Chummer.Backend.Equipment
 
                     // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                     strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                    decCapacity -= Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo) * objChildGear.Quantity;
-                }
+                    return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo) * objChildGear.Quantity;
+                });
 
                 return decCapacity;
             }
+        }
+
+        /// <summary>
+        /// The amount of Capacity remaining in the Gear.
+        /// </summary>
+        public async Task<decimal> GetGearCapacityRemainingAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decCapacity;
+            string strMyCapacity = await GetCalculatedGearCapacityAsync(token).ConfigureAwait(false);
+            // Get the Gear base Capacity.
+            int intPos = strMyCapacity.IndexOf("/[", StringComparison.Ordinal);
+            if (intPos != -1)
+            {
+                // If this is a multiple-capacity item, use only the first half.
+                strMyCapacity = strMyCapacity.Substring(0, intPos);
+                decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
+            }
+            else
+                decCapacity = Convert.ToDecimal(strMyCapacity, GlobalSettings.CultureInfo);
+
+            // Run through its Children and deduct the Capacity costs.
+            decCapacity -= await GearChildren.SumAsync(async objChildGear =>
+            {
+                string strCapacity = await objChildGear.GetCalculatedArmorCapacityAsync(token).ConfigureAwait(false);
+                intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                if (intPos != -1)
+                {
+                    // If this is a multiple-capacity item, use only the second half.
+                    strCapacity = strCapacity.Substring(intPos + 1);
+                }
+
+                // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
+                strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
+                return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo) * objChildGear.Quantity;
+            }, token: token).ConfigureAwait(false);
+
+            return decCapacity;
         }
 
         /// <summary>
@@ -1432,6 +1462,47 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Caculated Capacity of the Armor Mod.
+        /// </summary>
+        public async Task<string> GetCalculatedCapacityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strCapacity = ArmorCapacity;
+            if (string.IsNullOrEmpty(strCapacity))
+                return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
+            if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strCapacity = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
+            strCapacity = (await strCapacity
+                    .CheapReplaceAsync(
+                        "Capacity",
+                        async () => Parent != null
+                            ? Convert.ToDecimal(
+                                    await Parent.TotalArmorCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false),
+                                    GlobalSettings.InvariantCultureInfo)
+                                .ToString(GlobalSettings.InvariantCultureInfo)
+                            : "0", token: token).ConfigureAwait(false))
+                .Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+            bool blnSquareBrackets = strCapacity.StartsWith('[');
+            if (blnSquareBrackets)
+                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+
+            //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
+            (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
+            string strReturn = blnIsSuccess
+                ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo)
+                : strCapacity;
+            if (blnSquareBrackets)
+                strReturn = '[' + strReturn + ']';
+
+            return strReturn;
+        }
+
         public decimal TotalCapacity
         {
             get
@@ -1450,6 +1521,24 @@ namespace Chummer.Backend.Equipment
                     strCapacity = "0";
                 return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
             }
+        }
+
+        public async Task<decimal> GetTotalCapacityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+            int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+            if (intPos != -1)
+            {
+                // If this is a multiple-capacity item, use only the second half.
+                strCapacity = strCapacity.Substring(intPos + 1);
+            }
+
+            if (strCapacity.StartsWith('['))
+                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+            if (strCapacity == "*")
+                strCapacity = "0";
+            return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
         }
 
         /// <summary>
@@ -1522,17 +1611,7 @@ namespace Chummer.Backend.Equipment
                                          () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdCost.CheapReplace(strCostExpr, "Armor Cost",
                                          () => (Parent?.OwnCost ?? 0.0m).ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
-                                             () => objLoopAttribute.TotalValue.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                             () => objLoopAttribute.TotalBase.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdCost, strCostExpr);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
                     if (blnIsSuccess)
@@ -1571,38 +1650,7 @@ namespace Chummer.Backend.Equipment
                                                     ? await Parent.GetOwnCostAsync(token).ConfigureAwait(false)
                                                     : 0.0m).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                              .ConfigureAwait(false);
-
-                AttributeSection objAttributeSection
-                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    async objLoopAttribute =>
-                    {
-                        await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                        async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                            .ConfigureAwait(false)).ToString(
-                                                            GlobalSettings.InvariantCultureInfo), token: token)
-                                     .ConfigureAwait(false);
-                        await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                        async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                            .ConfigureAwait(false)).ToString(
-                                                            GlobalSettings.InvariantCultureInfo), token: token)
-                                     .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
-                      .ForEachAsync(async objLoopAttribute =>
-                      {
-                          await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                          async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                          await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                          async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                              .ConfigureAwait(false)).ToString(
-                                                              GlobalSettings.InvariantCultureInfo), token: token)
-                                       .ConfigureAwait(false);
-                      }, token).ConfigureAwait(false);
-
+                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdCost, strCostExpr, token: token).ConfigureAwait(false);
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token)
                                            .ConfigureAwait(false);
@@ -1647,17 +1695,7 @@ namespace Chummer.Backend.Equipment
                                            () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.CheapReplace(strWeightExpression, "Armor Weight",
                                            () => (Parent?.OwnWeight ?? 0.0m).ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.GetAllAttributes())
-                    {
-                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
-                                               () => objLoopAttribute.TotalValue.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
-                                               () => objLoopAttribute.TotalBase.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                    }
-
+                    _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)

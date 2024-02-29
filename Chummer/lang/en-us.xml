@@ -1158,6 +1158,14 @@
       <key>String_BaseAttribute</key>
       <text>Base {0}</text>
     </string>
+    <string>
+      <key>String_MinimumAttribute</key>
+      <text>Minimum {0}</text>
+    </string>
+    <string>
+      <key>String_MaximumAttribute</key>
+      <text>Maximum {0}</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
