@@ -125,8 +125,6 @@ namespace Chummer
                 _objGenericFormClosingCancellationTokenSource.Dispose();
 
                 _objLoadContentLocker.Dispose();
-                foreach (ListItem objExistingItem in _lstItems)
-                    ((MasterIndexEntry) objExistingItem.Value).Dispose();
                 Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
                 Utils.ListItemListPool.Return(ref _lstItems);
             };
@@ -461,12 +459,6 @@ namespace Chummer
                         try
                         {
                             _dicCachedNotes.Clear();
-                            foreach (object objUncastedExistingEntry in _lstItems.Select(x => x.Value))
-                            {
-                                if (objUncastedExistingEntry is MasterIndexEntry objExistingEntry)
-                                    objExistingEntry.Dispose();
-                            }
-
                             _lstItems.Clear();
                             _lstFileNamesWithItems.Clear();
                             if (_objSelectedSetting == null)
@@ -625,7 +617,6 @@ namespace Chummer
                                                     if (objExistingItem.Value is MasterIndexEntry objLoopEntry)
                                                     {
                                                         objLoopEntry.FileNames.UnionWith(objEntry.FileNames);
-                                                        objEntry.Dispose();
                                                     }
                                                     else
                                                     {
@@ -945,15 +936,15 @@ namespace Chummer
             }
         }
 
-        private sealed class MasterIndexEntry : IDisposable
+        private sealed class MasterIndexEntry
         {
-            private HashSet<string> _setFileNames;
-
             public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, SourceString objDisplaySource, string strEnglishNameOnPage, string strTranslatedNameOnPage)
             {
                 DisplayName = strDisplayName;
-                _setFileNames = Utils.StringHashSetPool.Get();
-                _setFileNames.Add(strFileName);
+                FileNames = new HashSet<string>
+                {
+                    strFileName
+                };
                 Source = objSource;
                 DisplaySource = objDisplaySource;
                 EnglishNameOnPage = strEnglishNameOnPage;
@@ -962,18 +953,12 @@ namespace Chummer
 
             internal string DisplayName { get; }
 
-            internal HashSet<string> FileNames => _setFileNames;
+            internal HashSet<string> FileNames { get; }
 
             internal SourceString Source { get; }
             internal SourceString DisplaySource { get; }
             internal string EnglishNameOnPage { get; }
             internal string TranslatedNameOnPage { get; }
-
-            /// <inheritdoc />
-            public void Dispose()
-            {
-                Utils.StringHashSetPool.Return(ref _setFileNames);
-            }
         }
 
         private async void cmdEditCharacterSetting_Click(object sender, EventArgs e)

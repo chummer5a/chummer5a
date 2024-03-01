@@ -1922,7 +1922,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (lsbThis.DataSource != null)
                     {
-                        // Assign new binding context because to avoid weirdness when switching DataSource
+                        // Assign new binding context to avoid weirdness when switching DataSource
                         lsbThis.BindingContext = new BindingContext();
                     }
                     else
@@ -1937,12 +1937,11 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
+                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
                     });
-                    lsbThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {
@@ -1991,7 +1990,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (cboThis.DataSource != null)
                     {
-                        // Assign new binding context because to avoid weirdness when switching DataSource
+                        // Assign new binding context to avoid weirdness when switching DataSource
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
@@ -2006,12 +2005,11 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
                     });
-                    cboThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {
@@ -2060,7 +2058,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (cboThis.DataSource != null)
                     {
-                        // Assign new binding context because to avoid weirdness when switching DataSource
+                        // Assign new binding context to avoid weirdness when switching DataSource
                         cboThis.BindingContext = new BindingContext();
                     }
                     else
@@ -2075,12 +2073,11 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
                     {
                         Utils.ListItemListPool.Return(ref y);
                         return lstItemsToSet;
                     });
-                    cboThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {

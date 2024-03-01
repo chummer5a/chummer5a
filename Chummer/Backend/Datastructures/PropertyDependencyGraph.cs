@@ -58,24 +58,32 @@ namespace Chummer
         public HashSet<string> GetWithAllDependents(T objParentInstance, string objKey, bool blnUsePool)
         {
             HashSet<string> setReturn = blnUsePool ? Utils.StringHashSetPool.Get() : new HashSet<string>();
-
-            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<string, T> objLoopNode))
+            try
             {
-                if (setReturn.Add(objLoopNode.MyObject))
+                if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<string, T> objLoopNode))
                 {
-                    foreach (DependencyGraphNodeWithCondition<string, T> objNode in objLoopNode.UpStreamNodes)
+                    if (setReturn.Add(objLoopNode.MyObject))
                     {
-                        if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
+                        foreach (DependencyGraphNodeWithCondition<string, T> objNode in objLoopNode.UpStreamNodes)
                         {
-                            CollectDependents(objParentInstance, objNode.Node.MyObject, setReturn);
+                            if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
+                            {
+                                CollectDependents(objParentInstance, objNode.Node.MyObject, setReturn);
+                            }
                         }
                     }
                 }
-            }
-            else
-                setReturn.Add(objKey);
+                else
+                    setReturn.Add(objKey);
 
-            return setReturn;
+                return setReturn;
+            }
+            catch
+            {
+                if (blnUsePool)
+                    Utils.StringHashSetPool.Return(ref setReturn);
+                throw;
+            }
         }
 
         /// <summary>

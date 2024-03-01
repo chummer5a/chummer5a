@@ -293,7 +293,7 @@ namespace Chummer
         /// </summary>
         public static int MaxParallelBatchSize { get; } = Environment.ProcessorCount * 2;
 
-        public static int DefaultPoolSize { get; } = Math.Max(MaxParallelBatchSize, 32);
+        public static int DefaultPoolSize { get; } = Math.Max(MaxParallelBatchSize, byte.MaxValue + 1);
 
         private static readonly Lazy<string> s_strGetStartupPath = new Lazy<string>(
             () => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath);
@@ -2616,14 +2616,14 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<List<ListItem>> ListItemListPool { get; }
-            = new SafeObjectPool<List<ListItem>>(Math.Max(MaxParallelBatchSize, 64), () => new List<ListItem>(), x => x.Clear());
+            = new SafeObjectPool<List<ListItem>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new List<ListItem>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<HashSet<string>> StringHashSetPool { get; }
-            = new SafeObjectPool<HashSet<string>>(() => new HashSet<string>(), x => x.Clear());
+            = new SafeObjectPool<HashSet<string>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new HashSet<string>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for stopwatches. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
@@ -2647,7 +2647,7 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeDisposableObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
-            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, 256), () => new DebuggableSemaphoreSlim());
+            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new DebuggableSemaphoreSlim());
 
         /// <summary>
         /// RecyclableMemoryStreamManager to be used for all RecyclableMemoryStream constructors.
