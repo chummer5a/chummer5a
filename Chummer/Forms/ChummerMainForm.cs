@@ -3901,10 +3901,13 @@ namespace Chummer
                                             stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
                                     }
                                 }, token).ConfigureAwait(false);
-                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                    && File.Exists(objCharacter.FileName))
-                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                        0, objCharacter.FileName, token).ConfigureAwait(false);
+                                if (blnIncludeInMru)
+                                {
+                                    string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strFile) && File.Exists(strFile))
+                                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                            0, strFile, token).ConfigureAwait(false);
+                                }
                                 //Timekeeper.Finish("load_event_time");
                             }
                         }
@@ -4003,182 +4006,199 @@ namespace Chummer
 
             try
             {
-                await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker = await GlobalSettings.FavoriteCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible
-                                                          = GlobalSettings.FavoriteCharacters.Count > 0
-                                                            || GlobalSettings.MostRecentlyUsedCharacters
-                                                                             .Count > 0, token).ConfigureAwait(false);
-
-                    if (strText != "mru")
+                    token.ThrowIfCancellationRequested();
+                    IAsyncDisposable objLocker2 = await GlobalSettings.MostRecentlyUsedCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                        token.ThrowIfCancellationRequested();
+                        int intFavoriteCharactersCount = await GlobalSettings.FavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
+                        int intMruCharactersCount = await GlobalSettings.MostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false);
+                        await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        try
                         {
-                            DpiFriendlyToolStripMenuItem objItem;
-                            switch (i)
+                            await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible = intFavoriteCharactersCount > 0 || intMruCharactersCount > 0, token).ConfigureAwait(false);
+
+                            if (strText != "mru")
                             {
-                                case 0:
-                                    objItem = mnuStickyMRU0;
-                                    break;
+                                for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                                {
+                                    DpiFriendlyToolStripMenuItem objItem;
+                                    switch (i)
+                                    {
+                                        case 0:
+                                            objItem = mnuStickyMRU0;
+                                            break;
 
-                                case 1:
-                                    objItem = mnuStickyMRU1;
-                                    break;
+                                        case 1:
+                                            objItem = mnuStickyMRU1;
+                                            break;
 
-                                case 2:
-                                    objItem = mnuStickyMRU2;
-                                    break;
+                                        case 2:
+                                            objItem = mnuStickyMRU2;
+                                            break;
 
-                                case 3:
-                                    objItem = mnuStickyMRU3;
-                                    break;
+                                        case 3:
+                                            objItem = mnuStickyMRU3;
+                                            break;
 
-                                case 4:
-                                    objItem = mnuStickyMRU4;
-                                    break;
+                                        case 4:
+                                            objItem = mnuStickyMRU4;
+                                            break;
 
-                                case 5:
-                                    objItem = mnuStickyMRU5;
-                                    break;
+                                        case 5:
+                                            objItem = mnuStickyMRU5;
+                                            break;
 
-                                case 6:
-                                    objItem = mnuStickyMRU6;
-                                    break;
+                                        case 6:
+                                            objItem = mnuStickyMRU6;
+                                            break;
 
-                                case 7:
-                                    objItem = mnuStickyMRU7;
-                                    break;
+                                        case 7:
+                                            objItem = mnuStickyMRU7;
+                                            break;
 
-                                case 8:
-                                    objItem = mnuStickyMRU8;
-                                    break;
+                                        case 8:
+                                            objItem = mnuStickyMRU8;
+                                            break;
 
-                                case 9:
-                                    objItem = mnuStickyMRU9;
-                                    break;
+                                        case 9:
+                                            objItem = mnuStickyMRU9;
+                                            break;
 
-                                default:
-                                    continue;
+                                        default:
+                                            continue;
+                                    }
+
+                                    if (i < intFavoriteCharactersCount)
+                                    {
+                                        string strSelected = await GlobalSettings.FavoriteCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                        await menuStrip.DoThreadSafeAsync(() =>
+                                        {
+                                            objItem.Text = strSelected;
+                                            objItem.Tag = strSelected;
+                                            objItem.Visible = true;
+                                        }, token).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false, token).ConfigureAwait(false);
+                                    }
+                                }
                             }
 
-                            if (i < GlobalSettings.FavoriteCharacters.Count)
+                            await menuStrip.DoThreadSafeAsync(() =>
                             {
-                                int i1 = i;
+                                mnuMRU0.Visible = false;
+                                mnuMRU1.Visible = false;
+                                mnuMRU2.Visible = false;
+                                mnuMRU3.Visible = false;
+                                mnuMRU4.Visible = false;
+                                mnuMRU5.Visible = false;
+                                mnuMRU6.Visible = false;
+                                mnuMRU7.Visible = false;
+                                mnuMRU8.Visible = false;
+                                mnuMRU9.Visible = false;
+                            }, token).ConfigureAwait(false);
+
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                            int i2 = 0;
+                            for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                            {
+                                if (i2 >= intMruCharactersCount || i >= intMruCharactersCount)
+                                    continue;
+                                string strFile = await GlobalSettings.MostRecentlyUsedCharacters.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile, token).ConfigureAwait(false))
+                                    continue;
+                                DpiFriendlyToolStripMenuItem objItem;
+                                switch (i2)
+                                {
+                                    case 0:
+                                        objItem = mnuMRU0;
+                                        break;
+
+                                    case 1:
+                                        objItem = mnuMRU1;
+                                        break;
+
+                                    case 2:
+                                        objItem = mnuMRU2;
+                                        break;
+
+                                    case 3:
+                                        objItem = mnuMRU3;
+                                        break;
+
+                                    case 4:
+                                        objItem = mnuMRU4;
+                                        break;
+
+                                    case 5:
+                                        objItem = mnuMRU5;
+                                        break;
+
+                                    case 6:
+                                        objItem = mnuMRU6;
+                                        break;
+
+                                    case 7:
+                                        objItem = mnuMRU7;
+                                        break;
+
+                                    case 8:
+                                        objItem = mnuMRU8;
+                                        break;
+
+                                    case 9:
+                                        objItem = mnuMRU9;
+                                        break;
+
+                                    default:
+                                        continue;
+                                }
+
+                                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                if (i2 <= 9
+                                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                    && i2 >= 0)
+                                {
+                                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                                    await menuStrip.DoThreadSafeAsync(
+                                        () => objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace
+                                            + strFile, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                                    await menuStrip.DoThreadSafeAsync(
+                                        () => objItem.Text = strNumAsString + strSpace + strFile,
+                                        token).ConfigureAwait(false);
+                                }
+
                                 await menuStrip.DoThreadSafeAsync(() =>
                                 {
-                                    objItem.Text = GlobalSettings.FavoriteCharacters[i1];
-                                    objItem.Tag = GlobalSettings.FavoriteCharacters[i1];
+                                    objItem.Tag = strFile;
                                     objItem.Visible = true;
                                 }, token).ConfigureAwait(false);
+                                ++i2;
                             }
-                            else
-                            {
-                                await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false, token).ConfigureAwait(false);
-                            }
+                        }
+                        finally
+                        {
+                            await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                         }
                     }
-
-                    await menuStrip.DoThreadSafeAsync(() =>
+                    finally
                     {
-                        mnuMRU0.Visible = false;
-                        mnuMRU1.Visible = false;
-                        mnuMRU2.Visible = false;
-                        mnuMRU3.Visible = false;
-                        mnuMRU4.Visible = false;
-                        mnuMRU5.Visible = false;
-                        mnuMRU6.Visible = false;
-                        mnuMRU7.Visible = false;
-                        mnuMRU8.Visible = false;
-                        mnuMRU9.Visible = false;
-                    }, token).ConfigureAwait(false);
-
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    int i2 = 0;
-                    for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
-                    {
-                        if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
-                            i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
-                            continue;
-                        string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile, token).ConfigureAwait(false))
-                            continue;
-                        DpiFriendlyToolStripMenuItem objItem;
-                        switch (i2)
-                        {
-                            case 0:
-                                objItem = mnuMRU0;
-                                break;
-
-                            case 1:
-                                objItem = mnuMRU1;
-                                break;
-
-                            case 2:
-                                objItem = mnuMRU2;
-                                break;
-
-                            case 3:
-                                objItem = mnuMRU3;
-                                break;
-
-                            case 4:
-                                objItem = mnuMRU4;
-                                break;
-
-                            case 5:
-                                objItem = mnuMRU5;
-                                break;
-
-                            case 6:
-                                objItem = mnuMRU6;
-                                break;
-
-                            case 7:
-                                objItem = mnuMRU7;
-                                break;
-
-                            case 8:
-                                objItem = mnuMRU8;
-                                break;
-
-                            case 9:
-                                objItem = mnuMRU9;
-                                break;
-
-                            default:
-                                continue;
-                        }
-
-                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                        if (i2 <= 9
-                            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                            && i2 >= 0)
-                        {
-                            string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                            await menuStrip.DoThreadSafeAsync(
-                                () => objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace
-                                    + strFile, token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                            await menuStrip.DoThreadSafeAsync(
-                                () => objItem.Text = strNumAsString + strSpace + strFile,
-                                token).ConfigureAwait(false);
-                        }
-
-                        await menuStrip.DoThreadSafeAsync(() =>
-                        {
-                            objItem.Tag = strFile;
-                            objItem.Visible = true;
-                        }, token).ConfigureAwait(false);
-                        ++i2;
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
