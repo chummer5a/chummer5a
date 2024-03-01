@@ -2341,6 +2341,18 @@ namespace Chummer.Backend.Equipment
                             objMyXmlNode.TryGetStringFieldQuickly("cost", ref _strCost);
                         }
                     }
+                    // Legacy shim for older style of requesting the maximum or minimum of an attribute
+                    if (_objCharacter.LastSavedVersion < new Version(5, 225, 443) && (_strMinRating.Contains("imum") || _strMaxRating.Contains("imum")))
+                    {
+                        _strMinRating = _strMinRating.Replace("MinimumSTR", "{STRMinimum}")
+                            .Replace("MaximumSTR", "{STRMaximum}")
+                            .Replace("MinimumAGI", "{AGIMinimum}")
+                            .Replace("MaximumAGI", "{AGIMaximum}");
+                        _strMaxRating = _strMaxRating.Replace("MinimumSTR", "{STRMinimum}")
+                            .Replace("MaximumSTR", "{STRMaximum}")
+                            .Replace("MinimumAGI", "{AGIMinimum}")
+                            .Replace("MaximumAGI", "{AGIMaximum}");
+                    }
 
                     objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
                     if (objNode["grade"] != null)
