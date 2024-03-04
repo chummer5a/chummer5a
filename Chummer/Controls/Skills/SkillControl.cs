@@ -390,7 +390,7 @@ namespace Chummer.UI.Skills
                                                             nameof(Skill.BaseUnlocked),
                                                             x => x.GetBaseUnlockedAsync(_objMyToken),
                                                             _objMyToken);
-                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objSkill,
                         nameof(Skill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
                         _objMyToken);
@@ -399,7 +399,7 @@ namespace Chummer.UI.Skills
                                                             x => x.GetKarmaUnlockedAsync(_objMyToken)
                                                                   ,
                                                             _objMyToken);
-                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objSkill,
                         nameof(Skill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
                         _objMyToken);

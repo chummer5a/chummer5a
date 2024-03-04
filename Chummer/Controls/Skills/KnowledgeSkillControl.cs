@@ -357,7 +357,7 @@ namespace Chummer.UI.Skills
                                                                   nameof(KnowledgeSkill.AllowUpgrade),
                                                                   x => x.GetAllowUpgradeAsync(_objMyToken),
                                                                   _objMyToken);
-                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objSkill,
                         nameof(KnowledgeSkill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
                         _objMyToken);
@@ -365,7 +365,7 @@ namespace Chummer.UI.Skills
                                                                   nameof(KnowledgeSkill.AllowUpgrade),
                                                                   x => x.GetAllowUpgradeAsync(_objMyToken),
                                                                   _objMyToken);
-                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.MaximumAsInt = y, _objSkill,
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objSkill,
                         nameof(KnowledgeSkill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
                         _objMyToken);

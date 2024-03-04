@@ -114,10 +114,10 @@ namespace Chummer
                 nudDiceResult.SuspendLayout();
                 try
                 {
-                    nudDiceResult.MinimumAsInt
+                    nudDiceResult.Minimum
                         = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                    nudDiceResult.MaximumAsInt = value * 6;
-                    nudDiceResult.MinimumAsInt = value;
+                    nudDiceResult.Maximum = value * 6;
+                    nudDiceResult.Minimum = value;
                 }
                 finally
                 {

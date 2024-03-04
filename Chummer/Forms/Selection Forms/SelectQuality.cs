@@ -128,7 +128,7 @@ namespace Chummer
                         await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                         await nudRating.DoThreadSafeAsync(x =>
                         {
-                            x.MaximumAsInt = intMaxRating;
+                            x.Maximum = intMaxRating;
                             x.Visible = true;
                         }).ConfigureAwait(false);
                     }
@@ -137,8 +137,8 @@ namespace Chummer
                         await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
                         await nudRating.DoThreadSafeAsync(x =>
                         {
-                            x.MaximumAsInt = 1;
-                            x.ValueAsInt = 1;
+                            x.Maximum = 1;
+                            x.Value = 1;
                             x.Visible = false;
                         }).ConfigureAwait(false);
                     }

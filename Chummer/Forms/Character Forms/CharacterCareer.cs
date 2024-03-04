@@ -19685,51 +19685,105 @@ namespace Chummer
             }
         }
 
-        private void treSpells_KeyDown(object sender, KeyEventArgs e)
+        private async void treSpells_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteSpell_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
-        private void treCyberware_KeyDown(object sender, KeyEventArgs e)
+        private async void treCyberware_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteCyberware_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
-        private void treLifestyles_KeyDown(object sender, KeyEventArgs e)
+        private async void treLifestyles_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteLifestyle_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
-        private void treArmor_KeyDown(object sender, KeyEventArgs e)
+        private async void treArmor_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteArmor_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
-        private void treWeapons_KeyDown(object sender, KeyEventArgs e)
+        private async void treWeapons_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteWeapon_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
-        private void treGear_KeyDown(object sender, KeyEventArgs e)
+        private async void treGear_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteGear_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
@@ -19748,27 +19802,54 @@ namespace Chummer
             }
         }
 
-        private void treMartialArts_KeyDown(object sender, KeyEventArgs e)
+        private async void treMartialArts_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteMartialArt_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
-        private void treCritterPowers_KeyDown(object sender, KeyEventArgs e)
+        private async void treCritterPowers_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteCritterPower_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
-        private void treMetamagic_KeyDown(object sender, KeyEventArgs e)
+        private async void treMetamagic_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteMetamagic_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 

@@ -191,15 +191,16 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                int intDice = SelectedLifestyle?.Dice ?? 0;
                 await nudDiceResult.DoThreadSafeAsync(x =>
                 {
                     x.SuspendLayout();
                     try
                     {
-                        x.MinimumAsInt =
+                        x.Minimum =
                             int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                        x.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
-                        x.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
+                        x.Maximum = intDice * 6;
+                        x.Minimum = intDice;
                     }
                     finally
                     {
