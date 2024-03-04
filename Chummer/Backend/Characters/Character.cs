@@ -48038,10 +48038,10 @@ namespace Chummer
                            new SelectDiceHits
                            {
                                Text = strText,
-                               Description = strDescription,
-                               Dice = intDice
+                               Description = strDescription
                            }, token).ConfigureAwait(false))
                 {
+                    await frmWILHits.MyForm.SetDiceAsync(intDice, token).ConfigureAwait(false);
                     if (await frmWILHits.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                         return false;
 
