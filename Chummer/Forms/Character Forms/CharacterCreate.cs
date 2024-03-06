@@ -15487,9 +15487,9 @@ namespace Chummer
                                     if (intGearMinRatingValue > 0)
                                         x.Minimum = intGearMinRatingValue;
                                     else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                        x.Minimum = 0;
+                                        x.Minimum = Math.Min(0, intGearMaxRatingValue);
                                     else
-                                        x.Minimum = 1;
+                                        x.Minimum = Math.Min(1, intGearMaxRatingValue);
                                     x.Maximum = intGearMaxRatingValue;
                                     x.Value = intRating;
                                     x.Enabled = x.Minimum != x.Maximum
@@ -17258,9 +17258,9 @@ namespace Chummer
                                 if (intGearMinRatingValue > 0)
                                     x.Minimum = intGearMinRatingValue;
                                 else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                    x.Minimum = 0;
+                                    x.Minimum = Math.Min(0, intGearMaxRatingValue);
                                 else
-                                    x.Minimum = 1;
+                                    x.Minimum = Math.Min(1, intGearMaxRatingValue);
                                 x.Maximum = intGearMaxRatingValue;
                                 x.Value = intRating;
                                 x.Enabled = x.Minimum != x.Maximum && string.IsNullOrEmpty(objGear.ParentID);
@@ -19106,7 +19106,7 @@ namespace Chummer
                                     await nudVehicleRating.DoThreadSafeAsync(x =>
                                     {
                                         x.Maximum = intMaxRating;
-                                        x.Minimum = 1;
+                                        x.Minimum = Math.Min(1, intMaxRating);
                                         x.Visible = true;
                                         x.Value = objMod.Rating;
                                         x.Increment = 1;
@@ -19565,7 +19565,7 @@ namespace Chummer
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Minimum = 1;
+                                    x.Minimum = Math.Min(1, objAccessory.MaxRating);
                                     x.Maximum = objAccessory.MaxRating;
                                     x.Value = objAccessory.Rating;
                                     x.Increment = 1;

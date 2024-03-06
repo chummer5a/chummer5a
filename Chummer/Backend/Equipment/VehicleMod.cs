@@ -204,7 +204,6 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
             objXmlMod.TryGetStringFieldQuickly("slots", ref _strSlots);
-            _intRating = intRating;
             _blnDowngrade = objXmlMod?["downgrade"] != null;
             if (!objXmlMod.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMod.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
@@ -223,6 +222,10 @@ namespace Chummer.Backend.Equipment
                     _strRatingLabel = "Label_Seats";
                     break;
             }
+            if (string.IsNullOrEmpty(_strMaxRating))
+                _intRating = 0;
+            else
+                _intRating = Math.Max(intRating, 1);
             objXmlMod.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
