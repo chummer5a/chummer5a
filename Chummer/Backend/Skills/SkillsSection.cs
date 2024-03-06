@@ -111,26 +111,16 @@ namespace Chummer.Backend.Skills
             if (_intLoading > 0)
                 return;
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await KnowsoftSkills.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            KnowledgeSkill objSkill =
+                    await KnowledgeSkills.GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                KnowledgeSkill objSkill =
-                    await KnowledgeSkills.GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false);
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    objSkill.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
+                objSkill.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
 
-                    if (!_dicSkillBackups.Values.Contains(objSkill)
-                        && !await KnowsoftSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
-                        await objSkill.RemoveAsync(token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+                if (!_dicSkillBackups.Values.Contains(objSkill) && !await KnowsoftSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                    await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -144,25 +134,14 @@ namespace Chummer.Backend.Skills
             if (_intLoading > 0)
                 return;
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await KnowledgeSkills.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            KnowledgeSkill objSkill =
+                    await KnowsoftSkills.GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                KnowledgeSkill objSkill =
-                    await KnowsoftSkills.GetValueAtAsync(e.OldIndex, token).ConfigureAwait(false);
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!_dicSkillBackups.Values.Contains(objSkill)
-                        && !await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
-                    {
-                        await objSkill.RemoveAsync(token).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+                token.ThrowIfCancellationRequested();
+                if (!_dicSkillBackups.Values.Contains(objSkill) && !await KnowledgeSkills.ContainsAsync(objSkill, token).ConfigureAwait(false))
+                    await objSkill.RemoveAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -231,24 +210,22 @@ namespace Chummer.Backend.Skills
             switch (e.ListChangedType)
             {
                 case ListChangedType.Reset:
-                {
                     await KnowledgeSkills
                         .ForEachAsync(x => x.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged, token: token)
                         .ConfigureAwait(false);
 
-                    goto case ListChangedType.ItemDeleted;
-                }
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(KnowledgeSkillRanksSum),
+                        nameof(HasAvailableNativeLanguageSlots)).ConfigureAwait(false);
+                    break;
                 case ListChangedType.ItemAdded:
-                {
                     KnowledgeSkill objKnoSkill =
                         await KnowledgeSkills.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                     if (objKnoSkill != null)
-                    {
                         objKnoSkill.MultiplePropertiesChangedAsync += OnKnowledgeSkillPropertyChanged;
-                    }
 
-                    goto case ListChangedType.ItemDeleted;
-                }
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(KnowledgeSkillRanksSum),
+                        nameof(HasAvailableNativeLanguageSlots)).ConfigureAwait(false);
+                    break;
                 case ListChangedType.ItemDeleted:
                     await this.OnMultiplePropertyChangedAsync(token, nameof(KnowledgeSkillRanksSum),
                         nameof(HasAvailableNativeLanguageSlots)).ConfigureAwait(false);
