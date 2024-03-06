@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
         private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnUseLPCost = true;
         private bool _blnPrint = true;
-        private int _intLP;
+        private int _intLPCost;
         private string _strCost = string.Empty;
         private int _intMultiplier;
         private int _intBaseMultiplier;
@@ -158,7 +158,7 @@ namespace Chummer.Backend.Equipment
                     _objCachedMyXPathNode = null;
                 }
 
-                objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
@@ -268,7 +268,7 @@ namespace Chummer.Backend.Equipment
                     _objCachedMyXPathNode = null;
                 }
 
-                objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
+                objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
                 objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplierbaseonly", ref _intBaseMultiplier);
@@ -408,7 +408,7 @@ namespace Chummer.Backend.Equipment
                                              _intMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("basemultiplier",
                                              _intBaseMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("lp", _intLP.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("lp", _intLPCost.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("areamaximum",
                                              _intAreaMaximum.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("comfortsmaximum",
@@ -462,7 +462,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
-                objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
+                objNode.TryGetInt32FieldQuickly("lp", ref _intLPCost);
                 objNode.TryGetStringFieldQuickly("cost", ref _strCost);
                 objNode.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
                 objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
@@ -570,7 +570,7 @@ namespace Chummer.Backend.Equipment
                 if (objLifestyleQualityNode.TryGetStringFieldQuickly("cost", ref strTemp))
                     CostString = strTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
-                    LP = intTemp;
+                    LPCost = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areamaximum", ref intTemp))
                     AreaMaximum = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsmaximum", ref intTemp))
@@ -632,7 +632,7 @@ namespace Chummer.Backend.Equipment
                             "extra",
                             await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token)
                                 .ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("lp", (await GetLPCostAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "cost", (await GetCostAsync(token).ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture), token)
@@ -1012,33 +1012,59 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     Number of Build Points the LifestyleQuality costs.
+        /// Number of Build Points the LifestyleQuality costs.
         /// </summary>
-        public int LP
+        public int LPCost
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Free || !UseLPCost ? 0 : _intLP;
+                    return LPFree ? 0 : _intLPCost;
             }
             set
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _intLP, value) != value)
+                    if (Interlocked.Exchange(ref _intLPCost, value) != value)
                         OnPropertyChanged();
                 }
             }
         }
 
-        public async Task<int> GetLPAsync(CancellationToken token = default)
+        public async Task<int> GetLPCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetFreeAsync(token).ConfigureAwait(false) || !await GetUseLPCostAsync(token).ConfigureAwait(false) ? 0 : _intLP;
+                return await GetLPFreeAsync(token).ConfigureAwait(false) ? 0 : _intLPCost;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public bool LPFree
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return Free || !UseLPCost || !CanBeFreeByLifestyle;
+            }
+        }
+
+        public async Task<bool> GetLPFreeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetFreeAsync(token).ConfigureAwait(false)
+                    || !await GetUseLPCostAsync(token).ConfigureAwait(false)
+                    || !await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -1047,7 +1073,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     The name of the object as it should be displayed on printouts (translated name only).
+        /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
@@ -1059,7 +1085,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     The name of the object as it should be displayed on printouts (translated name only).
+        /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
@@ -1281,7 +1307,7 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (Free || UseLPCost)
+                    if (Free)
                         return 0;
                     if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                           out decimal decReturn))
@@ -1303,7 +1329,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await GetFreeAsync(token).ConfigureAwait(false) || await GetUseLPCostAsync(token).ConfigureAwait(false))
+                if (await GetFreeAsync(token).ConfigureAwait(false))
                     return 0;
                 if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                         out decimal decReturn))
@@ -1344,14 +1370,44 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        ///     Does the Quality have a Nuyen or LP cost?
+        /// Does the Quality have a Nuyen cost?
+        /// </summary>
+        public bool CostFree
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return Free || IsFreeByLifestyle;
+            }
+        }
+
+        /// <summary>
+        /// Does the Quality have a Nuyen cost?
+        /// </summary>
+        public async Task<bool> GetCostFreeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetFreeAsync(token).ConfigureAwait(false) || await GetIsFreeByLifestyleAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Does the Quality have any cost?
         /// </summary>
         public bool Free
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _blnFree || OriginSource == QualitySource.BuiltIn;
+                    return _blnFree;
             }
             set
             {
@@ -1372,6 +1428,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Does the Quality have any cost?
+        /// </summary>
         public async Task<bool> GetFreeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1379,7 +1438,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _blnFree || await GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn;
+                return _blnFree;
             }
             finally
             {
@@ -1387,6 +1446,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Does the Quality have any cost?
+        /// </summary>
         public async Task SetFreeAsync(bool value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1534,29 +1596,25 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether this Quality costs LP.
+        /// Whether this Quality should cost LP if it can be made to not cost LP.
         /// </summary>
         public bool UseLPCost
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _blnUseLPCost && CanBeFreeByLifestyle;
+                    return _blnUseLPCost;
             }
             set
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (!value && !CanBeFreeByLifestyle)
-                        return;
                     if (_blnUseLPCost == value)
                         return;
                 }
 
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (!value && !CanBeFreeByLifestyle)
-                        return;
                     if (_blnUseLPCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
@@ -1567,7 +1625,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether this Quality costs LP.
+        /// Whether this Quality should cost LP if it can be made to not cost LP.
         /// </summary>
         public async Task<bool> GetUseLPCostAsync(CancellationToken token = default)
         {
@@ -1576,7 +1634,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _blnUseLPCost && await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false);
+                return _blnUseLPCost;
             }
             finally
             {
@@ -1585,7 +1643,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether this Quality costs LP.
+        /// Whether this Quality should cost LP if it can be made to not cost LP.
         /// </summary>
         public async Task SetUseLPCostAsync(bool value, CancellationToken token = default)
         {
@@ -1594,8 +1652,6 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!value && !await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false))
-                    return;
                 if (_blnUseLPCost == value)
                     return;
             }
@@ -1609,11 +1665,8 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!value && !await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false))
-                    return;
                 if (_blnUseLPCost == value)
                     return;
-                token.ThrowIfCancellationRequested();
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1626,6 +1679,37 @@ namespace Chummer.Backend.Equipment
                 }
 
                 await OnPropertyChangedAsync(nameof(UseLPCost), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether this Quality costs no money because of costing LP instead
+        /// </summary>
+        public bool IsFreeByLifestyle
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return OriginSource == QualitySource.BuiltIn || (UseLPCost && CanBeFreeByLifestyle);
+            }
+        }
+
+        /// <summary>
+        /// Whether this Quality costs no money because of costing LP instead
+        /// </summary>
+        public async Task<bool> GetIsFreeByLifestyleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn
+                    || (await GetUseLPCostAsync(token).ConfigureAwait(false) && await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -1773,7 +1857,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Free || UseLPCost ? 0 : _intMultiplier;
+                    return CostFree ? 0 : _intMultiplier;
             }
             set
             {
@@ -1795,8 +1879,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetFreeAsync(token).ConfigureAwait(false)
-                       || await GetUseLPCostAsync(token).ConfigureAwait(false) ? 0 : _intMultiplier;
+                return await GetCostFreeAsync(token).ConfigureAwait(false) ? 0 : _intMultiplier;
             }
             finally
             {
@@ -1812,7 +1895,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Free || UseLPCost ? 0 : _intBaseMultiplier;
+                    return CostFree ? 0 : _intBaseMultiplier;
             }
             set
             {
@@ -1834,8 +1917,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetFreeAsync(token).ConfigureAwait(false)
-                       || await GetUseLPCostAsync(token).ConfigureAwait(false) ? 0 : _intBaseMultiplier;
+                return await GetCostFreeAsync(token).ConfigureAwait(false) ? 0 : _intBaseMultiplier;
             }
             finally
             {
@@ -2148,28 +2230,30 @@ namespace Chummer.Backend.Equipment
                     new DependencyGraphNode<string, LifestyleQuality>(nameof(FormattedDisplayName),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(DisplayName)),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(Cost),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(Free),
-                                new DependencyGraphNode<string, LifestyleQuality>(nameof(OriginSource), x => !x._blnFree)
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree),
+                                new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
+                                new DependencyGraphNode<string, LifestyleQuality>(nameof(IsFreeByLifestyle),
+                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(OriginSource)),
+                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => x.OriginSource != QualitySource.BuiltIn),
+                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => x.OriginSource != QualitySource.BuiltIn && x.UseLPCost)
+                                )
                             ),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.Free && !x.UseLPCost)
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.CostFree)
                         ),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(Multiplier),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free)
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree))
                         )
                     )
                 ),
-                new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost),
-                    new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle))
-                ),
-                new DependencyGraphNode<string, LifestyleQuality>(nameof(LP),
-                    new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
-                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free)
+                new DependencyGraphNode<string, LifestyleQuality>(nameof(LPCost),
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(LPFree),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => !x.Free && x.UseLPCost)
+                    )
                 ),
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(BaseMultiplier),
-                    new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
-                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free)
+                    new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree))
                 )
             );
 
@@ -2237,69 +2321,17 @@ namespace Chummer.Backend.Equipment
                                                                         out HashSet<string>
                                                                             setParentLifestyleNamesOfChangedProperties))
                         {
-                            if (setNamesOfChangedProperties.Contains(nameof(LP))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
+                            if (setNamesOfChangedProperties.Contains(nameof(LPCost)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
-                            }
 
-                            if (setNamesOfChangedProperties.Contains(nameof(Free)))
-                            {
-                                if (UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost)))
-                                {
-                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
-                                    if (!CanBeFreeByLifestyle
-                                        || setNamesOfChangedProperties.Contains(nameof(CanBeFreeByLifestyle)))
-                                    {
-                                        setParentLifestyleNamesOfChangedProperties.Add(
-                                            nameof(Lifestyle.TotalMonthlyCost));
-                                        setParentLifestyleNamesOfChangedProperties.Add(
-                                            nameof(Lifestyle.CostMultiplier));
-                                        setParentLifestyleNamesOfChangedProperties.Add(
-                                            nameof(Lifestyle.BaseCostMultiplier));
-                                    }
-                                }
-                                else
-                                {
-                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
-                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-                                    setParentLifestyleNamesOfChangedProperties.Add(
-                                        nameof(Lifestyle.BaseCostMultiplier));
-                                }
-                            }
-
-                            if (setNamesOfChangedProperties.Contains(nameof(Cost))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (!UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
+                            if (setNamesOfChangedProperties.Contains(nameof(Cost)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
-                            }
 
-                            if (setNamesOfChangedProperties.Contains(nameof(UseLPCost))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free))))
-                            {
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                            if (setNamesOfChangedProperties.Contains(nameof(Multiplier)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
-                            }
 
-                            if (setNamesOfChangedProperties.Contains(nameof(IsFreeGrid)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.LifestyleQualities));
-                            if (setNamesOfChangedProperties.Contains(nameof(Multiplier))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (!UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-                            }
-
-                            if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier))
-                                && (!Free || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (!UseLPCost || setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
+                            if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
-                            }
 
                             if (setNamesOfChangedProperties.Contains(nameof(ComfortsMaximum)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComfortsMaximum));
@@ -2443,74 +2475,17 @@ namespace Chummer.Backend.Equipment
                                    out HashSet<string>
                                        setParentLifestyleNamesOfChangedProperties))
                         {
-                            if (setNamesOfChangedProperties.Contains(nameof(LP))
-                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (await GetUseLPCostAsync(token).ConfigureAwait(false) ||
-                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
+                            if (setNamesOfChangedProperties.Contains(nameof(LPCost)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
-                            }
 
-                            if (setNamesOfChangedProperties.Contains(nameof(Free)))
-                            {
-                                if (await GetUseLPCostAsync(token).ConfigureAwait(false) ||
-                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost)))
-                                {
-                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
-                                    if (!await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false)
-                                        || setNamesOfChangedProperties.Contains(nameof(CanBeFreeByLifestyle)))
-                                    {
-                                        setParentLifestyleNamesOfChangedProperties.Add(
-                                            nameof(Lifestyle.TotalMonthlyCost));
-                                        setParentLifestyleNamesOfChangedProperties.Add(
-                                            nameof(Lifestyle.CostMultiplier));
-                                        setParentLifestyleNamesOfChangedProperties.Add(
-                                            nameof(Lifestyle.BaseCostMultiplier));
-                                    }
-                                }
-                                else
-                                {
-                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
-                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-                                    setParentLifestyleNamesOfChangedProperties.Add(
-                                        nameof(Lifestyle.BaseCostMultiplier));
-                                }
-                            }
-
-                            if (setNamesOfChangedProperties.Contains(nameof(Cost))
-                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
-                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
+                            if (setNamesOfChangedProperties.Contains(nameof(Cost)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
-                            }
 
-                            if (setNamesOfChangedProperties.Contains(nameof(UseLPCost))
-                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free))))
-                            {
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
+                            if (setNamesOfChangedProperties.Contains(nameof(Multiplier)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
-                            }
 
-                            if (setNamesOfChangedProperties.Contains(nameof(IsFreeGrid)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.LifestyleQualities));
-                            if (setNamesOfChangedProperties.Contains(nameof(Multiplier))
-                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
-                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-                            }
-
-                            if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier))
-                                && (!await GetFreeAsync(token).ConfigureAwait(false) || setNamesOfChangedProperties.Contains(nameof(Free)))
-                                && (!await GetUseLPCostAsync(token).ConfigureAwait(false) ||
-                                    setNamesOfChangedProperties.Contains(nameof(UseLPCost))))
-                            {
+                            if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
-                            }
 
                             if (setNamesOfChangedProperties.Contains(nameof(ComfortsMaximum)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComfortsMaximum));

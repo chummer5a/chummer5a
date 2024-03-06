@@ -788,7 +788,7 @@ namespace Chummer
                     }
                 }).ConfigureAwait(false);
 
-                string strLp = (await objQuality.GetLPAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                string strLp = (await objQuality.GetLPCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                 await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
                 string strCost = (await objQuality.GetCostAsync().ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
                 await lblQualityCost.DoThreadSafeAsync(x => x.Text = strCost).ConfigureAwait(false);
@@ -811,7 +811,7 @@ namespace Chummer
             if (!(await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality))
                 return;
             await objQuality.SetUseLPCostAsync(await chkQualityUseLPCost.DoThreadSafeFuncAsync(x => !x.Enabled || x.Checked).ConfigureAwait(false)).ConfigureAwait(false);
-            string strLp = (await objQuality.GetLPAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+            string strLp = (await objQuality.GetLPCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
             string strCost = (await objQuality.GetCostAsync().ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
             await lblQualityCost.DoThreadSafeAsync(x => x.Text = strCost).ConfigureAwait(false);

@@ -1653,7 +1653,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Sum(x => x.LP);
+                    return LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Sum(x => x.LPCost);
             }
         }
 
@@ -1667,7 +1667,7 @@ namespace Chummer.Backend.Equipment
                           - await GetAreaAsync(token).ConfigureAwait(false)
                           - await GetSecurityAsync(token).ConfigureAwait(false) + await GetRoommatesAsync(token).ConfigureAwait(false) +
                        await GetBonusLPAsync(token).ConfigureAwait(false) -
-                       await LifestyleQualities.SumAsync(x => x.LP, token: token).ConfigureAwait(false);
+                       await LifestyleQualities.SumAsync(x => x.GetLPCostAsync(token), token: token).ConfigureAwait(false);
             }
             finally
             {
