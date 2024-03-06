@@ -4396,29 +4396,23 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int CalcCategoryUsed(string strCategory)
         {
-            int intBase = 0;
-
-            foreach (VehicleMod objMod in Mods)
+            int intBase = Mods.Sum(objMod =>
             {
                 if (objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != strCategory)
-                    continue;
+                    return 0;
                 // Subtract the Modification's Slots from the Vehicle's base Body.
-                int intSlots = objMod.CalculatedSlots;
-                if (intSlots > 0)
-                    intBase += intSlots;
-            }
+                return Math.Max(objMod.CalculatedSlots, 0);
+            });
 
-            if (strCategory == "Weapons")
+            if (string.Equals(strCategory, "Weapons", StringComparison.OrdinalIgnoreCase))
             {
-                foreach (WeaponMount objMount in WeaponMounts)
+                intBase += WeaponMounts.Sum(objMount =>
                 {
                     if (objMount.IncludedInVehicle || !objMount.Equipped)
-                        continue;
+                        return 0;
                     // Subtract the Weapon Mount's Slots from the Vehicle's base Body.
-                    int intSlots = objMount.CalculatedSlots;
-                    if (intSlots > 0)
-                        intBase += intSlots;
-                }
+                    return Math.Max(objMount.CalculatedSlots, 0);
+                });
             }
 
             return intBase;
@@ -4436,10 +4430,10 @@ namespace Chummer.Backend.Equipment
                 async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
                 token: token).ConfigureAwait(false);
 
-            if (strCategory == "Weapons")
+            if (string.Equals(strCategory, "Weapons", StringComparison.OrdinalIgnoreCase))
             {
                 intBase += await WeaponMounts.SumAsync(
-                    objMount => objMount.IncludedInVehicle || !objMount.Equipped,
+                    objMount => objMount.IncludedInVehicle && objMount.Equipped,
                     // Subtract the Weapon Mount's Slots from the Vehicle's base Body.
                     async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
                     token: token).ConfigureAwait(false);
@@ -4455,29 +4449,29 @@ namespace Chummer.Backend.Equipment
         {
             int intBase = Body;
 
-            switch (strCategory)
+            switch (strCategory.ToUpperInvariant())
             {
-                case "Powertrain":
+                case "POWERTRAIN":
                     intBase += _intAddPowertrainModSlots;
                     break;
 
-                case "Weapons":
+                case "WEAPONS":
                     intBase += _intAddWeaponModSlots;
                     break;
 
-                case "Body":
+                case "BODY":
                     intBase += _intAddBodyModSlots;
                     break;
 
-                case "Electromagnetic":
+                case "ELECTROMAGNETIC":
                     intBase += _intAddElectromagneticModSlots;
                     break;
 
-                case "Protection":
+                case "PROTECTION":
                     intBase += _intAddProtectionModSlots;
                     break;
 
-                case "Cosmetic":
+                case "COSMETIC":
                     intBase += _intAddCosmeticModSlots;
                     break;
             }
@@ -4494,29 +4488,29 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             int intBase = Body;
 
-            switch (strCategory)
+            switch (strCategory.ToUpperInvariant())
             {
-                case "Powertrain":
+                case "POWERTRAIN":
                     intBase += _intAddPowertrainModSlots;
                     break;
 
-                case "Weapons":
+                case "WEAPONS":
                     intBase += _intAddWeaponModSlots;
                     break;
 
-                case "Body":
+                case "BODY":
                     intBase += _intAddBodyModSlots;
                     break;
 
-                case "Electromagnetic":
+                case "ELECTROMAGNETIC":
                     intBase += _intAddElectromagneticModSlots;
                     break;
 
-                case "Protection":
+                case "PROTECTION":
                     intBase += _intAddProtectionModSlots;
                     break;
 
-                case "Cosmetic":
+                case "COSMETIC":
                     intBase += _intAddCosmeticModSlots;
                     break;
             }
