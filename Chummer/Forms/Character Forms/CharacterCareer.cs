@@ -1355,7 +1355,7 @@ namespace Chummer
                                             .ConfigureAwait(false);
 
                                         await lblStreetCredTotal.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.Text = y.ToString(GlobalSettings.Language), CharacterObject,
+                                                (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
                                                 nameof(Character.TotalStreetCred),
                                                 x => x.GetTotalStreetCredAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
@@ -1365,7 +1365,7 @@ namespace Chummer
                                                 x => x.GetStreetCredTooltipAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
                                         await lblNotorietyTotal.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.Text = y.ToString(GlobalSettings.Language), CharacterObject,
+                                                (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
                                                 nameof(Character.TotalNotoriety),
                                                 x => x.GetTotalNotorietyAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
@@ -1375,7 +1375,7 @@ namespace Chummer
                                                 x => x.GetNotorietyTooltipAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
                                         await lblPublicAwareTotal.RegisterOneWayAsyncDataBindingAsync(
-                                                (x, y) => x.Text = y.ToString(GlobalSettings.Language), CharacterObject,
+                                                (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
                                                 nameof(Character.TotalPublicAwareness),
                                                 x => x.GetTotalPublicAwarenessAsync(GenericToken), GenericToken)
                                             .ConfigureAwait(false);
