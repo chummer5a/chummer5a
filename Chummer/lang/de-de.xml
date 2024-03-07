@@ -6895,15 +6895,15 @@
     </string>
     <string>
       <key>String_Initiative</key>
-      <text>{0} +{1}W6</text>
+      <text>{0} + {1}W6</text>
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + DV +{1}W6</text>
+      <text>{0} + DV + {1}W6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + Datenverarbeitung +{1}W6</text>
+      <text>{0} + Datenverarbeitung + {1}W6</text>
     </string>
     <string>
       <key>String_AttributeESSLong</key>

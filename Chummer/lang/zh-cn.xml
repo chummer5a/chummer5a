@@ -6951,11 +6951,11 @@
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + 数据处理 +{1}d6</text>
+      <text>{0} + 数据处理 + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + 数据处理 +{1}d6</text>
+      <text>{0} + 数据处理 + {1}d6</text>
     </string>
     <string>
       <key>Checkbox_HideOverAvailLimit</key>

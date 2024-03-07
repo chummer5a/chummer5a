@@ -808,15 +808,15 @@
     </string>
     <string>
       <key>String_Initiative</key>
-      <text>{0} +{1}d6</text>
+      <text>{0} + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + PD +{1}d6</text>
+      <text>{0} + PD + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + Processamento de Dados +{1}d6</text>
+      <text>{0} + Processamento de Dados + {1}d6</text>
     </string>
     <string>
       <key>Checkbox_HideOverAvailLimit</key>

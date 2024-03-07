@@ -25477,8 +25477,8 @@ namespace Chummer
                                 ? "String_MatrixInitiative"
                                 : "String_Initiative", strLanguageToPrint, token: token)
                         .ConfigureAwait(false),
-                    await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false),
-                    await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
+                    await GetMatrixInitiativeColdValueAsync(token).ConfigureAwait(false),
+                    await GetMatrixInitiativeColdDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -25732,8 +25732,8 @@ namespace Chummer
                                 ? "String_MatrixInitiative"
                                 : "String_Initiative", strLanguageToPrint, token: token)
                         .ConfigureAwait(false),
-                    await GetMatrixInitiativeValueAsync(token).ConfigureAwait(false),
-                    await GetMatrixInitiativeDiceAsync(token).ConfigureAwait(false));
+                    await GetMatrixInitiativeHotValueAsync(token).ConfigureAwait(false),
+                    await GetMatrixInitiativeHotDiceAsync(token).ConfigureAwait(false));
             }
             finally
             {
