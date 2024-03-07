@@ -302,6 +302,7 @@ namespace Chummer
                 int intBonusSleaze = objThis.GetBonusMatrixAttribute("Sleaze");
                 int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
                 int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
+                bool blnCanSwapAttributes = objThis.CanSwapAttributes;
 
                 cboAttack.DoThreadSafe(x =>
                 {
@@ -339,7 +340,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 0;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     });
 
                     cboSleaze.DoThreadSafe(x =>
@@ -355,7 +356,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 1;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     });
 
                     cboDataProcessing.DoThreadSafe(x =>
@@ -372,7 +373,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 2;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     });
 
                     cboFirewall.DoThreadSafe(x =>
@@ -388,7 +389,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 3;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     });
                 }
                 finally
@@ -458,6 +459,7 @@ namespace Chummer
                     .ConfigureAwait(false);
                 int intBonusFirewall =
                     await objThis.GetBonusMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+                bool blnCanSwapAttributes = objThis.CanSwapAttributes;
 
                 await cboAttack.DoThreadSafeAsync(x =>
                 {
@@ -495,7 +497,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 0;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     }, token).ConfigureAwait(false);
 
                     await cboSleaze.DoThreadSafeAsync(x =>
@@ -511,7 +513,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 1;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     }, token).ConfigureAwait(false);
 
                     await cboDataProcessing.DoThreadSafeAsync(x =>
@@ -528,7 +530,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 2;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     }, token).ConfigureAwait(false);
 
                     await cboFirewall.DoThreadSafeAsync(x =>
@@ -544,7 +546,7 @@ namespace Chummer
                         };
                         x.SelectedIndex = 3;
                         x.Visible = true;
-                        x.Enabled = objThis.CanSwapAttributes;
+                        x.Enabled = blnCanSwapAttributes;
                     }, token).ConfigureAwait(false);
                 }
                 finally
