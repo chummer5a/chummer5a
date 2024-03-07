@@ -156,36 +156,59 @@ namespace Chummer
         private void AddChild()
 #endif
         {
-            if (IsDisposed)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            if (IsDisposed || _objDisposalToken.IsCancellationRequested)
+                throw new  ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             if (Interlocked.Increment(ref _intNumChildren) == 1)
-                _objHasChildrenSemaphore.SafeWait(_objDisposalToken);
+            {
+                try
+                {
+                    _objHasChildrenSemaphore.SafeWait(_objDisposalToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    Interlocked.Decrement(ref _intNumChildren);
+                    throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+                }
+                catch
+                {
+                    Interlocked.Decrement(ref _intNumChildren);
+                    throw;
+                }
+            }
 #if LINKEDSEMAPHOREDEBUG
             _setChildren.TryAdd(objChild);
 #endif
         }
 
-#if LINKEDSEMAPHOREDEBUG
         private async Task AddChildAsync(LinkedAsyncRWLockHelper objChild, CancellationToken token = default)
-#else
-        private Task AddChildAsync(CancellationToken token = default)
-#endif
         {
-#if LINKEDSEMAPHOREDEBUG
             token.ThrowIfCancellationRequested();
-            if (IsDisposed)
+            if (IsDisposed || _objDisposalToken.IsCancellationRequested)
                 throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
             if (Interlocked.Increment(ref _intNumChildren) == 1)
-                await _objHasChildrenSemaphore.WaitAsync(token).ConfigureAwait(false);
+            {
+                using (CancellationTokenSource objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
+                {
+                    try
+                    {
+                        await _objHasChildrenSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Interlocked.Decrement(ref _intNumChildren);
+                        if (_objDisposalToken.IsCancellationRequested)
+                            throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+                        throw;
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intNumChildren);
+                        throw;
+                    }
+                }
+            }
+#if LINKEDSEMAPHOREDEBUG
             _setChildren.TryAdd(objChild);
-#else
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
-            if (IsDisposed)
-                return Task.FromException(new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper)));
-            return Interlocked.Increment(ref _intNumChildren) == 1
-                ? _objHasChildrenSemaphore.WaitAsync(token)
-                : Task.CompletedTask;
 #endif
         }
 
@@ -859,10 +882,6 @@ namespace Chummer
                     throw;
                 }
             }
-
-#if LINKEDSEMAPHOREDEBUG
-            Debug.Print("Entered write lock for id " + _strGuid);
-#endif
         }
 
         public async Task TakeWriteLockAsync(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
@@ -993,10 +1012,6 @@ namespace Chummer
                     throw;
                 }
             }
-
-#if LINKEDSEMAPHOREDEBUG
-            Debug.Print("Entered write lock for id " + _strGuid);
-#endif
         }
 
         public void TakeSingleWriteLock(CancellationToken token = default)
@@ -1099,10 +1114,6 @@ namespace Chummer
                     throw;
                 }
             }
-
-#if LINKEDSEMAPHOREDEBUG
-            Debug.Print("Entered single write lock for id " + _strGuid);
-#endif
         }
 
         public async Task TakeSingleWriteLockAsync(CancellationToken token = default)
@@ -1201,10 +1212,6 @@ namespace Chummer
                     throw;
                 }
             }
-
-#if LINKEDSEMAPHOREDEBUG
-            Debug.Print("Entered single write lock for id " + _strGuid);
-#endif
         }
 
         public void SingleUpgradeToWriteLock(CancellationToken token = default)
@@ -1303,10 +1310,6 @@ namespace Chummer
                     throw;
                 }
             }
-
-#if LINKEDSEMAPHOREDEBUG
-            Debug.Print("Upgraded single write lock for id " + _strGuid);
-#endif
         }
 
         public async Task SingleUpgradeToWriteLockAsync(CancellationToken token = default)
@@ -1403,10 +1406,6 @@ namespace Chummer
                     throw;
                 }
             }
-
-#if LINKEDSEMAPHOREDEBUG
-            Debug.Print("Upgraded single write lock for id " + _strGuid);
-#endif
         }
 
         public void ReleaseSingleWriteLock()
@@ -1493,10 +1492,6 @@ namespace Chummer
             {
                 // swallow this if we got disposed in-between
             }
-
-#if LINKEDSEMAPHOREDEBUG
-            Debug.Print("Exited write lock for id " + _strGuid);
-#endif
         }
     }
 }
