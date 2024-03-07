@@ -1051,7 +1051,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Free || !UseLPCost || !CanBeFreeByLifestyle;
+                    return Free || (!UseLPCost && CanBeFreeByLifestyle);
             }
         }
 
@@ -1063,8 +1063,8 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 return await GetFreeAsync(token).ConfigureAwait(false)
-                    || !await GetUseLPCostAsync(token).ConfigureAwait(false)
-                    || !await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false);
+                    || (!await GetUseLPCostAsync(token).ConfigureAwait(false)
+                        && await GetCanBeFreeByLifestyleAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -2248,8 +2248,8 @@ namespace Chummer.Backend.Equipment
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(LPCost),
                     new DependencyGraphNode<string, LifestyleQuality>(nameof(LPFree),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => !x.Free && x.UseLPCost)
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free && x.CanBeFreeByLifestyle),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => !x.Free && !x.UseLPCost)
                     )
                 ),
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(BaseMultiplier),

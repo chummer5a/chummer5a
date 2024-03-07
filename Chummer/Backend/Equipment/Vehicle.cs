@@ -4434,7 +4434,7 @@ namespace Chummer.Backend.Equipment
             if (string.Equals(strCategory, "Weapons", StringComparison.OrdinalIgnoreCase))
             {
                 intBase += await WeaponMounts.SumAsync(
-                    objMount => objMount.IncludedInVehicle && objMount.Equipped,
+                    objMount => !objMount.IncludedInVehicle && objMount.Equipped,
                     // Subtract the Weapon Mount's Slots from the Vehicle's base Body.
                     async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
                     token: token).ConfigureAwait(false);
