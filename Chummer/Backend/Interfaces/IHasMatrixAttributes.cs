@@ -28,7 +28,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public interface IHasMatrixAttributes
+    public interface IHasMatrixAttributes : IHasCharacterObject
     {
         int GetBaseMatrixAttribute(string strAttributeName);
 
@@ -832,11 +832,9 @@ namespace Chummer
         {
             if (objThis == null)
                 return;
-            IDisposable objThisLocker = null;
-            if (objThis is IHasLockObject objHasLock)
-                objThisLocker = objHasLock.LockObject.EnterUpgradeableReadLock();
-            else
-                objHasLock = null;
+            if (!(objThis is IHasLockObject objHasLock))
+                objHasLock = objThis.CharacterObject;
+            IDisposable objLocker = objHasLock?.LockObject.EnterUpgradeableReadLock();
             try
             {
                 if (objThis.CanSwapAttributes)
@@ -888,9 +886,7 @@ namespace Chummer
                             }
                         }
 
-                        IDisposable objLocker = null;
-                        if (objHasLock != null)
-                            objLocker = objHasLock.LockObject.EnterWriteLock();
+                        IDisposable objLocker2 = objHasLock?.LockObject.EnterWriteLock();
                         try
                         {
                             for (int i = 0; i < 4; ++i)
@@ -934,7 +930,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            objLocker?.Dispose();
+                            objLocker2?.Dispose();
                         }
                     }
                 }
@@ -957,7 +953,7 @@ namespace Chummer
             }
             finally
             {
-                objThisLocker?.Dispose();
+                objLocker?.Dispose();
             }
         }
 
@@ -970,11 +966,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objThis == null)
                 return;
-            IAsyncDisposable objThisLocker = null;
-            if (objThis is IHasLockObject objHasLock)
-                objThisLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            else
-                objHasLock = null;
+            if (!(objThis is IHasLockObject objHasLock))
+                objHasLock = objThis.CharacterObject;
+            IAsyncDisposable objLocker = null;
+            if (objHasLock != null)
+                objLocker = await objHasLock.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
@@ -1027,9 +1023,9 @@ namespace Chummer
                             }
                         }
 
-                        IAsyncDisposable objLocker = null;
+                        IAsyncDisposable objLocker2 = null;
                         if (objHasLock != null)
-                            objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            objLocker2 = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -1074,8 +1070,8 @@ namespace Chummer
                         }
                         finally
                         {
-                            if (objLocker != null)
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            if (objLocker2 != null)
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -1100,8 +1096,8 @@ namespace Chummer
             }
             finally
             {
-                if (objThisLocker != null)
-                    await objThisLocker.DisposeAsync().ConfigureAwait(false);
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

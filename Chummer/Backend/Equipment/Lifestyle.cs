@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCost
+    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSourceId, IHasSource, ICanSort, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCost, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -4296,5 +4296,7 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
     }
 }

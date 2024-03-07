@@ -35,7 +35,7 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
-    public sealed class AttributeSection : INotifyMultiplePropertiesChangedAsync, IHasLockObject
+    public sealed class AttributeSection : INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private int _intLoading = 1;
 
@@ -523,6 +523,8 @@ namespace Chummer.Backend.Attributes
         }
 
         public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
 
         #region Constructor, Save, Load, Print Methods
 

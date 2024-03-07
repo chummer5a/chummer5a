@@ -29,10 +29,12 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class CreatePACKSKit : Form
+    public partial class CreatePACKSKit : Form, IHasCharacterObject
     {
         [NotNull]
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 

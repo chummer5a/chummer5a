@@ -326,9 +326,27 @@ namespace Chummer
 
             if (_objParentLock == null)
                 return new SafeWriterSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, this);
-            IDisposable objParentRelease = _blnLockReadOnlyForParent
-                ? _objParentLock.EnterReadLock(token)
-                : _objParentLock.EnterUpgradeableReadLock(token);
+            IDisposable objParentRelease;
+            try
+            {
+                objParentRelease = _blnLockReadOnlyForParent
+                    ? _objParentLock.EnterReadLock(token)
+                    : _objParentLock.EnterUpgradeableReadLock(token);
+            }
+            catch
+            {
+#if READERLOCKSTACKTRACEDEBUG
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                        objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, string.Empty);
+#else
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
+                        objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, false);
+#endif
+                objNextHelper.Dispose();
+                throw;
+            }
             return new SafeWriterSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter, this,
                 objParentRelease: objParentRelease);
         }
@@ -417,9 +435,19 @@ namespace Chummer
                     Task<IAsyncDisposable> tskInnerParent,
                     CancellationToken innerToken = default)
                 {
+                    IAsyncDisposable objParentRelease = null;
+                    try
+                    {
+                        objParentRelease = await tskInnerParent.ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // swallow all exceptions because need to be able to properly unset AsyncLocals when we release
+                        Utils.BreakIfDebug();
+                    }
                     return await TakeWriteLockCoreAsync(
                         objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken).ConfigureAwait(false);
+                        objInnerTopMostHeldWriter, objParentRelease, innerToken).ConfigureAwait(false);
                 }
             }
 
@@ -429,7 +457,7 @@ namespace Chummer
             async Task<IAsyncDisposable> TakeWriteLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
                 LinkedAsyncRWLockHelper objInnerNextHelper,
                 LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
-                IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null, CancellationToken innerToken = default)
+                IAsyncDisposable objParentReleaseAsync = null, CancellationToken innerToken = default)
             {
                 try
                 {
@@ -440,11 +468,11 @@ namespace Chummer
                 {
                     //swallow this because unsetting the AsyncLocal must be handled as a disposal in the original ExecutionContext
                     return new SafeWriterSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, this, true, objParentRelease, objParentReleaseAsync);
+                        objInnerTopMostHeldWriter, this, true, objParentReleaseAsync: objParentReleaseAsync);
                 }
 
                 return new SafeWriterSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
-                    objInnerTopMostHeldWriter, this, false, objParentRelease, objParentReleaseAsync);
+                    objInnerTopMostHeldWriter, this, false, objParentReleaseAsync: objParentReleaseAsync);
             }
         }
 
@@ -499,9 +527,27 @@ namespace Chummer
             if (_objParentLock == null)
                 return new SafeUpgradeableReaderSemaphoreRelease(objNextHelper, objTopMostHeldUReader,
                     objTopMostHeldWriter, this);
-            IDisposable objParentRelease = _blnLockReadOnlyForParent
-                ? _objParentLock.EnterReadLock(token)
-                : _objParentLock.EnterUpgradeableReadLock(token);
+            IDisposable objParentRelease;
+            try
+            {
+                objParentRelease = _blnLockReadOnlyForParent
+                    ? _objParentLock.EnterReadLock(token)
+                    : _objParentLock.EnterUpgradeableReadLock(token);
+            }
+            catch
+            {
+#if READERLOCKSTACKTRACEDEBUG
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                        objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, string.Empty);
+#else
+                _objAsyncLocalCurrentsContainer.Value =
+                    new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
+                        objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, false);
+#endif
+                objNextHelper.Dispose();
+                throw;
+            }
             return new SafeUpgradeableReaderSemaphoreRelease(objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                 this, objParentRelease: objParentRelease);
         }
@@ -588,9 +634,19 @@ namespace Chummer
                     Task<IAsyncDisposable> tskInnerParent,
                     CancellationToken innerToken = default)
                 {
+                    IAsyncDisposable objParentRelease = null;
+                    try
+                    {
+                        objParentRelease = await tskInnerParent.ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // swallow all exceptions because need to be able to properly unset AsyncLocals when we release
+                        Utils.BreakIfDebug();
+                    }
                     return await TakeUpgradeableReadLockCoreAsync(
                         objInnerCurrentHelper, objInnerNextHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, null, await tskInnerParent.ConfigureAwait(false), innerToken).ConfigureAwait(false);
+                        objInnerTopMostHeldWriter, objParentRelease, innerToken).ConfigureAwait(false);
                 }
             }
 
@@ -600,7 +656,7 @@ namespace Chummer
             async Task<IAsyncDisposable> TakeUpgradeableReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
                 LinkedAsyncRWLockHelper objInnerNextHelper,
                 LinkedAsyncRWLockHelper objInnerTopMostHeldUReader, LinkedAsyncRWLockHelper objInnerTopMostHeldWriter,
-                IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null, CancellationToken innerToken = default)
+                IAsyncDisposable objParentReleaseAsync = null, CancellationToken innerToken = default)
             {
                 try
                 {
@@ -610,11 +666,11 @@ namespace Chummer
                 {
                     //swallow this because unsetting the AsyncLocal must be handled as a disposal in the original ExecutionContext
                     return new SafeUpgradeableReaderSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, this, true, objParentRelease, objParentReleaseAsync);
+                        objInnerTopMostHeldWriter, this, true, objParentReleaseAsync: objParentReleaseAsync);
                 }
 
                 return new SafeUpgradeableReaderSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
-                    objInnerTopMostHeldWriter, this, false, objParentRelease, objParentReleaseAsync);
+                    objInnerTopMostHeldWriter, this, false, objParentReleaseAsync: objParentReleaseAsync);
             }
         }
 
@@ -698,9 +754,29 @@ namespace Chummer
                 if (_objParentLock == null)
                     return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                         blnIsInReadLock, this, true);
-                IDisposable objParentRelease2 = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
-                    ? _objParentLock.EnterUpgradeableReadLockAsync(token)
-                    : _objParentLock.EnterReadLock(token);
+                IDisposable objParentRelease2;
+                try
+                {
+                    objParentRelease2 = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
+                        ? _objParentLock.EnterUpgradeableReadLock(token)
+                        : _objParentLock.EnterReadLock(token);
+                }
+                catch
+                {
+                    if (!blnIsInReadLock)
+                    {
+#if READERLOCKSTACKTRACEDEBUG
+                        _objAsyncLocalCurrentsContainer.Value =
+                            new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                                objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, string.Empty);
+#else
+                        _objAsyncLocalCurrentsContainer.Value =
+                            new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
+                                objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, false);
+#endif
+                    }
+                    throw;
+                }
                 return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                     blnIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease2);
             }
@@ -723,9 +799,29 @@ namespace Chummer
             if (_objParentLock == null)
                 return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                     blnIsInReadLock, this, objCurrentHelper.IsDisposed);
-            IDisposable objParentRelease = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
-                ? _objParentLock.EnterUpgradeableReadLock(token)
-                : _objParentLock.EnterReadLock(token);
+            IDisposable objParentRelease;
+            try
+            {
+                objParentRelease = !_blnLockReadOnlyForParent && blnParentLockIsUpgradeable
+                    ? _objParentLock.EnterUpgradeableReadLock(token)
+                    : _objParentLock.EnterReadLock(token);
+            }
+            catch
+            {
+                if (!blnIsInReadLock)
+                {
+#if READERLOCKSTACKTRACEDEBUG
+                    _objAsyncLocalCurrentsContainer.Value =
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
+                            objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, string.Empty);
+#else
+                    _objAsyncLocalCurrentsContainer.Value =
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, bool>(
+                            objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, false);
+#endif
+                }
+                throw;
+            }
             return new SafeReaderSemaphoreRelease(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter,
                 blnIsInReadLock, this, objCurrentHelper.IsDisposed, objParentRelease);
         }
@@ -832,9 +928,19 @@ namespace Chummer
                     bool blnInnerIsInReadLock, Task<IAsyncDisposable> tskInnerParent,
                     CancellationToken innerToken = default)
                 {
+                    IAsyncDisposable objParentRelease = null;
+                    try
+                    {
+                        objParentRelease = await tskInnerParent.ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // swallow all exceptions because need to be able to properly unset AsyncLocals when we release
+                        Utils.BreakIfDebug();
+                    }
                     return await TakeReadLockCoreAsync(
                         objInnerCurrentHelper, objInnerTopMostHeldUReader,
-                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, await tskInnerParent.ConfigureAwait(false), innerToken).ConfigureAwait(false);
+                        objInnerTopMostHeldWriter, blnInnerIsInReadLock, objParentRelease, innerToken).ConfigureAwait(false);
                 }
             }
 

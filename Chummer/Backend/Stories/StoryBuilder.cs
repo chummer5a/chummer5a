@@ -28,10 +28,12 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public sealed class StoryBuilder : IHasLockObject
+    public sealed class StoryBuilder : IHasLockObject, IHasCharacterObject
     {
         private readonly ConcurrentDictionary<string, string> _dicPersistence = new ConcurrentDictionary<string, string>();
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         public StoryBuilder(Character objCharacter)
         {

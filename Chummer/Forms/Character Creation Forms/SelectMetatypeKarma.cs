@@ -31,7 +31,7 @@ using IAsyncDisposable = System.IAsyncDisposable;
 
 namespace Chummer
 {
-    public partial class SelectMetatypeKarma : Form
+    public partial class SelectMetatypeKarma : Form, IHasCharacterObject
     {
         private int _intLoading = 1;
 
@@ -50,6 +50,8 @@ namespace Chummer
         private CancellationTokenSource _objRefreshSelectedMetavariantCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Form Events
 

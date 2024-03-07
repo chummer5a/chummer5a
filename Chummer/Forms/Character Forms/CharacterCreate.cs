@@ -14992,7 +14992,7 @@ namespace Chummer
                                     RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
                                     RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
                                     UpdateSkillRelatedInfo(token), RefreshNuyenDisplays(token),
-                                    CalculateBPandRefreshBPDisplays(true, token))
+                                    CalculateBPandRefreshBPDisplays(true, token), DoRefreshPasteStatus(token))
                                 .ConfigureAwait(false);
                             await tskAutosave.ConfigureAwait(false);
                         }

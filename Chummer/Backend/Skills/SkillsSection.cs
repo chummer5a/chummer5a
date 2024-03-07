@@ -36,11 +36,13 @@ using IAsyncDisposable = System.IAsyncDisposable;
 
 namespace Chummer.Backend.Skills
 {
-    public sealed class SkillsSection : INotifyMultiplePropertiesChangedAsync, IHasLockObject
+    public sealed class SkillsSection : INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private int _intLoading = 1;
         private readonly Character _objCharacter;
         private readonly ConcurrentDictionary<Guid, Skill> _dicSkillBackups = new ConcurrentDictionary<Guid, Skill>();
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         public SkillsSection(Character objCharacter)
         {

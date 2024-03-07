@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject
+    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private int _intNameLoaded;
@@ -39,6 +39,8 @@ namespace Chummer.Backend.Skills
         private readonly bool _blnFree;
         private readonly bool _blnExpertise;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 

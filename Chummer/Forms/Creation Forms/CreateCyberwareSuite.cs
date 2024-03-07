@@ -25,11 +25,13 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public sealed partial class CreateCyberwareSuite : Form
+    public sealed partial class CreateCyberwareSuite : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private readonly Improvement.ImprovementSource _eSource;
         private readonly string _strType;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 

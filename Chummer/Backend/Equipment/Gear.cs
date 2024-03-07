@@ -45,7 +45,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
     public sealed class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes,
         IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertiesChangedAsync, ICanSort,
-        IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
+        IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -2035,6 +2035,8 @@ namespace Chummer.Backend.Equipment
 
         #region Properties
 
+        public Character CharacterObject => _objCharacter;
+
         /// <summary>
         /// Guid of the object from the data. You probably want to use SourceIDString instead.
         /// </summary>
@@ -2102,11 +2104,6 @@ namespace Chummer.Backend.Equipment
             get => _nodFlechetteWeaponBonus;
             set => _nodFlechetteWeaponBonus = value;
         }
-
-        /// <summary>
-        /// Character to which the gear is assigned.
-        /// </summary>
-        public Character CharacterObject => _objCharacter;
 
         /// <summary>
         /// Name.
@@ -4197,7 +4194,7 @@ namespace Chummer.Backend.Equipment
                              out decCapacity))
                     decCapacity = 0;
 
-                if (await Children.CountAsync(token).ConfigureAwait(false) > 0)
+                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // Run through its Children and deduct the Capacity costs.
                     decCapacity -= await Children.SumAsync(async x => await x.GetPluginCapacityAsync(token).ConfigureAwait(false) * x.Quantity, token).ConfigureAwait(false);

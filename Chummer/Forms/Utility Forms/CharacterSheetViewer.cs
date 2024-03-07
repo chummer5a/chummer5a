@@ -62,6 +62,8 @@ namespace Chummer
 
         public IEnumerable<Character> CharacterObjects => _lstCharacters;
 
+        public Character CharacterObject => _lstCharacters.FirstOrDefault();
+
         #region Control Events
 
         public CharacterSheetViewer(CancellationToken token = default)

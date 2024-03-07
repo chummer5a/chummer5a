@@ -34,9 +34,11 @@ using Chummer.UI.Table;
 
 namespace Chummer.UI.Powers
 {
-    public partial class PowersTabUserControl : UserControl
+    public partial class PowersTabUserControl : UserControl, IHasCharacterObject
     {
         private TableView<Power> _table;
+
+        public Character CharacterObject => _objCharacter;
 
         public PowersTabUserControl() : this(default)
         {

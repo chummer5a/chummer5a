@@ -29,7 +29,7 @@ using NLog;
 
 namespace Chummer
 {
-    public partial class CreateCustomDrug : Form
+    public partial class CreateCustomDrug : Form, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -41,6 +41,8 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
         private double _dblCostMultiplier;
         private int _intAddictionThreshold;
+
+        public Character CharacterObject => _objCharacter;
 
         public CreateCustomDrug(Character objCharacter)
         {

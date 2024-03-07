@@ -20936,7 +20936,7 @@ namespace Chummer
                                 RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
                                 RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
                                 RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
-                                RefreshSelectedImprovement(token)).ConfigureAwait(false);
+                                RefreshSelectedImprovement(token), RefreshPasteStatus(token)).ConfigureAwait(false);
                             await tskAutosave.ConfigureAwait(false);
                         }
                         finally

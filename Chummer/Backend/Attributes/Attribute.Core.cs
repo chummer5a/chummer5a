@@ -39,7 +39,7 @@ namespace Chummer.Backend.Attributes
     /// </summary>
     [HubClassTag("Abbrev", true, "TotalValue", "TotalValue")]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
-    public sealed class CharacterAttrib : INotifyMultiplePropertiesChangedAsync, IHasLockObject
+    public sealed class CharacterAttrib : INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private int _intMetatypeMin = 1;
         private int _intMetatypeMax = 6;
@@ -73,6 +73,8 @@ namespace Chummer.Backend.Attributes
         }
 
         public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
 
         #region Constructor, Save, Load, and Print Methods
 
@@ -285,8 +287,6 @@ namespace Chummer.Backend.Attributes
         }
 
         #region Properties
-
-        public Character CharacterObject => _objCharacter;
 
         public AttributeCategory MetatypeCategory
         {

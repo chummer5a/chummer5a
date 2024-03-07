@@ -34,7 +34,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable
+    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -986,6 +986,8 @@ namespace Chummer.Backend.Equipment
             set => _blnStolen = value;
         }
 
+        public Character CharacterObject => _objCharacter;
+
         #endregion Properties
 
         #region UI Methods
@@ -1614,7 +1616,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Drug Component.
     /// </summary>
-    public class DrugComponent : IHasName, IHasInternalId, IHasXmlDataNode
+    public class DrugComponent : IHasName, IHasInternalId, IHasXmlDataNode, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -1639,6 +1641,8 @@ namespace Chummer.Backend.Equipment
             _guidId = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
+
+        public Character CharacterObject => _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
 

@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class WeaponMount : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
+    public sealed class WeaponMount : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, ICanSort, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -73,6 +73,8 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<VehicleMod> _lstMods;
 
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -2053,7 +2055,7 @@ namespace Chummer.Backend.Equipment
     }
 
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class WeaponMountOption : IHasName, IHasXmlDataNode, IHasCost
+    public class WeaponMountOption : IHasName, IHasXmlDataNode, IHasCost, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private string _strAvail;
@@ -2273,6 +2275,8 @@ namespace Chummer.Backend.Equipment
         #endregion Constructor, Create, Save and Load Methods
 
         #region Properties
+
+        public Character CharacterObject => _objCharacter;
 
         public string InternalID => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 

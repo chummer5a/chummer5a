@@ -232,7 +232,7 @@ namespace Chummer
     /// Expense Log Entry.
     /// </summary>
     [DebuggerDisplay("{Date.ToString()}: {Amount.ToString()}")]
-    public sealed class ExpenseLogEntry : IHasInternalId, IComparable, IEquatable<ExpenseLogEntry>, IComparable<ExpenseLogEntry>
+    public sealed class ExpenseLogEntry : IHasInternalId, IComparable, IEquatable<ExpenseLogEntry>, IComparable<ExpenseLogEntry>, IHasCharacterObject
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -242,6 +242,8 @@ namespace Chummer
         private ExpenseType _eExpenseType;
         private bool _blnRefund;
         private bool _blnForceCareerVisible;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Helper Methods
 

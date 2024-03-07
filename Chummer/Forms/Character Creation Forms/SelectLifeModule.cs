@@ -29,7 +29,7 @@ using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
-    public partial class SelectLifeModule : Form
+    public partial class SelectLifeModule : Form, IHasCharacterObject
     {
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
@@ -38,6 +38,8 @@ namespace Chummer
         private readonly XPathNavigator _xmlLifeModulesDocumentChummerNode;
         private string _strSelectedId;
         private Regex _rgxSearchExpression;
+
+        public Character CharacterObject => _objCharacter;
 
         private string _strWorkStage;
 

@@ -45,7 +45,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Power : INotifyMultiplePropertiesChangedAsync, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, IHasLockObject
+    public sealed class Power : INotifyMultiplePropertiesChangedAsync, IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;

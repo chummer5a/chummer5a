@@ -33,12 +33,14 @@ using Microsoft.IO;
 namespace Chummer
 {
     // ReSharper disable once InconsistentNaming
-    public partial class CreateImprovement : Form
+    public partial class CreateImprovement : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private readonly XPathNavigator _objImprovementsDocumentImprovementsNode;
         private string _strSelect = string.Empty;
         private readonly string _strCustomGroup;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 

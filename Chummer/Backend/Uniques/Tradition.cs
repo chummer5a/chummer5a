@@ -45,7 +45,7 @@ namespace Chummer.Backend.Uniques
     /// A Tradition
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    public sealed class Tradition : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, INotifyMultiplePropertiesChangedAsync, IHasLockObject
+    public sealed class Tradition : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private Guid _guiSourceID;
@@ -66,6 +66,8 @@ namespace Chummer.Backend.Uniques
         private TraditionType _eTraditionType = TraditionType.None;
 
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 

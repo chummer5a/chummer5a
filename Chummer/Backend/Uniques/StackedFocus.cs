@@ -34,13 +34,15 @@ namespace Chummer
     /// A Stacked Focus.
     /// </summary>
     [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
-    public sealed class StackedFocus : IHasLockObject
+    public sealed class StackedFocus : IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
         private readonly ThreadSafeList<Gear> _lstGear;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, and Load Methods
 

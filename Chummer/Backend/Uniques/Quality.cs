@@ -82,7 +82,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class Quality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, INotifyMultiplePropertiesChangedAsync, IHasLockObject
+    public sealed class Quality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -114,6 +114,8 @@ namespace Chummer
         private Guid _guiWeaponID;
         private string _strStage;
         private bool _blnStagedPurchase;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         public string Stage
         {

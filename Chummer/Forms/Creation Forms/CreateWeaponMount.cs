@@ -30,7 +30,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class CreateWeaponMount : Form
+    public partial class CreateWeaponMount : Form, IHasCharacterObject
     {
         private readonly ThreadSafeList<VehicleMod> _lstMods;
         private int _intLoading = 1;
@@ -50,6 +50,8 @@ namespace Chummer
         private readonly CancellationToken _objGenericToken;
 
         public WeaponMount WeaponMount => _objMount;
+
+        public Character CharacterObject => _objCharacter;
 
         public CreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
         {

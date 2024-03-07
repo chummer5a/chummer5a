@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed partial class SelectBuildMethod : Form
+    public sealed partial class SelectBuildMethod : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private readonly CharacterBuildMethod _eStartingBuildMethod;
@@ -38,6 +38,8 @@ namespace Chummer
         private CancellationTokenSource _objRepopulateCharacterSettingsCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 

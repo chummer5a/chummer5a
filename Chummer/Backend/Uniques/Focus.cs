@@ -31,10 +31,12 @@ namespace Chummer
     /// A Focus.
     /// </summary>
     [DebuggerDisplay("{GearObject?.DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Focus : IHasInternalId
+    public class Focus : IHasInternalId, IHasCharacterObject
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, and Load Methods
 

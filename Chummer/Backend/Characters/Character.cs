@@ -57,7 +57,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyMultiplePropertiesChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject
+    public sealed class Character : INotifyMultiplePropertiesChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -244,6 +244,8 @@ namespace Chummer
         private Version _verSavedVersion = new Version();
 
         public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => this;
 
         private readonly LockingOrderedSet<Func<Character, bool>> _setDoOnSaveCompleted;
         private readonly LockingOrderedSet<Func<Character, CancellationToken, Task<bool>>> _setDoOnSaveCompletedAsync;

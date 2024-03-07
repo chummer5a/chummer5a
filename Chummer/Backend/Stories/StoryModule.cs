@@ -31,7 +31,7 @@ using System.Xml.XPath;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IHasLockObject
+    public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private readonly ConcurrentDictionary<string, string> _dicEnglishTexts = new ConcurrentDictionary<string, string>();
         private readonly Guid _guiInternalId;
@@ -42,6 +42,8 @@ namespace Chummer
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         public StoryModule(Character objCharacter)
         {

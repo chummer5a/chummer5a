@@ -443,6 +443,13 @@ namespace Chummer
 
         public static async Task<int> CountAsync<T>(this IAsyncEnumerable<T> objEnumerable, CancellationToken token = default)
         {
+#if DEBUG
+            if (objEnumerable is IAsyncCollection<T>)
+            {
+                // Are you sure you want this instead of GetCountAsync<T>?
+                Utils.BreakIfDebug();
+            }
+#endif
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
             IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);

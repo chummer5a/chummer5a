@@ -36,7 +36,7 @@ using NLog;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertiesChangedAsync, IHasLockObject
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -2623,5 +2623,7 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
     }
 }

@@ -34,7 +34,7 @@ using Chummer.Annotations;
 namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strGroupName} {_intSkillFromSp} {_intSkillFromKarma}")]
-    public sealed class SkillGroup : INotifyMultiplePropertiesChangedAsync, IHasInternalId, IHasName, IEquatable<SkillGroup>, IHasLockObject
+    public sealed class SkillGroup : INotifyMultiplePropertiesChangedAsync, IHasInternalId, IHasName, IEquatable<SkillGroup>, IHasLockObject, IHasCharacterObject
     {
         #region Core calculations
 
@@ -43,6 +43,8 @@ namespace Chummer.Backend.Skills
         private bool _blnIsBroken;
 
         public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => _objCharacter; //readonly member, no locking required
 
         public void Dispose()
         {
@@ -2025,15 +2027,6 @@ namespace Chummer.Backend.Skills
             _strGroupName = strGroupName;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
             objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
-        }
-
-        public Character CharacterObject
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _objCharacter;
-            }
         }
 
         public string Name

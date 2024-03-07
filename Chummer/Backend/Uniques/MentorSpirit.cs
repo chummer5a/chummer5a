@@ -31,7 +31,7 @@ namespace Chummer
 {
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
-    public sealed class MentorSpirit : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, IHasNotes, IHasLockObject
+    public sealed class MentorSpirit : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -54,6 +54,8 @@ namespace Chummer
         private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private bool _blnMentorMask;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }

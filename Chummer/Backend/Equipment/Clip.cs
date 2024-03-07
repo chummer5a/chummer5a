@@ -26,7 +26,7 @@ using System.Xml;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Clip
+    public sealed class Clip : IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private readonly Weapon _objWeapon;
@@ -50,6 +50,8 @@ namespace Chummer.Backend.Equipment
         /// The GUID of the weapon accessory this clip is owned by. GUID of the weapon if it's not owned by an accessory.
         /// </summary>
         internal string OwnedBy => _objAccessory?.InternalId ?? _objWeapon?.InternalId;
+
+        public Character CharacterObject => _objCharacter;
 
         internal int Ammo { get; set; }
 

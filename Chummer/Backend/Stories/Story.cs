@@ -28,7 +28,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public sealed class Story : IHasLockObject
+    public sealed class Story : IHasLockObject, IHasCharacterObject
     {
         private readonly ConcurrentDictionary<string, StoryModule> _dicPersistentModules = new ConcurrentDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
@@ -38,6 +38,8 @@ namespace Chummer
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
         // If this is used to generate some language-specific information, then it will need to be re-built every time the user changes the language in which their story is generated.
         private readonly XPathNavigator _xmlStoryDocumentBaseNode;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         public Story(Character objCharacter)
         {

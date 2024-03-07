@@ -37,7 +37,7 @@ namespace Chummer
     /// A Martial Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IHasLockObject
+    public sealed class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -52,6 +52,8 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
         private bool _blnIsQuality;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Create, Save, Load, and Print Methods
 

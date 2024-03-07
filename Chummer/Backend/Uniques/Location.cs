@@ -34,7 +34,7 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{nameof(Name)}")]
-    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject
+    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private string _strName;
@@ -43,6 +43,8 @@ namespace Chummer
         private int _intSortOrder;
         private readonly Character _objCharacter;
         private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 

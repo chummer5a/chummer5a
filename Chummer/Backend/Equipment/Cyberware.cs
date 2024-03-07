@@ -46,7 +46,7 @@ namespace Chummer.Backend.Equipment
     public sealed class Cyberware : ICanPaste, IHasChildrenAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId,
         IHasSourceId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
-        IHasWirelessBonus, ICanBlackMarketDiscount, IHasLockObject
+        IHasWirelessBonus, ICanBlackMarketDiscount, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -1416,7 +1416,7 @@ namespace Chummer.Backend.Equipment
                                 this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children),
                                 token), token);
                     }
-                    else if (await Children.CountAsync(token).ConfigureAwait(false) > 0)
+                    else if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
                         await CyberwareChildrenOnCollectionChanged(this,
                             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children), token).ConfigureAwait(false);
                 }
@@ -4984,7 +4984,7 @@ namespace Chummer.Backend.Equipment
                 value = Math.Max(Math.Min(value, await GetMaxRatingAsync(token).ConfigureAwait(false)), await GetMinRatingAsync(token).ConfigureAwait(false));
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
-                if (await GearChildren.CountAsync(token).ConfigureAwait(false) > 0)
+                if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     await GearChildren.ForEachAsync(async objChild =>
                     {
@@ -11442,5 +11442,7 @@ namespace Chummer.Backend.Equipment
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
     }
 }

@@ -52,7 +52,7 @@ namespace Chummer
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
     [DebuggerDisplay("{Name}, \"{CritterName}\"")]
-    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasMugshots, INotifyMultiplePropertiesChangedAsync, IHasNotes, IHasLockObject
+    public sealed class Spirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasMugshots, INotifyMultiplePropertiesChangedAsync, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiId;
         private string _strName = string.Empty;

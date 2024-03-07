@@ -27,13 +27,15 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class CreateNaturalWeapon : Form
+    public partial class CreateNaturalWeapon : Form, IHasCharacterObject
     {
         private readonly XPathNavigator _objXmlPowersDocument;
         private readonly XPathNavigator _objXmlSkillsDocument;
 
         private readonly Character _objCharacter;
         private Weapon _objWeapon;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 

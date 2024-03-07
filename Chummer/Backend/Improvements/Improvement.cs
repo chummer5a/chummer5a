@@ -34,7 +34,7 @@ using System.Xml;
 namespace Chummer
 {
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
-    public class Improvement : IHasNotes, IHasInternalId, ICanSort
+    public class Improvement : IHasNotes, IHasInternalId, ICanSort, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -602,6 +602,8 @@ namespace Chummer
         #endregion Save and Load Methods
 
         #region Properties
+
+        public Character CharacterObject => _objCharacter;
 
         /// <summary>
         /// Whether this is a custom-made (manually created) Improvement.

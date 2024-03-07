@@ -31,7 +31,7 @@ using NLog;
 
 namespace Chummer
 {
-    public sealed class SustainedObject : IHasInternalId, INotifyPropertyChangedAsync
+    public sealed class SustainedObject : IHasInternalId, INotifyPropertyChangedAsync, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -42,6 +42,8 @@ namespace Chummer
         private int _intNetHits;
         private IHasInternalId _objLinkedObject;
         private Improvement.ImprovementSource _eLinkedObjectType;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 

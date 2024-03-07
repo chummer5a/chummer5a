@@ -51,7 +51,7 @@ namespace Chummer
     /// A Contact or Enemy.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalSettings.DefaultLanguage)})")]
-    public sealed class Contact : INotifyMultiplePropertiesChangedAsync, IHasName, IHasMugshots, IHasNotes, IHasInternalId, IHasLockObject
+    public sealed class Contact : INotifyMultiplePropertiesChangedAsync, IHasName, IHasMugshots, IHasNotes, IHasInternalId, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -2679,14 +2679,7 @@ namespace Chummer
             }
         }
 
-        public Character CharacterObject
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _objCharacter;
-            }
-        }
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
 
         public Character LinkedCharacter
         {

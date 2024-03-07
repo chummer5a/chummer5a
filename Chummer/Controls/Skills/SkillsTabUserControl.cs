@@ -34,7 +34,7 @@ using Chummer.Controls.Shared;
 
 namespace Chummer.UI.Skills
 {
-    public partial class SkillsTabUserControl : UserControl
+    public partial class SkillsTabUserControl : UserControl, IHasCharacterObject
     {
         public event PropertyChangedAsyncEventHandler MakeDirtyWithCharacterUpdate;
 
@@ -43,6 +43,8 @@ namespace Chummer.UI.Skills
         private BindingListDisplay<KnowledgeSkill> _lstKnowledgeSkills;
 
         public CancellationToken MyToken { get; set; }
+
+        public Character CharacterObject => _objCharacter;
 
         public SkillsTabUserControl() : this(default)
         {

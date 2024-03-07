@@ -17,12 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections.Generic;
-
 namespace Chummer
 {
-    public interface IHasCharacterObjects : IHasCharacterObject
+    public interface IHasCharacterObject
     {
-        IEnumerable<Character> CharacterObjects { get; }
+        Character CharacterObject { get; }
     }
 }

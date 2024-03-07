@@ -35,7 +35,7 @@ using Microsoft.VisualStudio.Threading;
 namespace Chummer
 {
     // ReSharper disable once InconsistentNaming
-    public partial class SelectMetatypePriority : Form
+    public partial class SelectMetatypePriority : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private string _strCurrentPossessionMethod;
@@ -63,6 +63,8 @@ namespace Chummer
         private CancellationTokenSource _objSumToTenCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Form Events
 

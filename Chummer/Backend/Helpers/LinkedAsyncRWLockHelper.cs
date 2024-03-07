@@ -227,7 +227,7 @@ namespace Chummer
 
         public void Dispose()
         {
-            if (_objDisposalTokenSource.IsCancellationRequested)
+            if (_objDisposalToken.IsCancellationRequested)
                 return;
             // Acquire all of our locks
             DebuggableSemaphoreSlim objHasChildrenSemaphore = _objHasChildrenSemaphore;
@@ -239,19 +239,19 @@ namespace Chummer
                 }
                 catch (OperationCanceledException)
                 {
-                    if (_objDisposalTokenSource.IsCancellationRequested)
+                    if (_objDisposalToken.IsCancellationRequested)
                         return;
                     throw;
                 }
             }
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
+                return;
+            _objDisposalTokenSource.Cancel();
 #if LINKEDSEMAPHOREDEBUG
             if (!_setChildren.IsEmpty)
                 Utils.BreakIfDebug();
             RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
-            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
-                return;
-            _objDisposalTokenSource.Cancel();
             DebuggableSemaphoreSlim objActiveUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objActiveUpgradeableReaderSemaphore, null);
             // ReSharper disable once MethodSupportsCancellation
             objActiveUpgradeableReaderSemaphore?.SafeWait();
@@ -325,9 +325,42 @@ namespace Chummer
             _objDisposalTokenSource.Dispose();
         }
 
+#if LINKEDSEMAPHOREDEBUG
+        public ValueTask DisposeAsync()
+        {
+            if (_objDisposalToken.IsCancellationRequested)
+                return default;
+            // Acquire all of our locks
+            DebuggableSemaphoreSlim objHasChildrenSemaphore = _objHasChildrenSemaphore;
+            if (objHasChildrenSemaphore != null)
+            {
+                try
+                {
+                    objHasChildrenSemaphore.SafeWait(_objDisposalToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (_objDisposalToken.IsCancellationRequested)
+                        return default;
+                    throw;
+                }
+            }
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
+                return default;
+            _objDisposalTokenSource.Cancel();
+            if (!_setChildren.IsEmpty)
+                Utils.BreakIfDebug();
+            // Need to separate out the async part to make sure the stacktrace is being recorded in the context of the task's creation, not its execution
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
+
+            return Inner();
+
+            async ValueTask Inner()
+            {
+#else
         public async ValueTask DisposeAsync()
         {
-            if (_objDisposalTokenSource.IsCancellationRequested)
+            if (_objDisposalToken.IsCancellationRequested)
                 return;
             // Acquire all of our locks
             DebuggableSemaphoreSlim objHasChildrenSemaphore = _objHasChildrenSemaphore;
@@ -339,19 +372,15 @@ namespace Chummer
                 }
                 catch (OperationCanceledException)
                 {
-                    if (_objDisposalTokenSource.IsCancellationRequested)
+                    if (_objDisposalToken.IsCancellationRequested)
                         return;
                     throw;
                 }
             }
-#if LINKEDSEMAPHOREDEBUG
-            if (!_setChildren.IsEmpty)
-                Utils.BreakIfDebug();
-            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
-#endif
             if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
             _objDisposalTokenSource.Cancel();
+#endif
             DebuggableSemaphoreSlim objActiveUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objActiveUpgradeableReaderSemaphore, null);
             if (objActiveUpgradeableReaderSemaphore != null)
                 // ReSharper disable once MethodSupportsCancellation
@@ -368,9 +397,6 @@ namespace Chummer
             // ReSharper disable once MethodSupportsCancellation
             objCancelledWriterSemaphore?.SafeWait();
 
-#if LINKEDSEMAPHOREDEBUG
-            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
-#endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objHasChildrenSemaphore = null;
 #if LINKEDSEMAPHOREDEBUG
@@ -426,6 +452,9 @@ namespace Chummer
             }
 
             _objDisposalTokenSource.Dispose();
+#if LINKEDSEMAPHOREDEBUG
+            }
+#endif
         }
 
         public void TakeReadLock(bool blnSkipSemaphore, CancellationToken token = default)

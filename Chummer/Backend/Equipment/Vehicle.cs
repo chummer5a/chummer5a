@@ -32,7 +32,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
-using Chummer.Backend.Attributes;
 using NLog;
 using TreeNode = System.Windows.Forms.TreeNode;
 using TreeNodeCollection = System.Windows.Forms.TreeNodeCollection;
@@ -44,7 +43,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class Vehicle : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
+    public sealed class Vehicle : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -88,6 +87,8 @@ namespace Chummer.Backend.Equipment
         private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking required
 
         private string _strDeviceRating = string.Empty;
         private string _strAttack = string.Empty;

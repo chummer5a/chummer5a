@@ -34,7 +34,7 @@ namespace Chummer
     /// An Initiation Grade.
     /// </summary>
     [DebuggerDisplay("{" + nameof(Grade) + "}")]
-    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove
+    public class InitiationGrade : IHasInternalId, IComparable, ICanRemove, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnGroup;
@@ -46,6 +46,8 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
 
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, and Load Methods
 

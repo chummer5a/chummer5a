@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class VehicleMod : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
+    public sealed class VehicleMod : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -2654,5 +2654,7 @@ namespace Chummer.Backend.Equipment
             await _lstVehicleWeapons.DisposeAsync().ConfigureAwait(false);
             await _lstCyberware.DisposeAsync().ConfigureAwait(false);
         }
+
+        public Character CharacterObject => _objCharacter;
     }
 }

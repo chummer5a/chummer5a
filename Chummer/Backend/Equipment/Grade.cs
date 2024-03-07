@@ -30,7 +30,7 @@ namespace Chummer.Backend.Equipment
     /// Grade of Cyberware or Bioware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Grade : IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode
+    public class Grade : IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasCharacterObject
     {
         private readonly Character _objCharacter;
         private Guid _guiSourceID = Guid.Empty;
@@ -189,6 +189,8 @@ namespace Chummer.Backend.Equipment
         #endregion Helper Methods
 
         #region Properties
+
+        public Character CharacterObject => _objCharacter;
 
         /// <summary>
         /// Internal identifier which will be used to identify this grade.

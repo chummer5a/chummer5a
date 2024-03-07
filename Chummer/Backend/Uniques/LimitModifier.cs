@@ -41,7 +41,7 @@ namespace Chummer
     /// A Skill Limit Modifier.
     /// </summary>
     [DebuggerDisplay("{" + nameof(DisplayName) + "}")]
-    public class LimitModifier : IHasInternalId, IHasName, ICanRemove
+    public class LimitModifier : IHasInternalId, IHasName, ICanRemove, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnCanDelete = true;
@@ -51,6 +51,8 @@ namespace Chummer
         private string _strCondition = string.Empty;
         private int _intBonus;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
