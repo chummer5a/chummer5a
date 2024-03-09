@@ -3972,7 +3972,7 @@ namespace Chummer
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/paragons/paragon", frmPickMentorSpirit.MyForm.SelectedMentor)
+                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/mentors/mentor", frmPickMentorSpirit.MyForm.SelectedMentor)
                                     ?? throw new AbortedException();
                 SelectedValue = xmlMentor["name"]?.InnerText ?? string.Empty;
 
