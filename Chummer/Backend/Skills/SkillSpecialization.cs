@@ -632,7 +632,7 @@ namespace Chummer.Backend.Skills
                             case Improvement.ImprovementType.SkillCategory:
                             case Improvement.ImprovementType.SkillGroup:
                             case Improvement.ImprovementType.SkillGroupBase:
-                                decBonus += objImprovement.Rating;
+                                decBonus += objImprovement.Value;
                                 break;
                         }
                     }
@@ -681,7 +681,7 @@ namespace Chummer.Backend.Skills
                         case Improvement.ImprovementType.SkillCategory:
                         case Improvement.ImprovementType.SkillGroup:
                         case Improvement.ImprovementType.SkillGroupBase:
-                            decBonus += objImprovement.Rating;
+                            decBonus += objImprovement.Value;
                             break;
                     }
                 }
