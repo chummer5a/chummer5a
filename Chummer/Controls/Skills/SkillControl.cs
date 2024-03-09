@@ -599,10 +599,18 @@ namespace Chummer.UI.Skills
                                                               nameof(Skill.BaseUnlocked),
                                                               x => x.GetBaseUnlockedAsync(_objMyToken),
                                                               token).ConfigureAwait(false);
+                await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objSkill,
+                    nameof(Skill.RatingMaximum),
+                    x => x.GetRatingMaximumAsync(_objMyToken),
+                    _objMyToken).ConfigureAwait(false);
                 await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                               nameof(Skill.KarmaUnlocked),
                                                               x => x.GetKarmaUnlockedAsync(_objMyToken)
                                                                     , token).ConfigureAwait(false);
+                await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objSkill,
+                    nameof(Skill.RatingMaximum),
+                    x => x.GetRatingMaximumAsync(_objMyToken),
+                    _objMyToken).ConfigureAwait(false);
 
                 if (_objSkill.IsExoticSkill)
                 {

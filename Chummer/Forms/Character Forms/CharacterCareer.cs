@@ -8720,8 +8720,8 @@ namespace Chummer
                                 }
                             }
 
-                            int intKarmaCost = intQualityBP * CharacterObjectSettings.KarmaQuality;
-                            if (!CharacterObjectSettings.DontDoubleQualityPurchases &&
+                            int intKarmaCost = intQualityBP * await CharacterObjectSettings.GetKarmaQualityAsync(GenericToken).ConfigureAwait(false);
+                            if (!await CharacterObjectSettings.GetDontDoubleQualityPurchasesAsync(GenericToken).ConfigureAwait(false) &&
                                 objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
                                 intKarmaCost *= 2;
 
@@ -8787,9 +8787,9 @@ namespace Chummer
                                 }
 
                                 // Make sure the character has enough Karma to pay for the Quality.
-                                if (objQuality.Type == QualityType.Positive)
+                                if (await objQuality.GetTypeAsync(GenericToken).ConfigureAwait(false) == QualityType.Positive)
                                 {
-                                    if (objQuality.ContributeToBP)
+                                    if (await objQuality.GetContributeToBPAsync(GenericToken).ConfigureAwait(false))
                                     {
                                         // Create the Karma expense.
                                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);

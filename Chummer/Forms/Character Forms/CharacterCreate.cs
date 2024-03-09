@@ -6161,12 +6161,12 @@ namespace Chummer
 
                                         // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                                         bool blnAddItem = true;
-                                        if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                                        if (await objQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false) && !await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                                         {
                                             // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                                            int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
+                                            int intMaxQualityAmount = await CharacterObjectSettings.GetQualityKarmaLimitAsync(GenericToken).ConfigureAwait(false);
                                             string strAmount =
-                                                CharacterObjectSettings.QualityKarmaLimit.ToString(
+                                                intMaxQualityAmount.ToString(
                                                     GlobalSettings.CultureInfo) +
                                                 await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
                                                                      .ConfigureAwait(false) +
@@ -6174,14 +6174,14 @@ namespace Chummer
                                                                      .ConfigureAwait(false);
 
                                             // Add the cost of the Quality that is being added.
-                                            int intBP = objQuality.BP;
+                                            int intBP = await objQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
 
-                                            if (objQuality.Type == QualityType.Negative)
+                                            if (await objQuality.GetTypeAsync(GenericToken).ConfigureAwait(false) == QualityType.Negative)
                                             {
                                                 // Check if adding this Quality would put the character over their limit.
-                                                if (!CharacterObjectSettings.ExceedNegativeQualities)
+                                                if (!await CharacterObjectSettings.GetExceedNegativeQualitiesAsync(GenericToken).ConfigureAwait(false))
                                                 {
-                                                    intBP += CharacterObject.NegativeQualityLimitKarma;
+                                                    intBP += await CharacterObject.GetNegativeQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                                     if (intBP < intMaxQualityAmount * -1)
                                                     {
                                                         Program.ShowScrollableMessageBox(this,
@@ -6197,8 +6197,8 @@ namespace Chummer
                                                                                MessageBoxIcon.Information);
                                                         blnAddItem = false;
                                                     }
-                                                    else if (CharacterObject.MetatypeBP < 0
-                                                             && intBP + CharacterObject.MetatypeBP
+                                                    else if (await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < 0
+                                                             && intBP + await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false)
                                                              < intMaxQualityAmount * -1)
                                                     {
                                                         Program.ShowScrollableMessageBox(this,
@@ -6217,9 +6217,9 @@ namespace Chummer
                                                 }
                                             }
                                             // Check if adding this Quality would put the character over their limit.
-                                            else if (!CharacterObjectSettings.ExceedPositiveQualities)
+                                            else if (!await CharacterObjectSettings.GetExceedPositiveQualitiesAsync(GenericToken).ConfigureAwait(false))
                                             {
-                                                intBP += CharacterObject.PositiveQualityLimitKarma;
+                                                intBP += await CharacterObject.GetPositiveQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                                 if (intBP > intMaxQualityAmount)
                                                 {
                                                     Program.ShowScrollableMessageBox(this,
