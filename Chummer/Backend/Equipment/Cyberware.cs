@@ -46,7 +46,7 @@ namespace Chummer.Backend.Equipment
     public sealed class Cyberware : ICanPaste, IHasChildrenAndCost<Cyberware>, IHasGear, IHasName, IHasInternalId,
         IHasSourceId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
-        IHasWirelessBonus, ICanBlackMarketDiscount, IHasLockObject, IHasCharacterObject
+        IHasWirelessBonus, ICanBlackMarketDiscount, IHasLockObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;

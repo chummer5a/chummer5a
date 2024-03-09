@@ -16137,7 +16137,7 @@ namespace Chummer
                 int intMonths = await objLifestyle.GetIncrementsAsync(GenericToken).ConfigureAwait(false);
                 int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(
                         await CharacterObject.Lifestyles.FirstOrDefaultAsync(p =>
-                            p.InternalId == objLifestyle.InternalId, GenericToken).ConfigureAwait(false), GenericToken)
+                            p.InternalId == strGuid, GenericToken).ConfigureAwait(false), GenericToken)
                     .ConfigureAwait(false);
                 string strOldLifestyleName
                     = await objLifestyle.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);

@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -1820,6 +1819,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsCyberware">ContextMenuStrip for Cyberware.</param>
         /// <param name="cmsCyberwareGear">ContextMenuStrip for Gear in Cyberware.</param>
         /// <param name="cmsVehicleMod">ContextMenuStrip for Vehicle Mods.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

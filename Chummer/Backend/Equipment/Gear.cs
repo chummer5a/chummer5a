@@ -33,7 +33,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
-using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -45,7 +44,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
     public sealed class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes,
         IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertiesChangedAsync, ICanSort,
-        IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable, IHasCharacterObject
+        IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -5501,6 +5500,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="cmsGear">ContextMenuStrip for the Gear to use.</param>
         /// <param name="cmsCustomGear">ContextMenuStrip for the Gear to use if it can be renamed the way Custom Gear can (in Create mode).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -5552,6 +5552,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objParentNode">Parent node to which to append children gear.</param>
         /// <param name="cmsGear">ContextMenuStrip for the Gear's children to use to use.</param>
         /// <param name="cmsCustomGear">ContextMenuStrip for the Gear's children to use if they can be renamed the way Custom Gear can (in Create mode).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
