@@ -174,8 +174,8 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             LinkedAsyncRWLockHelper objCurrentHelper = _objTopLevelHelper;
-            LinkedAsyncRWLockHelper objTopMostHeldUReader;
-            LinkedAsyncRWLockHelper objTopMostHeldWriter;
+            LinkedAsyncRWLockHelper objTopMostHeldUReader = null;
+            LinkedAsyncRWLockHelper objTopMostHeldWriter = null;
             LinkedAsyncRWLockHelper objNextHelper;
 #if ASYNCLOCALWRITEDEBUG
             string strLastWriteStacktrace = string.Empty;
@@ -189,38 +189,43 @@ namespace Chummer
                 {
                     // Emergency exit for odd cases where, for some reason, AsyncLocal assignment does not happen (in the right place?) when a locker release is disposed
                     Utils.BreakIfDebug();
-                    // Let's just get the helpers of the top-level lock. If this causes problems, it's because of the above-mentioned comment around AsyncLocal assignment
-#if ASYNCLOCALWRITEDEBUG
+                    // Let's just get the first ancestor lock that is not disposed. If this causes problems, it's because of the above-mentioned comment around AsyncLocal assignment
+                    while (objCurrentHelper != null && objCurrentHelper.IsDisposed)
+                        objCurrentHelper = objCurrentHelper.ParentLinkedHelper;
+                    while (objTopMostHeldUReader != null && objTopMostHeldUReader.IsDisposed)
+                        objTopMostHeldUReader = objTopMostHeldUReader.ParentLinkedHelper;
+                    while (objTopMostHeldWriter != null && objTopMostHeldWriter.IsDisposed)
+                        objTopMostHeldWriter = objTopMostHeldWriter.ParentLinkedHelper;
                     _objAsyncLocalCurrentsContainer.Value =
-                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(_objTopLevelHelper, null, null, Environment.StackTrace);
-#else
-                    _objAsyncLocalCurrentsContainer.Value =
-                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(_objTopLevelHelper, null, null);
-#endif
-                    objCurrentHelper = _objTopLevelHelper;
-                    objTopMostHeldUReader = null;
-                    objTopMostHeldWriter = null;
-                    objNextHelper = new LinkedAsyncRWLockHelper(objCurrentHelper);
-                }
 #if ASYNCLOCALWRITEDEBUG
-                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, Environment.StackTrace);
 #else
-                Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
-#endif
-                    objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
-                if (objAsyncLocals != null)
-                {
-#if ASYNCLOCALWRITEDEBUG
-                    (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, strLastWriteStacktrace) = objAsyncLocals;
-#else
-                    (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter) = objAsyncLocals;
+                        new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter);
 #endif
                 }
                 else
                 {
-                    objCurrentHelper = _objTopLevelHelper;
-                    objTopMostHeldUReader = null;
-                    objTopMostHeldWriter = null;
+#if ASYNCLOCALWRITEDEBUG
+                    Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
+#else
+                    Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>
+#endif
+                        objAsyncLocals = _objAsyncLocalCurrentsContainer.Value;
+                    if (objAsyncLocals != null)
+                    {
+#if ASYNCLOCALWRITEDEBUG
+                        (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, strLastWriteStacktrace)
+#else
+                        (objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter)
+#endif
+                            = objAsyncLocals;
+                    }
+                    else
+                    {
+                        objCurrentHelper = _objTopLevelHelper;
+                        objTopMostHeldUReader = null;
+                        objTopMostHeldWriter = null;
+                    }
                 }
 
                 if (objCurrentHelper.IsDisposed)
@@ -270,12 +275,11 @@ namespace Chummer
                 objCurrentHelper.TakeWriteLock(objTopMostHeldWriter, token);
                 try
                 {
-#if ASYNCLOCALWRITEDEBUG
                     _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
                         new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
                             objNextHelper, objTopMostHeldUReader, objCurrentHelper, Environment.StackTrace);
 #else
-                    _objAsyncLocalCurrentsContainer.Value =
                         new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
                             objNextHelper, objTopMostHeldUReader, objCurrentHelper);
 #endif
@@ -299,12 +303,11 @@ namespace Chummer
                     }
                     catch
                     {
-#if ASYNCLOCALWRITEDEBUG
                         _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
                             new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
                                 objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, Environment.StackTrace);
 #else
-                        _objAsyncLocalCurrentsContainer.Value =
                             new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
                                 objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter);
 #endif
@@ -372,12 +375,11 @@ namespace Chummer
                 return Task.FromException<IAsyncDisposable>(e);
             }
 
-#if ASYNCLOCALWRITEDEBUG
             _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
                 new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
                     objNextHelper, objTopMostHeldUReader, objCurrentHelper, Environment.StackTrace);
 #else
-            _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
                     objNextHelper, objTopMostHeldUReader, objCurrentHelper);
 #endif
@@ -465,12 +467,11 @@ namespace Chummer
                 objCurrentHelper.TakeUpgradeableReadLock(token);
                 try
                 {
-#if ASYNCLOCALWRITEDEBUG
                     _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
                         new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
                             objNextHelper, objCurrentHelper, objTopMostHeldWriter, Environment.StackTrace);
 #else
-                    _objAsyncLocalCurrentsContainer.Value =
                         new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
                             objNextHelper, objCurrentHelper, objTopMostHeldWriter);
 #endif
@@ -495,12 +496,11 @@ namespace Chummer
                     }
                     catch
                     {
-#if ASYNCLOCALWRITEDEBUG
                         _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
                             new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
                                 objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter, Environment.StackTrace);
 #else
-                        _objAsyncLocalCurrentsContainer.Value =
                             new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
                                 objCurrentHelper, objTopMostHeldUReader, objTopMostHeldWriter);
 #endif
@@ -566,12 +566,11 @@ namespace Chummer
                 return Task.FromException<IAsyncDisposable>(e);
             }
 
-#if ASYNCLOCALWRITEDEBUG
             _objAsyncLocalCurrentsContainer.Value =
+#if ASYNCLOCALWRITEDEBUG
                 new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>(
                     objNextHelper, objCurrentHelper, objTopMostHeldWriter, Environment.StackTrace);
 #else
-            _objAsyncLocalCurrentsContainer.Value =
                 new Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>(
                     objNextHelper, objCurrentHelper, objTopMostHeldWriter);
 #endif

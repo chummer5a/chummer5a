@@ -46,11 +46,7 @@ namespace Chummer
         private int _intNumChildren;
         private DebuggableSemaphoreSlim _objHasChildrenSemaphore; // Used to prevent disposing a helper until it has no more children left
 
-#if LINKEDSEMAPHOREDEBUG
         private readonly LinkedAsyncRWLockHelper _objParentLinkedHelper;
-#else
-        private LinkedAsyncRWLockHelper _objParentLinkedHelper;
-#endif
         private readonly CancellationTokenSource _objDisposalTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objDisposalToken;
 
@@ -273,7 +269,7 @@ namespace Chummer
 #if LINKEDSEMAPHOREDEBUG
             _objParentLinkedHelper?.RemoveChild(this);
 #else
-            Interlocked.Exchange(ref _objParentLinkedHelper, null)?.RemoveChild();
+            _objParentLinkedHelper?.RemoveChild();
 #endif
 
             // Progressively release and dispose of our locks
@@ -402,7 +398,7 @@ namespace Chummer
 #if LINKEDSEMAPHOREDEBUG
             _objParentLinkedHelper?.RemoveChild(this);
 #else
-            Interlocked.Exchange(ref _objParentLinkedHelper, null)?.RemoveChild();
+            _objParentLinkedHelper?.RemoveChild();
 #endif
 
             // Progressively release and dispose of our locks
