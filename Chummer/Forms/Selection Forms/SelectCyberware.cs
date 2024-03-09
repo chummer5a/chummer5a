@@ -115,6 +115,7 @@ namespace Chummer
 
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objParentObject = objParentNode;
+            CyberwareParent = objParentNode as Cyberware;
             _objParentNode = (_objParentObject as IHasXmlDataNode)?.GetNodeXPath();
 
             switch (objWareSource)
@@ -534,29 +535,53 @@ namespace Chummer
                         XPathNavigator xmlRatingNode = xmlCyberware.SelectSingleNodeAndCacheExpression("rating", token);
                         if (xmlRatingNode != null)
                         {
-                            Dictionary<string, int> dicVehicleValues;
-                            if (ParentVehicle != null)
+                            string strMinRating = xmlCyberware.SelectSingleNodeAndCacheExpression("minrating", token)?.Value ?? string.Empty;
+                            string strMaxRating = xmlRatingNode.Value;
+                            Dictionary<string, int> dicVehicleValues = null;
+                            if (ParentVehicle != null && (strMinRating.Contains("imum}") || strMaxRating.Contains("imum}")))
                             {
                                 int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
                                 int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
                                 dicVehicleValues = new Dictionary<string, int>(4)
                                 {
-                                    { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
-                                    { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
-                                    { "{STRMinimum}", Math.Max(1, intVehicleBody) },
-                                    { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
+                                    { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
+                                    { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
+                                    { "STRMinimum", Math.Max(1, intVehicleBody) },
+                                    { "AGIMinimum", Math.Max(1, intVehiclePilot) }
                                 };
                             }
                             else
                             {
-                                dicVehicleValues = new Dictionary<string, int>(2)
+                                string strLoop = string.Empty;
+                                xmlCyberware.TryGetStringFieldQuickly("limbslot", ref strLoop);
+                                if (!string.IsNullOrEmpty(strLoop))
                                 {
-                                    { "{STRMinimum}", 3 },
-                                    { "{AGIMinimum}", 3 }
-                                };
+                                    int intMinAgility = 3;
+                                    int intMinStrength = 3;
+                                    xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
+                                    xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
+                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    {
+                                        { "STRMinimum", intMinStrength },
+                                        { "AGIMinimum", intMinAgility }
+                                    };
+                                }
+                                else
+                                {
+                                    Cyberware objLoop = CyberwareParent;
+                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                        objLoop = objLoop.Parent;
+                                    if (objLoop != null)
+                                    {
+                                        dicVehicleValues = new Dictionary<string, int>(2)
+                                        {
+                                            { "STRMinimum", await objLoop.GetMinStrengthAsync(token).ConfigureAwait(false) },
+                                            { "AGIMinimum", await objLoop.GetMinAgilityAsync(token).ConfigureAwait(false) }
+                                        };
+                                    }
+                                }
                             }
 
-                            string strMinRating = xmlCyberware.SelectSingleNodeAndCacheExpression("minrating", token)?.Value;
                             int intMinRating = 1;
                             // Not a simple integer, so we need to start mucking around with strings
                             if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
@@ -566,8 +591,6 @@ namespace Chummer
                                 intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                             }
                             await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating, token: token).ConfigureAwait(false);
-
-                            string strMaxRating = xmlRatingNode.Value;
                             int intMaxRating = 0;
                             // Not a simple integer, so we need to start mucking around with strings
                             if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
@@ -990,7 +1013,7 @@ namespace Chummer
         /// <summary>
         /// Parent cyberware that the current selection will be added to.
         /// </summary>
-        public Cyberware CyberwareParent { get; set; }
+        public Cyberware CyberwareParent { get; }
 
         /// <summary>
         /// Default text string to filter by.
@@ -1625,26 +1648,49 @@ namespace Chummer
                         if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating))
                             || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
                         {
-                            Dictionary<string, int> dicVehicleValues;
-                            if (ParentVehicle != null && (strMinRating.ContainsAny("Maximum}", "Minimum}") || strMaxRating.ContainsAny("Maximum}", "Minimum}")))
+                            Dictionary<string, int> dicVehicleValues = null;
+                            if (ParentVehicle != null && (strMinRating.Contains("imum}") || strMaxRating.Contains("imum}")))
                             {
                                 int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
                                 int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
                                 dicVehicleValues = new Dictionary<string, int>(4)
                                 {
-                                    { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
-                                    { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
-                                    { "{STRMinimum}", Math.Max(1, intVehicleBody) },
-                                    { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
+                                    { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
+                                    { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
+                                    { "STRMinimum", Math.Max(1, intVehicleBody) },
+                                    { "AGIMinimum", Math.Max(1, intVehiclePilot) }
                                 };
                             }
                             else
                             {
-                                dicVehicleValues = new Dictionary<string, int>(2)
+                                string strLoop = string.Empty;
+                                xmlCyberware.TryGetStringFieldQuickly("limbslot", ref strLoop);
+                                if (!string.IsNullOrEmpty(strLoop))
                                 {
-                                    { "{STRMinimum}", 3 },
-                                    { "{AGIMinimum}", 3 }
-                                };
+                                    int intMinAgility = 3;
+                                    int intMinStrength = 3;
+                                    xmlCyberware.TryGetInt32FieldQuickly("minagility", ref intMinAgility);
+                                    xmlCyberware.TryGetInt32FieldQuickly("minstrength", ref intMinStrength);
+                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    {
+                                        { "STRMinimum", intMinStrength },
+                                        { "AGIMinimum", intMinAgility }
+                                    };
+                                }
+                                else
+                                {
+                                    Cyberware objLoop = CyberwareParent;
+                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                        objLoop = objLoop.Parent;
+                                    if (objLoop != null)
+                                    {
+                                        dicVehicleValues = new Dictionary<string, int>(2)
+                                        {
+                                            { "STRMinimum", await objLoop.GetMinStrengthAsync(token).ConfigureAwait(false) },
+                                            { "AGIMinimum", await objLoop.GetMinAgilityAsync(token).ConfigureAwait(false) }
+                                        };
+                                    }
+                                }
                             }
 
                             strMinRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues, token).ConfigureAwait(false);

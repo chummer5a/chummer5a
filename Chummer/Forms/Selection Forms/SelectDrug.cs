@@ -212,25 +212,17 @@ namespace Chummer
                 string strForceGrade;
                 if (xmlDrug != null)
                 {
-                    Dictionary<string, int> dicVehicleValues;
+                    Dictionary<string, int> dicVehicleValues = null;
                     if (ParentVehicle != null)
                     {
                         int intVehicleBody = await ParentVehicle.GetTotalBodyAsync().ConfigureAwait(false);
                         int intVehiclePilot = await ParentVehicle.GetPilotAsync().ConfigureAwait(false);
                         dicVehicleValues = new Dictionary<string, int>(4)
                         {
-                            { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
-                            { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
-                            { "{STRMinimum}", Math.Max(1, intVehicleBody) },
-                            { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
-                        };
-                    }
-                    else
-                    {
-                        dicVehicleValues = new Dictionary<string, int>(2)
-                        {
-                            { "{STRMinimum}", 3 },
-                            { "{AGIMinimum}", 3 }
+                            { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
+                            { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
+                            { "STRMinimum", Math.Max(1, intVehicleBody) },
+                            { "AGIMinimum", Math.Max(1, intVehiclePilot) }
                         };
                     }
 

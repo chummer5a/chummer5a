@@ -8761,7 +8761,6 @@ namespace Chummer
                                     }
                                 }
 
-                                frmPickCyberware.MyForm.CyberwareParent = objCyberwareParent;
                                 frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
                                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string> setDisallowedMounts))

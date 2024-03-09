@@ -5411,27 +5411,45 @@ namespace Chummer.Backend.Equipment
                         && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                          out intReturn))
                     {
-                        Dictionary<string, int> dicVehicleValues;
-                        if (ParentVehicle != null && strRating.ContainsAny("Maximum}", "Minimum}"))
+                        Dictionary<string, int> dicVehicleValues = null;
+                        if (strRating.Contains("imum}"))
                         {
-                            int intVehicleBody = ParentVehicle.TotalBody;
-                            int intVehiclePilot = ParentVehicle.Pilot;
-                            dicVehicleValues = new Dictionary<string, int>(4)
+                            if (ParentVehicle != null)
                             {
-                                { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
-                                { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
-                                { "{STRMinimum}", Math.Max(1, intVehicleBody) },
-                                { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
-                            };
-                        }
-                        else
-                        {
-                            dicVehicleValues = new Dictionary<string, int>(2)
+                                int intVehicleBody = ParentVehicle.TotalBody;
+                                int intVehiclePilot = ParentVehicle.Pilot;
+                                dicVehicleValues = new Dictionary<string, int>(4)
+                                {
+                                    { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
+                                    { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
+                                    { "STRMinimum", Math.Max(1, intVehicleBody) },
+                                    { "AGIMinimum", Math.Max(1, intVehiclePilot) }
+                                };
+                            }
+                            else if (IsLimb)
                             {
-                                { "{STRMinimum}", _intMinStrength },
-                                { "{AGIMinimum}", _intMinAgility }
-                            };
+                                dicVehicleValues = new Dictionary<string, int>(2)
+                                {
+                                    { "STRMinimum", MinStrength },
+                                    { "AGIMinimum", MinAgility }
+                                };
+                            }
+                            else
+                            {
+                                Cyberware objLoop = Parent;
+                                while (objLoop != null && !objLoop.IsLimb)
+                                    objLoop = objLoop.Parent;
+                                if (objLoop != null)
+                                {
+                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    {
+                                        { "STRMinimum", objLoop.MinStrength },
+                                        { "AGIMinimum", objLoop.MinAgility }
+                                    };
+                                }
+                            }
                         }
+
                         strRating = _objCharacter.AttributeSection.ProcessAttributesInXPath(strRating, dicVehicleValues);
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
@@ -5460,27 +5478,48 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(strRating)
                     && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
                 {
-                    Dictionary<string, int> dicVehicleValues;
-                    if (ParentVehicle != null && strRating.ContainsAny("Maximum}", "Minimum}"))
+                    Dictionary<string, int> dicVehicleValues = null;
+                    if (strRating.Contains("imum}"))
                     {
-                        int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                        int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                        dicVehicleValues = new Dictionary<string, int>(4)
+                        if (ParentVehicle != null)
                         {
-                            { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
-                            { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
-                            { "{STRMinimum}", Math.Max(1, intVehicleBody) },
-                            { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
-                        };
-                    }
-                    else
-                    {
-                        dicVehicleValues = new Dictionary<string, int>(2)
+                            int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                            int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                            dicVehicleValues = new Dictionary<string, int>(4)
+                            {
+                                { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
+                                { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
+                                { "STRMinimum", Math.Max(1, intVehicleBody) },
+                                { "AGIMinimum", Math.Max(1, intVehiclePilot) }
+                            };
+                        }
+                        else
                         {
-                            { "{STRMinimum}", _intMinStrength },
-                            { "{AGIMinimum}", _intMinAgility }
-                        };
+                            if (await GetIsLimbAsync(token).ConfigureAwait(false))
+                            {
+                                dicVehicleValues = new Dictionary<string, int>(2)
+                                {
+                                    { "STRMinimum", await GetMinStrengthAsync(token).ConfigureAwait(false) },
+                                    { "AGIMinimum", await GetMinAgilityAsync(token).ConfigureAwait(false) }
+                                };
+                            }
+                            else
+                            {
+                                Cyberware objLoop = Parent;
+                                while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                    objLoop = objLoop.Parent;
+                                if (objLoop != null)
+                                {
+                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    {
+                                        { "STRMinimum", await objLoop.GetMinStrengthAsync(token).ConfigureAwait(false) },
+                                        { "AGIMinimum", await objLoop.GetMinAgilityAsync(token).ConfigureAwait(false) }
+                                    };
+                                }
+                            }
+                        }
                     }
+
                     strRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strRating, dicVehicleValues, token).ConfigureAwait(false);
 
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions
@@ -5532,27 +5571,45 @@ namespace Chummer.Backend.Equipment
                         && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                          out intReturn))
                     {
-                        Dictionary<string, int> dicVehicleValues;
-                        if (ParentVehicle != null && strRating.ContainsAny("Maximum}", "Minimum}"))
+                        Dictionary<string, int> dicVehicleValues = null;
+                        if (strRating.Contains("imum}"))
                         {
-                            int intVehicleBody = ParentVehicle.TotalBody;
-                            int intVehiclePilot = ParentVehicle.Pilot;
-                            dicVehicleValues = new Dictionary<string, int>(4)
+                            if (ParentVehicle != null)
                             {
-                                { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
-                                { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
-                                { "{STRMinimum}", Math.Max(1, intVehicleBody) },
-                                { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
-                            };
-                        }
-                        else
-                        {
-                            dicVehicleValues = new Dictionary<string, int>(2)
+                                int intVehicleBody = ParentVehicle.TotalBody;
+                                int intVehiclePilot = ParentVehicle.Pilot;
+                                dicVehicleValues = new Dictionary<string, int>(4)
+                                {
+                                    { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
+                                    { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
+                                    { "STRMinimum", Math.Max(1, intVehicleBody) },
+                                    { "AGIMinimum", Math.Max(1, intVehiclePilot) }
+                                };
+                            }
+                            else if (IsLimb)
                             {
-                                { "{STRMinimum}", _intMinStrength },
-                                { "{AGIMinimum}", _intMinAgility }
-                            };
+                                dicVehicleValues = new Dictionary<string, int>(2)
+                                {
+                                    { "STRMinimum", MinStrength },
+                                    { "AGIMinimum", MinAgility }
+                                };
+                            }
+                            else
+                            {
+                                Cyberware objLoop = Parent;
+                                while (objLoop != null && !objLoop.IsLimb)
+                                    objLoop = objLoop.Parent;
+                                if (objLoop != null)
+                                {
+                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    {
+                                        { "STRMinimum", objLoop.MinStrength },
+                                        { "AGIMinimum", objLoop.MinAgility }
+                                    };
+                                }
+                            }
                         }
+
                         strRating = _objCharacter.AttributeSection.ProcessAttributesInXPath(strRating, dicVehicleValues);
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
@@ -5581,27 +5638,48 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(strRating)
                     && !int.TryParse(strRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
                 {
-                    Dictionary<string, int> dicVehicleValues;
-                    if (ParentVehicle != null && strRating.ContainsAny("Maximum}", "Minimum}"))
+                    Dictionary<string, int> dicVehicleValues = null;
+                    if (strRating.Contains("imum}"))
                     {
-                        int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
-                        int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                        dicVehicleValues = new Dictionary<string, int>(4)
+                        if (ParentVehicle != null)
                         {
-                            { "{STRMaximum}", Math.Max(1, intVehicleBody * 2) },
-                            { "{AGIMaximum}", Math.Max(1, intVehiclePilot * 2) },
-                            { "{STRMinimum}", Math.Max(1, intVehicleBody) },
-                            { "{AGIMinimum}", Math.Max(1, intVehiclePilot) }
-                        };
-                    }
-                    else
-                    {
-                        dicVehicleValues = new Dictionary<string, int>(2)
+                            int intVehicleBody = await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false);
+                            int intVehiclePilot = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                            dicVehicleValues = new Dictionary<string, int>(4)
+                            {
+                                { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
+                                { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
+                                { "STRMinimum", Math.Max(1, intVehicleBody) },
+                                { "AGIMinimum", Math.Max(1, intVehiclePilot) }
+                            };
+                        }
+                        else
                         {
-                            { "{STRMinimum}", _intMinStrength },
-                            { "{AGIMinimum}", _intMinAgility }
-                        };
+                            if (await GetIsLimbAsync(token).ConfigureAwait(false))
+                            {
+                                dicVehicleValues = new Dictionary<string, int>(2)
+                                {
+                                    { "STRMinimum", await GetMinStrengthAsync(token).ConfigureAwait(false) },
+                                    { "AGIMinimum", await GetMinAgilityAsync(token).ConfigureAwait(false) }
+                                };
+                            }
+                            else
+                            {
+                                Cyberware objLoop = Parent;
+                                while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                    objLoop = objLoop.Parent;
+                                if (objLoop != null)
+                                {
+                                    dicVehicleValues = new Dictionary<string, int>(2)
+                                    {
+                                        { "STRMinimum", await objLoop.GetMinStrengthAsync(token).ConfigureAwait(false) },
+                                        { "AGIMinimum", await objLoop.GetMinAgilityAsync(token).ConfigureAwait(false) }
+                                    };
+                                }
+                            }
+                        }
                     }
+
                     strRating = await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(strRating, dicVehicleValues, token).ConfigureAwait(false);
 
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions
@@ -8787,6 +8865,66 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public int MinStrength
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    // Base Strength for any limb is 3.
+                    return IsLimb ? ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : _intMinStrength : 0;
+                }
+            }
+        }
+
+        public async Task<int> GetMinStrengthAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Base Agility for any limb is 3.
+                return await GetIsLimbAsync(token).ConfigureAwait(false)
+                    ? ParentVehicle != null ? Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false), 0) : _intMinStrength
+                    : 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public int MinAgility
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    // Base Agility for any limb is 3.
+                    return IsLimb ? ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : _intMinAgility : 0;
+                }
+            }
+        }
+
+        public async Task<int> GetMinAgilityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Base Agility for any limb is 3.
+                return await GetIsLimbAsync(token).ConfigureAwait(false)
+                    ? ParentVehicle != null ? Math.Max(await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false), 0) : _intMinAgility
+                    : 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Base Cyberlimb attribute value (before modifiers and customization).
         /// </summary>
@@ -8801,12 +8939,10 @@ namespace Chummer.Backend.Equipment
                 switch (strAbbrev)
                 {
                     case "STR":
-                        // Base Strength for any limb is 3.
-                        return ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : _intMinStrength;
+                        return MinStrength;
 
                     case "AGI":
-                        // Base Agility for any limb is 3.
-                        return ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : _intMinAgility;
+                        return MinAgility;
 
                     default:
                         return 0;
@@ -8830,16 +8966,10 @@ namespace Chummer.Backend.Equipment
                 switch (strAbbrev)
                 {
                     case "STR":
-                        // Base Strength for any limb is 3.
-                        return ParentVehicle != null
-                            ? Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false), 0)
-                            : _intMinStrength;
+                        return await GetMinStrengthAsync(token).ConfigureAwait(false);
 
                     case "AGI":
-                        // Base Agility for any limb is 3.
-                        return ParentVehicle != null
-                            ? Math.Max(await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false), 0)
-                            : _intMinAgility;
+                        return await GetMinAgilityAsync(token).ConfigureAwait(false);
 
                     default:
                         return 0;

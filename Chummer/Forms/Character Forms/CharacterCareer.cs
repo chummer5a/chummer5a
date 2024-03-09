@@ -14179,7 +14179,7 @@ namespace Chummer
                         {
                             frmPickCyberware.MyForm.ForcedGrade = await objCyberwareParent.GetGradeAsync(GenericToken).ConfigureAwait(false);
                             // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
-                            if (!objCyberwareParent.Capacity.Contains('['))
+                            if (!objCyberwareParent.Capacity.Contains('[') || objCyberwareParent.Capacity.Contains("/["))
                             {
                                 frmPickCyberware.MyForm.MaximumCapacity = await objCyberwareParent.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false);
 
@@ -14197,7 +14197,6 @@ namespace Chummer
                                 }
                             }
 
-                            frmPickCyberware.MyForm.CyberwareParent = objCyberwareParent;
                             frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
 
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
