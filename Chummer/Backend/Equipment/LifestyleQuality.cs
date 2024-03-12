@@ -1329,7 +1329,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await GetFreeAsync(token).ConfigureAwait(false))
+                if (await GetCostFreeAsync(token).ConfigureAwait(false))
                     return 0;
                 if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                         out decimal decReturn))
