@@ -2388,17 +2388,22 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.DEPEnabled)))
                 {
-                    if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false) && !await CharacterObject
-                            .AttributeSection.Attributes
-                            .ContainsAsync(CharacterObject.DEP, token)
-                            .ConfigureAwait(false))
+                    if (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        if (!await CharacterObject
+                                .AttributeSection.Attributes
+                                .ContainsAsync(CharacterObject.DEP, token)
+                                .ConfigureAwait(false))
+                        {
+                            await CharacterObject.AttributeSection.Attributes
+                                .AddAsync(CharacterObject.DEP, token).ConfigureAwait(false);
+                        }
+                    }
+                    else
                     {
                         await CharacterObject.AttributeSection.Attributes
-                            .AddAsync(CharacterObject.DEP, token).ConfigureAwait(false);
+                            .RemoveAsync(CharacterObject.DEP, token).ConfigureAwait(false);
                     }
-
-                    await CharacterObject.AttributeSection.Attributes
-                        .RemoveAsync(CharacterObject.DEP, token).ConfigureAwait(false);
                 }
 
                 if (e.PropertyNames.Contains(nameof(Character.Ambidextrous)))

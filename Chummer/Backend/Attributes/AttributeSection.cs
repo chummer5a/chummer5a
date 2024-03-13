@@ -539,6 +539,21 @@ namespace Chummer.Backend.Attributes
             AttributeList.BeforeClearCollectionChangedAsync += AttributeListOnBeforeClearCollectionChanged;
             SpecialAttributeList.CollectionChangedAsync += SpecialAttributeListOnCollectionChanged;
             SpecialAttributeList.BeforeClearCollectionChangedAsync += SpecialAttributeListOnBeforeClearCollectionChanged;
+            _objCharacter.MultiplePropertiesChangedAsync += CharacterOnMultiplePropertiesChangedAsync;
+        }
+
+        private Task CharacterOnMultiplePropertiesChangedAsync(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (e.PropertyNames.Contains(nameof(Character.MAGEnabled)) ||
+                e.PropertyNames.Contains(nameof(Character.RESEnabled)) ||
+                e.PropertyNames.Contains(nameof(Character.DEPEnabled)))
+            {
+                return InitializeAttributesListAsync(token);
+            }
+
+            return Task.CompletedTask;
         }
 
         private async Task SpecialAttributeListOnBeforeClearCollectionChanged(object sender,
