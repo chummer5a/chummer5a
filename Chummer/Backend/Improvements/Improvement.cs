@@ -1776,6 +1776,9 @@ namespace Chummer
                             {
                                 yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Base));
+                                if (Maximum != 0)
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.RatingMaximum));
                             }
                         }
 
@@ -1788,13 +1791,21 @@ namespace Chummer
                             {
                                 yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Base));
+                                if (Maximum != 0)
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.RatingMaximum));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                {
                                     yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.Base));
+                                    if (Maximum != 0)
+                                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                            nameof(Skill.RatingMaximum));
+                                }
                             }
                         }
                     }
@@ -1809,6 +1820,9 @@ namespace Chummer
                         {
                             yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                 nameof(Skill.Base));
+                            if (Maximum != 0)
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.RatingMaximum));
                         }
                     }
                 }
@@ -4114,6 +4128,9 @@ namespace Chummer
                                 {
                                     lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.Base)));
+                                    if (Maximum != 0)
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                            nameof(Skill.RatingMaximum)));
                                 }
                             }, token).ConfigureAwait(false);
 
@@ -4126,14 +4143,22 @@ namespace Chummer
                                 {
                                     lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                         nameof(Skill.Base)));
+                                    if (Maximum != 0)
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                            nameof(Skill.RatingMaximum)));
                                 }
                                 else
                                 {
                                     string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                     if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                    {
                                         lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             objTargetSkill,
                                             nameof(Skill.Base)));
+                                        if (Maximum != 0)
+                                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                                nameof(Skill.RatingMaximum)));
+                                    }
                                 }
                             }, token).ConfigureAwait(false);
                         }
@@ -4148,6 +4173,9 @@ namespace Chummer
                             {
                                 lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
                                     nameof(Skill.Base)));
+                                if (Maximum != 0)
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.RatingMaximum)));
                             }
                         }
                     }
