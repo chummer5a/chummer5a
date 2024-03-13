@@ -802,11 +802,12 @@ namespace Chummer
                                     await objWriter.WriteStartElementAsync("mod").ConfigureAwait(false);
                                     await objWriter.WriteElementStringAsync("name", objVehicleMod.Name)
                                         .ConfigureAwait(false);
-                                    if (objVehicleMod.Rating > 0)
+                                    int intRating = await objVehicleMod.GetRatingAsync().ConfigureAwait(false);
+                                    if (intRating > 0)
                                         await objWriter
                                             .WriteElementStringAsync(
                                                 "rating",
-                                                objVehicleMod.Rating.ToString(
+                                                intRating.ToString(
                                                     GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                                     // </mod>
                                     await objWriter.WriteEndElementAsync().ConfigureAwait(false);

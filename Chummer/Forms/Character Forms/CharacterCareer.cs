@@ -11049,74 +11049,6 @@ namespace Chummer
                         };
                         await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle,
                             frmPickVehicleMod.MyForm.Markup, token: GenericToken).ConfigureAwait(false);
-                        // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
-                        if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
-                        {
-                            int intMaxArmor = await objVehicle.GetMaxArmorAsync(GenericToken).ConfigureAwait(false);
-                            if (objMod.Rating > intMaxArmor)
-                            {
-                                objMod.Rating = intMaxArmor;
-                            }
-                        }
-                        else
-                        {
-                            switch (objMod.Category)
-                            {
-                                case "Handling":
-                                {
-                                    int intMaxHandling = await objVehicle.GetMaxHandlingAsync(GenericToken).ConfigureAwait(false);
-                                    if (objMod.Rating > intMaxHandling)
-                                    {
-                                        objMod.Rating = intMaxHandling;
-                                    }
-
-                                    break;
-                                }
-                                case "Speed":
-                                {
-                                    int intMaxSpeed = await objVehicle.GetMaxSpeedAsync(GenericToken).ConfigureAwait(false);
-                                    if (objMod.Rating > intMaxSpeed)
-                                    {
-                                        objMod.Rating = intMaxSpeed;
-                                    }
-
-                                    break;
-                                }
-                                case "Acceleration":
-                                {
-                                    int intMaxAcceleration = await objVehicle.GetMaxAccelerationAsync(GenericToken).ConfigureAwait(false);
-                                    if (objMod.Rating > intMaxAcceleration)
-                                    {
-                                        objMod.Rating = intMaxAcceleration;
-                                    }
-
-                                    break;
-                                }
-                                case "Sensor":
-                                {
-                                    int intMaxSensor = await objVehicle.GetMaxSensorAsync(GenericToken).ConfigureAwait(false);
-                                    if (objMod.Rating > intMaxSensor)
-                                    {
-                                        objMod.Rating = intMaxSensor;
-                                    }
-
-                                    break;
-                                }
-                                default:
-                                {
-                                    if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal))
-                                    {
-                                        int intMaxPilot = await objVehicle.GetMaxPilotAsync(GenericToken).ConfigureAwait(false);
-                                        if (objMod.Rating > intMaxPilot)
-                                        {
-                                            objMod.Rating = intMaxPilot;
-                                        }
-                                    }
-
-                                    break;
-                                }
-                            }
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         decimal decOriginalCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
@@ -25007,47 +24939,25 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
+                            int intMaxRating = await objMod.GetMaxRatingAsync(token).ConfigureAwait(false);
+                            if (intMaxRating > 0)
                             {
-                                if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                    .ConfigureAwait(false);
+                                int intRating = await objMod.GetRatingAsync(token).ConfigureAwait(false);
+                                await lblVehicleRating.DoThreadSafeAsync(x =>
                                 {
-                                    objMod.MaxRating = (await objMod.Parent.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                                }
-                                else if (objMod.MaxRating.Equals("body", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    objMod.MaxRating = (await objMod.Parent.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                                }
-
-                                token.ThrowIfCancellationRequested();
-                                if (Convert.ToInt32(objMod.MaxRating, GlobalSettings.InvariantCultureInfo) > 0)
-                                {
-                                    await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                               .ConfigureAwait(false);
-                                    await lblVehicleRating.DoThreadSafeAsync(x =>
-                                    {
-                                        x.Text = objMod.Rating.ToString(GlobalSettings
-                                                                            .CultureInfo);
-                                        x.Visible = true;
-                                    }, token).ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                               .ConfigureAwait(false);
-                                    await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                          .ConfigureAwait(false);
-                                }
+                                    x.Text = intRating.ToString(GlobalSettings
+                                        .CultureInfo);
+                                    x.Visible = true;
+                                }, token).ConfigureAwait(false);
                             }
                             else
                             {
-                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                           .ConfigureAwait(false);
-                                await lblVehicleRating.DoThreadSafeAsync(x =>
-                                {
-                                    x.Text = objMod.Rating.ToString(
-                                        GlobalSettings.CultureInfo);
-                                    x.Visible = true;
-                                }, token).ConfigureAwait(false);
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                    .ConfigureAwait(false);
+                                await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token)
+                                    .ConfigureAwait(false);
                             }
 
                             token.ThrowIfCancellationRequested();
