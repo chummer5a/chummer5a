@@ -404,9 +404,11 @@ namespace Chummer
                     {
                         int.TryParse(strKarma, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intBP);
 
-                        if (await xmlQuality.SelectSingleNodeAndCacheExpression("costdiscount", token).RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                        XPathNavigator xmlCostDiscount =
+                            xmlQuality.SelectSingleNodeAndCacheExpression("costdiscount", token);
+                        if (xmlCostDiscount != null && await xmlCostDiscount.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         {
-                            XPathNavigator xmlValueNode = xmlQuality.SelectSingleNodeAndCacheExpression("costdiscount/value", token);
+                            XPathNavigator xmlValueNode = xmlCostDiscount.SelectSingleNodeAndCacheExpression("value", token);
                             if (xmlValueNode != null)
                             {
                                 int intValue = xmlValueNode.ValueAsInt;
@@ -423,7 +425,7 @@ namespace Chummer
                             }
                         }
 
-                        if (_objCharacter.Created && !_objCharacter.Settings.DontDoubleQualityPurchases)
+                        if (await _objCharacter.GetCreatedAsync(token) && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token))
                         {
                             string strDoubleCostCareer = xmlQuality.SelectSingleNodeAndCacheExpression("doublecareer", token)?.Value;
                             if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
