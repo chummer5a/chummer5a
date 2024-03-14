@@ -25814,6 +25814,96 @@
          <source>KC</source>
          <page>175</page>
       </metatype>
+           <metatype>
+         <id>ae8062f7-8ba1-4e67-aa2c-491a87e72572</id>
+         <name>Primate</name>
+         <category>Technocritters</category>
+         <karma>0</karma>
+         <bodmin>4</bodmin>
+         <bodmax>9</bodmax>
+         <bodaug>13</bodaug>
+         <agimin>4</agimin>
+         <agimax>9</agimax>
+         <agiaug>13</agiaug>
+         <reamin>4</reamin>
+         <reamax>9</reamax>
+         <reaaug>13</reaaug>
+         <strmin>4</strmin>
+         <strmax>9</strmax>
+         <straug>13</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>7</chaaug>
+         <intmin>5</intmin>
+         <intmax>5</intmax>
+         <intaug>9</intaug>
+         <logmin>2</logmin>
+         <logmax>2</logmax>
+         <logaug>6</logaug>
+         <wilmin>3</wilmin>
+         <wilmax>3</wilmax>
+         <wilaug>7</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>3</edgmin>
+         <edgmax>3</edgmax>
+         <edgaug>3</edgaug>
+         <magmin>0</magmin>
+         <magmax>0</magmax>
+         <magaug>0</magaug>
+         <resmin>6</resmin>
+         <resmax>6</resmax>
+         <resaug>6</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/0/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/0/0</sprint>
+         <bonus>
+            <enableattribute>
+               <name>RES</name>
+            </enableattribute>
+            <enabletab>
+               <name>critter</name>
+               <name>technomancer</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Bite: DV (STR)+P, AP 0">Natural Weapon</power>
+            <power>Resonance Feed</power>
+            <power>Tunnel</power>
+            <power>AR-Parallelism</power>
+            <power>Brachiation</power>
+         </powers>
+         <skills>
+            <group rating="4">Athletics</group>
+            <skill rating="3">Clubs</skill>
+            <skill rating="4">Perception</skill>           
+            <skill rating="2">Thrown Weapons</skill>           
+            <skill rating="6">Unarmed Combat</skill>           
+            <skill rating="6">Computer</skill>
+            <skill rating="5">Cybercombat</skill>
+            <skill rating="5">Hacking</skill>
+            <skill rating="5">Software</skill>
+            <skill rating="5">Electronic Warfare</skill>
+         </skills>
+         <complexforms>
+            <complexform>Deezz</complexform>
+            <complexform select="Firewall">Diffusion of [Matrix Attribute]</complexform>
+            <complexform>Editor</complexform>
+            <complexform select="Sleaze">Infusion of [Matrix Attribute]</complexform>
+            <complexform>Puppeteer</complexform>
+            <complexform>Resonance Spike</complexform>
+            <complexform>Tattletale</complexform>
+         </complexforms>
+         <source>KC</source>
+         <page>169</page>
+      </metatype>
       <metatype>
          <id>290161e4-8b73-4e1d-b24a-00ffea4e79d5</id>
          <name>Techworm</name>
