@@ -195,10 +195,6 @@
       <required>
         <oneof>
           <art>Psychometry</art>
-          <group>
-            <power>Astral Perception</power>
-            <quality>The Spiritual Way</quality>
-          </group>
         </oneof>
       </required>
       <source>SG</source>
