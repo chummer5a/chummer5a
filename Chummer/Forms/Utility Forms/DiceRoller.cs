@@ -254,6 +254,19 @@ namespace Chummer
                 await objItem.SetGlitchMinAsync(intGlitchMin).ConfigureAwait(false);
             }
 
+            int intHitCount = await cboMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
+            int intGlitchCount = _lstResults.Count(x => x.IsGlitch);
+            int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                ? intHitCount + 1
+                : (_lstResults.Count + 1) / 2;
+            // Deduct the Gremlins Rating from the Glitch Threshold.
+            intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
+            if (intGlitchThreshold < 1)
+                intGlitchThreshold = 1;
+            // Rerolling misses does not negate glitches, so save the old glitch results
+            bool blnHasGlitched = intGlitchCount >= intGlitchThreshold;
+            bool blnHasCriticalGlitched = blnHasGlitched && intHitCount == 0;
+
             // Remove everything that is not a hit
             int intNewDicePool = _lstResults.Count(x => !x.IsHit);
             _lstResults.RemoveAll(x => !x.IsHit);
@@ -264,8 +277,6 @@ namespace Chummer
                 return;
             }
 
-            int intHitCount = await cboMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
-            int intGlitchCount = _lstResults.Count(x => x.IsGlitch);
             List<int> lstRandom = new List<int>(intNewDicePool);
 
             for (int intCounter = 1; intCounter <= intNewDicePool; intCounter++)
@@ -292,52 +303,66 @@ namespace Chummer
                 _lstResults.Add(lviCur);
             }
 
-            int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
-                ? intHitCount + 1
-                : (_lstResults.Count + 1) / 2;
-            // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
-            if (intGlitchThreshold < 1)
-                intGlitchThreshold = 1;
-
-            string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
-
-            if (await chkBubbleDie.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
-                && (await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
-                    || (intGlitchCount == intGlitchThreshold - 1
-                        && (_lstResults.Count & 1) == 0)))
+            intHitCount = await cboMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
+            if (!blnHasGlitched)
             {
-                int intBubbleDieResult = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
-                DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
-                if (lviCur.IsGlitch)
-                    ++intGlitchCount;
-                _lstResults.Add(lviCur);
+                intGlitchCount = _lstResults.Count(x => x.IsGlitch);
+                intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                    ? intHitCount + 1
+                    : (_lstResults.Count + 1) / 2;
+                // Deduct the Gremlins Rating from the Glitch Threshold.
+                intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
+                if (intGlitchThreshold < 1)
+                    intGlitchThreshold = 1;
+
+                if (await chkBubbleDie.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                    && (await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                        || (intGlitchCount == intGlitchThreshold - 1
+                            && (_lstResults.Count & 1) == 0)))
+                {
+                    int intBubbleDieResult = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync()
+                        .ConfigureAwait(false);
+                    DiceRollerListViewItem lviCur =
+                        new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
+                    if (lviCur.IsGlitch)
+                        ++intGlitchCount;
+                    _lstResults.Add(lviCur);
+                }
+
+                blnHasGlitched = intGlitchCount >= intGlitchThreshold;
+                blnHasCriticalGlitched = blnHasGlitched && intHitCount == 0;
             }
 
             await lblResultsLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdResults))
             {
-                if (intGlitchCount >= intGlitchThreshold)
+                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                if (blnHasGlitched)
                 {
-                    if (intHitCount > 0)
+                    int intThreshold = await nudThreshold.DoThreadSafeFuncAsync(x => x.ValueAsInt)
+                        .ConfigureAwait(false);
+                    if (intThreshold > 0)
                     {
-                        int intThreshold = await nudThreshold.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
-                        if (intThreshold > 0)
-                        {
-                            sbdResults.Append(await LanguageManager.GetStringAsync(
-                                                  intHitCount >= intThreshold
-                                                      ? "String_DiceRoller_Success"
-                                                      : "String_DiceRoller_Failure").ConfigureAwait(false)).Append(strSpace).Append('(');
-                        }
-
-                        sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Glitch_Singular" : "String_DiceRoller_Glitch").ConfigureAwait(false), intHitCount);
-                        if (intThreshold > 0)
-                            sbdResults.Append(')');
+                        sbdResults.Append(await LanguageManager.GetStringAsync(
+                            intHitCount >= intThreshold
+                                ? "String_DiceRoller_Success"
+                                : "String_DiceRoller_Failure").ConfigureAwait(false)).Append(strSpace).Append('(');
                     }
-                    else
-                        sbdResults.Append(await LanguageManager.GetStringAsync("String_DiceRoller_CriticalGlitch").ConfigureAwait(false));
+
+                    sbdResults.AppendFormat(GlobalSettings.CultureInfo,
+                        await LanguageManager
+                            .GetStringAsync(intHitCount == 1
+                                ? "String_DiceRoller_Glitch_Singular"
+                                : "String_DiceRoller_Glitch").ConfigureAwait(false), intHitCount);
+                    if (intThreshold > 0)
+                        sbdResults.Append(')');
+
+                    if (blnHasCriticalGlitched)
+                    {
+                        sbdResults.Append(await LanguageManager.GetStringAsync("String_DiceRoller_CriticalGlitch")
+                            .ConfigureAwait(false));
+                    }
                 }
                 else
                 {

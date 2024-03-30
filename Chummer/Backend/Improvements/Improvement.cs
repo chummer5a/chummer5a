@@ -1775,7 +1775,7 @@ namespace Chummer
                             if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                             {
                                 yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
-                                    nameof(Skill.Base));
+                                    nameof(Skill.RelevantImprovements));
                             }
                         }
 
@@ -1787,14 +1787,16 @@ namespace Chummer
                                                        || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                             {
                                 yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
-                                    nameof(Skill.Base));
+                                    nameof(Skill.RelevantImprovements));
                             }
                             else
                             {
                                 string strDisplayName = objTargetSkill.CurrentDisplayName;
                                 if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                {
                                     yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
-                                        nameof(Skill.Base));
+                                        nameof(Skill.RelevantImprovements));
+                                }
                             }
                         }
                     }
@@ -1808,7 +1810,7 @@ namespace Chummer
                         if (objTargetSkill != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
-                                nameof(Skill.Base));
+                                nameof(Skill.RelevantImprovements));
                         }
                     }
                 }
@@ -4113,7 +4115,7 @@ namespace Chummer
                                 if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
                                 {
                                     lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
-                                        nameof(Skill.Base)));
+                                        nameof(Skill.RelevantImprovements)));
                                 }
                             }, token).ConfigureAwait(false);
 
@@ -4125,15 +4127,17 @@ namespace Chummer
                                                            || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
                                 {
                                     lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
-                                        nameof(Skill.Base)));
+                                        nameof(Skill.RelevantImprovements)));
                                 }
                                 else
                                 {
                                     string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                     if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                    {
                                         lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
                                             objTargetSkill,
-                                            nameof(Skill.Base)));
+                                            nameof(Skill.RelevantImprovements)));
+                                    }
                                 }
                             }, token).ConfigureAwait(false);
                         }
@@ -4147,7 +4151,7 @@ namespace Chummer
                             if (objTargetSkill != null)
                             {
                                 lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
-                                    nameof(Skill.Base)));
+                                    nameof(Skill.RelevantImprovements)));
                             }
                         }
                     }

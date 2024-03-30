@@ -4411,8 +4411,7 @@ namespace Chummer
                             string strLoopName = objXmlAddArt.InnerText;
                             XmlNode objXmlArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/arts/art", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                            if (objXmlArt != null && objXmlAddArt.CreateNavigator()
-                                    .RequirementsMet(_objCharacter, strLocalName: _strFriendlyName))
+                            if (objXmlArt != null && objXmlAddArt.CreateNavigator().RequirementsMet(_objCharacter))
                             {
                                 lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText,
                                     objXmlArt["translate"]?.InnerText ?? strLoopName));
@@ -4515,8 +4514,7 @@ namespace Chummer
                             XmlNode objXmlMetamagic
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                            if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator()
-                                    .RequirementsMet(_objCharacter, strLocalName: _strFriendlyName))
+                            if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                             {
                                 lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText,
                                     objXmlMetamagic["translate"]?.InnerText
@@ -4631,8 +4629,7 @@ namespace Chummer
                             XmlNode objXmlEcho = objXmlDocument.TryGetNodeByNameOrId(
                                 "/chummer/metamagics/metamagic", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                            if (objXmlEcho != null && objXmlAddEcho.CreateNavigator()
-                                    .RequirementsMet(_objCharacter, strLocalName: _strFriendlyName))
+                            if (objXmlEcho != null && objXmlAddEcho.CreateNavigator().RequirementsMet(_objCharacter))
                             {
                                 lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText,
                                     objXmlEcho["translate"]?.InnerText ?? strLoopName));
@@ -6169,7 +6166,7 @@ namespace Chummer
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strName);
                             // Makes sure we aren't over our limits for this particular quality from this overall source
                             if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                                objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter, strLocalName: _strFriendlyName) == true)
+                                objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter) == true)
                             {
                                 lstQualities.Add(
                                     new ListItem(strName, objXmlQuality?["translate"]?.InnerText ?? strName));

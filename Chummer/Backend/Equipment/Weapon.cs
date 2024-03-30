@@ -2130,7 +2130,7 @@ namespace Chummer.Backend.Equipment
 
                 await objWriter.WriteElementStringAsync("dicepool", (await GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("dicepool_noammo", (await GetDicePoolAsync(false, token: token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                Skill objSkill = Skill;
+                Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync(
                           "skill",
@@ -3347,8 +3347,9 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    string strUseSkill = Skill != null
-                        ? await Skill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                    string strUseSkill = objSkill != null
+                        ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
                         : string.Empty;
                     decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                         Improvement.ImprovementType.WeaponCategoryDV,
@@ -4705,16 +4706,23 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                if (_objCharacter != null && (Name == "Unarmed Attack" || Skill?.DictionaryKey == "Unarmed Combat" &&
-                        _objCharacter.Settings.UnarmedImprovementsApplyToWeapons))
+                if (_objCharacter != null)
                 {
-                    // Add any UnarmedAP bonus for the Unarmed Attack item.
-                    intImprove += (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP, token: token)
-                            : await ImprovementManager.ValueOfAsync(
-                                _objCharacter, Improvement.ImprovementType.UnarmedAP, token: token).ConfigureAwait(false))
-                        .StandardRound();
+                    Skill objSkill = blnSync ? Skill : await GetSkillAsync(token).ConfigureAwait(false);
+                    string strSkillDictionaryKey = objSkill != null
+                        ? blnSync ? objSkill.DictionaryKey : await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                        : string.Empty;
+                    if (Name == "Unarmed Attack" || strSkillDictionaryKey == "Unarmed Combat" &&
+                        _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                    {
+                        // Add any UnarmedAP bonus for the Unarmed Attack item.
+                        intImprove += (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP, token: token)
+                                : await ImprovementManager.ValueOfAsync(
+                                    _objCharacter, Improvement.ImprovementType.UnarmedAP, token: token).ConfigureAwait(false))
+                            .StandardRound();
+                    }
                 }
 
                 foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => objAccessory.Equipped))
@@ -5201,7 +5209,11 @@ namespace Chummer.Backend.Equipment
                         : await (await _objCharacter.GetAttributeAsync("STR", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
                 }
 
-                if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
+                Skill objSkill = blnSync ? Skill : await GetSkillAsync(token).ConfigureAwait(false);
+                string strSkillDictionaryKey = objSkill != null
+                    ? blnSync ? objSkill.DictionaryKey : await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                    : string.Empty;
+                if (Category == "Throwing Weapons" || strSkillDictionaryKey == "Throwing Weapons")
                     intUseSTR += (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token)
@@ -5277,9 +5289,16 @@ namespace Chummer.Backend.Equipment
                                                                   strImprovedName: Name, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
             }
 
-            if (_objCharacter.Settings.UnarmedImprovementsApplyToWeapons && (Name == "Unarmed Attack" || (Skill != null && await Skill.GetDictionaryKeyAsync(token).ConfigureAwait(false) == "Unarmed Combat")))
+            if (await _objCharacter.Settings.GetUnarmedImprovementsApplyToWeaponsAsync(token).ConfigureAwait(false))
             {
-                decReach += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedReach, token: token).ConfigureAwait(false);
+                Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                string strSkillDictionaryKey = objSkill != null
+                    ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                    : string.Empty;
+                if (Name == "Unarmed Attack" || strSkillDictionaryKey == "Unarmed Combat")
+                {
+                    decReach += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedReach, token: token).ConfigureAwait(false);
+                }
             }
 
             return decReach.StandardRound();
@@ -5595,11 +5614,14 @@ namespace Chummer.Backend.Equipment
             decimal decImproveAccuracy = await ImprovementManager.ValueOfAsync(
                 _objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, strImprovedName: Name,
                 blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
-            string strSkill = Skill?.DictionaryKey ?? string.Empty;
-            if (!string.IsNullOrEmpty(strSkill))
+            Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+            string strSkillDictionaryKey = objSkill != null
+                ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                : string.Empty;
+            if (!string.IsNullOrEmpty(strSkillDictionaryKey))
                 decImproveAccuracy += await ImprovementManager.ValueOfAsync(_objCharacter,
                                                                             Improvement.ImprovementType.WeaponSkillAccuracy,
-                                                                            strImprovedName: strSkill, token: token).ConfigureAwait(false);
+                                                                            strImprovedName: strSkillDictionaryKey, token: token).ConfigureAwait(false);
             foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                          _objCharacter, Improvement.ImprovementType.WeaponAccuracy, token: token).ConfigureAwait(false))
             {
@@ -5967,14 +5989,25 @@ namespace Chummer.Backend.Equipment
                 sbdRange.Append(strRange);
                 await ProcessAttributesInXPathAsync(sbdRange, strRange, true, token).ConfigureAwait(false);
 
-                if (Category == "Throwing Weapons" || (Skill != null
-                                                       && await Skill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
-                                                       == "Throwing Weapons"))
+                if (Category == "Throwing Weapons")
                     sbdRange.Append(" + ").Append((await ImprovementManager
                                                          .ValueOfAsync(_objCharacter,
                                                                        Improvement.ImprovementType.ThrowRange,
                                                                        token: token).ConfigureAwait(false))
                                                   .ToString(GlobalSettings.InvariantCultureInfo));
+                else
+                {
+                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                    string strSkillDictionaryKey = objSkill != null
+                        ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                        : string.Empty;
+                    if (strSkillDictionaryKey == "Throwing Weapons")
+                        sbdRange.Append(" + ").Append((await ImprovementManager
+                                .ValueOfAsync(_objCharacter,
+                                    Improvement.ImprovementType.ThrowRange,
+                                    token: token).ConfigureAwait(false))
+                            .ToString(GlobalSettings.InvariantCultureInfo));
+                }
 
                 // Replace the division sign with "div" since we're using XPath.
                 sbdRange.Replace("/", " div ");
@@ -6718,7 +6751,7 @@ namespace Chummer.Backend.Equipment
                     }
                 case FiringMode.Skill:
                     {
-                        Skill objSkill = Skill;
+                        Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                         if (objSkill != null)
                         {
                             if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
@@ -6913,41 +6946,62 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strCategory = Category;
-                string strSpec = string.Empty;
 
                 // If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
                 if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(Range))
                     strCategory = Range;
-
-                // Exotic Skills require a matching Specialization.
-                string strSkill = GetSkillName(strCategory, ref strSpec);
+                string strSkill = GetSkillDictionaryKey(strCategory);
 
                 // Use the Skill defined by the Weapon if one is present.
                 if (!string.IsNullOrEmpty(UseSkill))
                 {
                     strSkill = UseSkill;
-                    strSpec = string.Empty;
 
                     (bool blnIsExotic, string strSkillName)
-                        = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, UseSkill);
+                        = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, strSkill);
                     if (blnIsExotic)
                     {
-                        strSkill = strSkillName;
-                        strSpec = UseSkillSpec;
+                        strSkill = strSkillName + " (" + UseSkillSpec + ')';
                     }
                 }
 
                 // Locate the Active Skill to be used.
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
-                if (string.IsNullOrEmpty(strSpec) || objSkill == null || objSkill.HasSpecialization(strSpec)
-                    || objSkill.HasSpecialization(Name)
-                    || (!string.IsNullOrEmpty(Spec2) && objSkill.HasSpecialization(Spec2)))
-                    return objSkill;
-                return null;
+                return _objCharacter.SkillsSection.GetActiveSkill(strSkill);
             }
         }
 
-        private string GetSkillName(string strCategory, ref string strSpec)
+        private async Task<Skill> GetSkillAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strCategory = Category;
+
+            // If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
+            if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(Range))
+                strCategory = Range;
+
+            // Exotic Skills require a matching Specialization.
+            string strSkill = GetSkillDictionaryKey(strCategory);
+
+            // Use the Skill defined by the Weapon if one is present.
+            if (!string.IsNullOrEmpty(UseSkill))
+            {
+                strSkill = UseSkill;
+
+                (bool blnIsExotic, string strSkillName)
+                    = await ExoticSkill.IsExoticSkillNameTupleAsync(_objCharacter, strSkill, token)
+                        .ConfigureAwait(false);
+                if (blnIsExotic)
+                {
+                    strSkill = strSkillName + " (" + UseSkillSpec + ')';
+                }
+            }
+
+            // Locate the Active Skill to be used.
+            return await _objCharacter.SkillsSection.GetActiveSkillAsync(strSkill, token)
+                .ConfigureAwait(false);
+        }
+
+        private string GetSkillDictionaryKey(string strCategory)
         {
             string strSkill;
             switch (strCategory)
@@ -6974,24 +7028,20 @@ namespace Chummer.Backend.Equipment
                     break;
 
                 case "Exotic Melee Weapons":
-                    strSkill = "Exotic Melee Weapon";
-                    strSpec = UseSkillSpec;
+                    strSkill = "Exotic Melee Weapon (" + UseSkillSpec + ')';
                     break;
 
                 case "Exotic Ranged Weapons":
                 case "Special Weapons":
-                    strSkill = "Exotic Ranged Weapon";
-                    strSpec = UseSkillSpec;
+                    strSkill = "Exotic Ranged Weapon (" + UseSkillSpec + ')';
                     break;
 
                 case "Flamethrowers":
-                    strSkill = "Exotic Ranged Weapon";
-                    strSpec = "Flamethrowers";
+                    strSkill = "Exotic Ranged Weapon (Flamethrowers)";
                     break;
 
                 case "Laser Weapons":
-                    strSkill = "Exotic Ranged Weapon";
-                    strSpec = "Laser Weapons";
+                    strSkill = "Exotic Ranged Weapon (Laser Weapons)";
                     break;
 
                 case "Assault Cannons":
@@ -10650,12 +10700,31 @@ namespace Chummer.Backend.Equipment
                     intUseAGIBase = await objAgility.GetTotalBaseAsync(token).ConfigureAwait(false);
                 }
 
-                if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
+                if (Category == "Throwing Weapons")
                     intUseSTR += (blnForRange
                             ? await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token).ConfigureAwait(false) +
                               await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR, token: token).ConfigureAwait(false)
                             : await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token).ConfigureAwait(false))
                         .StandardRound();
+                else
+                {
+                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                    string strSkillDictionaryKey = objSkill != null
+                        ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                        : string.Empty;
+                    if (strSkillDictionaryKey == "Throwing Weapons")
+                        intUseSTR += (blnForRange
+                                ? await ImprovementManager
+                                      .ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token)
+                                      .ConfigureAwait(false) +
+                                  await ImprovementManager.ValueOfAsync(_objCharacter,
+                                      Improvement.ImprovementType.ThrowRangeSTR, token: token).ConfigureAwait(false)
+                                : await ImprovementManager
+                                    .ValueOfAsync(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token)
+                                    .ConfigureAwait(false))
+                            .StandardRound();
+                }
+
                 dicAttributeOverrides = new Dictionary<string, int>(6)
                 {
                     {"STR", intUseSTR},
