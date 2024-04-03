@@ -92,6 +92,7 @@ Data Changes:
 - Changed 'unknown' Spell category to 'other' on sheets. Closes #5096
 - Removed power and quality requirements from Psychometry art. Any awakened should now have access to this metamagic provided they have the Art or the relevant optional rule enabled to ignore arts.
 - Fixed the underbarrel grenade launcher not properly using requirements to be available onlty to rifle-sized weapons.
+- Marked the Changeling qualities as not doubling cost in career mode. Closes #5118
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership

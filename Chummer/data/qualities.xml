@@ -2631,6 +2631,7 @@
       <karma>10</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
       <bonus>
         <metageniclimit>30</metageniclimit>
       </bonus>
@@ -2650,6 +2651,7 @@
       <karma>15</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
       <bonus>
         <metageniclimit>30</metageniclimit>
       </bonus>
@@ -2669,6 +2671,7 @@
       <karma>30</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
+      <doublecareer>False</doublecareer>
       <bonus>
         <metageniclimit>30</metageniclimit>
       </bonus>
