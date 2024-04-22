@@ -18638,7 +18638,7 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="greaterthanorequals">4</conceal>
+          <conceal operation="greaterthanequals">4</conceal>
         </weapondetails>
       </required>
     </accessory>
