@@ -16253,7 +16253,13 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">0</conceal>
+          <OR>
+           <conceal operation="lessthanequals">0</conceal>
+           <category>Tasers</category>
+           <category>Holdouts</category>
+           <category>Light Pistols</category>
+           <category>Heavy Pistols</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
@@ -16377,7 +16383,13 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">0</conceal>
+          <OR>
+           <conceal operation="lessthanequals">0</conceal>
+           <category>Tasers</category>
+           <category>Holdouts</category>
+           <category>Light Pistols</category>
+           <category>Heavy Pistols</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
@@ -16588,10 +16600,29 @@
       </required>
       <forbidden>
         <weapondetails>
-          <name>HK Urban Fighter</name>
+          <OR>
+           <name>HK Urban Fighter</name>
+           <name>Hammerli Gemini</name>
+          </OR>
         </weapondetails>
       </forbidden>
     </accessory>
+    <accessory>
+      <id>20f3fdc1-6652-4619-a606-1a3d7bad1296</id>
+      <name>Hammerli Gemini Spare Clip</name>
+      <mount />
+      <avail>4</avail>
+      <cost>10</cost>
+      <source>SL</source>
+      <page>31</page>
+      <ammoslots>1</ammoslots>
+      <rating>0</rating>
+      <required>
+        <weapondetails>
+          <name>Hammerli Gemini</name>
+        </weapondetails>
+      </required>
+    </accessory>    
     <accessory>
       <id>6763996b-0458-46ee-a6a5-f50255ace664</id>
       <name>Belt-Feed, 100-round</name>
@@ -16956,7 +16987,13 @@
       </forbidden>
       <required>
         <weapondetails>
-          <conceal operation="lessthanequals">0</conceal>
+          <OR>
+           <conceal operation="lessthanequals">0</conceal>
+           <category>Tasers</category>
+           <category>Holdouts</category>
+           <category>Light Pistols</category>
+           <category>Heavy Pistols</category>
+          </OR>
         </weapondetails>
       </required>
     </accessory>
