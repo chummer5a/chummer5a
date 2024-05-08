@@ -2397,12 +2397,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                Program.ShowScrollableMessageBox(ex.ToString());
+                await Program.ShowScrollableMessageBoxAsync(ex.ToString(), token: token).ConfigureAwait(false);
                 return;
             }
             catch (XmlException ex)
             {
-                Program.ShowScrollableMessageBox(ex.ToString());
+                await Program.ShowScrollableMessageBoxAsync(ex.ToString(), token: token).ConfigureAwait(false);
                 return;
             }
 

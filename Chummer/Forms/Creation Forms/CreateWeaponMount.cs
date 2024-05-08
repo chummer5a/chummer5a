@@ -474,11 +474,11 @@ namespace Chummer
                                 break;
                         }
 
-                        if (decCost > _objCharacter.Nuyen)
+                        if (decCost > await _objCharacter.GetNuyenAsync(_objGenericToken).ConfigureAwait(false))
                         {
-                            Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: _objGenericToken).ConfigureAwait(false),
-                                                             await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: _objGenericToken).ConfigureAwait(false),
-                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: _objGenericToken).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: _objGenericToken).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: _objGenericToken).ConfigureAwait(false);
                             if (blnRemoveMountAfterCheck)
                             {
                                 await _objVehicle.WeaponMounts.RemoveAsync(_objMount, _objGenericToken).ConfigureAwait(false);
@@ -521,9 +521,9 @@ namespace Chummer
 
                         if (blnOverCapacity)
                         {
-                            Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached", token: _objGenericToken).ConfigureAwait(false),
-                                                             await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: _objGenericToken).ConfigureAwait(false),
-                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CapacityReached", token: _objGenericToken).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: _objGenericToken).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: _objGenericToken).ConfigureAwait(false);
                             if (blnRemoveMountAfterCheck)
                             {
                                 await _objVehicle.WeaponMounts.RemoveAsync(_objMount, _objGenericToken).ConfigureAwait(false);

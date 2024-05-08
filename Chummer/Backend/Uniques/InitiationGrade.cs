@@ -583,12 +583,12 @@ namespace Chummer
                     if (Grade != await _objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false)
                         && blnPerformGradeCheck)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token)
                                 .ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
                                 .ConfigureAwait(false), MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                            MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         return false;
                     }
 
@@ -604,12 +604,12 @@ namespace Chummer
                     if (Grade != await _objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false)
                         && blnPerformGradeCheck)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token)
                                 .ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
                                 .ConfigureAwait(false), MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                            MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         return false;
                     }
 

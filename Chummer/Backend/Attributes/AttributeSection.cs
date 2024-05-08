@@ -1451,8 +1451,7 @@ namespace Chummer.Backend.Attributes
                                                               ']');
                         // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
                         if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null
-                            &&
-                            _objCharacter.LastSavedVersion < new Version(5, 200, 25))
+                            && _objCharacter.LastSavedVersion < new Version(5, 200, 25))
                         {
                             CharacterAttrib objAttribute;
                             switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
@@ -2497,29 +2496,28 @@ namespace Chummer.Backend.Attributes
                 {
                     strReturn = strReturn
                                 .CheapReplace('{' + strCharAttributeName + '}', () =>
-                                                  (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
-                                                      ? dicValueOverrides[strCharAttributeName]
+                                                  (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
+                                                      ? intOverride
                                                       : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
                                 .CheapReplace('{' + strCharAttributeName + "Unaug}", () =>
-                                                  (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug")
-                                                   == true
-                                                      ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                                                  (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
+                                                      ? intOverride
                                                       : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
                                 .CheapReplace('{' + strCharAttributeName + "Base}", () =>
-                                                  (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
-                                                      ? dicValueOverrides[strCharAttributeName + "Base"]
+                                                  (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
+                                                      ? intOverride
                                                       : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
                                 .CheapReplace('{' + strCharAttributeName + "Minimum}", () =>
-                                    (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
-                                        ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                                    (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
+                                        ? intOverride
                                         : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMinimum)
                                     .ToString(GlobalSettings.InvariantCultureInfo))
                                 .CheapReplace('{' + strCharAttributeName + "Maximum}", () =>
-                                    (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
-                                        ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                                    (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
+                                        ? intOverride
                                         : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMaximum)
                                     .ToString(GlobalSettings.InvariantCultureInfo));
                 }
@@ -2539,28 +2537,28 @@ namespace Chummer.Backend.Attributes
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
-                            ? dicValueOverrides[strCharAttributeName]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
+                            ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
                         .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
-                            ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
+                            ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
                         .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
-                            ? dicValueOverrides[strCharAttributeName + "Base"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
+                            ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
                         .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Minimum}", () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
-                            ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
+                            ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMinimum)
                         .ToString(GlobalSettings.InvariantCultureInfo));
                     sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Maximum}", () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
-                            ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
+                            ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMaximum)
                         .ToString(GlobalSettings.InvariantCultureInfo));
                 }
@@ -2582,31 +2580,30 @@ namespace Chummer.Backend.Attributes
                         .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
                     strReturn = await (await (await (await (await strReturn
                                         .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
-                                            (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
-                                                ? dicValueOverrides[strCharAttributeName]
+                                            (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
+                                                ? intOverride
                                                 : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                         .ConfigureAwait(false))
                                     .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
-                                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug")
-                                         == true
-                                            ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
+                                            ? intOverride
                                             : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                     .ConfigureAwait(false))
                                 .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
-                                    (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
-                                        ? dicValueOverrides[strCharAttributeName + "Base"]
+                                    (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
+                                        ? intOverride
                                         : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
                                     .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                             .CheapReplaceAsync('{' + strCharAttributeName + "Minimum}", async () =>
-                                (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
-                                    ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                                (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
+                                    ? intOverride
                                     : await objAttribute.GetTotalMinimumAsync(token).ConfigureAwait(false))
                                 .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                         .CheapReplaceAsync('{' + strCharAttributeName + "Maximum}", async () =>
-                            (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
-                                ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                            (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
+                                ? intOverride
                                 : await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false))
                             .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
@@ -2634,28 +2631,28 @@ namespace Chummer.Backend.Attributes
                     CharacterAttrib objAttribute = await _objCharacter
                         .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
-                            ? dicValueOverrides[strCharAttributeName]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
+                            ? intOverride
                             : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
-                            ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
+                            ? intOverride
                             : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
-                            ? dicValueOverrides[strCharAttributeName + "Base"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
+                            ? intOverride
                             : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Minimum}", async () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Minimum") == true
-                            ? dicValueOverrides[strCharAttributeName + "Minimum"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
+                            ? intOverride
                             : await objAttribute.GetTotalMinimumAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Maximum}", async () =>
-                        (dicValueOverrides?.ContainsKey(strCharAttributeName + "Maximum") == true
-                            ? dicValueOverrides[strCharAttributeName + "Maximum"]
+                        (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
+                            ? intOverride
                             : await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }

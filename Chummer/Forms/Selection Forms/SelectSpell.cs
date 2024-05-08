@@ -388,7 +388,7 @@ namespace Chummer
                             if ((await ImprovementManager
                                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                            Improvement.ImprovementType.LimitSpellCategory, token: token).ConfigureAwait(false))
-                                .Any(x => x.ImprovedName != strSpellCategory))
+                                .Exists(x => x.ImprovedName != strSpellCategory))
                             {
                                 continue;
                             }
@@ -481,7 +481,7 @@ namespace Chummer
                     {
                         if (intAlchPrepCount >= intSpellLimit)
                         {
-                            Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             return;
                         }
                     }
@@ -489,14 +489,14 @@ namespace Chummer
                     {
                         if (intRitualCount >= intSpellLimit)
                         {
-                            Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             return;
                         }
                     }
                     else if (intSpellCount >= intSpellLimit)
                     {
-                        Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token).ConfigureAwait(false),
-                                                         await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         return;
                     }
                 }

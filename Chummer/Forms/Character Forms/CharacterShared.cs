@@ -340,11 +340,11 @@ namespace Chummer
                             }
                             catch (UnauthorizedAccessException)
                             {
-                                Program.ShowScrollableMessageBox(
+                                await Program.ShowScrollableMessageBoxAsync(
                                     this,
                                     await LanguageManager
                                         .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
-                                        .ConfigureAwait(false));
+                                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
                                 return;
                             }
                         }
@@ -409,7 +409,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -6133,12 +6133,12 @@ namespace Chummer
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
-                                                            Program.ShowScrollableMessageBox(this,
+                                                            await Program.ShowScrollableMessageBoxAsync(this,
                                                                 await LanguageManager.GetStringAsync(
                                                                     "Message_FocusMaximumForce", token: token).ConfigureAwait(false),
                                                                 await LanguageManager.GetStringAsync(
                                                                     "MessageTitle_FocusMaximum", token: token).ConfigureAwait(false),
-                                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                                             blnWarned = true;
                                                             break;
                                                         }
@@ -6350,12 +6350,12 @@ namespace Chummer
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
-                                                            Program.ShowScrollableMessageBox(this,
+                                                            await Program.ShowScrollableMessageBoxAsync(this,
                                                                 await LanguageManager.GetStringAsync(
                                                                     "Message_FocusMaximumForce", token: token).ConfigureAwait(false),
                                                                 await LanguageManager.GetStringAsync(
                                                                     "MessageTitle_FocusMaximum", token: token).ConfigureAwait(false),
-                                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                                             blnWarned = true;
                                                             break;
                                                         }
@@ -9087,12 +9087,12 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), token: token).ConfigureAwait(false);
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -9540,15 +9540,15 @@ namespace Chummer
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 CharacterObject.BoundSpiritLimit)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token)
                             .ConfigureAwait(false),
-                        CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
+                        await CharacterObject.Settings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), CharacterObject.BoundSpiritLimit),
                     await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token)
                         .ConfigureAwait(false),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -9571,16 +9571,16 @@ namespace Chummer
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 CharacterObject.RegisteredSpriteLimit)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token)
                             .ConfigureAwait(false),
-                        CharacterObject.Settings.RegisteredSpriteExpression,
+                        await CharacterObject.Settings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false),
                         CharacterObject.RegisteredSpriteLimit),
                     await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token)
                         .ConfigureAwait(false),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -9693,7 +9693,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (!File.Exists(strFileName))
                     {
-                        Program.ShowScrollableMessageBox(string.Format(strErrorString, strFileName));
+                        await Program.ShowScrollableMessageBoxAsync(string.Format(strErrorString, strFileName), token: token).ConfigureAwait(false);
                         blnMakeLoop = true;
                     }
                 }
@@ -10744,13 +10744,13 @@ namespace Chummer
                                 {
                                     if (decCost > CharacterObject.Nuyen)
                                     {
-                                        Program.ShowScrollableMessageBox(this,
+                                        await Program.ShowScrollableMessageBoxAsync(this,
                                             await LanguageManager.GetStringAsync(
                                                 "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                             await LanguageManager.GetStringAsync(
                                                 "MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                             MessageBoxButtons.OK,
-                                            MessageBoxIcon.Information);
+                                            MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                         continue;
                                     }
 

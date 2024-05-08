@@ -320,13 +320,13 @@ namespace Chummer
 
                 if (lstSkills.Count == 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager
-                                            .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
-                                            .ConfigureAwait(false),
-                                      _strSourceName));
+                            await LanguageManager
+                                .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
+                                .ConfigureAwait(false),
+                            _strSourceName)).ConfigureAwait(false);
                     await this.DoThreadSafeAsync(x =>
                     {
                         x.DialogResult = DialogResult.Cancel;
@@ -363,13 +363,13 @@ namespace Chummer
                     int intCount = await cboExtra.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false);
                     if (intCount == 0)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager
-                                                .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
-                                                .ConfigureAwait(false),
-                                          _strSourceName));
+                                await LanguageManager
+                                    .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
+                                    .ConfigureAwait(false),
+                                _strSourceName)).ConfigureAwait(false);
                         await this.DoThreadSafeAsync(x =>
                         {
                             x.DialogResult = DialogResult.Cancel;

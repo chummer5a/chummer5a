@@ -1853,10 +1853,10 @@ namespace Chummer
                 return;
             if ((await cboGrade.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)).StartsWith('*'))
             {
-                Program.ShowScrollableMessageBox(this,
-                                                 await LanguageManager.GetStringAsync("Message_BannedGrade", token: token).ConfigureAwait(false),
-                                                 await LanguageManager.GetStringAsync("MessageTitle_BannedGrade", token: token).ConfigureAwait(false),
-                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this,
+                    await LanguageManager.GetStringAsync("Message_BannedGrade", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_BannedGrade", token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
             XPathNavigator objCyberwareNode = _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
@@ -1896,10 +1896,10 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false),
-                                                                             decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo),
-                                                                             decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
-                                                         await LanguageManager.GetStringAsync("MessageTitle_OverCapacityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false),
+                                decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo),
+                                decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
+                            await LanguageManager.GetStringAsync("MessageTitle_OverCapacityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         return;
                     }
                 }
@@ -2032,7 +2032,7 @@ namespace Chummer
 
                     string strOldSelected = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                     bool blnDoSkipRefresh = strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId
-                                                                             || lstGrade.Any(
+                                                                             || lstGrade.Exists(
                                                                                  x => x.Value.ToString()
                                                                                      == strOldSelected);
                     if (blnDoSkipRefresh)

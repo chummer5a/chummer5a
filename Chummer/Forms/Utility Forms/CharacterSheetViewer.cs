@@ -334,11 +334,11 @@ namespace Chummer
                 }
                 catch (XmlException)
                 {
-                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -438,12 +438,12 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(strPdfPrinter))
                     {
-                        DialogResult ePdfPrinterDialogResult = Program.ShowScrollableMessageBox(this,
+                        DialogResult ePdfPrinterDialogResult = await Program.ShowScrollableMessageBoxAsync(this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
-                                          strPdfPrinter),
+                                await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
+                                strPdfPrinter),
                             await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information, token: _objGenericToken).ConfigureAwait(false);
                         switch (ePdfPrinterDialogResult)
                         {
                             case DialogResult.Cancel:
@@ -451,9 +451,9 @@ namespace Chummer
                                 return;
 
                             case DialogResult.Yes:
-                                Program.ShowScrollableMessageBox(this,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "Message_Viewer_PDFPrinterError", token: _objGenericToken).ConfigureAwait(false));
+                                await Program.ShowScrollableMessageBoxAsync(this,
+                                    await LanguageManager.GetStringAsync(
+                                        "Message_Viewer_PDFPrinterError", token: _objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                                 break;
                         }
                     }
@@ -474,19 +474,19 @@ namespace Chummer
 
                     if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
                     {
-                        Program.ShowScrollableMessageBox(this,
-                                               string.Format(GlobalSettings.CultureInfo,
-                                                             await LanguageManager.GetStringAsync(
-                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile), token: _objGenericToken).ConfigureAwait(false);
                         return;
                     }
 
                     if (!await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: _objGenericToken).ConfigureAwait(false))
                     {
-                        Program.ShowScrollableMessageBox(this,
-                                               string.Format(GlobalSettings.CultureInfo,
-                                                             await LanguageManager.GetStringAsync(
-                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile), token: _objGenericToken).ConfigureAwait(false);
                         return;
                     }
 
@@ -538,7 +538,7 @@ namespace Chummer
                     }
                     catch (Exception ex)
                     {
-                        Program.ShowScrollableMessageBox(this, ex.ToString());
+                        await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), token: _objGenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -943,7 +943,7 @@ namespace Chummer
                     string strReturn = "File not found when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -964,7 +964,7 @@ namespace Chummer
                                        + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
                 catch (PathTooLongException)
@@ -977,7 +977,7 @@ namespace Chummer
                                        + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
                 catch (UnauthorizedAccessException)
@@ -990,7 +990,7 @@ namespace Chummer
                                        + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
                 catch (XsltException ex)
@@ -1003,7 +1003,7 @@ namespace Chummer
                     Log.Debug(strReturn);
                     Log.Error("ERROR Message = " + ex.Message);
                     strReturn += ex.Message;
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
 

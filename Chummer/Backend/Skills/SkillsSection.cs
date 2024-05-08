@@ -4002,9 +4002,8 @@ namespace Chummer.Backend.Skills
                                                                return objLoopSkill.DisplayName(strLanguage)
                                                                       + string.Format(
                                                                           objCultureInfo, strFormat,
-                                                                          dicValueOverrides?.ContainsKey(strSkillKey)
-                                                                          == true
-                                                                              ? dicValueOverrides[strSkillKey]
+                                                                          dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
+                                                                              ? intOverride
                                                                               : objLoopSkill.PoolOtherAttribute(
                                                                                   objLoopSkill.Attribute,
                                                                                   intAttributeOverrideValue:
@@ -4051,9 +4050,8 @@ namespace Chummer.Backend.Skills
                                                   return objLoopSkill.DisplayName(strLanguage)
                                                          + string.Format(
                                                              objCultureInfo, strFormat,
-                                                             dicValueOverrides?.ContainsKey(strSkillKey)
-                                                             == true
-                                                                 ? dicValueOverrides[strSkillKey]
+                                                             dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
+                                                                 ? intOverride
                                                                  : objLoopSkill.PoolOtherAttribute(
                                                                      objLoopSkill.Attribute,
                                                                      intAttributeOverrideValue:

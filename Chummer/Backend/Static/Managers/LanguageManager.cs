@@ -257,10 +257,14 @@ namespace Chummer
             {
                 if (!objNewLanguage.ErrorAlreadyShown)
                 {
-                    Program.ShowScrollableMessageBox(
-                        "Language with code " + strLanguage + " could not be loaded for the following reasons:" +
-                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string strMessage = "Language with code " + strLanguage +
+                                        " could not be loaded for the following reasons:" +
+                                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        Program.ShowScrollableMessageBox(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        await Program.ShowScrollableMessageBoxAsync(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     objNewLanguage.ErrorAlreadyShown = true;
                 }
 
@@ -1232,9 +1236,10 @@ namespace Chummer
             }
 
             // Display the message.
-            Program.ShowScrollableMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
-                                             "Language File Contents", MessageBoxButtons.OK,
-                                             MessageBoxIcon.Information);
+            await Program.ShowScrollableMessageBoxAsync(
+                !string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
+                "Language File Contents", MessageBoxButtons.OK,
+                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
         }
 
         // List of arrays for XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter.

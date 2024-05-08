@@ -2506,13 +2506,13 @@ namespace Chummer
 
                             if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                             {
-                                Program.ShowScrollableMessageBox(
+                                await Program.ShowScrollableMessageBoxAsync(
                                     await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
                                         .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(
                                         "MessageTitle_NotEnoughKarma", token: token).ConfigureAwait(false),
                                     MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                 blnAddItem = false;
                             }
 
@@ -2542,13 +2542,13 @@ namespace Chummer
                             {
                                 if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                                 {
-                                    Program.ShowScrollableMessageBox(
+                                    await Program.ShowScrollableMessageBoxAsync(
                                         await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
                                             .ConfigureAwait(false),
                                         await LanguageManager
                                             .GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
                                             .ConfigureAwait(false),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                     blnAddItem = false;
                                 }
 

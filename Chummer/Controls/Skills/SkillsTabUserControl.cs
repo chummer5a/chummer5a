@@ -1116,9 +1116,9 @@ namespace Chummer.UI.Skills
                         && await objSkill.GetUpgradeKarmaCostAsync(MyToken).ConfigureAwait(false)
                         > await _objCharacter.GetKarmaAsync(MyToken).ConfigureAwait(false))
                     {
-                        Program.ShowScrollableMessageBox(await LanguageManager
+                        await Program.ShowScrollableMessageBoxAsync(await LanguageManager
                             .GetStringAsync("Message_NotEnoughKarma", token: MyToken)
-                            .ConfigureAwait(false));
+                            .ConfigureAwait(false), token: MyToken).ConfigureAwait(false);
                         await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill, MyToken)
                             .ConfigureAwait(false);
                         return;
@@ -1170,29 +1170,29 @@ namespace Chummer.UI.Skills
                         && (await skill.GetIsLanguageAsync(MyToken).ConfigureAwait(false)
                             || string.IsNullOrEmpty(await skill.GetTypeAsync(MyToken).ConfigureAwait(false))))
                     {
-                        DialogResult eDialogResult = Program.ShowScrollableMessageBox(this,
-                                                                            string.Format(GlobalSettings.CultureInfo,
-                                                                                await LanguageManager
-                                                                                    .GetStringAsync(
-                                                                                        "Message_NewNativeLanguageSkill",
-                                                                                        token: MyToken)
-                                                                                    .ConfigureAwait(false),
-                                                                                1 + await ImprovementManager
-                                                                                    .ValueOfAsync(
-                                                                                        _objCharacter,
-                                                                                        Improvement.ImprovementType
-                                                                                            .NativeLanguageLimit,
-                                                                                        token: MyToken)
-                                                                                    .ConfigureAwait(false),
-                                                                                await skill
-                                                                                    .GetWritableNameAsync(MyToken)
-                                                                                    .ConfigureAwait(false)),
-                                                                            await LanguageManager
-                                                                                .GetStringAsync(
-                                                                                    "Tip_Skill_NativeLanguage",
-                                                                                    token: MyToken)
-                                                                                .ConfigureAwait(false),
-                                                                            MessageBoxButtons.YesNoCancel);
+                        DialogResult eDialogResult = await Program.ShowScrollableMessageBoxAsync(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager
+                                    .GetStringAsync(
+                                        "Message_NewNativeLanguageSkill",
+                                        token: MyToken)
+                                    .ConfigureAwait(false),
+                                1 + await ImprovementManager
+                                    .ValueOfAsync(
+                                        _objCharacter,
+                                        Improvement.ImprovementType
+                                            .NativeLanguageLimit,
+                                        token: MyToken)
+                                    .ConfigureAwait(false),
+                                await skill
+                                    .GetWritableNameAsync(MyToken)
+                                    .ConfigureAwait(false)),
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "Tip_Skill_NativeLanguage",
+                                    token: MyToken)
+                                .ConfigureAwait(false),
+                            MessageBoxButtons.YesNoCancel, token: MyToken).ConfigureAwait(false);
                         switch (eDialogResult)
                         {
                             case DialogResult.Cancel:

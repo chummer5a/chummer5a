@@ -1794,13 +1794,13 @@ namespace Chummer
                                         .ConfigureAwait(false);
                                 if (lstInternalIdsNeedingReapplyImprovements?.Count > 0
                                     && !Utils.IsUnitTest
-                                    && Program.ShowScrollableMessageBox(this,
+                                    && await Program.ShowScrollableMessageBoxAsync(this,
                                         await LanguageManager.GetStringAsync(
                                             "Message_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
                                         await LanguageManager.GetStringAsync(
                                                 "MessageTitle_ImprovementLoadError", token: GenericToken)
                                             .ConfigureAwait(false),
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, token: GenericToken)
                                     == DialogResult.Yes)
                                 {
                                     await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
@@ -1867,7 +1867,7 @@ namespace Chummer
                         {
                             string strCharacterName = await CharacterObject.GetCharacterNameAsync(GenericToken)
                                                                            .ConfigureAwait(false);
-                            DialogResult eResult = Program.ShowScrollableMessageBox(
+                            DialogResult eResult = await Program.ShowScrollableMessageBoxAsync(
                                 this,
                                 string.Format(GlobalSettings.CultureInfo,
                                               await LanguageManager
@@ -1876,7 +1876,7 @@ namespace Chummer
                                               strCharacterName),
                                 await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", token: GenericToken)
                                                      .ConfigureAwait(false),
-                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, token: GenericToken);
                             switch (eResult)
                             {
                                 case DialogResult.Yes:
@@ -3458,14 +3458,14 @@ namespace Chummer
             {
                 // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
                 // Verify that the user wants to go through with it.
-                if (Program.ShowScrollableMessageBox(
+                if (await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_ConfirmReapplyImprovements", token: GenericToken)
                                              .ConfigureAwait(false),
                         await LanguageManager
                               .GetStringAsync("MessageTitle_ConfirmReapplyImprovements", token: GenericToken)
                               .ConfigureAwait(false),
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: GenericToken) == DialogResult.No)
                     return;
                 await DoReapplyImprovements(token: GenericToken).ConfigureAwait(false);
             }
@@ -3695,7 +3695,7 @@ namespace Chummer
                 : await LanguageManager.GetStringAsync("String_SelectedItem", token: token).ConfigureAwait(false);
             // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
             // Verify that the user wants to go through with it.
-            if (Program.ShowScrollableMessageBox(
+            if (await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                                   await LanguageManager
@@ -3704,7 +3704,7 @@ namespace Chummer
                     await LanguageManager
                           .GetStringAsync("MessageTitle_ConfirmReapplySpecificImprovements", token: token)
                           .ConfigureAwait(false),
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token) == DialogResult.No)
                 return;
             await DoReapplyImprovements(strSelectedId.Yield().ToList(), token: token).ConfigureAwait(false);
         }
@@ -4499,7 +4499,7 @@ namespace Chummer
 
                         if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 this, await LanguageManager.GetStringAsync(
                                                                "Message_ReapplyImprovementsFoundOutdatedItems_Top",
                                                                token: token)
@@ -4513,7 +4513,7 @@ namespace Chummer
                                       .GetStringAsync("MessageTitle_ConfirmReapplyImprovements", token: token)
                                       .ConfigureAwait(false),
                                 MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
+                                MessageBoxIcon.Error, token: token);
                         }
                     }
                 }
@@ -5135,14 +5135,14 @@ namespace Chummer
                                                                     Improvement.ImprovementType.ComplexFormLimit,
                                                                     token: GenericToken)
                                                       .ConfigureAwait(false)
-                            && !CharacterObject.IgnoreRules)
+                            && !await CharacterObject.GetIgnoreRulesAsync(GenericToken))
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 this,
                                 await LanguageManager.GetStringAsync("Message_ComplexFormLimit", token: GenericToken).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit", token: GenericToken)
                                                      .ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                             break;
                         }
 
@@ -5800,7 +5800,7 @@ namespace Chummer
                                     .GetTotalValueAsync(GenericToken)
                                     .ConfigureAwait(false))
                             {
-                                Program.ShowScrollableMessageBox(
+                                await Program.ShowScrollableMessageBoxAsync(
                                     this,
                                     await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade",
                                             token: GenericToken)
@@ -5809,7 +5809,7 @@ namespace Chummer
                                             token: GenericToken)
                                         .ConfigureAwait(false),
                                     MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                                    MessageBoxIcon.Information, token: GenericToken);
                                 return;
                             }
 
@@ -5846,7 +5846,7 @@ namespace Chummer
                                         .ConfigureAwait(false))
                                     .GetTotalValueAsync(GenericToken).ConfigureAwait(false))
                             {
-                                Program.ShowScrollableMessageBox(
+                                await Program.ShowScrollableMessageBoxAsync(
                                     this,
                                     await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade",
                                             token: GenericToken)
@@ -5855,7 +5855,7 @@ namespace Chummer
                                             token: GenericToken)
                                         .ConfigureAwait(false),
                                     MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                                    MessageBoxIcon.Information, token: GenericToken);
                                 return;
                             }
 
@@ -6189,7 +6189,7 @@ namespace Chummer
                                                     intBP += await CharacterObject.GetNegativeQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                                     if (intBP < intMaxQualityAmount * -1)
                                                     {
-                                                        Program.ShowScrollableMessageBox(this,
+                                                        await Program.ShowScrollableMessageBoxAsync(this,
                                                                                string.Format(GlobalSettings.CultureInfo,
                                                                                    await LanguageManager.GetStringAsync(
                                                                                            "Message_NegativeQualityLimit", token: GenericToken)
@@ -6199,14 +6199,14 @@ namespace Chummer
                                                                                        "MessageTitle_NegativeQualityLimit", token: GenericToken)
                                                                                    .ConfigureAwait(false),
                                                                                MessageBoxButtons.OK,
-                                                                               MessageBoxIcon.Information);
+                                                                               MessageBoxIcon.Information, token: GenericToken);
                                                         blnAddItem = false;
                                                     }
                                                     else if (await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < 0
                                                              && intBP + await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false)
                                                              < intMaxQualityAmount * -1)
                                                     {
-                                                        Program.ShowScrollableMessageBox(this,
+                                                        await Program.ShowScrollableMessageBoxAsync(this,
                                                                                string.Format(GlobalSettings.CultureInfo,
                                                                                    await LanguageManager.GetStringAsync(
                                                                                            "Message_NegativeQualityAndMetatypeLimit", token: GenericToken)
@@ -6216,7 +6216,7 @@ namespace Chummer
                                                                                        "MessageTitle_NegativeQualityLimit", token: GenericToken)
                                                                                    .ConfigureAwait(false),
                                                                                MessageBoxButtons.OK,
-                                                                               MessageBoxIcon.Information);
+                                                                               MessageBoxIcon.Information, token: GenericToken);
                                                         blnAddItem = false;
                                                     }
                                                 }
@@ -6227,7 +6227,7 @@ namespace Chummer
                                                 intBP += await CharacterObject.GetPositiveQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                                 if (intBP > intMaxQualityAmount)
                                                 {
-                                                    Program.ShowScrollableMessageBox(this,
+                                                    await Program.ShowScrollableMessageBoxAsync(this,
                                                                            string.Format(GlobalSettings.CultureInfo,
                                                                                await LanguageManager.GetStringAsync(
                                                                                        "Message_PositiveQualityLimit", token: GenericToken)
@@ -6237,7 +6237,7 @@ namespace Chummer
                                                                                    "MessageTitle_PositiveQualityLimit", token: GenericToken)
                                                                                .ConfigureAwait(false),
                                                                            MessageBoxButtons.OK,
-                                                                           MessageBoxIcon.Information);
+                                                                           MessageBoxIcon.Information, token: GenericToken);
                                                     blnAddItem = false;
                                                 }
                                             }
@@ -6298,16 +6298,16 @@ namespace Chummer
                 // Qualities that come from a Metatype cannot be removed.
                 case QualitySource.Metatype:
                 case QualitySource.Heritage:
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_MetavariantQuality", token: token)
                                              .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token)
-                                             .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                             .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
                     return false;
 
                 case QualitySource.Improvement:
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
                                       await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: token)
@@ -6315,7 +6315,7 @@ namespace Chummer
                                       await objSelectedQuality.GetSourceNameAsync(GlobalSettings.Language, token)
                                                               .ConfigureAwait(false)),
                         await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token)
-                                             .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                             .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
                     return false;
             }
 
@@ -6603,10 +6603,10 @@ namespace Chummer
                 // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
                 if (lstGear.Count < 2)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_CannotStackFoci", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -6645,10 +6645,10 @@ namespace Chummer
                 // Make sure at least 2 Foci were selected.
                 if (lstStack.Count < 2)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -6660,11 +6660,11 @@ namespace Chummer
                     {
                         foreach (Gear objGear in lstStack)
                             objGear.Bonded = false;
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             await LanguageManager.GetStringAsync("Message_StackedFocusForce", token: GenericToken).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                         return;
                     }
                 }
@@ -6901,13 +6901,13 @@ namespace Chummer
                 }
                 else
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_SelectVehicleLocation", token: GenericToken)
                                              .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle", token: GenericToken)
                                              .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -6947,13 +6947,13 @@ namespace Chummer
                                         .ConfigureAwait(false) is Cyberware
                         objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_SelectCyberware", token: GenericToken)
                                              .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware", token: GenericToken)
                                              .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -6979,13 +6979,13 @@ namespace Chummer
                                        .ConfigureAwait(false) is Cyberware
                         objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_SelectCyberware", token: GenericToken)
                                              .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware", token: GenericToken)
                                              .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7009,23 +7009,23 @@ namespace Chummer
                 if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
                                                              GenericToken).ConfigureAwait(false) is Weapon objWeapon))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Accessories cannot be added to Cyberweapons.
                 if (objWeapon.Cyberware)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_CyberweaponNoAccessory", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CyberweaponNoAccessory", token: GenericToken)
                                              .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7033,10 +7033,10 @@ namespace Chummer
                 XmlNode objXmlWeapon = await objWeapon.GetNodeAsync(GenericToken).ConfigureAwait(false);
                 if (objXmlWeapon == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7051,13 +7051,13 @@ namespace Chummer
                         // Make sure the Weapon allows Accessories to be added to it.
                         if (!objWeapon.AllowAccessory)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 this,
                                 await LanguageManager.GetStringAsync("Message_CannotModifyWeapon", token: GenericToken)
                                                      .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon", token: GenericToken)
                                                      .ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                             break;
                         }
 
@@ -7108,10 +7108,10 @@ namespace Chummer
                 if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                     .ConfigureAwait(false) is Armor objArmor))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectArmor", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectArmor", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7212,10 +7212,13 @@ namespace Chummer
                 if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                    .ConfigureAwait(false) is Gear objGear))
                 {
-                    Program.ShowScrollableMessageBox(
-                        this, await LanguageManager.GetStringAsync("Message_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_SelectGear", token: GenericToken)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7279,10 +7282,10 @@ namespace Chummer
                 // Make sure a parent items is selected, then open the Select Vehicle Mod window.
                 if (!(objSelectedNode?.Tag is Vehicle objVehicle))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectVehicle", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7383,21 +7386,21 @@ namespace Chummer
 
                 if (objWeaponMount == null && objMod == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon", token: GenericToken).ConfigureAwait(false),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 if (objWeaponMount?.IsWeaponsFull == true)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_WeaponMountFull", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon", token: GenericToken).ConfigureAwait(false),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7477,13 +7480,13 @@ namespace Chummer
                                        .ConfigureAwait(false) is Weapon
                         objWeapon))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponAccessories", token: GenericToken)
                                              .ConfigureAwait(false),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7491,10 +7494,10 @@ namespace Chummer
                 XmlNode objXmlWeapon = await objWeapon.GetNodeAsync(GenericToken).ConfigureAwait(false);
                 if (objXmlWeapon == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7509,13 +7512,13 @@ namespace Chummer
                         // Make sure the Weapon allows Accessories to be added to it.
                         if (!objWeapon.AllowAccessory)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 this,
                                 await LanguageManager.GetStringAsync("Message_CannotModifyWeapon", token: GenericToken)
                                                      .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon", token: GenericToken)
                                                      .ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                             return;
                         }
 
@@ -7567,13 +7570,13 @@ namespace Chummer
                                        .ConfigureAwait(false) is Weapon
                         objSelectedWeapon))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel", token: GenericToken)
                                              .ConfigureAwait(false),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7653,23 +7656,23 @@ namespace Chummer
 
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique", token: GenericToken)
                                              .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 if (!(objSelectedNode.Tag is MartialArt objMartialArt))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique", token: GenericToken)
                                              .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7738,12 +7741,12 @@ namespace Chummer
                         break;
 
                     default:
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             await LanguageManager.GetStringAsync("Message_SelectGearVehicle", token: GenericToken).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_SelectGearVehicle", token: GenericToken)
                                                  .ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                         return;
                 }
 
@@ -7764,20 +7767,20 @@ namespace Chummer
                 // Make sure a parent items is selected, then open the Select Gear window.
                 if (objSelectedNode == null || objSelectedNode.Level < 2)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Make sure the Gear was found.
                 if (!(objSelectedNode.Tag is Gear objSensor))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -7990,20 +7993,20 @@ namespace Chummer
                 // Make sure a parent item is selected, then open the Select Accessory window.
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectWeaponName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Get the information for the currently selected Weapon.
                 if (!(objSelectedNode.Tag is Weapon objWeapon))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectWeaponName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8042,20 +8045,20 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectGearName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Get the information for the currently selected Gear.
                 if (!(objSelectedNode.Tag is Gear objGear))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectGearName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8095,22 +8098,22 @@ namespace Chummer
                 // Locate the Weapon that is selected in the tree.
                 if (!(objSelectedNode?.Tag is Weapon objSelectedWeapon))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_SelectWeaponUnderbarrel", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon", token: GenericToken).ConfigureAwait(false),
                         MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 if (objSelectedWeapon.Cyberware)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_CyberwareUnderbarrel", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_WeaponUnderbarrel", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8225,10 +8228,10 @@ namespace Chummer
                                     .ConfigureAwait(false) is Armor
                         objArmor))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectArmor", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectArmor", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8254,10 +8257,10 @@ namespace Chummer
                 // Make sure a parent items is selected, then open the Select Gear window.
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectArmor", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectArmor", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8266,10 +8269,10 @@ namespace Chummer
                 {
                     // Make sure the selected item is another piece of Gear.
                     case ArmorMod objMod when string.IsNullOrEmpty(objMod.GearCapacity):
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this, await LanguageManager.GetStringAsync("Message_SelectArmor", token: GenericToken).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_SelectArmor", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                         return;
 
                     case ArmorMod objMod:
@@ -8524,20 +8527,20 @@ namespace Chummer
                 // Make sure a parent item is selected.
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectVehicleName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Get the information for the currently selected Vehicle.
                 if (!(objSelectedNode.Tag is Vehicle objVehicle))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectVehicleName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8574,11 +8577,11 @@ namespace Chummer
                 if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                      .ConfigureAwait(false) is string)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_NoCyberware", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8595,11 +8598,11 @@ namespace Chummer
 
                 if (objCyberwareParent == null && objMod?.AllowCyberware != true)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this,
                         await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_NoCyberware", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8686,13 +8689,13 @@ namespace Chummer
                                     if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false)
                                         && frmPickCyberware.MyForm.MaximumCapacity < 0)
                                     {
-                                        Program.ShowScrollableMessageBox(
+                                        await Program.ShowScrollableMessageBoxAsync(
                                             this,
                                             await LanguageManager.GetStringAsync("Message_CapacityReached", token: GenericToken)
                                                                  .ConfigureAwait(false),
                                             await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: GenericToken)
                                                                  .ConfigureAwait(false),
-                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                                         break;
                                     }
                                 }
@@ -8799,20 +8802,20 @@ namespace Chummer
                 // Make sure a parent item is selected, then open the Select Accessory window.
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectArmorName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectArmor", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Get the information for the currently selected Armor.
                 if (!(objSelectedNode.Tag is Armor objArmor))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectArmorName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectArmor", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8852,10 +8855,10 @@ namespace Chummer
                                                               .ConfigureAwait(false);
                 if (!(objSelectedNode?.Tag is IHasCustomName objCustomName))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -8977,10 +8980,10 @@ namespace Chummer
                                               .ConfigureAwait(false)
                     && !await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SpellLimit", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SpellLimit", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9046,20 +9049,20 @@ namespace Chummer
                 // Make sure a parent items is selected, then open the Select Gear window.
                 if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectCyberware", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Make sure the Cyberware is allowed to accept Gear.
                 if (!(objSelectedNode.Tag is Cyberware objCyberware) || objCyberware.AllowGear == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_CyberwareGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9175,20 +9178,20 @@ namespace Chummer
                 if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
                         Cyberware objCyberware))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectCyberware", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Make sure the Cyberware is allowed to accept Gear.
                 if (objCyberware.AllowGear == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_CyberwareGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9283,20 +9286,20 @@ namespace Chummer
                 // Make sure a parent items is selected, then open the Select Gear window.
                 if (objSelectedNode == null || objSelectedNode.Level < 2)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Locate the Vehicle Sensor Gear.
                 if (!(objSelectedNode.Tag is Gear objSensor))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9397,20 +9400,20 @@ namespace Chummer
                 // Make sure a parent items is selected, then open the Select Gear window.
                 if (objSelectedNode == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
                 // Locate the Vehicle Sensor Gear.
                 if (!(objSelectedNode.Tag is Gear objSensor))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9510,10 +9513,10 @@ namespace Chummer
                 // Make sure the Weapon Accessory is allowed to accept Gear.
                 if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_WeaponGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9601,10 +9604,10 @@ namespace Chummer
                                       .ConfigureAwait(false) is Gear objSensor))
                     // Make sure the Gear was found.
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9767,10 +9770,10 @@ namespace Chummer
                 if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                        .ConfigureAwait(false) is Gear objSensor))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -9877,10 +9880,10 @@ namespace Chummer
                 // Make sure the Weapon Accessory is allowed to accept Gear.
                 if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_WeaponGear", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                     return;
                 }
 
@@ -10217,7 +10220,7 @@ namespace Chummer
                                         intBP += await CharacterObject.GetNegativeQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                         if (intBP < intMaxQualityAmount * -1)
                                         {
-                                            Program.ShowScrollableMessageBox(
+                                            await Program.ShowScrollableMessageBoxAsync(
                                                 this,
                                                 string.Format(GlobalSettings.CultureInfo,
                                                     await LanguageManager
@@ -10228,13 +10231,13 @@ namespace Chummer
                                                     .GetStringAsync("MessageTitle_NegativeQualityLimit",
                                                         token: GenericToken)
                                                     .ConfigureAwait(false), MessageBoxButtons.OK,
-                                                MessageBoxIcon.Information);
+                                                MessageBoxIcon.Information, token: GenericToken);
                                             blnAddItem = false;
                                         }
                                         else if (await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < 0
                                                  && intBP + await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < intMaxQualityAmount * -1)
                                         {
-                                            Program.ShowScrollableMessageBox(
+                                            await Program.ShowScrollableMessageBoxAsync(
                                                 this,
                                                 string.Format(GlobalSettings.CultureInfo,
                                                     await LanguageManager
@@ -10246,7 +10249,7 @@ namespace Chummer
                                                     .GetStringAsync("MessageTitle_NegativeQualityLimit",
                                                         token: GenericToken)
                                                     .ConfigureAwait(false), MessageBoxButtons.OK,
-                                                MessageBoxIcon.Information);
+                                                MessageBoxIcon.Information, token: GenericToken);
                                             blnAddItem = false;
                                         }
                                     }
@@ -10257,7 +10260,7 @@ namespace Chummer
                                     intBP += await CharacterObject.GetPositiveQualityLimitKarmaAsync(GenericToken).ConfigureAwait(false);
                                     if (intBP > intMaxQualityAmount)
                                     {
-                                        Program.ShowScrollableMessageBox(this,
+                                        await Program.ShowScrollableMessageBoxAsync(this,
                                             string.Format(
                                                 GlobalSettings.CultureInfo,
                                                 await LanguageManager
@@ -10267,7 +10270,7 @@ namespace Chummer
                                                 .GetStringAsync(
                                                     "MessageTitle_PositiveQualityLimit", token: GenericToken)
                                                 .ConfigureAwait(false),
-                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                                         blnAddItem = false;
                                     }
                                 }
@@ -12289,7 +12292,7 @@ namespace Chummer
                                     .GetTotalValueAsync(GenericToken)
                                     .ConfigureAwait(false))
                             {
-                                Program.ShowScrollableMessageBox(
+                                await Program.ShowScrollableMessageBoxAsync(
                                     this,
                                     await LanguageManager
                                         .GetStringAsync("Message_FocusMaximumForce", token: GenericToken)
@@ -12297,7 +12300,7 @@ namespace Chummer
                                     await LanguageManager
                                         .GetStringAsync("MessageTitle_FocusMaximum", token: GenericToken)
                                         .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                                 e.Cancel = true;
                                 return;
                             }
@@ -12317,7 +12320,7 @@ namespace Chummer
                                     .GetTotalValueAsync(GenericToken)
                                     .ConfigureAwait(false))
                             {
-                                Program.ShowScrollableMessageBox(
+                                await Program.ShowScrollableMessageBoxAsync(
                                     this,
                                     await LanguageManager
                                         .GetStringAsync("Message_FocusMaximumNumber", token: GenericToken)
@@ -12325,7 +12328,7 @@ namespace Chummer
                                     await LanguageManager
                                         .GetStringAsync("MessageTitle_FocusMaximum", token: GenericToken)
                                         .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                                 e.Cancel = true;
                                 return;
                             }
@@ -14809,7 +14812,7 @@ namespace Chummer
                         = await CharacterObject.TakeInternalIdsNeedingReapplyImprovementsAsync(GenericToken)
                                                .ConfigureAwait(false);
                     if (lstInternalIdsNeedingReapplyImprovements?.Count > 0 && !Utils.IsUnitTest
-                                                                            && Program.ShowScrollableMessageBox(
+                                                                            && await Program.ShowScrollableMessageBoxAsync(
                                                                                 this,
                                                                                 await LanguageManager
                                                                                     .GetStringAsync(
@@ -14822,7 +14825,7 @@ namespace Chummer
                                                                                         token: GenericToken)
                                                                                     .ConfigureAwait(false),
                                                                                 MessageBoxButtons.YesNo,
-                                                                                MessageBoxIcon.Exclamation)
+                                                                                MessageBoxIcon.Exclamation, token: GenericToken)
                                                                             == DialogResult.Yes)
                     {
                         await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
@@ -18111,7 +18114,7 @@ namespace Chummer
                     {
                         if (objExistingGear.Location == objLocation
                             && objGear.IsIdenticalToOtherGear(objExistingGear, true)
-                            && Program.ShowScrollableMessageBox(this,
+                            && await Program.ShowScrollableMessageBoxAsync(this,
                                                                 string.Format(GlobalSettings.CultureInfo,
                                                                               await LanguageManager.GetStringAsync(
                                                                                       "Message_MergeIdentical",
@@ -18125,7 +18128,7 @@ namespace Chummer
                                                                         "MessageTitle_MergeIdentical",
                                                                         token: token)
                                                                     .ConfigureAwait(false),
-                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token)
                             == DialogResult.Yes)
                         {
                             // A match was found, so increase the quantity instead.
@@ -20874,7 +20877,7 @@ namespace Chummer
                                                                                   token: token).ConfigureAwait(false),
                                                                               intLanguages, intLanguageLimit);
                         }
-                        else if (Program.ShowScrollableMessageBox(this,
+                        else if (await Program.ShowScrollableMessageBoxAsync(this,
                                                                   string.Format(
                                                                       GlobalSettings.CultureInfo,
                                                                       await LanguageManager.GetStringAsync(
@@ -20888,7 +20891,7 @@ namespace Chummer
                                                                           token: token)
                                                                       .ConfigureAwait(false),
                                                                   MessageBoxButtons.YesNo,
-                                                                  MessageBoxIcon.Warning) == DialogResult.No)
+                                                                  MessageBoxIcon.Warning, token: token) == DialogResult.No)
                         {
                             blnValid = false;
                         }
@@ -21353,7 +21356,7 @@ namespace Chummer
                         - await CalculateAttributePriorityPoints(lstAttributes,
                                                                  token: token).ConfigureAwait(false);
                     // Check if the character has extra Attribute points
-                    if (blnValid && i > 0 && Program.ShowScrollableMessageBox(this,
+                    if (blnValid && i > 0 && await Program.ShowScrollableMessageBoxAsync(this,
                                                                               string.Format(
                                                                                   GlobalSettings.CultureInfo,
                                                                                   await LanguageManager.GetStringAsync(
@@ -21372,7 +21375,7 @@ namespace Chummer
                                                                                       token: token)
                                                                                   .ConfigureAwait(false),
                                                                               MessageBoxButtons.YesNo,
-                                                                              MessageBoxIcon.Warning)
+                                                                              MessageBoxIcon.Warning, token: token)
                         == DialogResult.No)
                     {
                         blnValid = false;
@@ -21382,7 +21385,7 @@ namespace Chummer
                         - await CalculateAttributePriorityPoints(lstSpecialAttributes, token: token)
                             .ConfigureAwait(false);
                     // Check if the character has extra Special Attribute points
-                    if (blnValid && i > 0 && Program.ShowScrollableMessageBox(this,
+                    if (blnValid && i > 0 && await Program.ShowScrollableMessageBoxAsync(this,
                                                                               string.Format(
                                                                                   GlobalSettings.CultureInfo,
                                                                                   await LanguageManager.GetStringAsync(
@@ -21401,7 +21404,7 @@ namespace Chummer
                                                                                       token: token)
                                                                                   .ConfigureAwait(false),
                                                                               MessageBoxButtons.YesNo,
-                                                                              MessageBoxIcon.Warning)
+                                                                              MessageBoxIcon.Warning, token: token)
                         == DialogResult.No)
                     {
                         blnValid = false;
@@ -21409,7 +21412,7 @@ namespace Chummer
 
                     // Check if the character has extra Skill Group points
                     if (blnValid && intSkillGroupPoints > 0
-                                 && Program.ShowScrollableMessageBox(this,
+                                 && await Program.ShowScrollableMessageBoxAsync(this,
                                                                      string.Format(
                                                                          GlobalSettings.CultureInfo,
                                                                          await LanguageManager.GetStringAsync(
@@ -21425,13 +21428,13 @@ namespace Chummer
                                                                              "MessageTitle_ExtraPoints", token: token)
                                                                          .ConfigureAwait(false),
                                                                      MessageBoxButtons.YesNo,
-                                                                     MessageBoxIcon.Warning) == DialogResult.No)
+                                                                     MessageBoxIcon.Warning, token: token) == DialogResult.No)
                     {
                         blnValid = false;
                     }
 
                     // Check if the character has extra Active Skill points
-                    if (blnValid && intSkillPoints > 0 && Program.ShowScrollableMessageBox(
+                    if (blnValid && intSkillPoints > 0 && await Program.ShowScrollableMessageBoxAsync(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync("Message_ExtraPoints", token: token)
@@ -21443,14 +21446,14 @@ namespace Chummer
                                                 .ConfigureAwait(false)),
                             await LanguageManager.GetStringAsync("MessageTitle_ExtraPoints", token: token)
                                                  .ConfigureAwait(false), MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning) == DialogResult.No)
+                            MessageBoxIcon.Warning, token: token) == DialogResult.No)
                     {
                         blnValid = false;
                     }
 
                     // Check if the character has extra Knowledge Skill points
                     if (blnValid && intKnoSkillPoints > 0
-                                 && Program.ShowScrollableMessageBox(this,
+                                 && await Program.ShowScrollableMessageBoxAsync(this,
                                                                      string.Format(
                                                                          GlobalSettings.CultureInfo,
                                                                          await LanguageManager.GetStringAsync(
@@ -21466,7 +21469,7 @@ namespace Chummer
                                                                              "MessageTitle_ExtraPoints", token: token)
                                                                          .ConfigureAwait(false),
                                                                      MessageBoxButtons.YesNo,
-                                                                     MessageBoxIcon.Warning) == DialogResult.No)
+                                                                     MessageBoxIcon.Warning, token: token) == DialogResult.No)
                     {
                         blnValid = false;
                     }
@@ -21481,7 +21484,7 @@ namespace Chummer
                             intContactPointsRemain
                                 -= (await CharacterObject.GetContactPointsUsedAsync(token).ConfigureAwait(false)).Item1;
                             if (intContactPointsRemain > 0
-                                && Program.ShowScrollableMessageBox(this,
+                                && await Program.ShowScrollableMessageBoxAsync(this,
                                                                     string.Format(
                                                                         GlobalSettings.CultureInfo,
                                                                         await LanguageManager.GetStringAsync(
@@ -21497,7 +21500,7 @@ namespace Chummer
                                                                             "MessageTitle_ExtraPoints", token: token)
                                                                         .ConfigureAwait(false),
                                                                     MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                                                                    MessageBoxIcon.Warning, token: token) == DialogResult.No)
                             {
                                 blnValid = false;
                             }
@@ -21657,7 +21660,7 @@ namespace Chummer
                         int intPointsRemaining = intFreeSpells + intLimitMod - intUsedPoints;
 
                         if (intPointsRemaining > 0
-                            && Program.ShowScrollableMessageBox(this,
+                            && await Program.ShowScrollableMessageBoxAsync(this,
                                 string.Format(
                                     GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync(
@@ -21673,7 +21676,7 @@ namespace Chummer
                                         "MessageTitle_ExtraPoints", token: token)
                                     .ConfigureAwait(false),
                                 MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Warning) == DialogResult.No)
+                                MessageBoxIcon.Warning, token: token) == DialogResult.No)
                         {
                             blnValid = false;
                         }
@@ -21690,7 +21693,7 @@ namespace Chummer
                                 -= await (await CharacterObject.GetComplexFormsAsync(token).ConfigureAwait(false))
                                          .CountAsync(x => x.Grade == 0, token).ConfigureAwait(false);
                             if (intCFPointsRemain > 0
-                                && Program.ShowScrollableMessageBox(this,
+                                && await Program.ShowScrollableMessageBoxAsync(this,
                                                                     string.Format(
                                                                         GlobalSettings.CultureInfo,
                                                                         await LanguageManager.GetStringAsync(
@@ -21706,7 +21709,7 @@ namespace Chummer
                                                                             "MessageTitle_ExtraPoints", token: token)
                                                                         .ConfigureAwait(false),
                                                                     MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                                                                    MessageBoxIcon.Warning, token: token) == DialogResult.No)
                             {
                                 blnValid = false;
                             }
@@ -21721,11 +21724,11 @@ namespace Chummer
                 if (!blnValid && sbdMessage.Length > (await LanguageManager
                                                             .GetStringAsync("Message_InvalidBeginning", token: token)
                                                             .ConfigureAwait(false)).Length)
-                    Program.ShowScrollableMessageBox(this, sbdMessage.ToString(),
+                    await Program.ShowScrollableMessageBoxAsync(this, sbdMessage.ToString(),
                                                      await LanguageManager
                                                            .GetStringAsync("MessageTitle_Invalid", token: token)
                                                            .ConfigureAwait(false),
-                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                     MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
             }
 
             return blnValid;
@@ -21759,7 +21762,7 @@ namespace Chummer
                             if (!await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token)
                                     .ConfigureAwait(false))
                             {
-                                if (Program.ShowScrollableMessageBox(
+                                if (await Program.ShowScrollableMessageBoxAsync(
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
                                             await LanguageManager.GetStringAsync("Message_NoExtraKarma", token: token)
@@ -21767,10 +21770,10 @@ namespace Chummer
                                             intBuildPoints.ToString(GlobalSettings.CultureInfo)),
                                         await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma", token: token)
                                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                        MessageBoxIcon.Warning) == DialogResult.No)
+                                        MessageBoxIcon.Warning, token: token) == DialogResult.No)
                                     return false;
                             }
-                            else if (Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo,
+                            else if (await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo,
                                              await LanguageManager
                                                  .GetStringAsync(
                                                      "Message_ExtraKarma", token: token)
@@ -21782,7 +21785,7 @@ namespace Chummer
                                          await LanguageManager
                                              .GetStringAsync("MessageTitle_ExtraKarma", token: token)
                                              .ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                         MessageBoxIcon.Warning) == DialogResult.No)
+                                         MessageBoxIcon.Warning, token: token) == DialogResult.No)
                             {
                                 return false;
                             }
@@ -21790,7 +21793,7 @@ namespace Chummer
 
                         decimal decNuyen = (await CalculateNuyen(token).ConfigureAwait(false)).Item1;
                         if (decNuyen > await CharacterObjectSettings.GetNuyenCarryoverAsync(token)
-                                .ConfigureAwait(false) && Program.ShowScrollableMessageBox(
+                                .ConfigureAwait(false) && await Program.ShowScrollableMessageBoxAsync(
                                 this, string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_ExtraNuyen", token: token)
                                         .ConfigureAwait(false),
@@ -21802,7 +21805,7 @@ namespace Chummer
                                         await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false),
                                         GlobalSettings.CultureInfo)),
                                 await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen", token: token)
-                                    .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                                    .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token)
                             == DialogResult.No)
                             return false;
                         if (GlobalSettings.CreateBackupOnCareer && await chkCharacterCreated
@@ -21819,11 +21822,11 @@ namespace Chummer
                                 }
                                 catch (UnauthorizedAccessException)
                                 {
-                                    Program.ShowScrollableMessageBox(
+                                    await Program.ShowScrollableMessageBoxAsync(
                                         this,
                                         await LanguageManager
                                             .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
-                                            .ConfigureAwait(false));
+                                            .ConfigureAwait(false), token: token);
                                     return false;
                                 }
                             }
@@ -21944,11 +21947,11 @@ namespace Chummer
         /// </summary>
         public override async Task<bool> ConfirmSaveCreatedCharacter(CancellationToken token = default)
         {
-            return Program.ShowScrollableMessageBox(
+            return await Program.ShowScrollableMessageBoxAsync(
                 this, await LanguageManager.GetStringAsync("Message_ConfirmCreate", token: token).ConfigureAwait(false),
                 await LanguageManager.GetStringAsync("MessageTitle_ConfirmCreate", token: token).ConfigureAwait(false),
                 MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question) != DialogResult.No && await ValidateCharacter(token).ConfigureAwait(false);
+                MessageBoxIcon.Question, token: token) != DialogResult.No && await ValidateCharacter(token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -22907,12 +22910,12 @@ namespace Chummer
                         strGrade = strLoop;
                     else if (strGrade != strLoop)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             await LanguageManager.GetStringAsync("Message_CyberwareGradeMismatch", token: token)
                                 .ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_CyberwareGradeMismatch", token: token)
-                                .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
                         return true;
                     }
 
@@ -22923,11 +22926,11 @@ namespace Chummer
             // The character has no Cyberware!
             if (string.IsNullOrEmpty(strGrade))
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     await LanguageManager.GetStringAsync("Message_NoCyberware", token: token).ConfigureAwait(false),
                     await LanguageManager.GetStringAsync("MessageTitle_NoCyberware", token: token)
-                                         .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                         .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, token: token);
                 return;
             }
 
@@ -24042,10 +24045,10 @@ namespace Chummer
             {
                 if (await CheckCharacterValidity(token: GenericToken).ConfigureAwait(false))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_ValidCharacter", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                 }
             }
             catch (OperationCanceledException)
@@ -24572,11 +24575,11 @@ namespace Chummer
                     await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
 
-                Program.ShowScrollableMessageBox(this, strReturn,
+                await Program.ShowScrollableMessageBoxAsync(this, strReturn,
                                        await LanguageManager
                                              .GetStringAsync("MessageTitle_KarmaValue", token: GenericToken)
                                              .ConfigureAwait(false),
-                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                       MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -24604,12 +24607,12 @@ namespace Chummer
                         && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                     {
-                        Program.ShowScrollableMessageBox(this,
+                        await Program.ShowScrollableMessageBoxAsync(this,
                                                await LanguageManager.GetStringAsync("Message_NoValidModularMount", token: GenericToken)
                                                                     .ConfigureAwait(false),
                                                await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount", token: GenericToken)
                                                                     .ConfigureAwait(false),
-                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                         return;
                     }
 
@@ -24729,16 +24732,16 @@ namespace Chummer
                                                         objModularCyberware, GenericToken).ConfigureAwait(false));
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
-                    if (!objModularCyberware.IsModularCurrentlyEquipped
+                    if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)
                         && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {
-                        Program.ShowScrollableMessageBox(this,
+                        await Program.ShowScrollableMessageBoxAsync(this,
                                                await LanguageManager.GetStringAsync("Message_NoValidModularMount", token: GenericToken)
                                                                     .ConfigureAwait(false),
                                                await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount", token: GenericToken)
                                                                     .ConfigureAwait(false),
-                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                               MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken);
                         return;
                     }
 

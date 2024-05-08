@@ -708,7 +708,7 @@ namespace Chummer
             // Make sure a value has been selected if necessary.
             if (await txtTranslateSelection.DoThreadSafeFuncAsync(x => x.Visible, token: token).ConfigureAwait(false) && string.IsNullOrEmpty(await txtSelect.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -716,7 +716,7 @@ namespace Chummer
             // Make sure a value has been provided for the name.
             if (string.IsNullOrEmpty(strName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_ImprovementName", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 await txtName.DoThreadSafeAsync(x => x.Focus(), token: token).ConfigureAwait(false);
                 return;
             }

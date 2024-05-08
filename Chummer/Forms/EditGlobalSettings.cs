@@ -149,7 +149,7 @@ namespace Chummer
                         = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", _strSelectedLanguage)
                                                .ConfigureAwait(false);
 
-                    if (Program.ShowScrollableMessageBox(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    if (await Program.ShowScrollableMessageBoxAsync(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question).ConfigureAwait(false)
                         != DialogResult.Yes)
                         return;
                 }
@@ -276,16 +276,16 @@ namespace Chummer
 
                 string strFilePath
                     = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(_objSelectedCultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_Options_ValidationResults",
-                                                                       _strSelectedLanguage).ConfigureAwait(false),
-                                  strFilePath),
+                        await LanguageManager.GetStringAsync("Message_Options_ValidationResults",
+                            _strSelectedLanguage).ConfigureAwait(false),
+                        strFilePath),
                     await LanguageManager.GetStringAsync("MessageTitle_Options_ValidationResults",
-                                                         _strSelectedLanguage).ConfigureAwait(false),
+                        _strSelectedLanguage).ConfigureAwait(false),
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    MessageBoxIcon.Information).ConfigureAwait(false);
             }
             finally
             {
@@ -378,17 +378,17 @@ namespace Chummer
             GlobalSettings.UseLoggingResetCounter = 10;
             if (useAI > UseAILogging.Info
                 && GlobalSettings.UseLoggingApplicationInsightsPreference <= UseAILogging.Info
-                && Program.ShowScrollableMessageBox(this,
-                                                    (await LanguageManager
-                                                           .GetStringAsync(
-                                                               "Message_Options_ConfirmTelemetry",
-                                                               _strSelectedLanguage).ConfigureAwait(false))
-                                                    .WordWrap(),
-                                                    await LanguageManager
-                                                          .GetStringAsync(
-                                                              "MessageTitle_Options_ConfirmTelemetry",
-                                                              _strSelectedLanguage).ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo) != DialogResult.Yes)
+                && await Program.ShowScrollableMessageBoxAsync(this,
+                    (await LanguageManager
+                        .GetStringAsync(
+                            "Message_Options_ConfirmTelemetry",
+                            _strSelectedLanguage).ConfigureAwait(false))
+                    .WordWrap(),
+                    await LanguageManager
+                        .GetStringAsync(
+                            "MessageTitle_Options_ConfirmTelemetry",
+                            _strSelectedLanguage).ConfigureAwait(false),
+                    MessageBoxButtons.YesNo).ConfigureAwait(false) != DialogResult.Yes)
             {
                 int intLoading = Interlocked.Increment(ref _intLoading);
                 try
@@ -424,14 +424,14 @@ namespace Chummer
                 return;
             if (await chkUseLogging.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
                 && !GlobalSettings.UseLogging
-                && Program.ShowScrollableMessageBox(
+                && await Program.ShowScrollableMessageBoxAsync(
                     this,
                     (await LanguageManager
-                           .GetStringAsync("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
-                           .ConfigureAwait(false)).WordWrap(),
+                        .GetStringAsync("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
+                        .ConfigureAwait(false)).WordWrap(),
                     await LanguageManager
-                          .GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
-                          .ConfigureAwait(false), MessageBoxButtons.YesNo) != DialogResult.Yes)
+                        .GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
+                        .ConfigureAwait(false), MessageBoxButtons.YesNo).ConfigureAwait(false) != DialogResult.Yes)
             {
                 int intLoading = Interlocked.Increment(ref _intLoading);
                 try
@@ -625,11 +625,11 @@ namespace Chummer
         {
             if (_intLoading > 0 || !await chkLifeModule.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                 return;
-            if (Program.ShowScrollableMessageBox(
+            if (await Program.ShowScrollableMessageBoxAsync(
                     this,
                     await LanguageManager.GetStringAsync("Tip_LifeModule_Warning", _strSelectedLanguage)
-                                         .ConfigureAwait(false), Application.ProductName,
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
+                        .ConfigureAwait(false), Application.ProductName,
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning).ConfigureAwait(false) != DialogResult.OK)
                 await chkLifeModule.DoThreadSafeAsync(x => x.Checked = false).ConfigureAwait(false);
             else
             {
@@ -685,39 +685,39 @@ namespace Chummer
                     = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue, strSelectedPath);
                 if (objNewCustomDataDirectory.XmlException != default)
                 {
-                    Program.ShowScrollableMessageBox(this,
-                                           string.Format(_objSelectedCultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "Message_FailedLoad", _strSelectedLanguage)
-                                                               .ConfigureAwait(false),
-                                                         objNewCustomDataDirectory.XmlException.Message),
-                                           string.Format(_objSelectedCultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "MessageTitle_FailedLoad", _strSelectedLanguage)
-                                                               .ConfigureAwait(false) +
-                                                         await LanguageManager
-                                                               .GetStringAsync("String_Space", _strSelectedLanguage)
-                                                               .ConfigureAwait(false) + objNewCustomDataDirectory.Name
-                                                         + Path.DirectorySeparatorChar + "manifest.xml"),
-                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "Message_FailedLoad", _strSelectedLanguage)
+                                .ConfigureAwait(false),
+                            objNewCustomDataDirectory.XmlException.Message),
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "MessageTitle_FailedLoad", _strSelectedLanguage)
+                                .ConfigureAwait(false) +
+                            await LanguageManager
+                                .GetStringAsync("String_Space", _strSelectedLanguage)
+                                .ConfigureAwait(false) + objNewCustomDataDirectory.Name
+                            + Path.DirectorySeparatorChar + "manifest.xml"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
                     return;
                 }
 
                 string strDirectoryPath = objNewCustomDataDirectory.DirectoryPath;
                 if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strDirectoryPath))
                 {
-                    Program.ShowScrollableMessageBox(this,
-                                           string.Format(
-                                               await LanguageManager.GetStringAsync(
-                                                   "Message_Duplicate_CustomDataDirectoryPath",
-                                                   _strSelectedLanguage).ConfigureAwait(false),
-                                               objNewCustomDataDirectory.Name),
-                                           await LanguageManager.GetStringAsync(
-                                               "MessageTitle_Duplicate_CustomDataDirectoryPath",
-                                               _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.OK,
-                                           MessageBoxIcon.Error);
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(
+                            await LanguageManager.GetStringAsync(
+                                "Message_Duplicate_CustomDataDirectoryPath",
+                                _strSelectedLanguage).ConfigureAwait(false),
+                            objNewCustomDataDirectory.Name),
+                        await LanguageManager.GetStringAsync(
+                            "MessageTitle_Duplicate_CustomDataDirectoryPath",
+                            _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error).ConfigureAwait(false);
                     return;
                 }
 
@@ -731,14 +731,14 @@ namespace Chummer
                         {
                             if (objExistingInfo.HasManifest)
                             {
-                                Program.ShowScrollableMessageBox(
+                                await Program.ShowScrollableMessageBoxAsync(
                                     string.Format(
                                         await LanguageManager.GetStringAsync(
                                             "Message_Duplicate_CustomDataDirectory").ConfigureAwait(false),
                                         objExistingInfo.Name, objNewCustomDataDirectory.Name),
                                     await LanguageManager.GetStringAsync(
                                         "MessageTitle_Duplicate_CustomDataDirectory").ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
                                 return;
                             }
 
@@ -765,16 +765,16 @@ namespace Chummer
                                                          objNewCustomDataDirectory.CharacterSettingsSaveKey.Equals(
                                                              x.CharacterSettingsSaveKey,
                                                              StringComparison.OrdinalIgnoreCase))
-                    && Program.ShowScrollableMessageBox(this,
-                                              string.Format(
-                                                  await LanguageManager.GetStringAsync(
-                                                      "Message_Duplicate_CustomDataDirectoryName",
-                                                      _strSelectedLanguage).ConfigureAwait(false),
-                                                  objNewCustomDataDirectory.Name),
-                                              await LanguageManager.GetStringAsync(
-                                                  "MessageTitle_Duplicate_CustomDataDirectoryName",
-                                                  _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                              MessageBoxIcon.Warning) != DialogResult.Yes)
+                    && await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(
+                            await LanguageManager.GetStringAsync(
+                                "Message_Duplicate_CustomDataDirectoryName",
+                                _strSelectedLanguage).ConfigureAwait(false),
+                            objNewCustomDataDirectory.Name),
+                        await LanguageManager.GetStringAsync(
+                            "MessageTitle_Duplicate_CustomDataDirectoryName",
+                            _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning).ConfigureAwait(false) != DialogResult.Yes)
                     return;
                 _setCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
                 await PopulateCustomDataDirectoryListBox().ConfigureAwait(false);
@@ -820,23 +820,23 @@ namespace Chummer
                     objNewInfo.CopyGuid(objInfoToRename);
                 if (objNewInfo.XmlException != default)
                 {
-                    Program.ShowScrollableMessageBox(this,
-                                           string.Format(_objSelectedCultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "Message_FailedLoad", _strSelectedLanguage)
-                                                               .ConfigureAwait(false),
-                                                         objNewInfo.XmlException.Message),
-                                           string.Format(_objSelectedCultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "MessageTitle_FailedLoad", _strSelectedLanguage)
-                                                               .ConfigureAwait(false) +
-                                                         await LanguageManager
-                                                               .GetStringAsync("String_Space", _strSelectedLanguage)
-                                                               .ConfigureAwait(false) + objNewInfo.Name
-                                                         + Path.DirectorySeparatorChar + "manifest.xml"),
-                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "Message_FailedLoad", _strSelectedLanguage)
+                                .ConfigureAwait(false),
+                            objNewInfo.XmlException.Message),
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "MessageTitle_FailedLoad", _strSelectedLanguage)
+                                .ConfigureAwait(false) +
+                            await LanguageManager
+                                .GetStringAsync("String_Space", _strSelectedLanguage)
+                                .ConfigureAwait(false) + objNewInfo.Name
+                            + Path.DirectorySeparatorChar + "manifest.xml"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
                     return;
                 }
 
@@ -844,15 +844,15 @@ namespace Chummer
                                                           objNewInfo.CharacterSettingsSaveKey.Equals(
                                                               x.CharacterSettingsSaveKey,
                                                               StringComparison.OrdinalIgnoreCase)) &&
-                    Program.ShowScrollableMessageBox(this,
-                                           string.Format(
-                                               await LanguageManager.GetStringAsync(
-                                                   "Message_Duplicate_CustomDataDirectoryName",
-                                                   _strSelectedLanguage).ConfigureAwait(false), objNewInfo.Name),
-                                           await LanguageManager.GetStringAsync(
-                                               "MessageTitle_Duplicate_CustomDataDirectoryName",
-                                               _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                           MessageBoxIcon.Warning) != DialogResult.Yes)
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(
+                            await LanguageManager.GetStringAsync(
+                                "Message_Duplicate_CustomDataDirectoryName",
+                                _strSelectedLanguage).ConfigureAwait(false), objNewInfo.Name),
+                        await LanguageManager.GetStringAsync(
+                            "MessageTitle_Duplicate_CustomDataDirectoryName",
+                            _strSelectedLanguage).ConfigureAwait(false), MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning).ConfigureAwait(false) != DialogResult.Yes)
                     return;
                 _setCustomDataDirectoryInfos.Remove(objInfoToRename);
                 _setCustomDataDirectoryInfos.Add(objNewInfo);
@@ -1166,16 +1166,16 @@ namespace Chummer
                 }
                 catch
                 {
-                    Program.ShowScrollableMessageBox(this, string.Format(
-                                               await LanguageManager.GetStringAsync(
-                                                   "Message_Options_FileIsNotPDF",
-                                                   _strSelectedLanguage, token: token).ConfigureAwait(false),
-                                               Path.GetFileName(strNewFileName)),
-                                           await LanguageManager.GetStringAsync(
-                                               "MessageTitle_Options_FileIsNotPDF",
-                                               _strSelectedLanguage, token: token).ConfigureAwait(false),
-                                           MessageBoxButtons.OK,
-                                           MessageBoxIcon.Error);
+                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(
+                            await LanguageManager.GetStringAsync(
+                                "Message_Options_FileIsNotPDF",
+                                _strSelectedLanguage, token: token).ConfigureAwait(false),
+                            Path.GetFileName(strNewFileName)),
+                        await LanguageManager.GetStringAsync(
+                            "MessageTitle_Options_FileIsNotPDF",
+                            _strSelectedLanguage, token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -2442,8 +2442,8 @@ namespace Chummer
                         string title
                             = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder",
                                 _strSelectedLanguage).ConfigureAwait(false);
-                        Program.ShowScrollableMessageBox(message, title, MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+                        await Program.ShowScrollableMessageBoxAsync(message, title, MessageBoxButtons.OK,
+                            MessageBoxIcon.Information).ConfigureAwait(false);
                     }
                 }
             }

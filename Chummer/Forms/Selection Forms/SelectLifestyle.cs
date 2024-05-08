@@ -279,10 +279,10 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)))
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName").ConfigureAwait(false),
                     await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName").ConfigureAwait(false),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
             _blnAddAgain = false;

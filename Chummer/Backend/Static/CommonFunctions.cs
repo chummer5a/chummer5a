@@ -1614,8 +1614,8 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             return !GlobalSettings.ConfirmDelete ||
-                   Program.ShowScrollableMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_Delete", token: token).ConfigureAwait(false),
-                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                   await Program.ShowScrollableMessageBoxAsync(strMessage, await LanguageManager.GetStringAsync("MessageTitle_Delete", token: token).ConfigureAwait(false),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.Yes;
         }
 
         /// <summary>
@@ -1635,8 +1635,8 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             return !GlobalSettings.ConfirmKarmaExpense ||
-                   Program.ShowScrollableMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_ConfirmKarmaExpense", token: token).ConfigureAwait(false),
-                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                   await Program.ShowScrollableMessageBoxAsync(strMessage, await LanguageManager.GetStringAsync("MessageTitle_ConfirmKarmaExpense", token: token).ConfigureAwait(false),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.Yes;
         }
 
         public static Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
@@ -1765,8 +1765,8 @@ namespace Chummer
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
-                if (!blnOpenOptions || Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet", token: token).ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (!blnOpenOptions || await Program.ShowScrollableMessageBoxAsync(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                     return;
                 CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
                 try
@@ -1844,8 +1844,8 @@ namespace Chummer
             {
                 if (!blnOpenOptions)
                     return;
-                if (Program.ShowScrollableMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token).ConfigureAwait(false), await LanguageBookLongAsync(strBook, token: token).ConfigureAwait(false)),
-                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (await Program.ShowScrollableMessageBoxAsync(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token).ConfigureAwait(false), await LanguageBookLongAsync(strBook, token: token).ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                     return;
                 CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
                 try

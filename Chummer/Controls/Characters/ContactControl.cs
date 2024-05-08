@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -635,11 +634,11 @@ namespace Chummer
                         {
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
-                                           _objContact.LinkedCharacter.FileName, Character.NumLoadingSections,
+                                           await _objContact.LinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections,
                                            _objMyToken)
                                        .ConfigureAwait(false))
                                 objOpenCharacter = await Program.LoadCharacterAsync(
-                                    _objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm,
+                                    await _objContact.LinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm,
                                     token: _objMyToken).ConfigureAwait(false);
                         }
 
@@ -656,7 +655,7 @@ namespace Chummer
                     bool blnUseRelative = false;
 
                     // Make sure the file still exists before attempting to load it.
-                    if (!File.Exists(_objContact.FileName))
+                    if (!File.Exists(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)))
                     {
                         bool blnError = false;
                         // If the file doesn't exist, use the relative path if one is available.
@@ -669,21 +668,21 @@ namespace Chummer
 
                         if (blnError)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
                                         .ConfigureAwait(false),
-                                    _objContact.FileName),
+                                    await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken)
                                     .ConfigureAwait(false), MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
+                                MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
                     }
 
                     string strFile = blnUseRelative
                         ? Path.GetFullPath(_objContact.RelativeFileName)
-                        : _objContact.FileName;
+                        : await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                     Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
                 }
             }
@@ -739,7 +738,7 @@ namespace Chummer
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
-                Uri uriFile = new Uri(_objContact.FileName);
+                Uri uriFile = new Uri(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false));
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objContact.RelativeFileName = "../" + uriRelative;
 
@@ -757,19 +756,19 @@ namespace Chummer
             try
             {
                 // Remove the file association from the Contact.
-                if (Program.ShowScrollableMessageBox(
+                if (await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation", token: _objMyToken)
                             .ConfigureAwait(false),
                         await LanguageManager
                             .GetStringAsync("MessageTitle_RemoveCharacterAssociation", token: _objMyToken)
                             .ConfigureAwait(false),
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: _objMyToken).ConfigureAwait(false) == DialogResult.Yes)
                 {
                     _objContact.FileName = string.Empty;
                     _objContact.RelativeFileName = string.Empty;
                     if (cmdLink != null)
                     {
-                        string strText = _objContact.IsEnemy
+                        string strText = await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false)
                             ? await LanguageManager.GetStringAsync("Tip_Enemy_LinkFile", token: _objMyToken)
                                 .ConfigureAwait(false)
                             : await LanguageManager.GetStringAsync("Tip_Contact_LinkFile", token: _objMyToken)
@@ -2012,7 +2011,7 @@ namespace Chummer
                             string strMetavariantName
                                 = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                   ?? string.Empty;
-                            if (lstMetatypes.All(
+                            if (lstMetatypes.TrueForAll(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
                                                                    StringComparison.OrdinalIgnoreCase)))
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
@@ -2157,7 +2156,7 @@ namespace Chummer
                             string strMetavariantName
                                 = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                   ?? string.Empty;
-                            if (lstMetatypes.All(
+                            if (lstMetatypes.TrueForAll(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
                                                                    StringComparison.OrdinalIgnoreCase)))
                                 lstMetatypes.Add(new ListItem(strMetavariantName,

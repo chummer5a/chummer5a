@@ -957,6 +957,75 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Shows a dialog box with vertical scrollbars for text that is too long centered on the Chummer main form window, or otherwise queues up such a box to be displayed
+        /// </summary>
+        public static Task<DialogResult> ShowScrollableMessageBoxAsync(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1, CancellationToken token = default)
+        {
+            return ShowScrollableMessageBoxAsync(null, message, caption, buttons, icon, defaultButton, token);
+        }
+
+        /// <summary>
+        /// Shows a dialog box with vertical scrollbars for text that is too long centered on the a window containing a WinForms control, or otherwise queues up such a box to be displayed
+        /// </summary>
+        public static async Task<DialogResult> ShowScrollableMessageBoxAsync(Control owner, string message,
+            string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK,
+            MessageBoxIcon icon = MessageBoxIcon.None,
+            MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1, CancellationToken token = default)
+        {
+            if (Utils.IsUnitTest)
+            {
+                if (icon == MessageBoxIcon.Error || buttons != MessageBoxButtons.OK)
+                {
+                    Utils.BreakIfDebug();
+                    string strMessage = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine +
+                                        "Caption: " + caption + Environment.NewLine + "Message: " + message;
+                    throw new InvalidOperationException(strMessage);
+                }
+
+                return DialogResult.OK;
+            }
+
+            Form frmOwnerForm = owner as Form ?? owner?.FindForm();
+            if (frmOwnerForm.IsNullOrDisposed())
+            {
+                frmOwnerForm = TopMostLoadingBar;
+                if (frmOwnerForm.IsNullOrDisposed())
+                {
+                    frmOwnerForm = MainForm;
+                }
+            }
+
+            if (frmOwnerForm != null)
+            {
+#if DEBUG
+                if (frmOwnerForm.InvokeRequired && _blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
+                {
+                    _blnShowDevWarningAboutDebuggingOnlyOnce = false;
+                    //it works on my installation even in the debugger, so maybe we can ignore that...
+                    //WARNING from the link above (you can edit that out if it's not causing problem):
+                    //
+                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                    //other than the main/application thread, YOU NEED TO TURN OFF
+                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                    //that setting off.
+                    Debugger.Break();
+                }
+#endif
+
+                return await frmOwnerForm
+                    .DoThreadSafeFuncAsync(
+                        x => ScrollableMessageBox.ShowAsync(x, message, caption, buttons, icon, defaultButton,
+                            token: token), token: token).Unwrap().ConfigureAwait(false);
+            }
+
+            MainFormOnAssignAsyncActions.Add(x =>
+                ShowScrollableMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
+            return DialogResult.Cancel;
+        }
+
+        /// <summary>
         /// Shows a dialog box centered on the Chummer main form window, or otherwise queues up such a box to be displayed
         /// </summary>
         public static DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
@@ -1012,6 +1081,74 @@ namespace Chummer
                 return frmOwnerForm.DoThreadSafeFunc(x => CenterableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
             MainFormOnAssignActions.Add(x => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
+            return DialogResult.Cancel;
+        }
+
+        /// <summary>
+        /// Shows a dialog box centered on the Chummer main form window, or otherwise queues up such a box to be displayed
+        /// </summary>
+        public static Task<DialogResult> ShowMessageBoxAsync(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1, CancellationToken token = default)
+        {
+            return ShowMessageBoxAsync(null, message, caption, buttons, icon, defaultButton, token);
+        }
+
+        /// <summary>
+        /// Shows a dialog box centered on the a window containing a WinForms control, or otherwise queues up such a box to be displayed
+        /// </summary>
+        public static async Task<DialogResult> ShowMessageBoxAsync(Control owner, string message, string caption = null,
+            MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None,
+            MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1, CancellationToken token = default)
+        {
+            if (Utils.IsUnitTest)
+            {
+                if (icon == MessageBoxIcon.Error || buttons != MessageBoxButtons.OK)
+                {
+                    Utils.BreakIfDebug();
+                    string strMessage = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine +
+                                        "Caption: " + caption + Environment.NewLine + "Message: " + message;
+                    throw new InvalidOperationException(strMessage);
+                }
+
+                return DialogResult.OK;
+            }
+
+            Form frmOwnerForm = owner as Form ?? owner?.FindForm();
+            if (frmOwnerForm.IsNullOrDisposed())
+            {
+                frmOwnerForm = TopMostLoadingBar;
+                if (frmOwnerForm.IsNullOrDisposed())
+                {
+                    frmOwnerForm = MainForm;
+                }
+            }
+
+            if (frmOwnerForm != null)
+            {
+#if DEBUG
+                if (frmOwnerForm.InvokeRequired && _blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
+                {
+                    _blnShowDevWarningAboutDebuggingOnlyOnce = false;
+                    //it works on my installation even in the debugger, so maybe we can ignore that...
+                    //WARNING from the link above (you can edit that out if it's not causing problem):
+                    //
+                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                    //other than the main/application thread, YOU NEED TO TURN OFF
+                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                    //that setting off.
+                    Debugger.Break();
+                }
+#endif
+
+                return await frmOwnerForm
+                    .DoThreadSafeFuncAsync(
+                        x => CenterableMessageBox.Show(x, message, caption, buttons, icon, defaultButton), token)
+                    .ConfigureAwait(false);
+            }
+
+            MainFormOnAssignAsyncActions.Add(x =>
+                ShowMessageBoxAsync(owner, message, caption, buttons, icon, defaultButton, token));
             return DialogResult.Cancel;
         }
 
@@ -1260,25 +1397,40 @@ namespace Chummer
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(strAutosaveName) && ShowScrollableMessageBox(
-                            string.Format(GlobalSettings.CultureInfo,
-                                          // ReSharper disable once MethodHasAsyncOverload
-                                          blnSync
-                                              ? LanguageManager.GetString("Message_AutosaveFound", token: token)
-                                              : await LanguageManager
-                                                      .GetStringAsync("Message_AutosaveFound", token: token)
-                                                      .ConfigureAwait(false),
-                                          Path.GetFileName(strFileName),
-                                          File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                          File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
-                            // ReSharper disable once MethodHasAsyncOverload
-                            blnSync
-                                ? LanguageManager.GetString("MessageTitle_AutosaveFound", token: token)
-                                : await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound", token: token)
-                                                       .ConfigureAwait(false),
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    if (!string.IsNullOrEmpty(strAutosaveName))
                     {
-                        strAutosaveName = string.Empty;
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            if (ShowScrollableMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        LanguageManager.GetString("Message_AutosaveFound", token: token),
+                                        Path.GetFileName(strFileName),
+                                        File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
+                                        File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    LanguageManager.GetString("MessageTitle_AutosaveFound", token: token),
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                            {
+                                strAutosaveName = string.Empty;
+                            }
+                        }
+                        else if (await ShowScrollableMessageBoxAsync(
+                                     string.Format(GlobalSettings.CultureInfo,
+                                         await LanguageManager
+                                             .GetStringAsync("Message_AutosaveFound", token: token)
+                                             .ConfigureAwait(false),
+                                         Path.GetFileName(strFileName),
+                                         File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
+                                         File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                     await LanguageManager
+                                         .GetStringAsync("MessageTitle_AutosaveFound", token: token)
+                                         .ConfigureAwait(false),
+                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
+                        {
+                            strAutosaveName = string.Empty;
+                        }
                     }
                 }
 
@@ -1317,20 +1469,28 @@ namespace Chummer
             }
             else if (blnShowErrors)
             {
-                ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                       blnSync
-                                                           // ReSharper disable once MethodHasAsyncOverload
-                                                           ? LanguageManager.GetString("Message_FileNotFound", token: token)
-                                                           : await LanguageManager
-                                                                   .GetStringAsync("Message_FileNotFound", token: token)
-                                                                   .ConfigureAwait(false),
-                                                       strFileName),
-                                         blnSync
-                                             // ReSharper disable once MethodHasAsyncOverload
-                                             ? LanguageManager.GetString("MessageTitle_FileNotFound", token: token)
-                                             : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
-                                                                    .ConfigureAwait(false),
-                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (blnSync)
+                {
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                            // ReSharper disable once MethodHasAsyncOverload
+                            LanguageManager.GetString("Message_FileNotFound", token: token),
+                            strFileName),
+                        // ReSharper disable once MethodHasAsyncOverload
+                        LanguageManager.GetString("MessageTitle_FileNotFound", token: token),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    await ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager
+                                .GetStringAsync("Message_FileNotFound", token: token)
+                                .ConfigureAwait(false),
+                            strFileName),
+                        await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                }
             }
 
             return objCharacter;

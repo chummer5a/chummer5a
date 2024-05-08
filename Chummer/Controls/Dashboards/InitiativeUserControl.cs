@@ -86,7 +86,7 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false) == null)
-                Program.ShowMessageBox("Please Select a Chummer to remove");
+                await Program.ShowMessageBoxAsync("Please Select a Chummer to remove").ConfigureAwait(false);
             else
             {
                 int index = 0;
@@ -409,7 +409,7 @@ namespace Chummer
             {
                 // confirm we are selecting a chummer
                 if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem == null).ConfigureAwait(false))
-                    Program.ShowMessageBox("Please select a chummer before right-clicking");
+                    await Program.ShowMessageBoxAsync("Please select a chummer before right-clicking").ConfigureAwait(false);
 
                 using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(() => new InitiativeRoller
                        {
@@ -457,7 +457,7 @@ namespace Chummer
                 {
                     if (await frmHits.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                     {
-                        Program.ShowMessageBox("ERROR"); // TODO edward show error
+                        await Program.ShowMessageBoxAsync("ERROR", token: token).ConfigureAwait(false); // TODO edward show error
                         return;
                     }
 

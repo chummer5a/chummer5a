@@ -79,11 +79,11 @@ namespace Chummer
                 CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
                 if (_blnForExistingCharacter && !_objCharacter.Created && _objCharacter.Settings.BuildMethod == _objCharacter.EffectiveBuildMethod && eSelectedBuildMethod != _eStartingBuildMethod)
                 {
-                    if (Program.ShowScrollableMessageBox(this,
-                                                         string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SelectBP_SwitchBuildMethods", token: _objGenericToken).ConfigureAwait(false),
-                                                                       await LanguageManager.GetStringAsync("String_" + eSelectedBuildMethod, token: _objGenericToken).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_" + _eStartingBuildMethod, token: _objGenericToken).ConfigureAwait(false)).WordWrap(),
-                                                         await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods", token: _objGenericToken).ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                                         MessageBoxIcon.Warning) != DialogResult.Yes)
+                    if (await Program.ShowScrollableMessageBoxAsync(this,
+                            string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SelectBP_SwitchBuildMethods", token: _objGenericToken).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("String_" + eSelectedBuildMethod, token: _objGenericToken).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_" + _eStartingBuildMethod, token: _objGenericToken).ConfigureAwait(false)).WordWrap(),
+                            await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods", token: _objGenericToken).ConfigureAwait(false), MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
                         return;
                     string strOldCharacterSettingsKey = await _objCharacter.GetSettingsKeyAsync(_objGenericToken).ConfigureAwait(false);
                     await _objCharacter.SetSettingsKeyAsync((await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false))

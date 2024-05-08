@@ -52,14 +52,14 @@ namespace Chummer
             string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_KitName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_KitName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_KitName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_KitName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
             string strFileName = await txtFileName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strFileName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_FileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_FileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_FileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_FileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
@@ -79,13 +79,13 @@ namespace Chummer
                 .TryGetNodeByNameOrId("/chummer/packs/pack", strName, "category = \"Custom\"]")
                 != null)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_CreatePACKSKit_DuplicateName")
-                                                       .ConfigureAwait(false), strName),
+                        await LanguageManager.GetStringAsync("Message_CreatePACKSKit_DuplicateName")
+                            .ConfigureAwait(false), strName),
                     await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_DuplicateName")
-                                         .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
                 return;
             }
 
@@ -97,9 +97,9 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowScrollableMessageBox(await LanguageManager
-                                                           .GetStringAsync("Message_Insufficient_Permissions_Warning")
-                                                           .ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning")
+                        .ConfigureAwait(false)).ConfigureAwait(false);
                     return;
                 }
             }
@@ -117,12 +117,12 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.ShowScrollableMessageBox(this, ex.ToString());
+                    await Program.ShowScrollableMessageBoxAsync(this, ex.ToString()).ConfigureAwait(false);
                     return;
                 }
             }
@@ -915,13 +915,13 @@ namespace Chummer
                 await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
             }
 
-            Program.ShowScrollableMessageBox(
+            await Program.ShowScrollableMessageBoxAsync(
                 this,
                 string.Format(GlobalSettings.CultureInfo,
-                              await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated")
-                                                   .ConfigureAwait(false), strName),
+                    await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated")
+                        .ConfigureAwait(false), strName),
                 await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_SuiteCreated").ConfigureAwait(false),
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;

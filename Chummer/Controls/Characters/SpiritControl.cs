@@ -354,12 +354,12 @@ namespace Chummer
 
                         if (blnError)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
                                         .ConfigureAwait(false), _objSpirit.FileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken).ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBoxButtons.OK, MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
                     }
@@ -381,11 +381,11 @@ namespace Chummer
             try
             {
                 // Remove the file association from the Contact.
-                if (Program.ShowScrollableMessageBox(
+                if (await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation", token: _objMyToken)
                             .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation", token: _objMyToken)
-                            .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                            .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: _objMyToken).ConfigureAwait(false)
                     == DialogResult.Yes)
                 {
                     _objSpirit.FileName = string.Empty;
@@ -471,10 +471,10 @@ namespace Chummer
                     .ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strSpiritName))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync("Message_SelectCritterType", token: _objMyToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType", token: _objMyToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBoxButtons.OK, MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                     return;
                 }
 
@@ -782,14 +782,14 @@ namespace Chummer
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_UnknownCritterType", token: token)
                             .ConfigureAwait(false),
                         strCritterName),
                     await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType", token: token)
                         .ConfigureAwait(false),
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 return;
             }
 

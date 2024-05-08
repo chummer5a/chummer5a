@@ -406,10 +406,10 @@ namespace Chummer
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
-            Program.ShowScrollableMessageBox(
+            await Program.ShowScrollableMessageBoxAsync(
                 await LanguageManager.GetStringAsync("Message_CannotDeleteLimitModifier", token: token).ConfigureAwait(false),
                 await LanguageManager.GetStringAsync("MessageTitle_CannotDeleteLimitModifier", token: token).ConfigureAwait(false),
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
             return false;
         }
     }

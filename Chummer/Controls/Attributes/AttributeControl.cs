@@ -510,12 +510,12 @@ namespace Chummer.UI.Attributes
                         if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
                         if (intUpgradeKarmaCost > await _objCharacter.GetKarmaAsync(_objMyToken).ConfigureAwait(false))
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: _objMyToken)
                                     .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: _objMyToken)
                                     .ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
 
@@ -765,14 +765,14 @@ namespace Chummer.UI.Attributes
                         .ConfigureAwait(false))
                     return true;
 
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token)
                             .ConfigureAwait(false),
-                        _objCharacter.Settings.MaxNumberMaxAttributesCreate),
+                        await _objCharacter.Settings.GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false)),
                     await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token).ConfigureAwait(false),
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return false;
             }
             finally
@@ -810,24 +810,24 @@ namespace Chummer.UI.Attributes
                         _objMyToken.ThrowIfCancellationRequested();
                         if (await objAttribute.GetValueAsync(_objMyToken).ConfigureAwait(false) <= 0)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 await LanguageManager.GetStringAsync("Message_CannotBurnEdge", token: _objMyToken)
                                     .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge", token: _objMyToken)
                                     .ConfigureAwait(false),
                                 MessageBoxButtons.OK,
-                                MessageBoxIcon.Exclamation);
+                                MessageBoxIcon.Exclamation, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
 
                         // Verify that the user wants to Burn a point of Edge.
-                        if (Program.ShowScrollableMessageBox(
+                        if (await Program.ShowScrollableMessageBoxAsync(
                                 await LanguageManager.GetStringAsync("Message_BurnEdge", token: _objMyToken)
                                     .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_BurnEdge", token: _objMyToken)
                                     .ConfigureAwait(false),
                                 MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Question) == DialogResult.No)
+                                MessageBoxIcon.Question, token: _objMyToken).ConfigureAwait(false) == DialogResult.No)
                             return;
 
                         await objAttribute.Degrade(1, _objMyToken).ConfigureAwait(false);

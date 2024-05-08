@@ -97,10 +97,10 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), strFile));
+                        await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), strFile), token: token).ConfigureAwait(false);
                 return null;
             }
 
@@ -179,30 +179,30 @@ namespace Chummer
             }
             catch (IOException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
-                                                       .ConfigureAwait(false),
-                                  strFile));
+                        await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                            .ConfigureAwait(false),
+                        strFile), token: token).ConfigureAwait(false);
                 return null;
             }
             catch (NotSupportedException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
-                                                       .ConfigureAwait(false),
-                                  strFile));
+                        await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                            .ConfigureAwait(false),
+                        strFile), token: token).ConfigureAwait(false);
                 return null;
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     this,
                     await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
-                                         .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return null;
             }
 

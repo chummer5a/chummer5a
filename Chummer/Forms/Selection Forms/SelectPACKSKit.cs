@@ -842,8 +842,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit").ConfigureAwait(false), strSelectedKit),
-                                                 await LanguageManager.GetStringAsync("MessageTitle_Delete").ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if (await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit").ConfigureAwait(false), strSelectedKit),
+                    await LanguageManager.GetStringAsync("MessageTitle_Delete").ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2).ConfigureAwait(false) == DialogResult.No)
                 return;
 
             // Delete the selected custom PACKS Kit.

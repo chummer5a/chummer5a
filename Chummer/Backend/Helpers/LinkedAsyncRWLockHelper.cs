@@ -176,7 +176,11 @@ namespace Chummer
 #endif
         }
 
+#if LINKEDSEMAPHOREDEBUG
         private async Task AddChildAsync(LinkedAsyncRWLockHelper objChild, CancellationToken token = default)
+#else
+        private async Task AddChildAsync(CancellationToken token = default)
+#endif
         {
             token.ThrowIfCancellationRequested();
             if (IsDisposed || _objDisposalToken.IsCancellationRequested)
@@ -187,7 +191,7 @@ namespace Chummer
                 {
                     try
                     {
-                        await _objHasChildrenSemaphore.WaitAsync(token).ConfigureAwait(false);
+                        await _objHasChildrenSemaphore.WaitAsync(objSource.Token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

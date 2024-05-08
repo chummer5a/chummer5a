@@ -823,19 +823,19 @@ namespace Chummer
                                                             x => Path.GetFileNameWithoutExtension(x)
                                                                  != strAutosaveName, _objGenericToken).ConfigureAwait(false))
                                                     {
-                                                        if (Program.ShowScrollableMessageBox(
+                                                        if (await Program.ShowScrollableMessageBoxAsync(
                                                                 string.Format(GlobalSettings.CultureInfo,
-                                                                              await LanguageManager.GetStringAsync(
-                                                                                      "Message_PossibleCrashAutosaveFound",
-                                                                                      token: _objGenericToken)
-                                                                                  .ConfigureAwait(false),
-                                                                              objMostRecentAutosave.Name,
-                                                                              objMostRecentAutosave.LastWriteTimeUtc
-                                                                                  .ToLocalTime()),
+                                                                    await LanguageManager.GetStringAsync(
+                                                                            "Message_PossibleCrashAutosaveFound",
+                                                                            token: _objGenericToken)
+                                                                        .ConfigureAwait(false),
+                                                                    objMostRecentAutosave.Name,
+                                                                    objMostRecentAutosave.LastWriteTimeUtc
+                                                                        .ToLocalTime()),
                                                                 await LanguageManager.GetStringAsync(
                                                                     "MessageTitle_AutosaveFound",
                                                                     token: _objGenericToken).ConfigureAwait(false),
-                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: _objGenericToken).ConfigureAwait(false)
                                                             == DialogResult.Yes)
                                                             setFilesToLoad.Add(objMostRecentAutosave.FullName);
                                                         else
@@ -3022,9 +3022,9 @@ namespace Chummer
         {
             try
             {
-                if (Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning", token: _objGenericToken).ConfigureAwait(false),
-                                                     await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title", token: _objGenericToken).ConfigureAwait(false),
-                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                if (await Program.ShowScrollableMessageBoxAsync(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning", token: _objGenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title", token: _objGenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: _objGenericToken).ConfigureAwait(false) != DialogResult.Yes)
                     return;
 
                 HeroLabImporter frmImporter = await this.DoThreadSafeFuncAsync(() => new HeroLabImporter(), token: _objGenericToken).ConfigureAwait(false);
@@ -3385,10 +3385,10 @@ namespace Chummer
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
                                 if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
-                                    && Program.ShowScrollableMessageBox(
+                                    && await Program.ShowScrollableMessageBoxAsync(
                                         string.Format(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
@@ -3606,10 +3606,10 @@ namespace Chummer
                                     continue;
 
                                 if (Program.MyProcess.HandleCount >= 9500
-                                    && Program.ShowScrollableMessageBox(
+                                    && await Program.ShowScrollableMessageBoxAsync(
                                         string.Format(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
@@ -3846,10 +3846,10 @@ namespace Chummer
                                         x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                     continue;
                                 if (Program.MyProcess.HandleCount >= 9500
-                                    && Program.ShowScrollableMessageBox(
+                                    && await Program.ShowScrollableMessageBoxAsync(
                                         string.Format(strTooManyHandles, objCharacter.CharacterName),
                                         strTooManyHandlesTitle,
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) != DialogResult.Yes)
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(

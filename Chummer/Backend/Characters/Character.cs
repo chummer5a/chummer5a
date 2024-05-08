@@ -5700,10 +5700,10 @@ namespace Chummer
                     Log.Error(e);
                     if (Utils.IsUnitTest)
                         throw;
-                    Program.ShowScrollableMessageBox(await LanguageManager
+                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
                         .GetStringAsync(
                             "Message_Save_Error_Warning", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     blnErrorFree = false;
                 }
                 catch (XmlException ex)
@@ -5711,18 +5711,18 @@ namespace Chummer
                     Log.Warn(ex);
                     if (Utils.IsUnitTest)
                         throw;
-                    Program.ShowScrollableMessageBox(await LanguageManager
+                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
                         .GetStringAsync(
                             "Message_Save_Error_Warning", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     blnErrorFree = false;
                 }
                 catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                 {
-                    Program.ShowScrollableMessageBox(await LanguageManager
+                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
                         .GetStringAsync(
                             "Message_Save_Error_Warning", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     blnErrorFree = false;
                 }
             }
@@ -6247,15 +6247,15 @@ namespace Chummer
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
                                             If yes, restart the load, explicitly ignoring invalid characters.*/
 
-                                            if (Program.ShowScrollableMessageBox(
+                                            if (await Program.ShowScrollableMessageBoxAsync(
                                                     await LanguageManager
-                                                          .GetStringAsync("Message_InvalidTextFound", token: token)
-                                                          .ConfigureAwait(false),
+                                                        .GetStringAsync("Message_InvalidTextFound", token: token)
+                                                        .ConfigureAwait(false),
                                                     await LanguageManager
-                                                          .GetStringAsync(
-                                                              "Message_InvalidTextFound_Title", token: token)
-                                                          .ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
+                                                        .GetStringAsync(
+                                                            "Message_InvalidTextFound_Title", token: token)
+                                                        .ConfigureAwait(false),
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, token: token).ConfigureAwait(false) ==
                                                 DialogResult.No)
                                             {
                                                 return false;
@@ -6267,20 +6267,20 @@ namespace Chummer
                                         {
                                             if (showWarnings)
                                             {
-                                                Program.ShowScrollableMessageBox(
+                                                await Program.ShowScrollableMessageBoxAsync(
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager
-                                                                        .GetStringAsync(
-                                                                            "Message_FailedLoad", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                  ex.Message),
+                                                        await LanguageManager
+                                                            .GetStringAsync(
+                                                                "Message_FailedLoad", token: token)
+                                                            .ConfigureAwait(false),
+                                                        ex.Message),
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager
-                                                                        .GetStringAsync(
-                                                                            "MessageTitle_FailedLoad", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                  ex.Message),
-                                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                        await LanguageManager
+                                                            .GetStringAsync(
+                                                                "MessageTitle_FailedLoad", token: token)
+                                                            .ConfigureAwait(false),
+                                                        ex.Message),
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                                             }
 
                                             return false;
@@ -6342,23 +6342,28 @@ namespace Chummer
                                     showWarnings &&
                                     !Utils.IsUnitTest)
                                 {
-                                    Program.ShowScrollableMessageBox(
-                                        blnSync
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        Program.ShowScrollableMessageBox(
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("Message_IncorrectGameVersion_SR4",
-                                                                        token: token)
-                                            : await LanguageManager.GetStringAsync(
-                                                "Message_IncorrectGameVersion_SR4", token: token).ConfigureAwait(false),
-                                        blnSync
+                                            LanguageManager.GetString(
+                                                "Message_IncorrectGameVersion_SR4",
+                                                token: token),
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("MessageTitle_IncorrectGameVersion",
-                                                                        token: token)
-                                            : await LanguageManager.GetStringAsync(
-                                                                       "MessageTitle_IncorrectGameVersion",
-                                                                       token: token)
-                                                                   .ConfigureAwait(false),
-                                        MessageBoxButtons.YesNo,
-                                        MessageBoxIcon.Error);
+                                            LanguageManager.GetString(
+                                                "MessageTitle_IncorrectGameVersion",
+                                                token: token),
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                                    else
+                                        await Program.ShowScrollableMessageBoxAsync(
+                                            await LanguageManager.GetStringAsync(
+                                                "Message_IncorrectGameVersion_SR4",
+                                                token: token).ConfigureAwait(false),
+                                            await LanguageManager.GetStringAsync(
+                                                "MessageTitle_IncorrectGameVersion",
+                                                token: token).ConfigureAwait(false),
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Error,
+                                            token: token);
                                     return false;
                                 }
 
@@ -6758,26 +6763,33 @@ namespace Chummer
                                         // Prompt if we want to switch options or leave
                                         if (!Utils.IsUnitTest && showWarnings)
                                         {
-                                            if (Program.ShowScrollableMessageBox(
-                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                  blnSync
-                                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                                      ? LanguageManager.GetString(
-                                                                          "Message_CharacterOptions_CannotLoadSetting",
-                                                                          token: token)
-                                                                      : await LanguageManager.GetStringAsync(
-                                                                          "Message_CharacterOptions_CannotLoadSetting",
-                                                                          token: token).ConfigureAwait(false),
-                                                                  Path.GetFileNameWithoutExtension(_strSettingsKey)),
-                                                    blnSync
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    ? Program.ShowScrollableMessageBox(
+                                                        string.Format(
+                                                            GlobalSettings.CultureInfo,
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            LanguageManager.GetString(
+                                                                "Message_CharacterOptions_CannotLoadSetting",
+                                                                token: token),
+                                                            Path.GetFileNameWithoutExtension(_strSettingsKey)),
                                                         // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
+                                                        LanguageManager.GetString(
                                                             "MessageTitle_CharacterOptions_CannotLoadSetting",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
+                                                            token: token),
+                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Error)
+                                                    : await Program.ShowScrollableMessageBoxAsync(
+                                                        string.Format(
+                                                            GlobalSettings.CultureInfo,
+                                                            await LanguageManager.GetStringAsync(
+                                                                "Message_CharacterOptions_CannotLoadSetting",
+                                                                token: token).ConfigureAwait(false),
+                                                            Path.GetFileNameWithoutExtension(_strSettingsKey)),
+                                                        await LanguageManager.GetStringAsync(
                                                             "MessageTitle_CharacterOptions_CannotLoadSetting",
                                                             token: token).ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
+                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Error,
+                                                        token: token)) == DialogResult.No)
                                             {
                                                 return false;
                                             }
@@ -6845,43 +6857,48 @@ namespace Chummer
                                         // Prompt if we want to switch options or leave
                                         if (!Utils.IsUnitTest && showWarnings)
                                         {
-                                            if (Program.ShowScrollableMessageBox(
-                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                  blnSync
-                                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                                      ? LanguageManager.GetString(
-                                                                          "Message_CharacterOptions_DesyncBuildMethod",
-                                                                          token: token)
-                                                                      : await LanguageManager.GetStringAsync(
-                                                                          "Message_CharacterOptions_DesyncBuildMethod",
-                                                                          token: token).ConfigureAwait(false),
-                                                                  Path.GetFileNameWithoutExtension(_strSettingsKey),
-                                                                  blnSync
-                                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                                      ? LanguageManager.GetString(
-                                                                          "String_" + objProspectiveSettings
-                                                                              .BuildMethod, token: token)
-                                                                      : await LanguageManager.GetStringAsync(
-                                                                              "String_" + objProspectiveSettings
-                                                                                  .BuildMethod, token: token)
-                                                                          .ConfigureAwait(false),
-                                                                  blnSync
-                                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                                      ? LanguageManager.GetString(
-                                                                          "String_" + eSavedBuildMethod, token: token)
-                                                                      : await LanguageManager.GetStringAsync(
-                                                                              "String_" + eSavedBuildMethod,
-                                                                              token: token)
-                                                                          .ConfigureAwait(false)),
-                                                    blnSync
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    ? Program.ShowScrollableMessageBox(
+                                                        string.Format(
+                                                            GlobalSettings.CultureInfo,
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            LanguageManager.GetString(
+                                                                "Message_CharacterOptions_DesyncBuildMethod",
+                                                                token: token),
+                                                            Path.GetFileNameWithoutExtension(_strSettingsKey),
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            LanguageManager.GetString(
+                                                                "String_" + objProspectiveSettings
+                                                                    .BuildMethod, token: token),
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            LanguageManager.GetString(
+                                                                "String_" + eSavedBuildMethod, token: token)),
                                                         // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
+                                                        LanguageManager.GetString(
                                                             "MessageTitle_CharacterOptions_DesyncBuildMethod",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
+                                                            token: token),
+                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Error)
+                                                    : await Program.ShowScrollableMessageBoxAsync(
+                                                        string.Format(
+                                                            GlobalSettings.CultureInfo,
+                                                            await LanguageManager.GetStringAsync(
+                                                                "Message_CharacterOptions_DesyncBuildMethod",
+                                                                token: token).ConfigureAwait(false),
+                                                            Path.GetFileNameWithoutExtension(_strSettingsKey),
+                                                            await LanguageManager.GetStringAsync(
+                                                                    "String_" + objProspectiveSettings
+                                                                        .BuildMethod, token: token)
+                                                                .ConfigureAwait(false),
+                                                            await LanguageManager.GetStringAsync(
+                                                                    "String_" + eSavedBuildMethod,
+                                                                    token: token)
+                                                                .ConfigureAwait(false)),
+                                                        await LanguageManager.GetStringAsync(
                                                             "MessageTitle_CharacterOptions_DesyncBuildMethod",
                                                             token: token).ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
+                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Error,
+                                                        token: token)) == DialogResult.No)
                                             {
                                                 return false;
                                             }
@@ -6977,27 +6994,33 @@ namespace Chummer
 
                                             if (blnPromptConfirmSetting)
                                             {
-                                                DialogResult eShowBPResult = Program.ShowScrollableMessageBox(
-                                                    string.Format(
-                                                        GlobalSettings.CultureInfo,
-                                                        blnSync
+                                                DialogResult eShowBPResult = blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    ? Program.ShowScrollableMessageBox(
+                                                        string.Format(
+                                                            GlobalSettings.CultureInfo,
                                                             // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
+                                                            LanguageManager.GetString(
                                                                 "Message_CharacterOptions_DesyncBooksOrCustomData",
-                                                                token: token)
-                                                            : await LanguageManager.GetStringAsync(
+                                                                token: token),
+                                                            objProspectiveSettings.Name),
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        LanguageManager.GetString(
+                                                            "MessageTitle_CharacterOptions_DesyncBooksOrCustomData",
+                                                            token: token),
+                                                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+                                                    : await Program.ShowScrollableMessageBoxAsync(
+                                                        string.Format(
+                                                            GlobalSettings.CultureInfo,
+                                                            await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_DesyncBooksOrCustomData",
                                                                 token: token).ConfigureAwait(false),
-                                                        objProspectiveSettings.Name),
-                                                    blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
-                                                            "MessageTitle_CharacterOptions_DesyncBooksOrCustomData",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
+                                                            objProspectiveSettings.Name),
+                                                        await LanguageManager.GetStringAsync(
                                                             "MessageTitle_CharacterOptions_DesyncBooksOrCustomData",
                                                             token: token).ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                                                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning,
+                                                        token: token);
                                                 if (eShowBPResult == DialogResult.Cancel)
                                                 {
                                                     return false;
@@ -7020,27 +7043,33 @@ namespace Chummer
                                                          token).ConfigureAwait(false))
                                                  != intSettingsHashCode)
                                         {
-                                            DialogResult eShowBPResult = Program.ShowScrollableMessageBox(
-                                                string.Format(
-                                                    GlobalSettings.CultureInfo,
-                                                    blnSync
+                                            DialogResult eShowBPResult = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                ? Program.ShowScrollableMessageBox(
+                                                    string.Format(
+                                                        GlobalSettings.CultureInfo,
                                                         // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString(
+                                                        LanguageManager.GetString(
                                                             "Message_CharacterOptions_DesyncFromHashCode",
-                                                            token: token)
-                                                        : await LanguageManager.GetStringAsync(
+                                                            token: token),
+                                                        objProspectiveSettings.Name),
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    LanguageManager.GetString(
+                                                        "MessageTitle_CharacterOptions_DesyncFromHashCode",
+                                                        token: token),
+                                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+                                                : await Program.ShowScrollableMessageBoxAsync(
+                                                    string.Format(
+                                                        GlobalSettings.CultureInfo,
+                                                        await LanguageManager.GetStringAsync(
                                                             "Message_CharacterOptions_DesyncFromHashCode",
                                                             token: token).ConfigureAwait(false),
-                                                    objProspectiveSettings.Name),
-                                                blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    ? LanguageManager.GetString(
-                                                        "MessageTitle_CharacterOptions_DesyncFromHashCode",
-                                                        token: token)
-                                                    : await LanguageManager.GetStringAsync(
+                                                        objProspectiveSettings.Name),
+                                                    await LanguageManager.GetStringAsync(
                                                         "MessageTitle_CharacterOptions_DesyncFromHashCode",
                                                         token: token).ConfigureAwait(false),
-                                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning,
+                                                    token: token);
                                             if (eShowBPResult == DialogResult.Cancel)
                                             {
                                                 return false;
@@ -7462,24 +7491,35 @@ namespace Chummer
                                             if (!strCharacterInnerXml.ContainsAnyParallel(astrToCheck, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 //Utils.BreakIfDebug();
-                                                if (blnRemoveImprovements
-                                                    || Program.ShowScrollableMessageBox(
-                                                        blnSync
+                                                if (blnRemoveImprovements)
+                                                    continue;
+
+                                                if (blnSync)
+                                                {
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    if (Program.ShowScrollableMessageBox(
                                                             // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                "Message_OrphanedImprovements", token: token)
-                                                            : await LanguageManager.GetStringAsync(
-                                                                    "Message_OrphanedImprovements", token: token)
-                                                                .ConfigureAwait(false),
-                                                        blnSync
+                                                            LanguageManager.GetString(
+                                                                "Message_OrphanedImprovements", token: token),
                                                             // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                "MessageTitle_OrphanedImprovements", token: token)
-                                                            : await LanguageManager.GetStringAsync(
-                                                                    "MessageTitle_OrphanedImprovements", token: token)
-                                                                .ConfigureAwait(false),
-                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Error) ==
-                                                    DialogResult.Yes)
+                                                            LanguageManager.GetString(
+                                                                "MessageTitle_OrphanedImprovements", token: token),
+                                                            MessageBoxButtons.YesNo, MessageBoxIcon.Error) ==
+                                                        DialogResult.Yes)
+                                                    {
+                                                        blnRemoveImprovements = true;
+                                                        continue;
+                                                    }
+                                                }
+                                                else if (await Program.ShowScrollableMessageBoxAsync(
+                                                             await LanguageManager.GetStringAsync(
+                                                                     "Message_OrphanedImprovements", token: token)
+                                                                 .ConfigureAwait(false),
+                                                             await LanguageManager.GetStringAsync(
+                                                                     "MessageTitle_OrphanedImprovements", token: token)
+                                                                 .ConfigureAwait(false),
+                                                             MessageBoxButtons.YesNo, MessageBoxIcon.Error, token: token) ==
+                                                         DialogResult.Yes)
                                                 {
                                                     blnRemoveImprovements = true;
                                                     continue;
@@ -16688,8 +16728,8 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowScrollableMessageBox(
-                                await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
+                            await Program.ShowScrollableMessageBoxAsync(
+                                await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -25955,9 +25995,10 @@ namespace Chummer
                 {
                     strReturn = strReturn
                         .CheapReplace('{' + strAttributeName + '}', () =>
-                                          dicValueOverrides?.ContainsKey(strAttributeName) == true
-                                              ? dicValueOverrides[strAttributeName].ToString()
-                                              : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName).ToString());
+                            dicValueOverrides != null &&
+                            dicValueOverrides.TryGetValue(strAttributeName, out int intOverride)
+                                ? intOverride.ToString()
+                                : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName).ToString());
                 }
             }
 
@@ -25978,10 +26019,11 @@ namespace Chummer
                 foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
                 {
                     sbdInput.CheapReplace('{' + strAttributeName + '}', () =>
-                                              dicValueOverrides?.ContainsKey(strAttributeName) == true
-                                                  ? dicValueOverrides[strAttributeName].ToString()
-                                                  : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName)
-                                                                  .ToString());
+                        dicValueOverrides != null &&
+                        dicValueOverrides.TryGetValue(strAttributeName, out int intOverride)
+                            ? intOverride.ToString()
+                            : ActiveCommlink?.GetTotalMatrixAttribute(strAttributeName)
+                                .ToString());
                 }
             }
         }
@@ -44115,18 +44157,29 @@ namespace Chummer
                                 Log.Error(ex);
                             }
 
-                            Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
-                                              blnSync
-                                                  // ReSharper disable once MethodHasAsyncOverload
-                                                  ? LanguageManager.GetString("Message_FailedLoad", token: token)
-                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad", token: token).ConfigureAwait(false),
-                                              ex.Message),
-                                blnSync
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Program.ShowScrollableMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        LanguageManager.GetString("Message_FailedLoad", token: token),
+                                        ex.Message),
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("MessageTitle_FailedLoad", token: token)
-                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token).ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    LanguageManager.GetString("MessageTitle_FailedLoad", token: token),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("Message_FailedLoad", token: token)
+                                            .ConfigureAwait(false),
+                                        ex.Message),
+                                    await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
+                            }
                             return false;
                         }
                         catch (NotSupportedException ex)
@@ -44138,18 +44191,29 @@ namespace Chummer
                                 Log.Error(ex);
                             }
 
-                            Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
-                                              blnSync
-                                                  // ReSharper disable once MethodHasAsyncOverload
-                                                  ? LanguageManager.GetString("Message_FailedLoad", token: token)
-                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad", token: token).ConfigureAwait(false),
-                                              ex.Message),
-                                blnSync
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Program.ShowScrollableMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        LanguageManager.GetString("Message_FailedLoad", token: token),
+                                        ex.Message),
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("MessageTitle_FailedLoad", token: token)
-                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token).ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    LanguageManager.GetString("MessageTitle_FailedLoad", token: token),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("Message_FailedLoad", token: token)
+                                            .ConfigureAwait(false),
+                                        ex.Message),
+                                    await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
+                            }
                             return false;
                         }
                         catch (UnauthorizedAccessException ex)
@@ -44161,18 +44225,30 @@ namespace Chummer
                                 Log.Error(ex);
                             }
 
-                            Program.ShowScrollableMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
-                                              blnSync
-                                                  // ReSharper disable once MethodHasAsyncOverload
-                                                  ? LanguageManager.GetString("Message_FailedLoad", token: token)
-                                                  : await LanguageManager.GetStringAsync("Message_FailedLoad", token: token).ConfigureAwait(false),
-                                              ex.Message),
-                                blnSync
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Program.ShowScrollableMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        LanguageManager.GetString("Message_FailedLoad", token: token),
+                                        ex.Message),
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("MessageTitle_FailedLoad", token: token)
-                                    : await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token).ConfigureAwait(false),
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    LanguageManager.GetString("MessageTitle_FailedLoad", token: token),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("Message_FailedLoad", token: token)
+                                            .ConfigureAwait(false),
+                                        ex.Message),
+                                    await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
+                            }
+
                             return false;
                         }
 
@@ -44555,29 +44631,20 @@ namespace Chummer
 
                                 if (string.IsNullOrEmpty(strSettingsKey))
                                 {
-                                    if (Program.ShowScrollableMessageBox(
-                                            string.Format(GlobalSettings.CultureInfo,
-                                                          blnSync
-                                                              // ReSharper disable once MethodHasAsyncOverload
-                                                              ? LanguageManager.GetString(
-                                                                  "Message_MissingGameplayOption", token: token)
-                                                              : await LanguageManager
-                                                                      .GetStringAsync(
-                                                                          "Message_MissingGameplayOption", token: token).ConfigureAwait(false),
-                                                          blnSync ? SettingsKey : await GetSettingsKeyAsync(token).ConfigureAwait(false)),
-                                            blnSync
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ? LanguageManager.GetString(
-                                                    "Message_MissingGameplayOption_Title", token: token)
-                                                : await LanguageManager.GetStringAsync(
-                                                    "Message_MissingGameplayOption_Title", token: token).ConfigureAwait(false),
-                                            MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
-                                        == DialogResult.OK)
+                                    if (blnSync)
                                     {
-                                        if (blnSync)
+                                        // ReSharper disable MethodHasAsyncOverload
+                                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                        if (Program.ShowScrollableMessageBox(
+                                                string.Format(GlobalSettings.CultureInfo,
+                                                    LanguageManager.GetString(
+                                                        "Message_MissingGameplayOption", token: token),
+                                                    SettingsKey),
+                                                LanguageManager.GetString(
+                                                    "Message_MissingGameplayOption_Title", token: token),
+                                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+                                            == DialogResult.OK)
                                         {
-                                            // ReSharper disable MethodHasAsyncOverload
-                                            // ReSharper disable MethodHasAsyncOverloadWithCancellation
                                             using (ThreadSafeForm<SelectBuildMethod> frmPickBP
                                                    = ThreadSafeForm<SelectBuildMethod>.Get(
                                                        () => new SelectBuildMethod(this, true)))
@@ -44585,18 +44652,33 @@ namespace Chummer
                                                 if (frmPickBP.ShowDialogSafe(this, token) != DialogResult.OK)
                                                     return false;
                                             }
-                                            // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                                            // ReSharper restore MethodHasAsyncOverload
                                         }
                                         else
+                                            return false;
+                                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                        // ReSharper restore MethodHasAsyncOverload
+                                    }
+                                    else if (await Program.ShowScrollableMessageBoxAsync(
+                                                 string.Format(GlobalSettings.CultureInfo,
+                                                     await LanguageManager
+                                                         .GetStringAsync(
+                                                             "Message_MissingGameplayOption", token: token)
+                                                         .ConfigureAwait(false),
+                                                     await GetSettingsKeyAsync(token).ConfigureAwait(false)),
+                                                 await LanguageManager.GetStringAsync(
+                                                         "Message_MissingGameplayOption_Title", token: token)
+                                                     .ConfigureAwait(false),
+                                                 MessageBoxButtons.OKCancel, MessageBoxIcon.Error, token: token)
+                                             == DialogResult.OK)
+                                    {
+                                        using (ThreadSafeForm<SelectBuildMethod> frmPickBP =
+                                               await ThreadSafeForm<SelectBuildMethod>.GetAsync(
+                                                       () => new SelectBuildMethod(this, true), token)
+                                                   .ConfigureAwait(false))
                                         {
-                                            using (ThreadSafeForm<SelectBuildMethod> frmPickBP =
-                                                   await ThreadSafeForm<SelectBuildMethod>.GetAsync(
-                                                       () => new SelectBuildMethod(this, true), token).ConfigureAwait(false))
-                                            {
-                                                if (await frmPickBP.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
-                                                    return false;
-                                            }
+                                            if (await frmPickBP.ShowDialogSafeAsync(this, token)
+                                                    .ConfigureAwait(false) != DialogResult.OK)
+                                                return false;
                                         }
                                     }
                                     else
@@ -48014,19 +48096,19 @@ namespace Chummer
 
                 if (!blnEssence || !blnEnabled)
                 {
-                    Program.ShowScrollableMessageBox(strMessage,
+                    await Program.ShowScrollableMessageBoxAsync(strMessage,
                         await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements", token: token)
                             .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     return false;
                 }
 
-                if (Program.ShowScrollableMessageBox(
+                if (await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync("Message_CyberzombieConfirm", token: token)
                             .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CyberzombieConfirm", token: token)
                             .ConfigureAwait(false),
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.No)
                     return false;
 
                 int intWILResult;

@@ -2474,7 +2474,8 @@ namespace Chummer
                 foreach (string strLine in astrLines)
                 {
                     Size objTextSize = TextRenderer.MeasureText(strLine, txtTextBox.Font);
-                    intNumDisplayedLines += Math.Max(((decimal)objTextSize.Width / txtTextBox.Width).StandardRound(), 1);
+                    // Extra 2.5% because of weird potential misjudgement issues
+                    intNumDisplayedLines += Math.Max((objTextSize.Width * 1.025m / txtTextBox.Width).StandardRound(), 1);
                     intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                 }
             }

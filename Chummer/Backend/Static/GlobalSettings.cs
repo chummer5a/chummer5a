@@ -983,18 +983,18 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
-                Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -1991,24 +1991,24 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     await LanguageManager
                         .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     await LanguageManager
                         .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     await LanguageManager
                         .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -2119,24 +2119,24 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     await LanguageManager
                         .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     await LanguageManager
                         .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.ShowScrollableMessageBox(
+                await Program.ShowScrollableMessageBoxAsync(
                     await LanguageManager
                         .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
-                        .ConfigureAwait(false));
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
