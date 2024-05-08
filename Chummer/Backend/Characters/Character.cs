@@ -6363,7 +6363,7 @@ namespace Chummer
                                                 "MessageTitle_IncorrectGameVersion",
                                                 token: token).ConfigureAwait(false),
                                             MessageBoxButtons.YesNo, MessageBoxIcon.Error,
-                                            token: token);
+                                            token: token).ConfigureAwait(false);
                                     return false;
                                 }
 
@@ -6789,7 +6789,7 @@ namespace Chummer
                                                             "MessageTitle_CharacterOptions_CannotLoadSetting",
                                                             token: token).ConfigureAwait(false),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Error,
-                                                        token: token)) == DialogResult.No)
+                                                        token: token).ConfigureAwait(false)) == DialogResult.No)
                                             {
                                                 return false;
                                             }
@@ -6898,7 +6898,7 @@ namespace Chummer
                                                             "MessageTitle_CharacterOptions_DesyncBuildMethod",
                                                             token: token).ConfigureAwait(false),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Error,
-                                                        token: token)) == DialogResult.No)
+                                                        token: token).ConfigureAwait(false)) == DialogResult.No)
                                             {
                                                 return false;
                                             }
@@ -7020,7 +7020,7 @@ namespace Chummer
                                                             "MessageTitle_CharacterOptions_DesyncBooksOrCustomData",
                                                             token: token).ConfigureAwait(false),
                                                         MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning,
-                                                        token: token);
+                                                        token: token).ConfigureAwait(false);
                                                 if (eShowBPResult == DialogResult.Cancel)
                                                 {
                                                     return false;
@@ -7069,7 +7069,7 @@ namespace Chummer
                                                         "MessageTitle_CharacterOptions_DesyncFromHashCode",
                                                         token: token).ConfigureAwait(false),
                                                     MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning,
-                                                    token: token);
+                                                    token: token).ConfigureAwait(false);
                                             if (eShowBPResult == DialogResult.Cancel)
                                             {
                                                 return false;
@@ -7518,7 +7518,7 @@ namespace Chummer
                                                              await LanguageManager.GetStringAsync(
                                                                      "MessageTitle_OrphanedImprovements", token: token)
                                                                  .ConfigureAwait(false),
-                                                             MessageBoxButtons.YesNo, MessageBoxIcon.Error, token: token) ==
+                                                             MessageBoxButtons.YesNo, MessageBoxIcon.Error, token: token).ConfigureAwait(false) ==
                                                          DialogResult.Yes)
                                                 {
                                                     blnRemoveImprovements = true;
@@ -44178,7 +44178,7 @@ namespace Chummer
                                         ex.Message),
                                     await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
                                         .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                             }
                             return false;
                         }
@@ -44212,7 +44212,7 @@ namespace Chummer
                                         ex.Message),
                                     await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
                                         .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                             }
                             return false;
                         }
@@ -44246,7 +44246,7 @@ namespace Chummer
                                         ex.Message),
                                     await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token)
                                         .ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                             }
 
                             return false;
@@ -44668,7 +44668,7 @@ namespace Chummer
                                                  await LanguageManager.GetStringAsync(
                                                          "Message_MissingGameplayOption_Title", token: token)
                                                      .ConfigureAwait(false),
-                                                 MessageBoxButtons.OKCancel, MessageBoxIcon.Error, token: token)
+                                                 MessageBoxButtons.OKCancel, MessageBoxIcon.Error, token: token).ConfigureAwait(false)
                                              == DialogResult.OK)
                                     {
                                         using (ThreadSafeForm<SelectBuildMethod> frmPickBP =

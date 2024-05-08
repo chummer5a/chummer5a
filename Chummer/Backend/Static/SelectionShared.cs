@@ -161,7 +161,7 @@ namespace Chummer
                                     strLocalName),
                                 string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -196,7 +196,7 @@ namespace Chummer
                                     strLocalName),
                                 string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -229,7 +229,7 @@ namespace Chummer
                                     strLocalName),
                                 string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                     .ConfigureAwait(false), strLocalName),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -528,7 +528,7 @@ namespace Chummer
                                         strLocalName, intLimit == 0 ? 1 : intLimit),
                                     string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Limit", token: token)
                                         .ConfigureAwait(false), strLocalName),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             }
                         }
 
@@ -578,7 +578,7 @@ namespace Chummer
                                             strLocalName) + strName,
                                         string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                             .ConfigureAwait(false), strLocalName),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                 }
                             }
 
@@ -723,7 +723,7 @@ namespace Chummer
                                         strLocalName) + sbdRequirement,
                                     string.Format(await LanguageManager.GetStringAsync("MessageTitle_SelectGeneric_Restriction", token: token)
                                         .ConfigureAwait(false), strLocalName),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token);
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             }
                         }
 

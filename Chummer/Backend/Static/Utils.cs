@@ -620,7 +620,7 @@ namespace Chummer
                                                      "Message_Prompt_Delete_Existing_File", token: token)
                                                  .ConfigureAwait(false), strPath),
                                          buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning,
-                                         token: token) !=
+                                         token: token).ConfigureAwait(false) !=
                                      DialogResult.Yes)
                                 return false;
                         }
@@ -662,7 +662,7 @@ namespace Chummer
                             await Program.ShowScrollableMessageBoxAsync(
                                 await LanguageManager
                                     .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
-                                    .ConfigureAwait(false), token: token);
+                                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -774,7 +774,7 @@ namespace Chummer
                                              "Message_Prompt_Delete_Existing_File", token: token)
                                          .ConfigureAwait(false), strPath),
                                  buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning,
-                                 token: token) !=
+                                 token: token).ConfigureAwait(false) !=
                              DialogResult.Yes)
                         return false;
                 }
