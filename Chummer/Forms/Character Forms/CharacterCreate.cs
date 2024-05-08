@@ -17493,7 +17493,8 @@ namespace Chummer
                                                      + strMetavariantGuidString.ToUpperInvariant().CleanXPath()
                                                      + ']';
                         AttributeSection objAttributeSection = await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                        await objAttributeSection.AttributeList.ForEachAsync(async objOldAttribute =>
+                        ThreadSafeObservableCollection<CharacterAttrib> lstAttributeList = await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false);
+                        await lstAttributeList.ForEachWithSideEffectsAsync(async objOldAttribute =>
                         {
                             CharacterAttrib objNewAttribute = new CharacterAttrib(
                                 CharacterObject, objOldAttribute.Abbrev,
@@ -17507,7 +17508,7 @@ namespace Chummer
 
                         foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
                         {
-                            await CharacterObject.AttributeSection.AttributeList.AddAsync(objAttributeToAdd, token)
+                            await lstAttributeList.AddAsync(objAttributeToAdd, token)
                                                  .ConfigureAwait(false);
                         }
                     }
