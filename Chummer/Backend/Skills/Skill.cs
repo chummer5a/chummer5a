@@ -2206,7 +2206,7 @@ namespace Chummer.Backend.Skills
                 string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
-                var lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Improvement> lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
                 List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
                 await lstImprovements.ForEachWithBreakAsync(
                     objImprovement =>

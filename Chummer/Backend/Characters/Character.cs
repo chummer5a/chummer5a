@@ -30998,7 +30998,7 @@ namespace Chummer
                     {
                         foreach (Armor objArmor in lstArmorsToConsider)
                         {
-                            if (dicArmorStackingValues.TryGetValue(objArmor, out var tupStack)
+                            if (dicArmorStackingValues.TryGetValue(objArmor, out Tuple<int, int> tupStack)
                                 && tupStack.Item1 > intAverageStrength)
                                 dicArmorStackingValues[objArmor]
                                     = new Tuple<int, int>(intAverageStrength, tupStack.Item2);
@@ -31108,7 +31108,7 @@ namespace Chummer
                 {
                     foreach (Armor objArmor in lstArmorsToConsider)
                     {
-                        if (dicArmorStackingValues.TryGetValue(objArmor, out var tupStack)
+                        if (dicArmorStackingValues.TryGetValue(objArmor, out Tuple<int, int> tupStack)
                             && tupStack.Item1 > intAverageStrength)
                             dicArmorStackingValues[objArmor]
                                 = new Tuple<int, int>(intAverageStrength, tupStack.Item2);

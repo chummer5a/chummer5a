@@ -153,7 +153,7 @@ namespace Chummer
                 {
                     IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                         = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                    foreach (var objSetting in dicCharacterSettings.Values)
+                    foreach (CharacterSettings objSetting in dicCharacterSettings.Values)
                     {
                         lstCharacterSettings.Add(
                             new ListItem(objSetting,

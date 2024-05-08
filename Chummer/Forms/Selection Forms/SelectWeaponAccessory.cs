@@ -298,7 +298,7 @@ namespace Chummer
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
                 if (await _objCharacter.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                 {
-                    var xmlWeaponNode = await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                    XPathNavigator xmlWeaponNode = await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                     string strCategory =
                         xmlWeaponNode != null
                             ? xmlWeaponNode.SelectSingleNodeAndCacheExpression("category", token)?.Value ?? string.Empty
