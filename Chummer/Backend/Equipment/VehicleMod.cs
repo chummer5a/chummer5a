@@ -814,10 +814,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strText = _strMaxRating.ToUpperInvariant();
-                if (string.IsNullOrEmpty(strText))
+                if (string.IsNullOrEmpty(_strMaxRating))
                     return 0;
-                int intReturn = 0;
+                string strText = _strMaxRating.ToUpperInvariant();
+                int intReturn;
                 switch (strText)
                 {
                     case "QTY":
@@ -872,10 +872,10 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetMaxRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strText = _strMaxRating.ToUpperInvariant();
-            if (string.IsNullOrEmpty(strText))
+            if (string.IsNullOrEmpty(_strMaxRating))
                 return 0;
-            int intReturn = 0;
+            string strText = _strMaxRating.ToUpperInvariant();
+            int intReturn;
             switch (strText)
             {
                 case "QTY":

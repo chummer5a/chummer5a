@@ -4218,9 +4218,11 @@ namespace Chummer.Backend.Equipment
         {
             if (Capacity.Contains('[') && !Capacity.Contains("/["))
                 return await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
-            return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CapacityRemaining"),
+            return string.Format(GlobalSettings.CultureInfo,
+                await LanguageManager.GetStringAsync("String_CapacityRemaining", token: token).ConfigureAwait(false),
                 await GetCalculatedCapacityAsync(token).ConfigureAwait(false),
-                (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##", GlobalSettings.CultureInfo));
+                (await GetCapacityRemainingAsync(token).ConfigureAwait(false)).ToString("#,0.##",
+                    GlobalSettings.CultureInfo));
         }
 
         /// <summary>

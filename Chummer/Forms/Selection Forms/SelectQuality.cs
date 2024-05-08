@@ -331,7 +331,7 @@ namespace Chummer
         {
             set
             {
-                if (_lstCategory.Any(x => x.Value.ToString() == value))
+                if (_lstCategory.Exists(x => string.Equals(x.Value.ToString(), value, StringComparison.OrdinalIgnoreCase)))
                 {
                     cboCategory.BeginUpdate();
                     try

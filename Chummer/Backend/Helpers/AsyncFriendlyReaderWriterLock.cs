@@ -1278,7 +1278,6 @@ namespace Chummer
                         break;
                 }
 
-
                 LinkedAsyncRWLockHelper objCurrentHelper = _objNextHelper.ParentLinkedHelper;
 #if ASYNCLOCALWRITEDEBUG
 #if DEBUG

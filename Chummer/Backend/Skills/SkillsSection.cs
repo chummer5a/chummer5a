@@ -1968,7 +1968,7 @@ namespace Chummer.Backend.Skills
                             else if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             {
                                 // zero out any skillgroups whose skills did not make the final cut
-                                foreach (SkillGroup objSkillGroup in await SkillGroups.ToListAsync(token)
+                                foreach (SkillGroup objSkillGroup in await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ToListAsync(token)
                                              .ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -1992,7 +1992,7 @@ namespace Chummer.Backend.Skills
                             else
                             {
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                foreach (SkillGroup objSkillGroup in await SkillGroups.ToListAsync(token)
+                                foreach (SkillGroup objSkillGroup in await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ToListAsync(token)
                                              .ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
