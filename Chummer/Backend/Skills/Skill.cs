@@ -2791,7 +2791,7 @@ namespace Chummer.Backend.Skills
                         return false;
                     }
 
-                    intReturn = (!IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
+                    _intCachedCanHaveSpecs = intReturn = (!IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
                                  !(ImprovementManager
                                    .GetCachedImprovementListForValueOf(
                                        CharacterObject,
@@ -2803,12 +2803,6 @@ namespace Chummer.Backend.Skills
                                           Improvement.ImprovementType
                                                      .BlockSkillCategorySpecializations,
                                           SkillCategory).Count > 0)).ToInt32();
-                    if (intReturn <= 0 && Specializations.Count > 0)
-                    {
-                        Specializations.Clear();
-                    }
-
-                    _intCachedCanHaveSpecs = intReturn;
                     return intReturn > 0;
                 }
             }
@@ -2820,26 +2814,26 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if ((this as KnowledgeSkill)?.AllowUpgrade == false)
+                if (this is KnowledgeSkill objThis && !await objThis.GetAllowUpgradeAsync(token).ConfigureAwait(false))
                     return false;
                 // intReturn for thread safety
                 int intReturn = _intCachedCanHaveSpecs;
                 if (intReturn >= 0)
                     return intReturn > 0;
-                if (!Enabled)
+                if (!await GetEnabledAsync(token).ConfigureAwait(false))
                 {
                     _intCachedCanHaveSpecs = 0;
                     return false;
                 }
 
-                intReturn = (!IsExoticSkill
+                _intCachedCanHaveSpecs = intReturn = (!IsExoticSkill
                              && await GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0
                              && await GetKarmaUnlockedAsync(token).ConfigureAwait(false) &&
                              !((await ImprovementManager
                                       .GetCachedImprovementListForValueOfAsync(
                                           CharacterObject,
                                           Improvement.ImprovementType.BlockSkillSpecializations,
-                                          DictionaryKey, true, token).ConfigureAwait(false)).Count > 0
+                                          await GetDictionaryKeyAsync(token).ConfigureAwait(false), true, token).ConfigureAwait(false)).Count > 0
                                || (await ImprovementManager
                                          .GetCachedImprovementListForValueOfAsync(
                                              CharacterObject,
@@ -2847,17 +2841,7 @@ namespace Chummer.Backend.Skills
                                                         .BlockSkillCategorySpecializations,
                                              SkillCategory, token: token).ConfigureAwait(false)).Count
                                > 0)).ToInt32();
-                if (intReturn <= 0)
-                {
-                    ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
-                        = await GetSpecializationsAsync(token).ConfigureAwait(false);
-                    if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0)
-                    {
-                        await lstSpecs.ClearAsync(token).ConfigureAwait(false);
-                    }
-                }
 
-                _intCachedCanHaveSpecs = intReturn;
                 return intReturn > 0;
             }
             finally
@@ -6142,8 +6126,6 @@ namespace Chummer.Backend.Skills
                                 _intCachedCanAffordSpecialization = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
                                 _intCachedEnabled = -1;
-                            if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
-                                _intCachedCanHaveSpecs = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
                                 _intCachedForcedBuyWithKarma = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
@@ -6152,6 +6134,12 @@ namespace Chummer.Backend.Skills
                                 ResetCachedCyberwareRating();
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
+                            if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
+                            {
+                                _intCachedCanHaveSpecs = -1;
+                                if (!CanHaveSpecs && Specializations.Count > 0)
+                                    Specializations.Clear();
+                            }
                         }
                     }
 
@@ -6294,8 +6282,6 @@ namespace Chummer.Backend.Skills
                                 _intCachedCanAffordSpecialization = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
                                 _intCachedEnabled = -1;
-                            if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
-                                _intCachedCanHaveSpecs = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
                                 _intCachedForcedBuyWithKarma = -1;
                             if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
@@ -6304,6 +6290,16 @@ namespace Chummer.Backend.Skills
                                 await ResetCachedCyberwareRatingAsync(token).ConfigureAwait(false);
                             if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                                 _blnRecalculateCachedSuggestedSpecializations = true;
+                            if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
+                            {
+                                _intCachedCanHaveSpecs = -1;
+                                if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
+                                {
+                                    ThreadSafeObservableCollection<SkillSpecialization> lstSpecs = await GetSpecializationsAsync(token).ConfigureAwait(false);
+                                    if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0)
+                                        await lstSpecs.ClearAsync(token).ConfigureAwait(false);
+                                }
+                            }
                         }
                         finally
                         {

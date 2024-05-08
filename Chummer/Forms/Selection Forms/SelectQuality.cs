@@ -425,7 +425,7 @@ namespace Chummer
                             }
                         }
 
-                        if (await _objCharacter.GetCreatedAsync(token) && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token))
+                        if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !await _objCharacter.Settings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false))
                         {
                             string strDoubleCostCareer = xmlQuality.SelectSingleNodeAndCacheExpression("doublecareer", token)?.Value;
                             if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
