@@ -1352,11 +1352,13 @@ namespace Chummer
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                             strTemp.Add(nameof(PowerPointsUsed));
                             dicChangedProperties.Add(this, strTemp);
-                            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker =
+                                await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                             try
-                                {
+                            {
                                 token.ThrowIfCancellationRequested();
-                                Power objNewPower = await Powers.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
+                                Power objNewPower =
+                                    await Powers.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                                 if (!IsLoading)
                                 {
                                     // Needed in order to properly process named sources where
@@ -1367,7 +1369,7 @@ namespace Chummer
                                             || !objImprovement.Enabled)
                                             continue;
                                         foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                  string strPropertyToUpdate) in
+                                                     string strPropertyToUpdate) in
                                                  objImprovement.GetRelevantPropertyChangers())
                                         {
                                             if (!dicChangedProperties.TryGetValue(objItemToUpdate,
@@ -1393,7 +1395,7 @@ namespace Chummer
                                 await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
 
-                                break;
+                            break;
                         }
                         case ListChangedType.ItemDeleted:
                         {
@@ -1426,9 +1428,10 @@ namespace Chummer
                                     strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                                     strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
                                     dicChangedProperties.Add(this, strTemp);
-                                    IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                    IAsyncDisposable objLocker =
+                                        await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                                     try
-                                            {
+                                    {
                                         token.ThrowIfCancellationRequested();
                                         foreach (Power objPower in Powers)
                                         {
@@ -1447,7 +1450,7 @@ namespace Chummer
                                         await objLocker.DisposeAsync().ConfigureAwait(false);
                                     }
 
-                                            break;
+                                    break;
                                 }
                                 case nameof(Power.PowerPoints):
                                 {
@@ -2462,9 +2465,10 @@ namespace Chummer
                                 if (objNewItem.IsModularCurrentlyEquipped)
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker =
+                                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                                 try
-                                    {
+                                {
                                     token.ThrowIfCancellationRequested();
                                     if (!IsLoading)
                                     {
@@ -2477,7 +2481,7 @@ namespace Chummer
                                                 objNewItem.InternalId && objImprovement.Enabled)
                                             {
                                                 foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                          string strPropertyToUpdate) in
+                                                             string strPropertyToUpdate) in
                                                          objImprovement.GetRelevantPropertyChangers())
                                                 {
                                                     token.ThrowIfCancellationRequested();
@@ -2507,7 +2511,7 @@ namespace Chummer
                                 {
                                     await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
-                                }
+                            }
 
                             break;
                         }
@@ -2522,9 +2526,10 @@ namespace Chummer
                                 if (objOldItem.IsModularCurrentlyEquipped)
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                IAsyncDisposable objLocker =
+                                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                                 try
-                                    {
+                                {
                                     token.ThrowIfCancellationRequested();
                                     if (!blnDoCyberlimbAttributesRefresh
                                         && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
@@ -2539,7 +2544,7 @@ namespace Chummer
                                 {
                                     await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
-                                }
+                            }
 
                             break;
                         }
@@ -2548,9 +2553,10 @@ namespace Chummer
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                             strTemp.Add(nameof(RedlinerBonus));
                             dicChangedProperties.Add(this, strTemp);
-                            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker =
+                                await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                             try
-                                {
+                            {
                                 token.ThrowIfCancellationRequested();
                                 if (!Settings.DontUseCyberlimbCalculation)
                                 {
@@ -2592,14 +2598,15 @@ namespace Chummer
                                 await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
 
-                                break;
+                            break;
                         }
                         case NotifyCollectionChangedAction.Reset:
                         {
                             blnDoEncumbranceRefresh = true;
-                            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker =
+                                await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                             try
-                                {
+                            {
                                 token.ThrowIfCancellationRequested();
                                 blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
                             }
@@ -2608,12 +2615,13 @@ namespace Chummer
                                 await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
 
-                                if (!dicChangedProperties.TryGetValue(this,
+                            if (!dicChangedProperties.TryGetValue(this,
                                     out HashSet<string> setChangedProperties))
                             {
                                 setChangedProperties = Utils.StringHashSetPool.Get();
                                 dicChangedProperties.Add(this, setChangedProperties);
                             }
+
                             setChangedProperties.Add(nameof(RedlinerBonus));
                             setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
                             setChangedProperties.Add(nameof(BiowareEssence));
@@ -31105,7 +31113,6 @@ namespace Chummer
                         && !objArmor.ArmorOverrideValue.StartsWith('-'))
                         continue;
                     string strCustomFitName = (await objArmor.ArmorMods.FirstOrDefaultAsync(x => x.Name == "Custom Fit (Stack)" && x.Equipped, token: token).ConfigureAwait(false))?.Extra ?? string.Empty;
-
 
                     int intLoopStack = objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')
                         ? await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false)
