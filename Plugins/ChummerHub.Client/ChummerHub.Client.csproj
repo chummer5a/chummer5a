@@ -134,8 +134,8 @@
     <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.32.3" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.32.3" />
     <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.9.28" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28">
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.10.48" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.10.48">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
