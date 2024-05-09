@@ -85,14 +85,13 @@ namespace Chummer
 
         public static JoinableTaskContext CreateSynchronizationContext()
         {
-            if (!Program.IsMainThread)
+            if (!Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
                 throw new InvalidOperationException("Cannot call CreateSynchronizationContext outside of the main thread.");
 
-            JoinableTaskContext objReturn;
             if (s_objJoinableTaskFactory.IsValueCreated)
             {
                 JoinableTaskContext objNewContext = new JoinableTaskContext();
-                objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
+                JoinableTaskContext objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
                 if (objReturn != default)
                 {
                     objNewContext.Dispose();
@@ -103,7 +102,7 @@ namespace Chummer
             using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
             {
                 JoinableTaskContext objNewContext = new JoinableTaskContext();
-                objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
+                JoinableTaskContext objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
                 if (objReturn != default)
                 {
                     objNewContext.Dispose();
