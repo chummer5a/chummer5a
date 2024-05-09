@@ -331,22 +331,25 @@ namespace Chummer.Tests
             }
 
             lstExportLanguages.Sort();
-            // Always try to export in English first because this will cover most export code
-            lstExportLanguages.Insert(0, GlobalSettings.DefaultLanguage);
 
             Debug.WriteLine("Started pre-loading language files");
+            Debug.WriteLine("Pre-loading language file: " + GlobalSettings.DefaultLanguage);
+            LanguageManager.LoadLanguage(GlobalSettings.DefaultLanguage);
             foreach (string strExportLanguage in lstExportLanguages)
             {
                 Debug.WriteLine("Pre-loading language file: " + strExportLanguage);
                 LanguageManager.LoadLanguage(strExportLanguage);
             }
             Debug.WriteLine("Finished pre-loading language files");
+            int intLanguageIndex = 0;
             foreach (Character objCharacter in GetTestCharacters())
             {
                 Debug.WriteLine("Checking " + (Path.GetFileName(objCharacter.FileName)
                                                ?? LanguageManager.GetString("String_Unknown")));
-                foreach (string strLanguage in lstExportLanguages)
-                    DoAndSaveExport(objCharacter, strLanguage);
+                // Always try to export in English because this will cover most export code
+                DoAndSaveExport(objCharacter, GlobalSettings.DefaultLanguage);
+                // Rotate through languages instead of testing every one for every character to save on execution time
+                DoAndSaveExport(objCharacter, lstExportLanguages[intLanguageIndex++ % lstExportLanguages.Count]);
             }
         }
 
