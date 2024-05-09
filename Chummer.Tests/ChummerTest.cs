@@ -65,10 +65,6 @@ namespace Chummer.Tests
         {
             Utils.IsUnitTest = true;
             Utils.IsUnitTestForUI = false;
-        }
-
-        public ChummerTest()
-        {
             Utils.CreateSynchronizationContext();
         }
 
@@ -153,10 +149,10 @@ namespace Chummer.Tests
                     if (!GlobalSettings.Language.Equals(
                             GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
-                        await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
+                        await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage).ConfigureAwait(false);
                     }
 
-                    await XmlManager.LoadXPathAsync(strFile);
+                    await XmlManager.LoadXPathAsync(strFile).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

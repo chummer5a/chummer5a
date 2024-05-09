@@ -402,15 +402,20 @@ namespace Chummer
 
                     try
                     {
-                        await Task.WhenAll(tskNewRecentlyUsedsRefresh.Yield()
-                                                                       .Concat(tskNewWatchFolderRefresh.Yield())
-                                                                       .Concat((await Program.PluginLoader
-                                                                                   .GetMyActivePluginsAsync(
-                                                                                       objTemp.Token)
-                                                                                   .ConfigureAwait(false))
-                                                                               .Select(x => RefreshPluginNodesAsync(
-                                                                                   x, _objGenericToken))))
-                                  .ConfigureAwait(false);
+                        List<Task> lstTasks =
+                                new List<Task>(2 + await Program.PluginLoader.MyPlugins.GetCountAsync(objTemp.Token)
+                                    .ConfigureAwait(false))
+                                {
+                                    tskNewRecentlyUsedsRefresh,
+                                    tskNewWatchFolderRefresh
+                                };
+                        foreach (IPlugin objPlugin in await Program.PluginLoader
+                                     .GetMyActivePluginsAsync(objTemp.Token)
+                                     .ConfigureAwait(false))
+                        {
+                            lstTasks.Add(RefreshPluginNodesAsync(objPlugin, objTemp.Token));
+                        }
+                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

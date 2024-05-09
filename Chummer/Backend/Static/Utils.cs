@@ -81,21 +81,38 @@ namespace Chummer
 
         private static SynchronizationContext MySynchronizationContext { get; set; }
 
-        private static JoinableTaskContext MyJoinableTaskContext { get; set; }
+        private static JoinableTaskContext MyJoinableTaskContext => s_objJoinableTaskContext;
 
         public static JoinableTaskContext CreateSynchronizationContext()
         {
-            if (Program.IsMainThread)
+            if (!Program.IsMainThread)
+                throw new InvalidOperationException("Cannot call CreateSynchronizationContext outside of the main thread.");
+
+            JoinableTaskContext objReturn;
+            if (s_objJoinableTaskFactory.IsValueCreated)
             {
-                using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+                JoinableTaskContext objNewContext = new JoinableTaskContext();
+                objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
+                if (objReturn != default)
                 {
-                    MySynchronizationContext = SynchronizationContext.Current;
-                    return MyJoinableTaskContext
-                        = new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current);
+                    objNewContext.Dispose();
+                    return objReturn;
                 }
             }
 
-            return default;
+            using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+            {
+                JoinableTaskContext objNewContext = new JoinableTaskContext();
+                objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
+                if (objReturn != default)
+                {
+                    objNewContext.Dispose();
+                    return objReturn;
+                }
+
+                MySynchronizationContext = SynchronizationContext.Current;
+                return objNewContext;
+            }
         }
 
         // Need this as a Lazy, otherwise it won't fire properly in the designer if we just cache it, and the check itself is also quite expensive
@@ -351,9 +368,8 @@ namespace Chummer
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
             = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio
-                                                ? new JoinableTaskFactory(new JoinableTaskContext())
-                                                : new JoinableTaskFactory(
-                                                    MyJoinableTaskContext ?? CreateSynchronizationContext()));
+                ? new JoinableTaskFactory(new JoinableTaskContext())
+                : new JoinableTaskFactory(MyJoinableTaskContext ?? CreateSynchronizationContext()));
 
         public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
 
@@ -2639,6 +2655,8 @@ namespace Chummer
         {
             MaximumRetained = DefaultPoolSize
         };
+
+        private static JoinableTaskContext s_objJoinableTaskContext;
 
         /// <summary>
         /// Memory Pool for empty StringBuilder objects. A bit slower up-front than a simple allocation, but reduces memory allocations, which saves on CPU used for Garbage Collection.
