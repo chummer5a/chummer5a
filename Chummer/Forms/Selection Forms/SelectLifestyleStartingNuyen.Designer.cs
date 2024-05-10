@@ -66,18 +66,18 @@ namespace Chummer
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 4;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(326, 168);
+            this.tlpMain.Size = new System.Drawing.Size(326, 143);
             this.tlpMain.TabIndex = 5;
             // 
             // lblResult
             // 
             this.lblResult.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(204, 117);
+            this.lblResult.Location = new System.Drawing.Point(204, 73);
             this.lblResult.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(37, 13);
@@ -89,7 +89,7 @@ namespace Chummer
             // 
             this.lblDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDice.AutoSize = true;
-            this.lblDice.Location = new System.Drawing.Point(40, 117);
+            this.lblDice.Location = new System.Drawing.Point(40, 73);
             this.lblDice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDice.Name = "lblDice";
             this.lblDice.Size = new System.Drawing.Size(81, 13);
@@ -101,7 +101,7 @@ namespace Chummer
             // 
             this.lblSelectLifestyle.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSelectLifestyle.AutoSize = true;
-            this.lblSelectLifestyle.Location = new System.Drawing.Point(39, 89);
+            this.lblSelectLifestyle.Location = new System.Drawing.Point(39, 45);
             this.lblSelectLifestyle.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSelectLifestyle.Name = "lblSelectLifestyle";
             this.lblSelectLifestyle.Size = new System.Drawing.Size(82, 13);
@@ -115,7 +115,7 @@ namespace Chummer
             this.cmdRoll.AutoSize = true;
             this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRoll.Image = global::Chummer.Properties.Resources.die_16;
-            this.cmdRoll.Location = new System.Drawing.Point(127, 112);
+            this.cmdRoll.Location = new System.Drawing.Point(127, 68);
             this.cmdRoll.Name = "cmdRoll";
             this.cmdRoll.Padding = new System.Windows.Forms.Padding(1);
             this.cmdRoll.Size = new System.Drawing.Size(24, 24);
@@ -127,7 +127,7 @@ namespace Chummer
             // 
             this.nudDiceResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudDiceResult.AutoSize = true;
-            this.nudDiceResult.Location = new System.Drawing.Point(157, 114);
+            this.nudDiceResult.Location = new System.Drawing.Point(157, 70);
             this.nudDiceResult.Maximum = new decimal(new int[] {
             100,
             0,
@@ -149,7 +149,7 @@ namespace Chummer
             this.tlpMain.SetColumnSpan(this.cboSelectLifestyle, 3);
             this.cboSelectLifestyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSelectLifestyle.FormattingEnabled = true;
-            this.cboSelectLifestyle.Location = new System.Drawing.Point(127, 85);
+            this.cboSelectLifestyle.Location = new System.Drawing.Point(127, 41);
             this.cboSelectLifestyle.Name = "cboSelectLifestyle";
             this.cboSelectLifestyle.Size = new System.Drawing.Size(196, 21);
             this.cboSelectLifestyle.TabIndex = 5;
@@ -158,12 +158,12 @@ namespace Chummer
             // 
             // lblDescription
             // 
+            this.lblDescription.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblDescription, 4);
-            this.lblDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(320, 70);
+            this.lblDescription.Size = new System.Drawing.Size(290, 26);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Tag = "Label_LifestyleNuyen_Description";
             this.lblDescription.Text = "Roll the number of dice shown below and enter the result to determine your charac" +
@@ -180,7 +180,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(154, 139);
+            this.tlpButtons.Location = new System.Drawing.Point(154, 114);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -224,7 +224,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(344, 186);
+            this.ClientSize = new System.Drawing.Size(344, 161);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
