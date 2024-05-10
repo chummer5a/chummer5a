@@ -1013,7 +1013,7 @@ namespace Chummer.Controls.Shared
                     {
                         x.Visible = false;
                         intHeight = Math.Max(_parent.ListItemControlHeight, intHeight);
-                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, token);
                         if (x.AutoSize)
                         {
                             x.MinimumSize = new Size(intWidth, intHeight);
@@ -1091,7 +1091,7 @@ namespace Chummer.Controls.Shared
                     {
                         x.Visible = false;
                         x.Location = new Point(0, 0);
-                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, token);
                         int intHeight = _parent.ListItemControlHeight;
                         if (x.AutoSize)
                         {
@@ -1234,9 +1234,9 @@ namespace Chummer.Controls.Shared
 
             public int Compare(TType x, TType y)
             {
-                if (x != null && _dicIndeces.TryGetValue(x, out int xindex))
+                if (!Equals(x, default(TType)) && _dicIndeces.TryGetValue(x, out int xindex))
                 {
-                    if (y != null && _dicIndeces.TryGetValue(y, out int yindex))
+                    if (!Equals(y, default(TType)) && _dicIndeces.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }
@@ -1246,7 +1246,7 @@ namespace Chummer.Controls.Shared
                 }
 
                 Utils.BreakIfDebug();
-                if (y != null && (x == null || _dicIndeces.ContainsKey(y)))
+                if (!Equals(y, default(TType)) && (Equals(x, default(TType)) || _dicIndeces.ContainsKey(y)))
                     return -1;
 
                 return 0;
@@ -1267,7 +1267,7 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private Task<int> DefaultCompareAsync(IComparer<TType> objComparer, TType x, TType y, CancellationToken token = default)
+        private static Task<int> DefaultCompareAsync(IComparer<TType> objComparer, TType x, TType y, CancellationToken token = default)
         {
             return token.IsCancellationRequested
                 ? Task.FromCanceled<int>(token)
@@ -1279,7 +1279,7 @@ namespace Chummer.Controls.Shared
             return token.IsCancellationRequested ? Task.FromCanceled<bool>(token) : Task.FromResult(true);
         }
 
-        private Task<bool> DefaultVisibleAsync(Predicate<TType> predicate, TType x, CancellationToken token = default)
+        private static Task<bool> DefaultVisibleAsync(Predicate<TType> predicate, TType x, CancellationToken token = default)
         {
             return token.IsCancellationRequested
                 ? Task.FromCanceled<bool>(token)

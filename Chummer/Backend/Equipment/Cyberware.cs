@@ -1050,7 +1050,7 @@ namespace Chummer.Backend.Equipment
                                                    Maximum = decMax,
                                                    Description = string.Format(
                                                        GlobalSettings.CultureInfo,
-                                                       LanguageManager.GetString("String_SelectVariableCost"),
+                                                       LanguageManager.GetString("String_SelectVariableCost", token: token),
                                                        CurrentDisplayNameShort),
                                                    AllowCancel = false
                                                }))
@@ -7183,7 +7183,7 @@ namespace Chummer.Backend.Equipment
                 {
                     string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
                         .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCapacity = strValues[Math.Max(Math.Min((await GetRatingAsync(token).ConfigureAwait(false)), strValues.Length) - 1, 0)];
+                    strCapacity = strValues[Math.Max(Math.Min(await GetRatingAsync(token).ConfigureAwait(false), strValues.Length) - 1, 0)];
                 }
 
                 if (string.IsNullOrEmpty(strCapacity))

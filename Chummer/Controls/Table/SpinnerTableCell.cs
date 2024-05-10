@@ -81,7 +81,7 @@ namespace Chummer.UI.Table
                     return;
                 try
                 {
-                    _spinner.Value = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken));
+                    _spinner.Value = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken);
                 }
                 finally
                 {

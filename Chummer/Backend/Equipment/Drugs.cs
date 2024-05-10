@@ -1356,7 +1356,7 @@ namespace Chummer.Backend.Equipment
                     Augmented = objAttribute.Value,
                     ImprovedName = objAttribute.Key,
                     CustomName =
-                        strNamePrefix + LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short")
+                        strNamePrefix + LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", token: token)
                                       + strSpace +
                                       objAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
                 }).ToList();

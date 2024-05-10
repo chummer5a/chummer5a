@@ -1232,7 +1232,7 @@ namespace Chummer.UI.Skills
                     x => x.MinimumSize =
                         new Size(
                             intNewNameWidth - x.Margin.Right -
-                            pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width),
+                            pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width, token: _objMyToken),
                             x.MinimumSize.Height), token: _objMyToken);
             }
             catch (OperationCanceledException)
