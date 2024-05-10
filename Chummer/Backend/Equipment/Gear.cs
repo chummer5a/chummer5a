@@ -5349,12 +5349,10 @@ namespace Chummer.Backend.Equipment
                                                                    .ConfigureAwait(false);
                         if (objStack != null)
                         {
-                            foreach (Gear objFociGear in objStack.Gear)
-                            {
-                                await objFociGear.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter,
-                                                                    Improvement.ImprovementSource.StackedFocus,
-                                                                    blnStackEquipped, token).ConfigureAwait(false);
-                            }
+                            await objStack.Gear.ForEachWithSideEffectsAsync(objFociGear =>
+                                objFociGear.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter,
+                                    Improvement.ImprovementSource.StackedFocus,
+                                    blnStackEquipped, token), token: token).ConfigureAwait(false);
                         }
                     }
 

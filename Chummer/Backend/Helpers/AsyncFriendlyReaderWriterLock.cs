@@ -665,7 +665,7 @@ namespace Chummer
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
                 Debug.WriteLine(Environment.StackTrace);
 #endif
-                return null;
+                return new DisposedReaderDummySemaphoreRelease(this);
             }
 
             token.ThrowIfCancellationRequested();
@@ -815,7 +815,7 @@ namespace Chummer
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
                 Debug.WriteLine(Environment.StackTrace);
 #endif
-                return Task.FromResult<IAsyncDisposable>(null);
+                return Task.FromResult<IAsyncDisposable>(new DisposedReaderDummySemaphoreRelease(this));
             }
 
             if (token.IsCancellationRequested)
@@ -939,6 +939,31 @@ namespace Chummer
             finally
             {
                 Interlocked.CompareExchange(ref _intDisposedStatus, 2, 1);
+            }
+        }
+
+        private readonly struct DisposedReaderDummySemaphoreRelease : IDisposable, IAsyncDisposable
+        {
+            private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
+
+            public DisposedReaderDummySemaphoreRelease(AsyncFriendlyReaderWriterLock objReaderWriterLock)
+            {
+                if (objReaderWriterLock != null && objReaderWriterLock._intDisposedStatus == 0)
+                    throw new InvalidOperationException("Cannot assign dummy release to a non-disposed lock");
+                _objReaderWriterLock = objReaderWriterLock;
+            }
+
+            public void Dispose()
+            {
+                if (_objReaderWriterLock != null && _objReaderWriterLock._intDisposedStatus == 0)
+                    throw new InvalidOperationException("Cannot assign dummy release to a non-disposed lock");
+            }
+
+            public ValueTask DisposeAsync()
+            {
+                if (_objReaderWriterLock != null && _objReaderWriterLock._intDisposedStatus == 0)
+                    throw new InvalidOperationException("Cannot assign dummy release to a non-disposed lock");
+                return default;
             }
         }
 

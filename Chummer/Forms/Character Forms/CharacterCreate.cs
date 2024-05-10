@@ -3911,7 +3911,7 @@ namespace Chummer
                             }
 
                             // Refresh Martial Art Techniques.
-                            await CharacterObject.MartialArts.ForEachAsync(async objMartialArt =>
+                            await CharacterObject.MartialArts.ForEachWithSideEffectsAsync(async objMartialArt =>
                             {
                                 XmlNode objMartialArtNode
                                     = await objMartialArt.GetNodeAsync(token: token).ConfigureAwait(false);
@@ -3938,7 +3938,7 @@ namespace Chummer
                                                                       .ConfigureAwait(false));
                                 }
 
-                                await objMartialArt.Techniques.ForEachAsync(async objTechnique =>
+                                await objMartialArt.Techniques.ForEachWithSideEffectsAsync(async objTechnique =>
                                 {
                                     if (lstInternalIdFilter?.Contains(objTechnique.InternalId) == false)
                                         return;
@@ -3963,7 +3963,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             // Refresh Spells.
-                            await CharacterObject.Spells.ForEachAsync(async objSpell =>
+                            await CharacterObject.Spells.ForEachWithSideEffectsAsync(async objSpell =>
                             {
                                 if (lstInternalIdFilter?.Contains(objSpell.InternalId) == false)
                                     return;
@@ -4000,7 +4000,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             // Refresh Adept Powers.
-                            await CharacterObject.Powers.ForEachAsync(async objPower =>
+                            await CharacterObject.Powers.ForEachWithSideEffectsAsync(async objPower =>
                             {
                                 if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
                                     return;
@@ -4027,7 +4027,7 @@ namespace Chummer
                             }, GenericToken).ConfigureAwait(false);
 
                             // Refresh Complex Forms.
-                            await CharacterObject.ComplexForms.ForEachAsync(async objComplexForm =>
+                            await CharacterObject.ComplexForms.ForEachWithSideEffectsAsync(async objComplexForm =>
                             {
                                 if (lstInternalIdFilter?.Contains(objComplexForm.InternalId) == false)
                                     return;
@@ -4067,7 +4067,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             // Refresh AI Programs and Advanced Programs
-                            await CharacterObject.AIPrograms.ForEachAsync(async objProgram =>
+                            await CharacterObject.AIPrograms.ForEachWithSideEffectsAsync(async objProgram =>
                             {
                                 if (lstInternalIdFilter?.Contains(objProgram.InternalId) == false)
                                     return;
@@ -4105,7 +4105,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             // Refresh Critter Powers.
-                            await CharacterObject.CritterPowers.ForEachAsync(async objPower =>
+                            await CharacterObject.CritterPowers.ForEachWithSideEffectsAsync(async objPower =>
                             {
                                 if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
                                     return;
@@ -4347,7 +4347,7 @@ namespace Chummer
                             }
 
                             // Refresh Armors.
-                            await CharacterObject.Armor.ForEachAsync(async objArmor =>
+                            await CharacterObject.Armor.ForEachWithSideEffectsAsync(async objArmor =>
                             {
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
@@ -4387,7 +4387,7 @@ namespace Chummer
                                     }
                                 }
 
-                                await objArmor.ArmorMods.ForEachAsync(async objMod =>
+                                await objArmor.ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
                                 {
                                     // We're only re-apply improvements a list of items, not all of them
                                     if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
@@ -4431,14 +4431,14 @@ namespace Chummer
                                         }
                                     }
 
-                                    await objMod.GearChildren.ForEachAsync(objGear => objGear
+                                    await objMod.GearChildren.ForEachWithSideEffectsAsync(objGear => objGear
                                                                                .ReaddImprovements(
                                                                                    treArmor, sbdOutdatedItems,
                                                                                    lstInternalIdFilter, token: token),
                                                                            token).ConfigureAwait(false);
                                 }, token).ConfigureAwait(false);
 
-                                await objArmor.GearChildren.ForEachAsync(objGear => objGear
+                                await objArmor.GearChildren.ForEachWithSideEffectsAsync(objGear => objGear
                                                                              .ReaddImprovements(
                                                                                  treArmor, sbdOutdatedItems,
                                                                                  lstInternalIdFilter, token: token),
@@ -4448,7 +4448,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             // Refresh Gear.
-                            await CharacterObject.Gear.ForEachAsync(async objGear =>
+                            await CharacterObject.Gear.ForEachWithSideEffectsAsync(async objGear =>
                             {
                                 await objGear
                                       .ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter, token: token)
@@ -4457,10 +4457,10 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
 
                             // Refresh Weapons Gear
-                            await CharacterObject.Weapons.ForEachAsync(async objWeapon =>
+                            await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async objWeapon =>
                             {
-                                await objWeapon.WeaponAccessories.ForEachAsync(
-                                                   objAccessory => objAccessory.GearChildren.ForEachAsync(objGear =>
+                                await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(
+                                                   objAccessory => objAccessory.GearChildren.ForEachWithSideEffectsAsync(objGear =>
                                                            objGear
                                                                .ReaddImprovements(
                                                                    treWeapons, sbdOutdatedItems, lstInternalIdFilter,
@@ -6811,7 +6811,7 @@ namespace Chummer
                 if (objSelected is Location selectedLocation)
                 {
                     // Equip all of the Armor in the Armor Bundle.
-                    await selectedLocation.Children.ForEachAsync(child =>
+                    await selectedLocation.Children.ForEachWithSideEffectsAsync(child =>
                     {
                         if (child is Armor objArmor && objArmor.Location == selectedLocation)
                         {
@@ -6821,7 +6821,7 @@ namespace Chummer
                 }
                 else if (objSelected?.ToString() == "Node_SelectedArmor")
                 {
-                    await CharacterObject.Armor.ForEachAsync(objArmor =>
+                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(objArmor =>
                     {
                         if (!objArmor.Equipped && objArmor.Location == null)
                         {
@@ -6851,7 +6851,7 @@ namespace Chummer
                 if (objSelected is Location selectedLocation)
                 {
                     // Equip all of the Armor in the Armor Bundle.
-                    await selectedLocation.Children.ForEachAsync(child =>
+                    await selectedLocation.Children.ForEachWithSideEffectsAsync(child =>
                     {
                         if (child is Armor objArmor && objArmor.Location == selectedLocation)
                         {
@@ -6861,7 +6861,7 @@ namespace Chummer
                 }
                 else if (objSelected?.ToString() == "Node_SelectedArmor")
                 {
-                    await CharacterObject.Armor.ForEachAsync(objArmor =>
+                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(objArmor =>
                     {
                         if (objArmor.Equipped && objArmor.Location == null)
                         {
@@ -13845,13 +13845,13 @@ namespace Chummer
                                     .Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).Append(')');
 
                                 bool blnIsFirst = true;
-                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                                await objMartialArt.Techniques.ForEachAsync(async objTechnique =>
                                 {
                                     token.ThrowIfCancellationRequested();
                                     if (blnIsFirst)
                                     {
                                         blnIsFirst = false;
-                                        continue;
+                                        return;
                                     }
 
                                     intLoopCost = intKarmaTechnique;
@@ -13863,7 +13863,7 @@ namespace Chummer
                                         .Append('(')
                                         .Append(intLoopCost.ToString(GlobalSettings.CultureInfo))
                                         .Append(')');
-                                }
+                                }, token: token).ConfigureAwait(false);
                             }
                             else
                                 // Add in the Techniques
@@ -17533,7 +17533,7 @@ namespace Chummer
                                                 .ConfigureAwait(false))
                           .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
                           .ConfigureAwait(false);
-                    await CharacterObject.Vehicles.ForEachAsync(async objVehicle =>
+                    await CharacterObject.Vehicles.ForEachWithSideEffectsAsync(async objVehicle =>
                     {
                         await objVehicle.Mods.SelectMany(objMod => objMod.Cyberware).GetAllDescendants(x => x.Children)
                                         .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
