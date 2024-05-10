@@ -501,7 +501,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstDrug.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstDrug.SelectedIndex >= 1:
                     lstDrug.SelectedIndex--;
                     break;
 

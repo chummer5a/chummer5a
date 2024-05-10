@@ -40712,7 +40712,7 @@ namespace Chummer
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(17);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -40778,7 +40778,7 @@ namespace Chummer
         public async Task RefreshAGIDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(4);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -40822,7 +40822,7 @@ namespace Chummer
         public async Task RefreshREADependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(7);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -40872,7 +40872,7 @@ namespace Chummer
         public async Task RefreshSTRDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(8);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -40923,7 +40923,7 @@ namespace Chummer
         public async Task RefreshCHADependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(7);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -40973,7 +40973,7 @@ namespace Chummer
         public async Task RefreshINTDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(13);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -41029,7 +41029,7 @@ namespace Chummer
         public async Task RefreshLOGDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(12);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -41083,7 +41083,7 @@ namespace Chummer
         public async Task RefreshWILDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(28);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -41154,7 +41154,7 @@ namespace Chummer
         public async Task RefreshEDGDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(3);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -41204,7 +41204,7 @@ namespace Chummer
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(6);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -41278,7 +41278,7 @@ namespace Chummer
                 if (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false) == objMagAdept)
                     return;
 
-                List<string> lstProperties = new List<string>();
+                List<string> lstProperties = new List<string>(3);
                 if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
                 {
                     await ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}", token)
@@ -41318,7 +41318,7 @@ namespace Chummer
         public async Task RefreshRESDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(4);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -41363,7 +41363,7 @@ namespace Chummer
         public async Task RefreshDEPDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(3);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -41411,7 +41411,7 @@ namespace Chummer
         public async Task RefreshESSDependentProperties(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
+            List<string> lstProperties = new List<string>(7);
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {

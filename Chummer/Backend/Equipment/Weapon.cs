@@ -2578,14 +2578,10 @@ namespace Chummer.Backend.Equipment
                 Gear objGear = objCurrentClip.AmmoGear;
                 if (objGear == null)
                     return;
-                if (objGear.Quantity + value - intCurrentAmmo <= 0)
-                {
-                    objGear.DeleteGear();
-                }
+                if (objGear.Quantity > intCurrentAmmo - value)
+                    objGear.Quantity -= intCurrentAmmo - value;
                 else
-                {
-                    objGear.Quantity += value - intCurrentAmmo;
-                }
+                    objGear.DeleteGear();
             }
         }
 
@@ -7003,7 +6999,7 @@ namespace Chummer.Backend.Equipment
 
         private string GetSkillDictionaryKey(string strCategory)
         {
-            string strSkill;
+            string strSkill = "Pistols";
             switch (strCategory)
             {
                 case "Bows":
@@ -7065,10 +7061,6 @@ namespace Chummer.Backend.Equipment
 
                 case "Unarmed":
                     strSkill = "Unarmed Combat";
-                    break;
-
-                default:
-                    strSkill = "Pistols";
                     break;
             }
             return strSkill;
@@ -9541,12 +9533,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void UnloadAll()
         {
-            IAsyncCollection<Gear> gears = ParentVehicle != null
+            ThreadSafeObservableCollection<Gear> lstGear = ParentVehicle != null
                         ? ParentVehicle.GearChildren
                         : _objCharacter.Gear;
-            foreach (Clip clip in Clips)
+            foreach (Clip objClip in Clips)
             {
-                UnloadGear(gears, clip);
+                UnloadGear(lstGear, objClip);
             }
         }
 
@@ -9555,12 +9547,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task UnloadAllAsync(CancellationToken token = default)
         {
-            IAsyncCollection<Gear> gears = ParentVehicle != null
+            ThreadSafeObservableCollection<Gear> lstGear = ParentVehicle != null
                 ? ParentVehicle.GearChildren
                 : _objCharacter.Gear;
-            foreach (Clip clip in Clips)
+            foreach (Clip objClip in Clips)
             {
-                await UnloadGearAsync(gears, clip, token).ConfigureAwait(false);
+                await UnloadGearAsync(lstGear, objClip, token).ConfigureAwait(false);
             }
         }
 

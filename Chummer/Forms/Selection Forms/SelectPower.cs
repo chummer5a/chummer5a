@@ -137,7 +137,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstPowers.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstPowers.SelectedIndex >= 1:
                     --lstPowers.SelectedIndex;
                     break;
 

@@ -204,7 +204,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstMod.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstMod.SelectedIndex >= 1:
                     lstMod.SelectedIndex--;
                     break;
 

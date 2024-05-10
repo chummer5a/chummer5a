@@ -443,7 +443,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstArmor.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstArmor.SelectedIndex >= 1:
                     --lstArmor.SelectedIndex;
                     break;
 

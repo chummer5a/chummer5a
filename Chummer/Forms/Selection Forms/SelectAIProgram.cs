@@ -71,7 +71,7 @@ namespace Chummer
                 if (!_blnAdvancedProgramAllowed && strInnerText == "Advanced Programs")
                     continue;
                 // Make sure it is not already in the Category list.
-                if (_lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
+                if (_lstCategory.TrueForAll(objItem => objItem.Value.ToString() != strInnerText))
                 {
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                 }
@@ -152,7 +152,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstAIPrograms.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstAIPrograms.SelectedIndex >= 1:
                     --lstAIPrograms.SelectedIndex;
                     break;
 

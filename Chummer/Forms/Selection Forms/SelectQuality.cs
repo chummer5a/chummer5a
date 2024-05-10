@@ -248,7 +248,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstQualities.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstQualities.SelectedIndex >= 1:
                     --lstQualities.SelectedIndex;
                     break;
 

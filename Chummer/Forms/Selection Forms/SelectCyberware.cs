@@ -860,7 +860,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstCyberware.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstCyberware.SelectedIndex >= 1:
                     lstCyberware.SelectedIndex--;
                     break;
 
@@ -1894,7 +1894,7 @@ namespace Chummer
                             : decimal.MaxValue
                         : MaximumCapacity;
 
-                    if (decMaximumCapacityUsed - decCapacity < 0)
+                    if (decMaximumCapacityUsed < decCapacity)
                     {
                         await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false),
                                 decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo),
@@ -1966,19 +1966,18 @@ namespace Chummer
                 _strForceGrade = strForceGrade;
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGrade))
                 {
-                    foreach (Grade objWareGrade in _lstGrades.Where(objWareGrade =>
-                                 objWareGrade.SourceIDString != _strNoneGradeId ||
-                                 (!string.IsNullOrEmpty(strForceGrade) && strForceGrade == _strNoneGradeId)))
+                    bool blnSkipCheck = !string.IsNullOrEmpty(strForceGrade) && strForceGrade == _strNoneGradeId;
+                    foreach (Grade objWareGrade in _lstGrades)
                     {
+                        if (!blnSkipCheck && objWareGrade.SourceIDString == _strNoneGradeId)
+                            continue;
                         if (string.IsNullOrEmpty(strForceGrade))
                         {
-                            if (_setDisallowedGrades.Contains(objWareGrade.Name))
-                                continue;
+                            if (_setDisallowedGrades.Contains(objWareGrade.Name)) continue;
                             if (objWareGrade.Name.ContainsAny((await ImprovementManager
-                                    .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                        WindowMode == Mode.Bioware
-                                            ? Improvement.ImprovementType.DisableBiowareGrade
-                                            : Improvement.ImprovementType.DisableCyberwareGrade, token: token)
+                                    .GetCachedImprovementListForValueOfAsync(_objCharacter, WindowMode == Mode.Bioware
+                                        ? Improvement.ImprovementType.DisableBiowareGrade
+                                        : Improvement.ImprovementType.DisableCyberwareGrade, token: token)
                                     .ConfigureAwait(false)).Select(x => x.ImprovedName)))
                             {
                                 continue;
@@ -1986,9 +1985,8 @@ namespace Chummer
 
                             if (_objCharacter.AdapsinEnabled && WindowMode == Mode.Cyberware)
                             {
-                                if (!objWareGrade.Adapsin
-                                    && objWareGrade.Name.ContainsAny(
-                                        _lstGrades.Where(x => x.Adapsin).Select(x => x.Name)))
+                                if (!objWareGrade.Adapsin &&
+                                    objWareGrade.Name.ContainsAny(_lstGrades.Where(x => x.Adapsin).Select(x => x.Name)))
                                     continue;
                             }
                             else if (objWareGrade.Adapsin)
@@ -1996,19 +1994,16 @@ namespace Chummer
 
                             if (_objCharacter.BurnoutEnabled)
                             {
-                                if (!objWareGrade.Burnout
-                                    && objWareGrade.Name.ContainsAny(
-                                        _lstGrades.Where(x => x.Burnout).Select(x => x.Name)))
+                                if (!objWareGrade.Burnout &&
+                                    objWareGrade.Name.ContainsAny(_lstGrades.Where(x => x.Burnout).Select(x => x.Name)))
                                     continue;
                             }
-                            else if (objWareGrade.Burnout)
-                                continue;
+                            else if (objWareGrade.Burnout) continue;
 
-                            if (blnHideBannedGrades
-                                && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false)
-                                && objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
-                                continue;
+                            if (blnHideBannedGrades &&
+                                !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) &&
+                                !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) &&
+                                objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades)) continue;
                         }
 
                         if (!await (await objWareGrade.GetNodeXPathAsync(token: token).ConfigureAwait(false)).RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
@@ -2016,13 +2011,9 @@ namespace Chummer
                             continue;
                         }
 
-                        if (blnHideBannedGrades
-                            && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                            && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false)
-                            && objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
+                        if (blnHideBannedGrades && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) && objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString,
-                                '*' + await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                         }
                         else
                         {

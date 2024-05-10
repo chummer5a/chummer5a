@@ -183,7 +183,7 @@ namespace Chummer
                     {
                         continue;
                     }
-                    if (_lstCategory.All(x => x.Value.ToString() != strCategory) && await AnyItemInList(strCategory, _objGenericToken).ConfigureAwait(false))
+                    if (_lstCategory.TrueForAll(x => x.Value.ToString() != strCategory) && await AnyItemInList(strCategory, _objGenericToken).ConfigureAwait(false))
                     {
                         _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", _objGenericToken)?.Value ?? strCategory));
                     }
@@ -565,7 +565,7 @@ namespace Chummer
 
                         break;
                     }
-                case Keys.Up when lstGear.SelectedIndex - 1 >= 0:
+                case Keys.Up when lstGear.SelectedIndex >= 1:
                     --lstGear.SelectedIndex;
                     break;
 
@@ -1507,7 +1507,7 @@ namespace Chummer
                 _strSelectedGear = strSelectedId;
                 _strSelectCategory = GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0
                     ? cboCategory.SelectedValue?.ToString()
-                    : _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear", strSelectedId)?.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
+                    : _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear", strSelectedId)?.SelectSingleNodeAndCacheExpression("category", _objGenericToken)?.Value ?? string.Empty;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 _intSelectedRating = nudRating.ValueAsInt;
                 _decSelectedQty = nudGearQty.Value;

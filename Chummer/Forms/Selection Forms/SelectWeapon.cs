@@ -827,7 +827,7 @@ namespace Chummer
                     }
                 case Keys.Up:
                     {
-                        if (lstWeapon.SelectedIndex - 1 >= 0)
+                        if (lstWeapon.SelectedIndex >= 1)
                         {
                             lstWeapon.SelectedIndex--;
                         }

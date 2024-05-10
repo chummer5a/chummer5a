@@ -1019,8 +1019,8 @@ namespace Chummer
         public async Task<List<string>> GetDifferingPropertyNamesAsync(CharacterSettings objOther, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstReturn = new List<string>();
             PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+            List<string> lstReturn = new List<string>(aobjProperties.Length);
             if (objOther == null)
             {
                 lstReturn.Add(nameof(SourceIdString));
