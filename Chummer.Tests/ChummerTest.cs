@@ -101,6 +101,24 @@ namespace Chummer.Tests
             float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
             Assert.IsTrue(fltLightGrayDarkModeLightness < fltLightGrayLightness);
 
+            Color objColorBlackInvert = ColorManager.GenerateInverseDarkModeColor(Color.Black);
+            Color objColorBlackInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvert);
+            float fltBlackHue = Color.Black.GetHue();
+            float fltBlackInvertDarkHue = objColorBlackInvertDark.GetHue();
+            Assert.IsTrue(Math.Abs(fltBlackInvertDarkHue - fltBlackHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorBlackInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorBlackInvertDark);
+            Color objColorBlackInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorBlackInvertDarkInvert);
+            Assert.IsTrue(objColorBlackInvertDark == objColorBlackInvertDarkInvertDark);
+
+            Color objColorWhiteInvert = ColorManager.GenerateInverseDarkModeColor(Color.White);
+            Color objColorWhiteInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvert);
+            float fltWhiteHue = Color.White.GetHue();
+            float fltWhiteInvertDarkHue = objColorWhiteInvertDark.GetHue();
+            Assert.IsTrue(Math.Abs(fltWhiteInvertDarkHue - fltWhiteHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorWhiteInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorWhiteInvertDark);
+            Color objColorWhiteInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorWhiteInvertDarkInvert);
+            Assert.IsTrue(objColorWhiteInvertDark == objColorWhiteInvertDarkInvertDark);
+
             Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
             Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
             float fltRedHue = Color.Red.GetHue();

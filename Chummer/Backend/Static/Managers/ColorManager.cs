@@ -1532,10 +1532,14 @@ namespace Chummer
                     break;
             }
 
+            dblRed = Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblGreen = Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblBlue = Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero);
+
             return Color.FromArgb(chrAlpha,
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
+                Math.Max(Math.Min(double.IsNaN(dblRed) ? 0 : Convert.ToInt32(dblRed), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblGreen) ? 0 : Convert.ToInt32(dblGreen), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblBlue) ? 0 : Convert.ToInt32(dblBlue), byte.MaxValue), byte.MinValue));
         }
 
         /// <summary>
@@ -1612,10 +1616,14 @@ namespace Chummer
                     break;
             }
 
+            dblRed = Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblGreen = Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero);
+            dblBlue = Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero);
+
             return Color.FromArgb(chrAlpha,
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
-                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
+                Math.Max(Math.Min(double.IsNaN(dblRed) ? 0 : Convert.ToInt32(dblRed), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblGreen) ? 0 : Convert.ToInt32(dblGreen), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(double.IsNaN(dblBlue) ? 0 : Convert.ToInt32(dblBlue), byte.MaxValue), byte.MinValue));
         }
 
         #endregion Color Utility Methods
