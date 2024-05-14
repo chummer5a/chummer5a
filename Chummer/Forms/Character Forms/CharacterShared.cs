@@ -103,7 +103,25 @@ namespace Chummer
             }
             _tmrCharacterUpdateRequestTimer.Elapsed += CharacterUpdateRequestTimerOnElapsed;
             _tmrCharacterUpdateRequestTimer.Start();
+            _tmrAutosaveRequestTimer.Elapsed += AutosaveRequestTimerOnElapsed;
             AutosaveStopwatch.Start();
+            _tmrAutosaveRequestTimer.Start();
+        }
+
+        private async void AutosaveRequestTimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                GenericToken.ThrowIfCancellationRequested();
+                if (IsDirty && AutosaveStopwatch?.Elapsed.Minutes >= 5)
+                {
+                    await AutoSaveCharacter(GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -303,6 +321,8 @@ namespace Chummer
 
         protected Stopwatch AutosaveStopwatch => _stpAutosaveStopwatch;
 
+        private System.Timers.Timer _tmrAutosaveRequestTimer = new System.Timers.Timer(1000 * 300);
+
         private DebuggableSemaphoreSlim _objAutosaveSemaphore = new DebuggableSemaphoreSlim();
 
         /// <summary>
@@ -325,6 +345,7 @@ namespace Chummer
 
             try
             {
+                _tmrAutosaveRequestTimer?.Stop();
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
                 try
                 {
@@ -381,6 +402,7 @@ namespace Chummer
             }
             finally
             {
+                _tmrAutosaveRequestTimer?.Start();
                 _objAutosaveSemaphore?.Release();
             }
         }
@@ -9930,10 +9952,6 @@ namespace Chummer
             int intNewValue = blnValue.ToInt32();
             if (Interlocked.Exchange(ref _intIsDirty, intNewValue) != intNewValue)
                 await UpdateWindowTitleAsync(true, token).ConfigureAwait(false);
-            if (blnValue && AutosaveStopwatch?.Elapsed.Minutes >= 5)
-            {
-                await AutoSaveCharacter(token).ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -10092,7 +10110,7 @@ namespace Chummer
             }
         }
 
-        private System.Timers.Timer _tmrCharacterUpdateRequestTimer = new System.Timers.Timer(500);
+        private System.Timers.Timer _tmrCharacterUpdateRequestTimer = new System.Timers.Timer(500) { AutoReset = true };
 
         private async void CharacterUpdateRequestTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
@@ -10641,6 +10659,7 @@ namespace Chummer
                     }
                 }
                 dlgSaveFile?.Dispose();
+                Interlocked.Exchange(ref _tmrAutosaveRequestTimer, null)?.Dispose();
                 Interlocked.Exchange(ref _tmrCharacterUpdateRequestTimer, null)?.Dispose();
                 Interlocked.Exchange(ref _objCharacterUpdateStartingSemaphore, null)?.Dispose();
                 Interlocked.Exchange(ref _objAutosaveSemaphore, null)?.Dispose();
