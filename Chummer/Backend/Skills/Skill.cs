@@ -8032,7 +8032,7 @@ namespace Chummer.Backend.Skills
                 {
                     _lstSpecializations.CollectionChangedAsync -= SpecializationsOnCollectionChanged;
                     _lstSpecializations.BeforeClearCollectionChangedAsync -= SpecializationsOnBeforeClearCollectionChanged;
-                    await _lstSpecializations.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                    await _lstSpecializations.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -8058,8 +8058,6 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await objLocker.DisposeAsync().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
         }
