@@ -3207,7 +3207,23 @@ namespace Chummer
 
                     return new Tuple<bool, string>(objTradition.Name == strNodeInnerText
                                                    || string.Equals(objTradition.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase), strName);
-                }
+                    }
+                case "traditionattribute":
+                    {
+                        // Character needs a Tradition with a specific Drain attribute.
+                        if (blnShowMessage)
+                            strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{2}{1}", Environment.NewLine,
+                                strSpace,
+                                objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(
+                                    strNodeInnerText,
+                                    blnShowValues: false, token: token));
+
+                        Backend.Uniques.Tradition objTradition = blnSync
+                            ? objCharacter.MagicTradition
+                            : await objCharacter.GetMagicTraditionAsync(token).ConfigureAwait(false);
+
+                        return new Tuple<bool, string>(objTradition.DrainExpression.Contains(strNodeInnerText), strName);
+                    }
                 case "traditionspiritform":
                 {
                     // Character needs a specific spirit form provided by their Tradition.

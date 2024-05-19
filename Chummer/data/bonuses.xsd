@@ -1498,6 +1498,7 @@
         </xs:complexType>
       </xs:element>
     </xs:sequence>
+    <xs:attribute name="addimprovementsoncreate" type="xs:boolean" use="optional" />
     <xs:attribute name="unique" type="xs:string" use="optional" />
     <xs:attribute name="useselected" type="boolean" use="optional" />
   </xs:complexType>

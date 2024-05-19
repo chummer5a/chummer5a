@@ -107,6 +107,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnStolen;
         private bool _blnIsFlechetteAmmo;
+        private string _strFocusBindingCost = null;
         private Clip _objLoadedIntoClip; // Set on loading in weapon clips
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -269,6 +270,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
             objXmlGear.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objXmlGear.TryGetBoolFieldQuickly("isflechetteammo", ref _blnIsFlechetteAmmo);
+            objXmlGear.TryGetStringFieldQuickly("focusbindingcost", ref _strFocusBindingCost);
 
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
@@ -571,7 +573,8 @@ namespace Chummer.Backend.Equipment
                 // Do not apply the Improvements if this is a Focus, unless we're specifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
                 // to the character which is incorrect, and once when the Focus is actually Bonded).
                 bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") &&
-                                  !_nodBonus.InnerXml.Contains("selectweapon"));
+                                  !_nodBonus.InnerXml.Contains("selectweapon")) &&
+                                _nodBonus.Attributes?["addimprovementsoncreate"]?.InnerText != bool.FalseString;
 
                 if (blnApply)
                 {
@@ -1351,6 +1354,7 @@ namespace Chummer.Backend.Equipment
             _strGearName = objGear.GearName;
             _strForcedValue = objGear._strForcedValue;
             _blnIsFlechetteAmmo = objGear._blnIsFlechetteAmmo;
+            _strFocusBindingCost = objGear.FocusBindingCost;
             _objLoadedIntoClip = null;
 
             foreach (Gear objGearChild in objGear.Children)
@@ -1476,6 +1480,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("homenode",
                 this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("focusbindingcost", _strFocusBindingCost);
 
             objWriter.WriteEndElement();
         }
@@ -1576,6 +1581,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("gearname", ref _strGearName);
             objNode.TryGetStringFieldQuickly("forcedvalue", ref _strForcedValue);
             objNode.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
+            objNode.TryGetStringFieldQuickly("focusbindingcost", ref _strFocusBindingCost);
             if (!objNode.TryGetStringFieldQuickly("parentid", ref _strParentID))
             {
                 // Legacy Shim
@@ -2572,6 +2578,15 @@ namespace Chummer.Backend.Equipment
                 _blnWirelessOn = value;
                 RefreshWirelessBonuses();
             }
+        }
+
+        /// <summary>
+        /// Karma cost to bond a Focus to the character.
+        /// </summary>
+        public string FocusBindingCost
+        {
+            get => _strFocusBindingCost;
+            set => _strFocusBindingCost = value;
         }
 
         /// <summary>

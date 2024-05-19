@@ -19,7 +19,9 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -105,91 +107,97 @@ namespace Chummer
             // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
             string strFocusName = objFocusGear.Name;
             string strFocusExtra = objFocusGear.Extra;
+            string strFocusFormula = objFocusGear.FocusBindingCost;
+
             decimal decExtraKarmaCost = 0;
-            //TODO: Oh god I hate putting in this kind of behaviour but we don't have anything else handy that supports altering focus cost.
-            if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
-            {
-                decExtraKarmaCost = -2;
-                strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
-            }
-            else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
-            {
-                decExtraKarmaCost = -1;
-                strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
-            }
-            int intPosition = strFocusName.IndexOf('(');
-            if (intPosition > -1)
-                strFocusName = strFocusName.Substring(0, intPosition - 1);
-            intPosition = strFocusName.IndexOf(',');
-            if (intPosition > -1)
-                strFocusName = strFocusName.Substring(0, intPosition);
             decimal decKarmaMultiplier = 1;
-            CharacterSettings characterObjectSettings = GearObject.CharacterObject.Settings;
-            switch (strFocusName)
+
+            if (strFocusFormula == null)
             {
-                case "Qi Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaQiFocus;
-                    break;
+                //TODO: Oh god I hate putting in this kind of behaviour but we don't have anything else handy that supports altering focus cost.
+                if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
+                {
+                    decExtraKarmaCost = -2;
+                    strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
+                }
+                else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
+                {
+                    decExtraKarmaCost = -1;
+                    strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
+                }
+                int intPosition = strFocusName.IndexOf('(');
+                if (intPosition > -1)
+                    strFocusName = strFocusName.Substring(0, intPosition - 1);
+                intPosition = strFocusName.IndexOf(',');
+                if (intPosition > -1)
+                    strFocusName = strFocusName.Substring(0, intPosition);
+                CharacterSettings characterObjectSettings = GearObject.CharacterObject.Settings;
+                switch (strFocusName)
+                {
+                    case "Qi Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaQiFocus;
+                        break;
 
-                case "Sustaining Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaSustainingFocus;
-                    break;
+                    case "Sustaining Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaSustainingFocus;
+                        break;
 
-                case "Counterspelling Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaCounterspellingFocus;
-                    break;
+                    case "Counterspelling Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaCounterspellingFocus;
+                        break;
 
-                case "Banishing Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaBanishingFocus;
-                    break;
+                    case "Banishing Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaBanishingFocus;
+                        break;
 
-                case "Binding Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaBindingFocus;
-                    break;
+                    case "Binding Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaBindingFocus;
+                        break;
 
-                case "Weapon Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaWeaponFocus;
-                    break;
+                    case "Weapon Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaWeaponFocus;
+                        break;
 
-                case "Spellcasting Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaSpellcastingFocus;
-                    break;
+                    case "Spellcasting Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaSpellcastingFocus;
+                        break;
 
-                case "Ritual Spellcasting Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaRitualSpellcastingFocus;
-                    break;
+                    case "Ritual Spellcasting Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaRitualSpellcastingFocus;
+                        break;
 
-                case "Spell Shaping Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaSpellShapingFocus;
-                    break;
+                    case "Spell Shaping Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaSpellShapingFocus;
+                        break;
 
-                case "Summoning Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaSummoningFocus;
-                    break;
+                    case "Summoning Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaSummoningFocus;
+                        break;
 
-                case "Alchemical Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaAlchemicalFocus;
-                    break;
+                    case "Alchemical Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaAlchemicalFocus;
+                        break;
 
-                case "Centering Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaCenteringFocus;
-                    break;
+                    case "Centering Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaCenteringFocus;
+                        break;
 
-                case "Masking Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaMaskingFocus;
-                    break;
+                    case "Masking Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaMaskingFocus;
+                        break;
 
-                case "Disenchanting Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaDisenchantingFocus;
-                    break;
+                    case "Disenchanting Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaDisenchantingFocus;
+                        break;
 
-                case "Power Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaPowerFocus;
-                    break;
+                    case "Power Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaPowerFocus;
+                        break;
 
-                case "Flexible Signature Focus":
-                    decKarmaMultiplier = characterObjectSettings.KarmaFlexibleSignatureFocus;
-                    break;
+                    case "Flexible Signature Focus":
+                        decKarmaMultiplier = characterObjectSettings.KarmaFlexibleSignatureFocus;
+                        break;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(strFocusExtra))
@@ -228,7 +236,34 @@ namespace Chummer
                 }
             }
 
-            return (Rating * decKarmaMultiplier + decExtraKarmaCost).StandardRound();
+            if (strFocusFormula == null) return (Rating * decKarmaMultiplier + decExtraKarmaCost).StandardRound();
+            int intReturn = 0;
+            if (strFocusFormula.IndexOfAny('{', '+', '-', '*', ',') != -1 || strFocusFormula.Contains("div"))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strFocusFormula);
+                    sbdValue.CheapReplace(strFocusFormula, "{karmabindmultiplier}",
+                        () => decKarmaMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.CheapReplace(strFocusFormula, "{karmabindextracost}",
+                        () => decExtraKarmaCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdValue.CheapReplace(strFocusFormula, "{Rating}",
+                        () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = CommonFunctions.EvaluateInvariantXPath(
+                            sbdValue.ToString());
+                    intReturn = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                }
+            }
+            else
+                int.TryParse(strFocusFormula, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                    out intReturn);
+
+            return intReturn;
+
         }
 
         public async Task<int> BindingKarmaCostAsync(CancellationToken token = default)
@@ -237,91 +272,115 @@ namespace Chummer
             // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
             string strFocusName = objFocusGear.Name;
             string strFocusExtra = objFocusGear.Extra;
+            string strFocusFormula = objFocusGear.FocusBindingCost;
+
             decimal decExtraKarmaCost = 0;
-            //TODO: Oh god I hate putting in this kind of behaviour but we don't have anything else handy that supports altering focus cost.
-            if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
-            {
-                decExtraKarmaCost = -2;
-                strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
-            }
-            else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
-            {
-                decExtraKarmaCost = -1;
-                strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
-            }
-            int intPosition = strFocusName.IndexOf('(');
-            if (intPosition > -1)
-                strFocusName = strFocusName.Substring(0, intPosition - 1);
-            intPosition = strFocusName.IndexOf(',');
-            if (intPosition > -1)
-                strFocusName = strFocusName.Substring(0, intPosition);
             decimal decKarmaMultiplier = 1;
-            CharacterSettings characterObjectSettings = await GearObject.CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-            switch (strFocusName)
+
+            if (strFocusFormula == null)
             {
-                case "Qi Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaQiFocusAsync(token).ConfigureAwait(false);
-                    break;
+                //TODO: Oh god I hate putting in this kind of behaviour but we don't have anything else handy that supports altering focus cost.
+                if (strFocusName.EndsWith(", Individualized, Complete", StringComparison.Ordinal))
+                {
+                    decExtraKarmaCost = -2;
+                    strFocusName = strFocusName.Replace(", Individualized, Complete", string.Empty);
+                }
+                else if (strFocusName.EndsWith(", Individualized, Partial", StringComparison.Ordinal))
+                {
+                    decExtraKarmaCost = -1;
+                    strFocusName = strFocusName.Replace(", Individualized, Partial", string.Empty);
+                }
 
-                case "Sustaining Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaSustainingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                int intPosition = strFocusName.IndexOf('(');
+                if (intPosition > -1)
+                    strFocusName = strFocusName.Substring(0, intPosition - 1);
+                intPosition = strFocusName.IndexOf(',');
+                if (intPosition > -1)
+                    strFocusName = strFocusName.Substring(0, intPosition);
+                CharacterSettings characterObjectSettings =
+                    await GearObject.CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                switch (strFocusName)
+                {
+                    case "Qi Focus":
+                        decKarmaMultiplier =
+                            await characterObjectSettings.GetKarmaQiFocusAsync(token).ConfigureAwait(false);
+                        break;
 
-                case "Counterspelling Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaCounterspellingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Sustaining Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaSustainingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Banishing Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaBanishingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Counterspelling Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaCounterspellingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Binding Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaBindingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Banishing Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaBanishingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Weapon Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaWeaponFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Binding Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaBindingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Spellcasting Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaSpellcastingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Weapon Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaWeaponFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Ritual Spellcasting Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaRitualSpellcastingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Spellcasting Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaSpellcastingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Spell Shaping Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaSpellShapingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Ritual Spellcasting Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaRitualSpellcastingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Summoning Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaSummoningFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Spell Shaping Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaSpellShapingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Alchemical Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaAlchemicalFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Summoning Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaSummoningFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Centering Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaCenteringFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Alchemical Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaAlchemicalFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Masking Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaMaskingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Centering Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaCenteringFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Disenchanting Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaDisenchantingFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Masking Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaMaskingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Power Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaPowerFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Disenchanting Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaDisenchantingFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
 
-                case "Flexible Signature Focus":
-                    decKarmaMultiplier = await characterObjectSettings.GetKarmaFlexibleSignatureFocusAsync(token).ConfigureAwait(false);
-                    break;
+                    case "Power Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaPowerFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
+
+                    case "Flexible Signature Focus":
+                        decKarmaMultiplier = await characterObjectSettings.GetKarmaFlexibleSignatureFocusAsync(token)
+                            .ConfigureAwait(false);
+                        break;
+                }
             }
 
             ThreadSafeObservableCollection<Improvement> lstImprovements = await GearObject.CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
@@ -369,8 +428,37 @@ namespace Chummer
                     }
                 }, token).ConfigureAwait(false);
             }
+            
+            if (strFocusFormula == null) return (Rating * decKarmaMultiplier + decExtraKarmaCost).StandardRound();
+            int intReturn = 0;
+            if (strFocusFormula.IndexOfAny('{', '+', '-', '*', ',') != -1 || strFocusFormula.Contains("div"))
+            {
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdValue))
+                {
+                    sbdValue.Append(strFocusFormula);
+                    await sbdValue.CheapReplaceAsync(strFocusFormula, "{karmabindmultiplier}",
+                        () => decKarmaMultiplier.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strFocusFormula, "{karmabindextracost}",
+                        () => decExtraKarmaCost.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
+                    await sbdValue.CheapReplaceAsync(strFocusFormula, "{Rating}",
+                        () => Rating.ToString(GlobalSettings.InvariantCultureInfo),
+                        token: token).ConfigureAwait(false);
 
-            return (Rating * decKarmaMultiplier + decExtraKarmaCost).StandardRound();
+                    // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(
+                            sbdValue.ToString(), token);
+                    intReturn = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                }
+            }
+            else
+                int.TryParse(strFocusFormula, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                    out intReturn);
+
+            return intReturn;
         }
 
         #endregion Properties
