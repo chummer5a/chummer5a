@@ -10041,7 +10041,7 @@
       <source>SR5</source>
       <page>318</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <specificskill>
           <name>Alchemy</name>
           <bonus>Rating</bonus>
@@ -10049,6 +10049,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
+      <focusbindingcost>(({Rating} * 3) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>1efc3ad3-c5d7-4534-ab97-a059f08f1b74</id>
@@ -10058,7 +10059,7 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <specificskill>
           <name>Disenchanting</name>
           <bonus>Rating</bonus>
@@ -10066,6 +10067,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 5000</cost>
+      <focusbindingcost>(({Rating} * 3) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>12e54f08-070f-421c-a523-c0088cbafcfc</id>
@@ -10079,6 +10081,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 9000</cost>
+      <focusbindingcost>(({Rating} * 3) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>e946041a-0c16-49a5-811f-dfd2fba0ae8f</id>
@@ -10092,6 +10095,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 9000</cost>
+      <focusbindingcost>(({Rating} * 3) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>62df3c6c-d080-4db9-98c0-24fc5e9a0604</id>
@@ -10105,6 +10109,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 9000</cost>
+      <focusbindingcost>(({Rating} * 3) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>ff779a68-a360-4a68-9e57-9a363b5de0d0</id>
@@ -10118,6 +10123,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 9000</cost>
+      <focusbindingcost>(({Rating} * 3) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>62bfb38d-5515-440b-83ed-289ed926d27e</id>
@@ -10127,7 +10133,7 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <skillattribute precedence="0">
           <name>MAG</name>
           <bonus>Rating</bonus>
@@ -10135,6 +10141,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 18000</cost>
+      <focusbindingcost>(({Rating} * 6) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>a64c073c-8aa9-4383-b885-267f8ce1ea99</id>
@@ -10144,7 +10151,7 @@
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <selectpowers>
           <selectpower>
             <ignorerating>True</ignorerating>
@@ -10155,6 +10162,7 @@
         </selectpowers>
       </bonus>
       <cost>Rating * 3000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>30bdbf30-929a-4221-9982-f9de8574f87b</id>
@@ -10168,6 +10176,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>e1b66500-1c39-4747-87a6-071b8b1966cc</id>
@@ -10181,6 +10190,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>2f485376-54c1-41be-8678-79cc98e04ebc</id>
@@ -10190,7 +10200,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
@@ -10198,6 +10208,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>39f2f34b-14e2-47f3-8e24-a401015a645a</id>
@@ -10211,6 +10222,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>a56807b8-e430-479d-847d-e0e294b5e937</id>
@@ -10224,6 +10236,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>2c465730-38cb-41d4-9d19-366435fb71bb</id>
@@ -10237,6 +10250,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>90885434-a40c-416d-8eb3-2d93b96414c2</id>
@@ -10246,7 +10260,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
@@ -10254,6 +10268,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>724d1b39-72e9-4df3-aba1-b4ccbe56f32c</id>
@@ -10267,6 +10282,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>49e7fc11-d3c6-4021-9162-cdf217a4579a</id>
@@ -10280,6 +10296,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>41842bc7-e48b-446c-b5ce-73f8399f64c0</id>
@@ -10293,6 +10310,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>630114f3-b538-4a4f-ad02-36df0e577d9c</id>
@@ -10302,7 +10320,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
@@ -10310,6 +10328,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>1e024c0b-d43b-49b1-87e0-c4e4474645fe</id>
@@ -10323,6 +10342,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>8f69fd55-e5ff-404f-99ec-45a9c8498657</id>
@@ -10336,6 +10356,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>db0e5016-8ae3-4190-ad94-fe3f318f3f3f</id>
@@ -10349,6 +10370,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>aa849313-adf9-4134-b86b-1f6a15f6620f</id>
@@ -10358,7 +10380,7 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
@@ -10366,6 +10388,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>e491973f-0bb0-4297-9c32-f02a483ecc8e</id>
@@ -10379,6 +10402,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>2f4f52bb-a198-4d7a-ab4c-d82de4f80cbf</id>
@@ -10392,6 +10416,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>7057c240-d998-4b45-a119-de8a3ffaa717</id>
@@ -10405,6 +10430,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>8783e50c-f80b-4efe-b440-d2963b55c54e</id>
@@ -10422,6 +10448,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>d6cae23b-0d69-4505-a98c-a75876b457ed</id>
@@ -10435,6 +10462,7 @@
         <selecttradition />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>469f16ea-fe25-4f01-b663-166442850018</id>
@@ -10448,6 +10476,7 @@
         <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>5fae16cf-c68c-46e8-91b2-ca5220824ba5</id>
@@ -10461,6 +10490,7 @@
         <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>082b52f1-9109-40aa-bf0e-8cb364fa2f8c</id>
@@ -10474,6 +10504,7 @@
         <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
+      <focusbindingcost>(({Rating} * 2) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <gear>
       <id>25b0168d-7052-4f76-b8e5-162d67b8ab6e</id>
@@ -10483,10 +10514,11 @@
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 4)R</avail>
-      <bonus>
+      <bonus addimprovementsoncreate="False">
         <weaponspecificdice type="Melee">Rating</weaponspecificdice>
       </bonus>
       <cost>Rating * 7000</cost>
+      <focusbindingcost>(({Rating} * 3) * {karmabindmultiplier}) + {karmabindextracost}</focusbindingcost>
     </gear>
     <!-- End Region -->
     <!-- Region Individualized Foci (SG 230) -->
