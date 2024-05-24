@@ -163,7 +163,8 @@ namespace Chummer.UI.Shared
             try
             {
                 _objMyToken.ThrowIfCancellationRequested();
-                if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
+                if (!(await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: _objMyToken)
+                        .ConfigureAwait(false) is ICanRemove selectedObject))
                     return;
                 await selectedObject.RemoveAsync(token: _objMyToken).ConfigureAwait(false);
             }
@@ -173,11 +174,22 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void treLimit_KeyDown(object sender, KeyEventArgs e)
+        private async void treLimit_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteLimitModifier_Click(sender, e);
+                try
+                {
+                    _objMyToken.ThrowIfCancellationRequested();
+                    if (!(await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: _objMyToken)
+                            .ConfigureAwait(false) is ICanRemove selectedObject))
+                        return;
+                    await selectedObject.RemoveAsync(token: _objMyToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 

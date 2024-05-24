@@ -436,14 +436,14 @@ namespace Chummer
                         {
                             case Improvement.ImprovementSource.Bioware:
                                 blnBioware = true;
-                                break;
+                                return blnCyberware;
 
                             case Improvement.ImprovementSource.Cyberware:
                                 blnCyberware = true;
-                                break;
+                                return blnBioware;
                         }
 
-                        return !blnCyberware || !blnBioware;
+                        return true;
                     }).ConfigureAwait(false);
 
                     if (blnCyberware)

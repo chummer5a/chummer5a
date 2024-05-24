@@ -125,10 +125,10 @@ namespace Chummer
         public override int GetHashCode()
         {
             if (Root != null)
-                return MyObject != null
-                    ? (Root, MyObject).GetHashCode()
-                    : Root.GetHashCode();
-            return MyObject != null ? MyObject.GetHashCode() : 0;
+                return Equals(MyObject, default(T))
+                    ? Root.GetHashCode()
+                    : (Root, MyObject).GetHashCode();
+            return Equals(MyObject, default(T)) ? 0 : MyObject.GetHashCode();
         }
 
         public override string ToString()

@@ -100,7 +100,6 @@ namespace ChummerDataViewer.Model
                 {
                     int len = objCipher.ProcessBytes(cipherText, 0, cipherText.Length, unencrypted, 0);
                     objCipher.DoFinal(unencrypted, len);
-
                 }
                 catch (InvalidCipherTextException)
                 {

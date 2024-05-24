@@ -65,7 +65,7 @@ namespace Chummer.Benchmarks
             {
                 sbdLongWord.Append(astrWords[objRandom.Next(0, astrWords.Length)]).Append(' ');
             }
-            sbdLongWord.Length -= 1;
+            --sbdLongWord.Length;
             _strLongWord = sbdLongWord.ToString();
         }
 

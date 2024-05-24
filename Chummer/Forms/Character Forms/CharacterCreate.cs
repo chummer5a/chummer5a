@@ -12878,11 +12878,20 @@ namespace Chummer
             }
         }
 
-        private void treComplexForms_KeyDown(object sender, KeyEventArgs e)
+        private async void treComplexForms_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteComplexForm_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
@@ -12932,11 +12941,20 @@ namespace Chummer
             }
         }
 
-        private void treAIPrograms_KeyDown(object sender, KeyEventArgs e)
+        private async void treAIPrograms_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteAIProgram_Click(sender, e);
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 

@@ -99,9 +99,9 @@ namespace Translator
                     if (c != '-')
                         newChars[i2++] = c;
                     else if (i2 < intSelectionStart)
-                        intSelectionStart -= 1;
+                        --intSelectionStart;
                     else if (intSelectionLength > 0 && i2 < intSelectionLength + intSelectionStart)
-                        intSelectionLength -= 1;
+                        --intSelectionLength;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
@@ -705,7 +705,7 @@ namespace Translator
                         break;
                     s_LstProcessFunctions[i].Invoke(objDataDoc, _workerDataProcessor, _astrArgs[2] == bool.TrueString);
 
-                    _workerDataProcessor.ReportProgress(i * 100 / (intFunctionCount));
+                    _workerDataProcessor.ReportProgress(i * 100 / intFunctionCount);
                 }
             }
             catch (Exception ex)
@@ -4134,7 +4134,7 @@ namespace Translator
                     XPathNavigator xmlDataMentorChoicesNode = xmlDataMentorNode.SelectSingleNode("choices");
                     if (xmlDataMentorChoicesNode != null)
                     {
-                        XmlNode xmlMentorChoicesNode = xmlMentorNode["choices"];
+                        XmlElement xmlMentorChoicesNode = xmlMentorNode["choices"];
                         if (xmlMentorChoicesNode == null)
                         {
                             xmlMentorChoicesNode = objDataDoc.CreateElement("choices");
@@ -5079,7 +5079,7 @@ namespace Translator
                     XPathNavigator xmlDataParagonChoicesNode = xmlDataParagonNode.SelectSingleNode("choices");
                     if (xmlDataParagonChoicesNode != null)
                     {
-                        XmlNode xmlParagonChoicesNode = xmlParagonNode["choices"];
+                        XmlElement xmlParagonChoicesNode = xmlParagonNode["choices"];
                         if (xmlParagonChoicesNode == null)
                         {
                             xmlParagonChoicesNode = objDataDoc.CreateElement("choices");
@@ -6427,7 +6427,7 @@ namespace Translator
                         xmlSkillNodesParent.AppendChild(xmlSkillNode);
                     }
 
-                    XmlNode xmlSkillSpecsNode = xmlSkillNode["specs"];
+                    XmlElement xmlSkillSpecsNode = xmlSkillNode["specs"];
                     if (xmlSkillSpecsNode == null)
                     {
                         xmlSkillSpecsNode = objDataDoc.CreateElement("specs");
@@ -6596,7 +6596,7 @@ namespace Translator
                         xmlKnowledgeSkillNodesParent.AppendChild(xmlKnowledgeSkillNode);
                     }
 
-                    XmlNode xmlKnowledgeSkillSpecsNode = xmlKnowledgeSkillNode["specs"];
+                    XmlElement xmlKnowledgeSkillSpecsNode = xmlKnowledgeSkillNode["specs"];
                     if (xmlKnowledgeSkillSpecsNode == null)
                     {
                         xmlKnowledgeSkillSpecsNode = objDataDoc.CreateElement("specs");

@@ -2307,113 +2307,113 @@ namespace Chummer.Backend.Attributes
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("BOD", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("BOD", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task AGIVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("AGI", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("AGI", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task REAVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("REA", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("REA", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task STRVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("STR", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("STR", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task CHAVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("CHA", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("CHA", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task INTVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("INT", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("INT", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task LOGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("LOG", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("LOG", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task WILVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("WIL", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("WIL", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task EDGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("EDG", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("EDG", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task ESSVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("ESS", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("ESS", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task MAGVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("MAG", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("MAG", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task MAGAdeptVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("MAGAdept", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("MAGAdept", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task RESVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("RES", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("RES", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
             Task DEPVariant(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
             {
                 if (token.IsCancellationRequested)
                     return Task.FromCanceled(token);
-                if (_dicUIPropertyChangers.TryGetValue("DEP", out UiPropertyChangerTracker objEvents))
-                    return CommonCode(objEvents, e, token);
-                return Task.CompletedTask;
+                return _dicUIPropertyChangers.TryGetValue("DEP", out UiPropertyChangerTracker objEvents)
+                    ? CommonCode(objEvents, e, token)
+                    : Task.CompletedTask;
             }
         }
 

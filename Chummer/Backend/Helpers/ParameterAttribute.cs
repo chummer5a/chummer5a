@@ -89,13 +89,14 @@ namespace Chummer
                 if (_dblFixedValues == null)
                     return 0;
 
-                if (_objGear.Rating < 0)
+                int intRating = _objGear.Rating;
+                if (intRating < 0)
                 {
                     //In case of underflow return lowest
-                    return _dblFixedValues[_objGear.Rating];
+                    return _dblFixedValues[intRating];
                 }
 
-                if (_objGear.Rating >= _dblFixedValues.Length)
+                if (intRating >= _dblFixedValues.Length)
                 {
                     //Return highest if overflow
                     return _dblFixedValues[_dblFixedValues.Length - 1];
@@ -105,8 +106,7 @@ namespace Chummer
                 //preferred. This is an elseif
                 if (true)
                 {
-                    return _dblFixedValues[_objGear.Rating];
-                    /**/
+                    return _dblFixedValues[intRating];
                 }
             }
         }

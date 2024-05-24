@@ -87,7 +87,7 @@ namespace Chummer
                 if ((await ImprovementManager
                            .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                                                     Improvement.ImprovementType.LimitCritterPowerCategory).ConfigureAwait(false))
-                    .Any(imp => !strInnerText.Contains(imp.ImprovedName)))
+                    .Exists(imp => !strInnerText.Contains(imp.ImprovedName)))
                 {
                     continue;
                 }

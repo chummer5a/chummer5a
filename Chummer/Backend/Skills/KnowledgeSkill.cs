@@ -111,6 +111,29 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public override bool CanHaveSpecs
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return AllowUpgrade && base.CanHaveSpecs;
+            }
+        }
+
+        public override async Task<bool> GetCanHaveSpecsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetAllowUpgradeAsync(token).ConfigureAwait(false) && await base.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private string _strType = string.Empty;
 
         private int _intIsNativeLanguage;

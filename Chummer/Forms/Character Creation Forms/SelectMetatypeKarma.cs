@@ -1179,8 +1179,9 @@ namespace Chummer
                         lstMetatypeItems.Sort(CompareListItems.CompareNames);
 
                         string strOldSelected
-                            = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
-                              ?? _objCharacter?.MetatypeGuid.ToString(
+                            = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                  .ConfigureAwait(false)
+                              ?? _objCharacter.MetatypeGuid.ToString(
                                   "D", GlobalSettings.InvariantCultureInfo);
                         if (strOldSelected == Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
                         {

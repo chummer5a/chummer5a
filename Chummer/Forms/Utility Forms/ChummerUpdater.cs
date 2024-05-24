@@ -1041,7 +1041,7 @@ namespace Chummer
             }
         }
 
-        private async Task InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete, CancellationToken token = default)
+        private async Task InstallUpdateFromZip(string strZipPath, List<string> lstFilesToDelete, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;

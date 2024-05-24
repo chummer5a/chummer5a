@@ -1776,7 +1776,7 @@ namespace Chummer
                     if (x.SelectedIndex == -1 && lstChum5lzCompressionLevelOptions.Count > 0)
                     {
                         x.SelectedValue = GlobalSettings.DefaultChum5lzCompressionLevel;
-                        if (x.SelectedIndex == -1 && lstChum5lzCompressionLevelOptions.Count > 0)
+                        if (x.SelectedIndex == -1)
                             x.SelectedIndex = 0;
                     }
                 }, token).ConfigureAwait(false);

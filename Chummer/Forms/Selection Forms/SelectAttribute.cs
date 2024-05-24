@@ -60,7 +60,7 @@ namespace Chummer
                 }
 
                 await cboAttribute.PopulateWithListItemsAsync(lstAttributes).ConfigureAwait(false);
-                if (lstAttributes.Count >= 1)
+                if (lstAttributes.Count > 1)
                     await cboAttribute.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else if (lstAttributes.Count == 0)
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);

@@ -24,15 +24,14 @@ namespace Chummer
 {
     internal static class PerformanceDebugUtils
     {
-        public static TimeSpan TaskEnd(this Stopwatch sw, string task)
+        public static void TaskEnd(this Stopwatch sw, string task)
         {
+#if DEBUG
             sw.Stop();
-
-            TimeSpan elapsed = sw.Elapsed;
-            Trace.WriteLine(string.Format(GlobalSettings.InvariantCultureInfo, "{0} finished in {1} ms", task, elapsed.TotalMilliseconds));
-
+            long lngMilliseconds = sw.ElapsedMilliseconds;
+            Trace.WriteLine(string.Format(GlobalSettings.InvariantCultureInfo, "{0} finished in {1} ms", task, lngMilliseconds));
             sw.Restart();
-            return elapsed;
+#endif
         }
     }
 }

@@ -603,14 +603,14 @@ namespace Chummer
 
             public int Compare(TKey x, TKey y)
             {
-                if (x == null)
+                if (Equals(x, default(TKey)))
                 {
-                    if (y == null)
+                    if (Equals(y, default(TKey)))
                         return 0;
                     return -1;
                 }
 
-                if (y == null)
+                if (Equals(y, default(TKey)))
                     return 1;
 
                 return _objMyComparer?.Compare(new KeyValuePair<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),

@@ -2773,14 +2773,12 @@ namespace Chummer.Backend.Skills
 
         private int _intCachedCanHaveSpecs = -1;
 
-        public bool CanHaveSpecs
+        public virtual bool CanHaveSpecs
         {
             get
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if ((this as KnowledgeSkill)?.AllowUpgrade == false)
-                        return false;
                     // intReturn for thread safety
                     int intReturn = _intCachedCanHaveSpecs;
                     if (intReturn >= 0)
@@ -2808,14 +2806,12 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async Task<bool> GetCanHaveSpecsAsync(CancellationToken token = default)
+        public virtual async Task<bool> GetCanHaveSpecsAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (this is KnowledgeSkill objThis && !await objThis.GetAllowUpgradeAsync(token).ConfigureAwait(false))
-                    return false;
                 // intReturn for thread safety
                 int intReturn = _intCachedCanHaveSpecs;
                 if (intReturn >= 0)

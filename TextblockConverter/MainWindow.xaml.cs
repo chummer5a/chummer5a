@@ -52,10 +52,10 @@ namespace WpfApplication1
             XmlDocument doc = new XmlDocument();
             // write the root chummer node.
 
-            XmlNode objHeader = doc.CreateElement(critter ? "critter" : "spirit");
+            XmlElement objHeader = doc.CreateElement(critter ? "critter" : "spirit");
             doc.AppendChild(objHeader);
 
-            XmlNode xmlNode = doc.CreateElement("id");
+            XmlElement xmlNode = doc.CreateElement("id");
             xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString("D");
             objHeader.AppendChild(xmlNode);
 
@@ -180,7 +180,7 @@ namespace WpfApplication1
                     strLine = strLine.Replace("Physical Skills ", string.Empty).Replace("Matrix Skills ", string.Empty)
                                      .Replace("Magic Skills ", string.Empty).Replace("Skills ", string.Empty);
                     string[] split = strLine.Split(',');
-                    XmlNode xmlParentNode = doc.CreateElement("skills");
+                    XmlElement xmlParentNode = doc.CreateElement("skills");
                     foreach (string s in split.Where(s => !string.IsNullOrEmpty(s)))
                     {
                         xmlNode = doc.CreateElement("skill");
@@ -204,7 +204,7 @@ namespace WpfApplication1
                 {
                     strLine = strLine.Replace("Complex Forms ", string.Empty);
                     string[] split = strLine.Split(',');
-                    XmlNode xmlParentNode = doc.CreateElement("complexforms");
+                    XmlElement xmlParentNode = doc.CreateElement("complexforms");
                     foreach (string s in split.Where(s => !string.IsNullOrEmpty(s)))
                     {
                         xmlNode = doc.CreateElement("complexform");
@@ -224,7 +224,7 @@ namespace WpfApplication1
                 {
                     strLine = strLine.Replace("Powers ", string.Empty);
                     string[] split = strLine.Split(',');
-                    XmlNode xmlParentNode = doc.CreateElement("powers");
+                    XmlElement xmlParentNode = doc.CreateElement("powers");
                     foreach (string s in split.Where(s => !string.IsNullOrEmpty(s)))
                     {
                         xmlNode = doc.CreateElement("power");
@@ -255,7 +255,7 @@ namespace WpfApplication1
                 {
                     strLine = strLine.Replace("Programs ", string.Empty);
                     string[] split = strLine.Split(',');
-                    XmlNode xmlParentNode = doc.CreateElement("gears");
+                    XmlElement xmlParentNode = doc.CreateElement("gears");
                     foreach (string s in split.Where(s => !string.IsNullOrEmpty(s)))
                     {
                         xmlNode = doc.CreateElement("quality");
@@ -275,7 +275,7 @@ namespace WpfApplication1
                 {
                     strLine = strLine.Replace("Qualities ", string.Empty);
                     string[] split = strLine.Split(',');
-                    XmlNode xmlParentNode = doc.CreateElement("qualities");
+                    XmlElement xmlParentNode = doc.CreateElement("qualities");
                     foreach (string s in split.Where(s => !string.IsNullOrEmpty(s)))
                     {
                         xmlNode = doc.CreateElement("quality");
@@ -301,8 +301,8 @@ namespace WpfApplication1
             }
 
             // Create the default critter tab bonus.
-            XmlNode xmlBonusNode = doc.CreateElement("bonus");
-            XmlNode xmlChildNode = doc.CreateElement("enabletab");
+            XmlElement xmlBonusNode = doc.CreateElement("bonus");
+            XmlElement xmlChildNode = doc.CreateElement("enabletab");
             XmlNode xmlTabNode = doc.CreateElement("name");
             xmlTabNode.InnerText = "critter";
             xmlChildNode.AppendChild(xmlTabNode);
