@@ -1230,7 +1230,7 @@ namespace Chummer
                                                               .ConfigureAwait(false);
                 Color objErrorColor = ColorManager.ErrorColor;
                 Color objGrayTextColor = ColorManager.GrayText;
-                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterReadLockAsync(token)
+                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync(token)
                     .ConfigureAwait(false);
                 try
                 {
