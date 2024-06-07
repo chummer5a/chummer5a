@@ -406,7 +406,9 @@ namespace Chummer.Backend.Attributes
                 using (LockObject.EnterReadLock())
                 {
                     if (Abbrev == "EDG" && _objCharacter.IsAI)
-                        return _objCharacter.DEP.TotalValue;
+                        return _objCharacter.DEP?.TotalValue ?? (_objCharacter.IsLoading
+                            ? RawMetatypeMaximum
+                            : throw new NullReferenceException(nameof(Character.DEP)));
                     if (MetatypeCategory == AttributeCategory.Shapeshifter)
                         return RawMetatypeMaximum;
                     int intReturn = RawMetatypeMaximum;
@@ -439,7 +441,15 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 if (Abbrev == "EDG" && await _objCharacter.GetIsAIAsync(token).ConfigureAwait(false))
-                    return await (await _objCharacter.GetAttributeAsync("DEP", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
+                {
+                    CharacterAttrib objDepth = await _objCharacter.GetAttributeAsync("DEP", token: token).ConfigureAwait(false);
+                    if (objDepth != null)
+                        return await objDepth.GetTotalValueAsync(token).ConfigureAwait(false);
+                    return _objCharacter.IsLoading
+                        ? RawMetatypeMaximum
+                        : throw new NullReferenceException(nameof(Character.DEP));
+                }
+
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
                     return RawMetatypeMaximum;
                 int intReturn = RawMetatypeMaximum;
