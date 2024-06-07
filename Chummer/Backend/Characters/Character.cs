@@ -39492,15 +39492,14 @@ namespace Chummer
                         int intMAGAdeptMinimumReduction = intMagMinReduction;
                         if (Settings.ESSLossReducesMaximumOnly)
                         {
-                            intMAGMinimumReduction =
-                                Math.Max(0, intMagMinReduction + MAG.TotalValue - MAG.TotalMaximum);
-                            intMAGAdeptMinimumReduction = Math.Max(0,
-                                                                   intMagMinReduction + MAGAdept.TotalValue
-                                                                   - MAGAdept.TotalMaximum);
-                            intRESMinimumReduction
-                                = Math.Max(0, intResMinReduction + RES.TotalValue - RES.TotalMaximum);
-                            intDEPMinimumReduction
-                                = Math.Max(0, intDepMinReduction + DEP.TotalValue - DEP.TotalMaximum);
+                            (int iI, int iJ) = MAG.MinimumMaximumNoEssenceLoss();
+                            intMAGMinimumReduction = Math.Max(0, intMagMinReduction + iI - iJ);
+                            (iI, iJ) = MAGAdept.MinimumMaximumNoEssenceLoss();
+                            intMAGAdeptMinimumReduction = Math.Max(0, intMagMinReduction + iI - iJ);
+                            (iI, iJ) = RES.MinimumMaximumNoEssenceLoss();
+                            intRESMinimumReduction = Math.Max(0, intResMinReduction + iI - iJ);
+                            (iI, iJ) = DEP.MinimumMaximumNoEssenceLoss();
+                            intDEPMinimumReduction = Math.Max(0, intDepMinReduction + iI - iJ);
                         }
 
                         using (LockObject.EnterWriteLock(token))
@@ -40384,27 +40383,14 @@ namespace Chummer
                         int intDEPMinimumReduction = intDepMinReduction;
                         if (Settings.ESSLossReducesMaximumOnly)
                         {
-                            intMAGMinimumReduction =
-                                Math.Max(
-                                    0,
-                                    intMagMinReduction + await MAG.GetTotalValueAsync(token).ConfigureAwait(false)
-                                    - await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false));
-                            intMAGAdeptMinimumReduction = Math.Max(0,
-                                intMagMinReduction
-                                + await MAGAdept.GetTotalValueAsync(token)
-                                    .ConfigureAwait(false)
-                                - await MAGAdept.GetTotalMaximumAsync(token)
-                                    .ConfigureAwait(false));
-                            intRESMinimumReduction
-                                = Math.Max(
-                                    0,
-                                    intResMinReduction + await RES.GetTotalValueAsync(token).ConfigureAwait(false)
-                                    - await RES.GetTotalMaximumAsync(token).ConfigureAwait(false));
-                            intDEPMinimumReduction
-                                = Math.Max(
-                                    0,
-                                    intDepMinReduction + await DEP.GetTotalValueAsync(token).ConfigureAwait(false)
-                                    - await DEP.GetTotalMaximumAsync(token).ConfigureAwait(false));
+                            (int iI, int iJ) = await MAG.MinimumMaximumNoEssenceLossAsync(token: token);
+                            intMAGMinimumReduction = Math.Max(0, intMagMinReduction + iI - iJ);
+                            (iI, iJ) = await MAGAdept.MinimumMaximumNoEssenceLossAsync(token: token);
+                            intMAGAdeptMinimumReduction = Math.Max(0, intMagMinReduction + iI - iJ);
+                            (iI, iJ) = await RES.MinimumMaximumNoEssenceLossAsync(token: token);
+                            intRESMinimumReduction = Math.Max(0, intResMinReduction + iI - iJ);
+                            (iI, iJ) = await DEP.MinimumMaximumNoEssenceLossAsync(token: token);
+                            intDEPMinimumReduction = Math.Max(0, intDepMinReduction + iI - iJ);
                         }
 
                         IAsyncDisposable objLocker2

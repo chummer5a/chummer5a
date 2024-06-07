@@ -869,16 +869,16 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Total Maximum value of the CharacterAttribute before essence modifiers are applied but .
+        /// The CharacterAttribute's combined Minimum and Maximum values (Metatype Min/Max + Modifiers) before essence modifiers are applied.
         /// </summary>
-        public int MaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
+        public Tuple<int, int> MinimumMaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
         {
             using (LockObject.EnterReadLock())
             {
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
-                    return 1;
+                    return new Tuple<int, int>(1, 1);
                 }
 
                 int intRawMinimum = MetatypeMinimum;
@@ -940,14 +940,14 @@ namespace Chummer.Backend.Attributes
                 if (intTotalMaximum < intTotalMinimum)
                     intTotalMaximum = intTotalMinimum;
 
-                return intTotalMaximum;
+                return new Tuple<int, int>(intTotalMinimum, intTotalMaximum);
             }
         }
 
         /// <summary>
-        /// Total Maximum value of the CharacterAttribute before essence modifiers are applied but .
+        /// The CharacterAttribute's combined Minimum and Maximum values (Metatype Min/Max + Modifiers) before essence modifiers are applied.
         /// </summary>
-        public async Task<int> MaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
+        public async Task<Tuple<int, int>> MinimumMaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -957,7 +957,7 @@ namespace Chummer.Backend.Attributes
                 if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie"
                     && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
-                    return 1;
+                    return new Tuple<int, int>(1, 1);
                 }
 
                 int intRawMaximumBase = await GetMetatypeMaximumAsync(token).ConfigureAwait(false);
@@ -1022,12 +1022,46 @@ namespace Chummer.Backend.Attributes
                 if (intTotalMaximum < intTotalMinimum)
                     intTotalMaximum = intTotalMinimum;
 
-                return intTotalMaximum;
+                return new Tuple<int, int>(intTotalMinimum, intTotalMaximum);
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers) before essence modifiers are applied.
+        /// </summary>
+        public int MaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
+        {
+            return MinimumMaximumNoEssenceLoss(blnUseEssenceAtSpecialStart).Item2;
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers) before essence modifiers are applied.
+        /// </summary>
+        public async Task<int> MaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await MinimumMaximumNoEssenceLossAsync(blnUseEssenceAtSpecialStart, token)).Item2;
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers) before essence modifiers are applied.
+        /// </summary>
+        public int MinimumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
+        {
+            return MinimumMaximumNoEssenceLoss(blnUseEssenceAtSpecialStart).Item1;
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers) before essence modifiers are applied.
+        /// </summary>
+        public async Task<int> MinimumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await MinimumMaximumNoEssenceLossAsync(blnUseEssenceAtSpecialStart, token)).Item1;
         }
 
         /// <summary>
