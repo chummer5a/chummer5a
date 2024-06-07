@@ -486,8 +486,6 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            Log.Trace("Save enter");
-
             objWriter.WriteStartElement("improvement");
             if (!string.IsNullOrEmpty(_strUniqueName))
                 objWriter.WriteElementString("unique", _strUniqueName);
@@ -514,8 +512,6 @@ namespace Chummer
             objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
-
-            Log.Trace("Save end");
         }
 
         /// <summary>
@@ -526,8 +522,6 @@ namespace Chummer
         {
             if (objNode == null)
                 return;
-            Log.Trace("Load enter");
-
             objNode.TryGetStringFieldQuickly("unique", ref _strUniqueName);
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
             objNode.TryGetStringFieldQuickly("improvedname", ref _strImprovedName);
@@ -595,8 +589,6 @@ namespace Chummer
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
-
-            Log.Trace("Load exit");
         }
 
         #endregion Save and Load Methods
