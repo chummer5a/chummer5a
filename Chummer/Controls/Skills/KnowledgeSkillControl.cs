@@ -982,49 +982,50 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken)
+                    .ConfigureAwait(false);
                 try
                 {
                     _objMyToken.ThrowIfCancellationRequested();
-                    int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
+                    Character objCharacter = _objSkill.CharacterObject;
+                    int intPrice = await (await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false))
+                        .GetKarmaKnowledgeSpecializationAsync(_objMyToken).ConfigureAwait(false);
 
-                    decimal decExtraSpecCost = 0;
-                    int intTotalBaseRating = _objSkill.TotalBaseRating;
+                    int intTotalBaseRating = await _objSkill.GetTotalBaseRatingAsync(_objMyToken).ConfigureAwait(false);
                     decimal decSpecCostMultiplier = 1.0m;
                     bool blnCreated =
-                        await _objSkill.CharacterObject.GetCreatedAsync(_objMyToken).ConfigureAwait(false);
-                    foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
+                        await objCharacter.GetCreatedAsync(_objMyToken).ConfigureAwait(false);
+                    decimal decExtraSpecCost = objCharacter.Improvements.Sum(objLoopImprovement =>
+                        objLoopImprovement.Minimum <= intTotalBaseRating
+                        && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                            || (objLoopImprovement.Condition == "career") == blnCreated
+                            || (objLoopImprovement.Condition == "create") != blnCreated)
+                        && objLoopImprovement.Enabled
+                        && objLoopImprovement.ImprovedName == _objSkill.SkillCategory, objLoopImprovement =>
                     {
-                        if (objLoopImprovement.Minimum <= intTotalBaseRating
-                            && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                || (objLoopImprovement.Condition == "career") == blnCreated
-                                || (objLoopImprovement.Condition == "create") != blnCreated)
-                            && objLoopImprovement.Enabled
-                            && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
+                        switch (objLoopImprovement.ImproveType)
                         {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
-                                    decExtraSpecCost += objLoopImprovement.Value;
-                                    break;
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                return objLoopImprovement.Value;
 
-                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
-                                    decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
                         }
-                    }
+
+                        return 0;
+                    }, token: _objMyToken);
 
                     if (decSpecCostMultiplier != 1.0m)
-                        price = (price * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                        intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
                     else
-                        price += decExtraSpecCost.StandardRound(); //Spec
+                        intPrice += decExtraSpecCost.StandardRound(); //Spec
 
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager
                             .GetStringAsync(
                                 "Message_ConfirmKarmaExpenseSkillSpecialization", token: _objMyToken)
-                            .ConfigureAwait(false), price);
+                            .ConfigureAwait(false), intPrice);
 
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
                         return;
@@ -1033,7 +1034,7 @@ namespace Chummer.UI.Skills
                            await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)
                                { Mode = "Knowledge" }, _objMyToken).ConfigureAwait(false))
                     {
-                        if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken)
+                        if (await selectForm.ShowDialogSafeAsync(objCharacter, _objMyToken)
                                 .ConfigureAwait(false)
                             != DialogResult.OK)
                             return;

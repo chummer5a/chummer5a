@@ -6086,6 +6086,8 @@ namespace Chummer.Backend.Skills
 
         public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
+            if (IsLoading)
+                return;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -6239,6 +6241,8 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (IsLoading)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
