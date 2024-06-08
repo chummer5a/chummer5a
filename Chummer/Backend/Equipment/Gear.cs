@@ -1391,7 +1391,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
-            objWriter.WriteElementString("rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("qty", _decQty.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             if (_decCostFor > 1)
@@ -2071,38 +2071,22 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
-        public XmlNode Bonus
-        {
-            get => _nodBonus;
-            set => _nodBonus = value;
-        }
+        public XmlNode Bonus => _nodBonus;
 
         /// <summary>
         /// Wireless bonus node from the XML file.
         /// </summary>
-        public XmlNode WirelessBonus
-        {
-            get => _nodWirelessBonus;
-            set => _nodWirelessBonus = value;
-        }
+        public XmlNode WirelessBonus => _nodWirelessBonus;
 
         /// <summary>
         /// WeaponBonus node from the XML file.
         /// </summary>
-        public XmlNode WeaponBonus
-        {
-            get => _nodWeaponBonus;
-            set => _nodWeaponBonus = value;
-        }
+        public XmlNode WeaponBonus => _nodWeaponBonus;
 
         /// <summary>
         /// WeaponBonus node from the XML file that is used only by weapons that have flechette codes built in.
         /// </summary>
-        public XmlNode FlechetteWeaponBonus
-        {
-            get => _nodFlechetteWeaponBonus;
-            set => _nodFlechetteWeaponBonus = value;
-        }
+        public XmlNode FlechetteWeaponBonus => _nodFlechetteWeaponBonus;
 
         /// <summary>
         /// Name.
