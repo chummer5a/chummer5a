@@ -4192,23 +4192,23 @@ namespace Chummer
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
-        public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, CancellationToken token = default)
+        public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, LzmaHelper.ChummerCompressionPreset eOverrideCompressionLevel = LzmaHelper.ChummerCompressionPreset.None, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token), token);
+            return Utils.SafelyRunSynchronously(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, eOverrideCompressionLevel, token), token);
         }
 
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
-        public Task<bool> SaveAsync(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, CancellationToken token = default)
+        public Task<bool> SaveAsync(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, LzmaHelper.ChummerCompressionPreset eOverrideCompressionLevel = LzmaHelper.ChummerCompressionPreset.None, CancellationToken token = default)
         {
-            return SaveCoreAsync(false, strFileName, addToMRU, callOnSaveCallBack, token);
+            return SaveCoreAsync(false, strFileName, addToMRU, callOnSaveCallBack, eOverrideCompressionLevel, token);
         }
 
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
-        private async Task<bool> SaveCoreAsync(bool blnSync, string strFileName, bool addToMRU, bool callOnSaveCallBack,
+        private async Task<bool> SaveCoreAsync(bool blnSync, string strFileName, bool addToMRU, bool callOnSaveCallBack, LzmaHelper.ChummerCompressionPreset eOverrideCompressionLevel = LzmaHelper.ChummerCompressionPreset.None,
                                                CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -4861,7 +4861,9 @@ namespace Chummer
                                     {
                                         objStream.Seek(0, SeekOrigin.Begin);
                                         objStream.CompressToLzmaFile(objFileStream,
-                                            GlobalSettings.Chum5lzCompressionLevel);
+                                            eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
+                                                ? GlobalSettings.Chum5lzCompressionLevel
+                                                : eOverrideCompressionLevel);
                                     }
                                 }
                             }
@@ -5697,7 +5699,10 @@ namespace Chummer
                         {
                             objStream.Seek(0, SeekOrigin.Begin);
                             await objStream.CompressToLzmaFileAsync(
-                                    objFileStream, GlobalSettings.Chum5lzCompressionLevel,
+                                    objFileStream,
+                                    eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
+                                        ? GlobalSettings.Chum5lzCompressionLevel
+                                        : eOverrideCompressionLevel,
                                     token: token)
                                 .ConfigureAwait(false);
                         }

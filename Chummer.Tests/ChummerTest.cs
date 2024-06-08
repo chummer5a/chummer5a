@@ -199,33 +199,25 @@ namespace Chummer.Tests
         public void Test03_SaveAsChum5lz()
         {
             Debug.WriteLine("Unit test initialized for: Test04_SaveAsChum5lz()");
-            LzmaHelper.ChummerCompressionPreset eOldSetting = GlobalSettings.Chum5lzCompressionLevel;
-            try
+            foreach (Character objCharacter in GetTestCharacters())
             {
-                GlobalSettings.Chum5lzCompressionLevel = LzmaHelper.ChummerCompressionPreset.Fast;
-                foreach (Character objCharacter in GetTestCharacters())
+                string strFileName = Path.GetFileName(objCharacter.FileName)
+                                     ?? LanguageManager.GetString("String_Unknown");
+                Debug.WriteLine("Checking " + strFileName);
+                string strDestination =
+                    Path.Combine(CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
+                if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 {
-                    string strFileName = Path.GetFileName(objCharacter.FileName)
-                                         ?? LanguageManager.GetString("String_Unknown");
-                    Debug.WriteLine("Checking " + strFileName);
-                    string strDestination = Path.Combine(CommonTestData.TestPathInfo.FullName, "(Compressed) " + strFileName);
-                    if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                            strDestination += "lz";
-                        else
-                            strDestination += ".chum5lz";
-                    }
-
-                    SaveCharacter(objCharacter, strDestination);
-                    // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
-                    XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
-                    objXmlDocument.LoadStandardFromLzmaCompressed(strDestination);
+                    if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                        strDestination += "lz";
+                    else
+                        strDestination += ".chum5lz";
                 }
-            }
-            finally
-            {
-                GlobalSettings.Chum5lzCompressionLevel = eOldSetting;
+
+                SaveCharacter(objCharacter, strDestination);
+                // If our compression is malformed, we should run into a parse error when we try to load the XML data (don't load the full character because it's unnecessary)
+                XmlDocument objXmlDocument = new XmlDocument { XmlResolver = null };
+                objXmlDocument.LoadStandardFromLzmaCompressed(strDestination);
             }
         }
 
@@ -614,13 +606,13 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests saving a given character.
         /// </summary>
-        private static void SaveCharacter(Character objCharacter, string strPath)
+        private static void SaveCharacter(Character objCharacter, string strPath, LzmaHelper.ChummerCompressionPreset eCompressionForChum5Lz = LzmaHelper.ChummerCompressionPreset.Fast)
         {
             Assert.IsNotNull(objCharacter);
             try
             {
                 Debug.WriteLine("Saving: " + objCharacter.Name + ", " + Path.GetFileName(strPath));
-                objCharacter.Save(strPath, false, false);
+                objCharacter.Save(strPath, false, false, eCompressionForChum5Lz);
                 Debug.WriteLine("Character saved: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)

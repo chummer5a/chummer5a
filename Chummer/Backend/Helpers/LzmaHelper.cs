@@ -42,6 +42,7 @@ namespace Chummer
 
         public enum ChummerCompressionPreset
         {
+            None,
             Fast,
             Balanced,
             Thorough
@@ -91,6 +92,9 @@ namespace Chummer
             // ReSharper disable RedundantArgumentDefaultValue
             switch (eChummerCompressionPreset)
             {
+                case ChummerCompressionPreset.None:
+                    return;
+
                 case ChummerCompressionPreset.Fast:
                     CompressToLzmaFile(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress);
                     break;
@@ -207,6 +211,9 @@ namespace Chummer
             // ReSharper disable RedundantArgumentDefaultValue
             switch (eChummerCompressionPreset)
             {
+                case ChummerCompressionPreset.None:
+                    return token.IsCancellationRequested ? Task.FromCanceled(token) : Task.CompletedTask;
+
                 case ChummerCompressionPreset.Fast:
                     return CompressToLzmaFileAsync(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
                                                    token);

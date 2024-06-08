@@ -325,12 +325,19 @@ namespace Chummer
 
         private DebuggableSemaphoreSlim _objAutosaveSemaphore = new DebuggableSemaphoreSlim();
 
+        private int _intAutosaveTimeoutsCount;
+
+        private const int MaximumAutosaveTimeouts = 3;
+
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
         protected async Task AutoSaveCharacter(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            // If we have timed out more than we are allowed to, stop autosaving
+            if (_intAutosaveTimeoutsCount >= MaximumAutosaveTimeouts)
+                return;
             // Local for thread safety
             DebuggableSemaphoreSlim objAutosaveSemaphore = _objAutosaveSemaphore;
             try
@@ -366,28 +373,76 @@ namespace Chummer
                                     await LanguageManager
                                         .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
                                         .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                _intAutosaveTimeoutsCount = MaximumAutosaveTimeouts; // Stop trying to autosave because we aren't going to be granted permissions until a restart
                                 return;
                             }
                         }
 
-                        string strShowFileName =
-                            Path.GetFileNameWithoutExtension(await CharacterObject.GetFileNameAsync(token)
-                                .ConfigureAwait(false));
-
-                        if (string.IsNullOrEmpty(strShowFileName))
-                            strShowFileName =
-                                (await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false))
-                                .CleanForFileName() + ".chum5lz";
-                        else
-                            // Autosaves are always compressed
-                            strShowFileName += ".chum5lz";
-
-                        string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                        if (!await CharacterObject.SaveAsync(strFilePath, false, false, token).ConfigureAwait(false))
+                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            Log.Info("Autosave failed for character " +
-                                     await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + " ("
-                                     + await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false) + ')');
+                            string strCharacterName = await CharacterObject.GetCharacterNameAsync(token)
+                                .ConfigureAwait(false);
+                            string strAutosaveFileName =
+                                Path.GetFileNameWithoutExtension(await CharacterObject.GetFileNameAsync(token)
+                                    .ConfigureAwait(false));
+
+                            // Autosaves are initially compressed (but at Fast settings), but if we've timed out at least once, don't even try that level of compression
+                            string strExtension = _intAutosaveTimeoutsCount > 0 ? ".chum5" : ".chum5lz";
+                            if (string.IsNullOrEmpty(strAutosaveFileName))
+                                strAutosaveFileName = strCharacterName.CleanForFileName() + strExtension;
+                            else
+                                strAutosaveFileName += strExtension;
+
+                            string strFilePath = Path.Combine(strAutosavePath, strAutosaveFileName);
+                            using (CancellationTokenSource objTimeoutSource =
+                                   new CancellationTokenSource(TimeSpan.FromMinutes(1.0)))
+                            {
+                                CancellationToken objTimeoutToken = objTimeoutSource.Token;
+                                using (CancellationTokenSource objJoinedSource =
+                                       CancellationTokenSource.CreateLinkedTokenSource(objTimeoutToken, token))
+                                {
+                                    try
+                                    {
+                                        if (!await CharacterObject
+                                                .SaveAsync(strFilePath, false, false,
+                                                    LzmaHelper.ChummerCompressionPreset.Fast, objJoinedSource.Token)
+                                                .ConfigureAwait(false))
+                                        {
+                                            Log.Info("Autosave failed for character " + strCharacterName + " (" +
+                                                     strAutosaveFileName + ')');
+                                        }
+                                        else
+                                            _intAutosaveTimeoutsCount =
+                                                0; // We have successfully autosaved once, stop timing out
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        if (objTimeoutSource.IsCancellationRequested)
+                                        {
+                                            int intAutosaveTimeoutsCount =
+                                                Interlocked.Increment(ref _intAutosaveTimeoutsCount);
+                                            if (!token.IsCancellationRequested)
+                                            {
+                                                if (intAutosaveTimeoutsCount >= MaximumAutosaveTimeouts)
+                                                {
+                                                    Log.Error("Autosave timed out too many times for character " +
+                                                              strCharacterName + " (" + strAutosaveFileName + ')');
+                                                }
+                                                else
+                                                {
+                                                    Log.Info("Autosave timed out for character " + strCharacterName +
+                                                             " (" + strAutosaveFileName + ')');
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     finally
@@ -403,7 +458,7 @@ namespace Chummer
             finally
             {
                 _tmrAutosaveRequestTimer?.Start();
-                _objAutosaveSemaphore?.Release();
+                objAutosaveSemaphore.Release();
             }
         }
 
