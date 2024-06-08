@@ -705,17 +705,17 @@ namespace ChummerHub.Client.Sinners
 
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    MyCharacter.Save(strFileName, false, false, token);
+                    MyCharacter.Save(strFileName, false, false, token: token);
                 else
-                    await MyCharacter.SaveAsync(strFileName, false, false, token);
+                    await MyCharacter.SaveAsync(strFileName, false, false, token: token);
             }
             else
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    MyCharacter.Save(tempfile, false, false, token);
+                    MyCharacter.Save(tempfile, false, false, token: token);
                 else
-                    await MyCharacter.SaveAsync(tempfile, false, false, token);
+                    await MyCharacter.SaveAsync(tempfile, false, false, token: token);
             }
 
             MySINnerFile.LastChange = blnSync ? MyCharacter.FileLastWriteTime : await MyCharacter.GetFileLastWriteTimeAsync(token);

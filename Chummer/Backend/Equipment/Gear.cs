@@ -2071,12 +2071,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
-        public XmlNode Bonus => _nodBonus;
+        public XmlNode Bonus
+        {
+            get => _nodBonus;
+            private set => _nodBonus = value;
+        }
 
         /// <summary>
         /// Wireless bonus node from the XML file.
         /// </summary>
-        public XmlNode WirelessBonus => _nodWirelessBonus;
+        public XmlNode WirelessBonus
+        {
+            get => _nodWirelessBonus;
+            private set => _nodWirelessBonus = value;
+        }
 
         /// <summary>
         /// WeaponBonus node from the XML file.
