@@ -95,6 +95,7 @@ Data Changes:
 - Fixed the underbarrel grenade launcher not properly using requirements to be available onlty to rifle-sized weapons.
 - Marked the Changeling qualities as not doubling cost in career mode. Closes #5118
 - City Slicker properly gives +1 dice for Survival (Urban) instead of -2.
+- Strike the Darkness can now properly be learned with Alpine Wrestling, German Jujitsu, Esdo, Urban Brawl Parkour, and/or Sternschutz Tactical. Closes #5140
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
