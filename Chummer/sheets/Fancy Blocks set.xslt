@@ -637,7 +637,7 @@
           <img src="data:image/jpeg;base64,{mainmugshotbase64}" class="mugshot" />
         </td></tr>
       </xsl:if>
-      <xsl:if test="prioritymetatype != ''">
+      <xsl:if test="buildmethod = 'Priority'">
         <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Priorities" />]</div></td></tr>
                         <tr><td><xsl:value-of select="$lang.Metatype" /></td><td><strong><xsl:value-of select="prioritymetatype" /></strong></td></tr>
                         <tr><td><xsl:value-of select="$lang.Attributes" /></td><td><strong><xsl:value-of select="priorityattributes" /></strong></td></tr>
