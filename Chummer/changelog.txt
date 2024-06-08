@@ -96,6 +96,7 @@ Data Changes:
 - Marked the Changeling qualities as not doubling cost in career mode. Closes #5118
 - City Slicker properly gives +1 dice for Survival (Urban) instead of -2.
 - Strike the Darkness can now properly be learned with Alpine Wrestling, German Jujitsu, Esdo, Urban Brawl Parkour, and/or Sternschutz Tactical. Closes #5140
+- Fancy Blocks, Text-Only, and Formatted Text-Only sheets no longer show priority entries for characters made with Point Buy or Life Modules.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
