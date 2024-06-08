@@ -66,6 +66,7 @@ Application Changes:
 - Fixed custom category spells not presenting as a treenode.
 - Standardized curly brackets notation to all uses of attributes in computable expressions. This means that all data expressions that can be computed with attribute values (e.g. damage codes, cyberware rating limits) can now also use attribute maxima and minima via `{[Abbreviation]Maximum}` and `{[Abbreviation]Minimum}` (replacing [Abbreviation] with the appropriate attribute's three-letter abbreviation), and all such fields now specifically always require attribute abbreviations and codes to be enclosed in curly brackets.
 - Autosaves are now always compressed in Fast compression mode, regardless of the program's settings around what compression to use for compressed saves. If an autosave takes longer than a minute, the next attempted autosaves will be uncompressed, and if three attempts time out in this manner, the program will no longer attempt to autosave the character.
+- The skillgroupdisablechoice bonus node now allows the user to select any of the character's skill groups if it is empty.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -97,6 +98,7 @@ Data Changes:
 - City Slicker properly gives +1 dice for Survival (Urban) instead of -2.
 - Strike the Darkness can now properly be learned with Alpine Wrestling, German Jujitsu, Esdo, Urban Brawl Parkour, and/or Sternschutz Tactical. Closes #5140
 - Fancy Blocks, Text-Only, and Formatted Text-Only sheets no longer show priority entries for characters made with Point Buy or Life Modules.
+- Incompetent now properly sets all skills in the chosen skill group to Unaware, meaning they can also not be learned until the quality is bought off. Existing characters with the quality will need to re-apply improvements to see the change reflected on their sheets. Fixes #5111.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership

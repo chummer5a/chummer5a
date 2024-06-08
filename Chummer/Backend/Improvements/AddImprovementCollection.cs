@@ -6158,6 +6158,14 @@ namespace Chummer
                                                                "skills.xml")));
                             }
                         }
+                        else
+                        {
+                            foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                            {
+                                if (!objGroup.IsDisabled)
+                                    lstSkills.Add(new ListItem(objGroup.Name, objGroup.CurrentDisplayName));
+                            }
+                        }
                     }
 
                     if (lstSkills.Count > 1)
