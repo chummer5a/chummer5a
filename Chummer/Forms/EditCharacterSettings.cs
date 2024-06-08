@@ -683,7 +683,7 @@ namespace Chummer
         {
             if (_blnSkipClosing) // Needed for weird async FormClosing event issue workaround
                 return;
-            Form frmSender = Utils.IsUnitTest ? null : sender as Form;
+            Form frmSender = sender as Form;
             if (frmSender != null)
             {
                 e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
@@ -692,21 +692,18 @@ namespace Chummer
 
             try
             {
-                if (!Utils.IsUnitTest)
-                {
-                    // Caller returns and form stays open (weird async FormClosing event issue workaround)
-                    await Task.Yield();
+                // Caller returns and form stays open (weird async FormClosing event issue workaround)
+                await Task.Yield();
 
-                    if (IsDirty && await Program.ShowScrollableMessageBoxAsync(
-                                await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty")
-                                    .ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
-                                    .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                            .ConfigureAwait(false)
-                        != DialogResult.Yes)
-                    {
-                        return;
-                    }
+                if (IsDirty && await Program.ShowScrollableMessageBoxAsync(
+                            await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty")
+                                .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
+                                .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        .ConfigureAwait(false)
+                    != DialogResult.Yes)
+                {
+                    return;
                 }
 
                 if (_blnForceMasterIndexRepopulateOnClose && Program.MainForm.MasterIndex != null)
