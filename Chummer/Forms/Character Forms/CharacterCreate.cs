@@ -1858,7 +1858,7 @@ namespace Chummer
         {
             if (_blnSkipClosing) // Needed for weird async FormClosing event issue workaround
                 return;
-            Form frmSender = sender as Form;
+            Form frmSender = Utils.IsUnitTest ? null : sender as Form;
             if (frmSender != null)
             {
                 e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
@@ -1873,38 +1873,41 @@ namespace Chummer
                     IsLoading = true;
                     try
                     {
-                        // Caller returns and form stays open (weird async FormClosing event issue workaround)
-                        await Task.Yield();
-
-                        // If there are unsaved changes to the character, as the user if they would like to save their changes.
-                        if (IsDirty && !Utils.IsUnitTest)
+                        if (!Utils.IsUnitTest)
                         {
-                            string strCharacterName = await CharacterObject.GetCharacterNameAsync(GenericToken)
-                                .ConfigureAwait(false);
-                            DialogResult eResult = await Program.ShowScrollableMessageBoxAsync(
-                                    this,
-                                    string.Format(GlobalSettings.CultureInfo,
-                                        await LanguageManager
-                                            .GetStringAsync("Message_UnsavedChanges", token: GenericToken)
-                                            .ConfigureAwait(false),
-                                        strCharacterName),
-                                    await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges",
-                                            token: GenericToken)
-                                        .ConfigureAwait(false),
-                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, token: GenericToken)
-                                .ConfigureAwait(false);
-                            switch (eResult)
+                            // Caller returns and form stays open (weird async FormClosing event issue workaround)
+                            await Task.Yield();
+
+                            // If there are unsaved changes to the character, as the user if they would like to save their changes.
+                            if (IsDirty)
                             {
-                                case DialogResult.Yes:
+                                string strCharacterName = await CharacterObject.GetCharacterNameAsync(GenericToken)
+                                    .ConfigureAwait(false);
+                                DialogResult eResult = await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            await LanguageManager
+                                                .GetStringAsync("Message_UnsavedChanges", token: GenericToken)
+                                                .ConfigureAwait(false),
+                                            strCharacterName),
+                                        await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges",
+                                                token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, token: GenericToken)
+                                    .ConfigureAwait(false);
+                                switch (eResult)
                                 {
-                                    // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                                    bool blnResult = await SaveCharacter(token: GenericToken).ConfigureAwait(false);
-                                    if (!blnResult)
+                                    case DialogResult.Yes:
+                                    {
+                                        // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                                        bool blnResult = await SaveCharacter(token: GenericToken).ConfigureAwait(false);
+                                        if (!blnResult)
+                                            return;
+                                        break;
+                                    }
+                                    case DialogResult.Cancel:
                                         return;
-                                    break;
                                 }
-                                case DialogResult.Cancel:
-                                    return;
                             }
                         }
 
