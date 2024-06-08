@@ -2756,7 +2756,7 @@
         </specificskill>
         <specificskill>
           <name>Survival</name>
-          <bonus>-1</bonus>
+          <bonus>2</bonus>
           <condition>Urban</condition>
         </specificskill>
       </bonus>
