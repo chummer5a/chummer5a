@@ -211,17 +211,17 @@ namespace Chummer
         /// <summary>
         /// Whether a Limited version of the Spell was selected.
         /// </summary>
-        public bool Limited => chkLimited.Checked;
+        public bool Limited => chkLimited.DoThreadSafeFunc(x => x.Checked);
 
         /// <summary>
         /// Whether an Extended version of the Spell was selected.
         /// </summary>
-        public bool Extended => chkExtended.Checked;
+        public bool Extended => chkExtended.DoThreadSafeFunc(x => x.Checked);
 
         /// <summary>
         /// Whether a Alchemical version of the Spell was selected.
         /// </summary>
-        public bool Alchemical => chkAlchemical.Checked;
+        public bool Alchemical => chkAlchemical.DoThreadSafeFunc(x => x.Checked);
 
         public bool FreeOnly { get; set; }
 
@@ -638,11 +638,39 @@ namespace Chummer
                     }, token: token).ConfigureAwait(false);
                 }
 
-                // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
-                if (await chkExtended.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !blnExtendedFound)
+                if (blnExtendedFound)
                 {
-                    sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", token: token).ConfigureAwait(false)).Append(',')
-                                  .Append(strSpace);
+                    await chkExtended.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Checked = true;
+                        x.Enabled = false;
+                    }, token: token).ConfigureAwait(false);
+                }
+                else if (xmlSpell.SelectSingleNodeAndCacheExpression("category", token)?.Value == "Detection"
+                         && await _objCharacter.Settings.GetExtendAnyDetectionSpellAsync(token).ConfigureAwait(false))
+                {
+                    // If Extended Area was not found and the Extended checkbox is checked, add Extended Area to the list of Descriptors.
+                    if (await chkExtended.DoThreadSafeFuncAsync(x =>
+                        {
+                            x.Visible = true;
+                            if (!x.Enabled) // Resets this checkbox if we just selected an Extended Area spell
+                                x.Checked = false;
+                            x.Enabled = true;
+                            return x.Checked;
+                        }, token: token).ConfigureAwait(false))
+                    {
+                        sbdDescriptors.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", token: token).ConfigureAwait(false)).Append(',')
+                            .Append(strSpace);
+                    }
+                }
+                else
+                {
+                    await chkExtended.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = false;
+                        x.Visible = false;
+                    }, token: token).ConfigureAwait(false);
                 }
 
                 if (await chkAlchemical.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) && !blnAlchemicalFound)
@@ -694,34 +722,6 @@ namespace Chummer
 
             await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration, token: token).ConfigureAwait(false);
             await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration), token: token).ConfigureAwait(false);
-
-            if (blnExtendedFound)
-            {
-                await chkExtended.DoThreadSafeAsync(x =>
-                {
-                    x.Visible = true;
-                    x.Checked = true;
-                    x.Enabled = false;
-                }, token: token).ConfigureAwait(false);
-            }
-            else if (_objCharacter.Settings.ExtendAnyDetectionSpell && xmlSpell.SelectSingleNodeAndCacheExpression("category", token)?.Value == "Detection")
-            {
-                await chkExtended.DoThreadSafeAsync(x =>
-                {
-                    x.Visible = true;
-                    if (!x.Enabled) // Resets this checkbox if we just selected an Extended Area spell
-                        x.Checked = false;
-                    x.Enabled = true;
-                }, token: token).ConfigureAwait(false);
-            }
-            else
-            {
-                await chkExtended.DoThreadSafeAsync(x =>
-                {
-                    x.Checked = false;
-                    x.Visible = false;
-                }, token: token).ConfigureAwait(false);
-            }
 
             string strRange = xmlSpell.SelectSingleNodeAndCacheExpression("range", token)?.Value ?? string.Empty;
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -798,11 +798,11 @@ namespace Chummer
                 }
             }
 
-            if (Limited)
+            if (await chkLimited.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
             {
                 strDV += " + -2";
             }
-            if (Extended && !blnExtendedFound)
+            if (!blnExtendedFound && await chkExtended.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
             {
                 strDV += " + 2";
             }
