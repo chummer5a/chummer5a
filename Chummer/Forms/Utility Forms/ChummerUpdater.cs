@@ -206,7 +206,8 @@ namespace Chummer
                 e.Cancel = true;
                 try
                 {
-                    await this.DoThreadSafeAsync(x => x.Hide(), _objGenericToken).ConfigureAwait(false);
+                    if (sender is Control ctlSender)
+                        await ctlSender.DoThreadSafeAsync(x => x.Hide(), _objGenericToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {

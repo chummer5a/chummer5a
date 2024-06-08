@@ -2425,8 +2425,19 @@ namespace Chummer
             }
         }
 
+        private bool _blnSkipClosing;
+
         private async void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (_blnSkipClosing) // Needed for weird async FormClosing event issue workaround
+                return;
+            Form frmSender = sender as Form;
+            if (frmSender != null)
+            {
+                e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
+                await frmSender.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
+            }
+
             try
             {
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
@@ -2435,6 +2446,9 @@ namespace Chummer
                     IsLoading = true;
                     try
                     {
+                        // Caller returns and form stays open (weird async FormClosing event issue workaround)
+                        await Task.Yield();
+
                         // If there are unsaved changes to the character, as the user if they would like to save their changes.
                         if (IsDirty && !Utils.IsUnitTest)
                         {
@@ -2457,17 +2471,13 @@ namespace Chummer
                                     // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
                                     bool blnResult = await SaveCharacter(token: GenericToken).ConfigureAwait(false);
                                     if (!blnResult)
-                                        e.Cancel = true;
+                                        return;
                                     break;
                                 }
                                 case DialogResult.Cancel:
-                                    e.Cancel = true;
-                                    break;
+                                    return;
                             }
                         }
-
-                        if (e.Cancel)
-                            throw new OperationCanceledException();
 
                         await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
                         GenericCancellationTokenSource?.Cancel(false);
@@ -2477,20 +2487,6 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
-                        await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
-                            RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
-                            RefreshArmorClearBindings(treArmor, CancellationToken.None),
-                            RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
-                            RefreshGearsClearBindings(treGear, CancellationToken.None),
-                            RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
-                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
-                            RefreshContactsClearBindings(panContacts, panEnemies, panPets,
-                                CancellationToken.None),
-                            RefreshSpiritsClearBindings(panSpirits, panSprites,
-                                CancellationToken.None),
-                            RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
-                                flpSustainedCritterPowers,
-                                CancellationToken.None)).ConfigureAwait(false);
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
@@ -2616,14 +2612,21 @@ namespace Chummer
                             objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
                         }
 
-                        try
-                        {
-                            await UpdateCharacterInfoTask.ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            // Swallow this
-                        }
+                        await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
+                            RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
+                            RefreshArmorClearBindings(treArmor, CancellationToken.None),
+                            RefreshWeaponsClearBindings(treWeapons, CancellationToken.None),
+                            RefreshGearsClearBindings(treGear, CancellationToken.None),
+                            RefreshCyberwareClearBindings(treCyberware, CancellationToken.None),
+                            RefreshVehiclesClearBindings(treVehicles, CancellationToken.None),
+                            RefreshContactsClearBindings(panContacts, panEnemies, panPets,
+                                CancellationToken.None),
+                            RefreshSpiritsClearBindings(panSpirits, panSprites,
+                                CancellationToken.None),
+                            RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
+                                flpSustainedCritterPowers,
+                                CancellationToken.None)).ConfigureAwait(false);
+                        await UpdateCharacterInfoTask.ConfigureAwait(false);
                     }
                     catch
                     {
@@ -2635,10 +2638,22 @@ namespace Chummer
                 {
                     await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
+
+                // Now we close the original caller (weird async FormClosing event issue workaround)
+                if (frmSender != null)
+                {
+                    _blnSkipClosing = true;
+                    await frmSender.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
                 // Swallow this
+            }
+            finally
+            {
+                if (frmSender != null)
+                    await frmSender.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false); // Doesn't matter if we're closed
             }
         }
 

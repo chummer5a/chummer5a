@@ -677,20 +677,51 @@ namespace Chummer
             Close();
         }
 
+        private bool _blnSkipClosing;
+
         private async void EditCharacterSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (IsDirty && await Program.ShowScrollableMessageBoxAsync(
-                    await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty").ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
-                        .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question).ConfigureAwait(false)
-                != DialogResult.Yes)
+            if (_blnSkipClosing) // Needed for weird async FormClosing event issue workaround
+                return;
+            Form frmSender = sender as Form;
+            if (frmSender != null)
             {
-                e.Cancel = true;
+                e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
+                await frmSender.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
             }
 
-            if (_blnForceMasterIndexRepopulateOnClose && Program.MainForm.MasterIndex != null)
+            try
             {
-                await Program.MainForm.MasterIndex.ForceRepopulateCharacterSettings().ConfigureAwait(false);
+                // Caller returns and form stays open (weird async FormClosing event issue workaround)
+                await Task.Yield();
+
+                if (IsDirty && await Program.ShowScrollableMessageBoxAsync(
+                            await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty")
+                                .ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
+                                .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        .ConfigureAwait(false)
+                    != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                if (_blnForceMasterIndexRepopulateOnClose && Program.MainForm.MasterIndex != null)
+                {
+                    await Program.MainForm.MasterIndex.ForceRepopulateCharacterSettings().ConfigureAwait(false);
+                }
+
+                // Now we close the original caller (weird async FormClosing event issue workaround)
+                if (frmSender != null)
+                {
+                    _blnSkipClosing = true;
+                    await frmSender.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (frmSender != null)
+                    await frmSender.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false); // Doesn't matter if we're closed
             }
         }
 
