@@ -677,12 +677,8 @@ namespace Chummer
             Close();
         }
 
-        private bool _blnSkipClosing;
-
         private async void EditCharacterSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_blnSkipClosing) // Needed for weird async FormClosing event issue workaround
-                return;
             Form frmSender = sender as Form;
             if (frmSender != null)
             {
@@ -714,8 +710,11 @@ namespace Chummer
                 // Now we close the original caller (weird async FormClosing event issue workaround)
                 if (frmSender != null)
                 {
-                    _blnSkipClosing = true;
-                    await frmSender.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
+                    await frmSender.DoThreadSafeAsync(x =>
+                    {
+                        x.FormClosing -= EditCharacterSettings_FormClosing;
+                        x.Close();
+                    }).ConfigureAwait(false);
                 }
             }
             finally

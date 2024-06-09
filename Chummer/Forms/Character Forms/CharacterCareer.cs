@@ -2425,12 +2425,8 @@ namespace Chummer
             }
         }
 
-        private bool _blnSkipClosing;
-
         private async void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_blnSkipClosing) // Needed for weird async FormClosing event issue workaround
-                return;
             Form frmSender = sender as Form;
             if (frmSender != null)
             {
@@ -2443,6 +2439,7 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
+                    bool blnDoClose = false;
                     IsLoading = true;
                     try
                     {
@@ -2626,12 +2623,19 @@ namespace Chummer
                             RefreshSustainedSpellsClearBindings(flpSustainedSpells, flpSustainedComplexForms,
                                 flpSustainedCritterPowers,
                                 CancellationToken.None)).ConfigureAwait(false);
-                        await UpdateCharacterInfoTask.ConfigureAwait(false);
+                        try
+                        {
+                            await UpdateCharacterInfoTask.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
                     }
-                    catch
+                    finally
                     {
-                        IsLoading = false;
-                        throw;
+                        if (!blnDoClose)
+                            IsLoading = false;
                     }
                 }
                 finally
@@ -2642,8 +2646,11 @@ namespace Chummer
                 // Now we close the original caller (weird async FormClosing event issue workaround)
                 if (frmSender != null)
                 {
-                    _blnSkipClosing = true;
-                    await frmSender.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
+                    await frmSender.DoThreadSafeAsync(x =>
+                    {
+                        x.FormClosing -= CharacterCareer_FormClosing;
+                        x.Close();
+                    }).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
