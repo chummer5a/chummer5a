@@ -646,10 +646,10 @@ namespace Chummer.Backend.Skills
                         {
                             if (blnSetDefaultAttribute && InterlockExchangeDefaultAttribute(strNewAttributeValue) != strNewAttributeValue)
                             {
-                                if (CharacterObject?.SkillsSection?.IsLoading != true)
-                                    blnTemp1 = true;
-                                else
+                                if (IsLoading)
                                     RecacheAttribute();
+                                else
+                                    blnTemp1 = true;
                             }
 
                             if (blnUnsetNativeLanguage && Interlocked.Exchange(ref _intIsNativeLanguage, 0) == 0)
@@ -720,10 +720,10 @@ namespace Chummer.Backend.Skills
                         if (blnSetDefaultAttribute && InterlockExchangeDefaultAttribute(strNewAttributeValue) !=
                             strNewAttributeValue)
                         {
-                            if (CharacterObject?.SkillsSection?.IsLoading != true)
-                                blnTemp1 = true;
-                            else
+                            if (IsLoading)
                                 await RecacheAttributeAsync(token).ConfigureAwait(false);
+                            else
+                                blnTemp1 = true;
                         }
 
                         if (blnUnsetNativeLanguage && Interlocked.Exchange(ref _intIsNativeLanguage, 0) == 0)

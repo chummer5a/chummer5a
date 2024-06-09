@@ -67,6 +67,7 @@ namespace Chummer.Backend.Skills
                     if (intNewValue < 0)
                         Interlocked.Increment(ref _intIsLoading);
                     LockObject.SetParent(CharacterObject.LockObject);
+                    RecacheAttribute(); // Need to recache our attribute object when we are no longer loading because we'd skip the property changer event that would do this for us while we are loading
                 }
             }
         }
@@ -85,6 +86,7 @@ namespace Chummer.Backend.Skills
                 if (intNewValue < 0)
                     Interlocked.Increment(ref _intIsLoading);
                 await LockObject.SetParentAsync(CharacterObject.LockObject, token: token).ConfigureAwait(false);
+                await RecacheAttributeAsync(token).ConfigureAwait(false); // Need to recache our attribute object when we are no longer loading because we'd skip the property changer event that would do this for us while we are loading
             }
         }
 
@@ -114,7 +116,7 @@ namespace Chummer.Backend.Skills
             using (LockObject.EnterUpgradeableReadLock())
             {
                 string strAttributeString = DefaultAttribute;
-                if (CharacterObject.SkillsSection?.IsLoading != true)
+                if (!IsLoading)
                 {
                     Improvement objImprovementOverride = ImprovementManager
                         .GetCachedImprovementListForValueOf(
@@ -141,8 +143,7 @@ namespace Chummer.Backend.Skills
                 }
                 if (objNewAttribute != null)
                     objNewAttribute.MultiplePropertiesChangedAsync += OnLinkedAttributeChanged;
-                if (CharacterObject.SkillsSection?.IsLoading != true)
-                    this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
+                this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
             }
         }
 
@@ -153,7 +154,7 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 string strAttributeString = DefaultAttribute;
-                if (CharacterObject.SkillsSection?.IsLoading != true)
+                if (!IsLoading)
                 {
                     string strDictionaryKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
                     Improvement objImprovementOverride = (await ImprovementManager
@@ -184,9 +185,8 @@ namespace Chummer.Backend.Skills
                 if (objNewAttribute != null)
                     objNewAttribute.MultiplePropertiesChangedAsync += OnLinkedAttributeChanged;
 
-                if (CharacterObject.SkillsSection?.IsLoading != true)
-                    await this.OnMultiplePropertyChangedAsync(token, nameof(AttributeModifiers), nameof(Enabled))
-                        .ConfigureAwait(false);
+                await this.OnMultiplePropertyChangedAsync(token, nameof(AttributeModifiers), nameof(Enabled))
+                    .ConfigureAwait(false);
             }
             finally
             {
@@ -832,6 +832,7 @@ namespace Chummer.Backend.Skills
                 {
                     await objKnoSkillReturn.SetIsLoadingAsync(false, token).ConfigureAwait(false);
                 }
+
                 return objKnoSkillReturn;
             }
 
@@ -2893,10 +2894,10 @@ namespace Chummer.Backend.Skills
                     // No need to write lock because interlocked guarantees safety
                     if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
                         return;
-                    if (CharacterObject?.SkillsSection?.IsLoading != true)
-                        OnPropertyChanged();
-                    else
+                    if (IsLoading)
                         RecacheAttribute();
+                    else
+                        OnPropertyChanged();
                 }
             }
         }
@@ -2924,10 +2925,10 @@ namespace Chummer.Backend.Skills
                 // No need to write lock because interlocked guarantees safety
                 if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
                     return;
-                if (CharacterObject?.SkillsSection?.IsLoading != true)
-                    await OnPropertyChangedAsync(nameof(DefaultAttribute), token).ConfigureAwait(false);
-                else
+                if (IsLoading)
                     await RecacheAttributeAsync(token).ConfigureAwait(false);
+                else
+                    await OnPropertyChangedAsync(nameof(DefaultAttribute), token).ConfigureAwait(false);
             }
             finally
             {
@@ -6442,7 +6443,7 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (CharacterObject?.IsLoading != false)
+            if (IsLoading || CharacterObject?.IsLoading != false)
                 return;
             List<string> lstProperties = new List<string>();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -6535,7 +6536,7 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (CharacterObject?.IsLoading != false)
+            if (IsLoading || CharacterObject?.IsLoading != false)
                 return;
             List<string> lstProperties = new List<string>();
             if (e.PropertyNames.Contains(nameof(Character.Karma)))
@@ -6603,7 +6604,7 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (CharacterObject?.IsLoading != false)
+            if (IsLoading || CharacterObject?.IsLoading != false)
                 return;
             List<string> lstProperties = new List<string>();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -6684,7 +6685,7 @@ namespace Chummer.Backend.Skills
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (CharacterObject?.IsLoading != false)
+            if (IsLoading || CharacterObject?.IsLoading != false)
                 return Task.CompletedTask;
             List<string> lstProperties = new List<string>(2);
             if (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue)))
@@ -6771,8 +6772,7 @@ namespace Chummer.Backend.Skills
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
-                if (CharacterObject?.IsLoading == false)
-                    await OnPropertyChangedAsync(nameof(Specializations), token).ConfigureAwait(false);
+                await OnPropertyChangedAsync(nameof(Specializations), token).ConfigureAwait(false);
             }
             finally
             {
