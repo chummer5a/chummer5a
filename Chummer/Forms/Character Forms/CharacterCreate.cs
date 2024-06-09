@@ -236,9 +236,10 @@ namespace Chummer
                         await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                     try
                     {
+                        Task tskAutosave = Task.CompletedTask; // Separate out the autosave task so that we can work on it while the UI is drawing
                         using (CustomActivity op_load_frm_create = Timekeeper.StartSyncron(
                                    "load_frm_create", null, CustomActivity.OperationType.RequestOperation,
-                                   CharacterObject?.FileName))
+                                   CharacterObject != null ? await CharacterObject.GetFileNameAsync(GenericToken).ConfigureAwait(false) : string.Empty))
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken).ConfigureAwait(false);
                             try
@@ -1807,6 +1808,10 @@ namespace Chummer
                                         GenericToken).ConfigureAwait(false);
                                 }
 
+                                // If we end up with a character who is flagged as dirty after loading, immediately autosave them
+                                if (IsDirty)
+                                    tskAutosave = Task.Run(() => AutoSaveCharacter(GenericToken), GenericToken);
+
                                 op_load_frm_create.SetSuccess(true);
                             }
                             catch (OperationCanceledException)
@@ -1831,6 +1836,8 @@ namespace Chummer
                                     .ConfigureAwait(false);
                             }
                         }
+
+                        await tskAutosave.ConfigureAwait(false);
                     }
                     finally
                     {
@@ -1841,10 +1848,6 @@ namespace Chummer
                 {
                     IsFinishedInitializing = true;
                 }
-
-                // If we end up with a character who is flagged as dirty after loading, immediately autosave them
-                if (IsDirty)
-                    await AutoSaveCharacter(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
