@@ -42,7 +42,7 @@ namespace Chummer.Backend.Skills
     public class Skill : INotifyMultiplePropertiesChangedAsync, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasLockObject, IHasCharacterObject
     {
         private CharacterAttrib _objAttribute;
-        private string _strDefaultAttribute;
+        private string _strDefaultAttribute = "LOG";
         private bool _blnRequiresGroundMovement;
         private bool _blnRequiresSwimMovement;
         private bool _blnRequiresFlyMovement;
@@ -67,7 +67,6 @@ namespace Chummer.Backend.Skills
                     if (intNewValue < 0)
                         Interlocked.Increment(ref _intIsLoading);
                     LockObject.SetParent(CharacterObject.LockObject);
-                    RecacheAttribute(); // Need to recache our attribute object when we are no longer loading because we'd skip the property changer event that would do this for us while we are loading
                 }
             }
         }
@@ -86,7 +85,6 @@ namespace Chummer.Backend.Skills
                 if (intNewValue < 0)
                     Interlocked.Increment(ref _intIsLoading);
                 await LockObject.SetParentAsync(CharacterObject.LockObject, token: token).ConfigureAwait(false);
-                await RecacheAttributeAsync(token).ConfigureAwait(false); // Need to recache our attribute object when we are no longer loading because we'd skip the property changer event that would do this for us while we are loading
             }
         }
 
@@ -875,6 +873,8 @@ namespace Chummer.Backend.Skills
             _objCachedCyberwareRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedSuggestedSpecializationsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>(LockObject);
+            _objAttribute = CharacterObject.GetAttribute(DefaultAttribute);
+            _objAttribute.MultiplePropertiesChangedAsync += OnLinkedAttributeChanged;
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
             objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
             objCharacter.AttributeSection.PropertyChangedAsync += OnAttributeSectionChanged;
