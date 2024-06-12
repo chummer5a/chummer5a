@@ -10284,6 +10284,10 @@ namespace Chummer
                     return;
                 await ImprovementManager.EnableImprovementsAsync(CharacterObject, lstImprovementsEnabled, GenericToken)
                                         .ConfigureAwait(false);
+                await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView,
+                    cmsImprovementLocation,
+                    cmsImprovement, lmtControl.LimitContextMenuStrip,
+                    token: GenericToken).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -10327,6 +10331,10 @@ namespace Chummer
                 await ImprovementManager
                       .DisableImprovementsAsync(CharacterObject, lstImprovementsDisabled, GenericToken)
                       .ConfigureAwait(false);
+                await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView,
+                    cmsImprovementLocation,
+                    cmsImprovement, lmtControl.LimitContextMenuStrip,
+                    token: GenericToken).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -19537,8 +19545,8 @@ namespace Chummer
 
             try
             {
-                if (!(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
-                        Improvement objImprovement))
+                TreeNode nodSelected = await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken).ConfigureAwait(false);
+                if (nodSelected == null || !(nodSelected.Tag is Improvement objImprovement))
                     return;
                 if (await chkImprovementActive.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false))
                     await ImprovementManager.EnableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
@@ -19546,7 +19554,7 @@ namespace Chummer
                 else
                     await ImprovementManager.DisableImprovementsAsync(CharacterObject, objImprovement, GenericToken)
                                             .ConfigureAwait(false);
-
+                await treImprovements.DoThreadSafeAsync(() => nodSelected.ForeColor = objImprovement.PreferredColor, GenericToken).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
