@@ -43,9 +43,11 @@ namespace Chummer
         public enum ChummerCompressionPreset
         {
             None,
+            Fastest,
             Fast,
             Balanced,
-            Thorough
+            Thorough,
+            Ultra
         }
 
         public static void CompressToLzmaFile(this Stream objInStream, FileStream objOutStream,
@@ -95,6 +97,10 @@ namespace Chummer
                 case ChummerCompressionPreset.None:
                     return;
 
+                case ChummerCompressionPreset.Fastest:
+                    CompressToLzmaFile(objInStream, objOutStream, 8, 32, Encoder.EMatchFinderType.BT2, funcOnProgress);
+                    break;
+
                 case ChummerCompressionPreset.Fast:
                     CompressToLzmaFile(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress);
                     break;
@@ -105,6 +111,10 @@ namespace Chummer
 
                 case ChummerCompressionPreset.Thorough:
                     CompressToLzmaFile(objInStream, objOutStream, 26, 128, Encoder.EMatchFinderType.BT4, funcOnProgress);
+                    break;
+
+                case ChummerCompressionPreset.Ultra:
+                    CompressToLzmaFile(objInStream, objOutStream, 30, 128, Encoder.EMatchFinderType.BT4, funcOnProgress);
                     break;
 
                 default:
@@ -214,6 +224,10 @@ namespace Chummer
                 case ChummerCompressionPreset.None:
                     return token.IsCancellationRequested ? Task.FromCanceled(token) : Task.CompletedTask;
 
+                case ChummerCompressionPreset.Fastest:
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 8, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
+                        token);
+
                 case ChummerCompressionPreset.Fast:
                     return CompressToLzmaFileAsync(objInStream, objOutStream, 22, 32, Encoder.EMatchFinderType.BT2, funcOnProgress,
                                                    token);
@@ -225,6 +239,10 @@ namespace Chummer
                 case ChummerCompressionPreset.Thorough:
                     return CompressToLzmaFileAsync(objInStream, objOutStream, 26, 128, Encoder.EMatchFinderType.BT4, funcOnProgress,
                                                    token);
+
+                case ChummerCompressionPreset.Ultra:
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 30, 128, Encoder.EMatchFinderType.BT4, funcOnProgress,
+                        token);
 
                 default:
                     goto case ChummerCompressionPreset.Balanced;

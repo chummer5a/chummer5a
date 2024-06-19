@@ -8167,6 +8167,10 @@
       <text>Lossy (JPG, Manual)</text>
     </string>
     <string>
+      <key>String_Fastest_Option</key>
+      <text>Fastest</text>
+    </string>
+    <string>
       <key>String_Fast_Option</key>
       <text>Fast</text>
     </string>
@@ -8177,6 +8181,10 @@
     <string>
       <key>String_Thorough_Option</key>
       <text>Thorough</text>
+    </string>
+    <string>
+      <key>String_Ultra_Option</key>
+      <text>Ultra</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Options -->

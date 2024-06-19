@@ -65,7 +65,8 @@ Application Changes:
 - Character settings can now also alter the maximum amount of nuyen that a character can carry over from Create mode into Career mode.
 - Fixed custom category spells not presenting as a treenode.
 - Standardized curly brackets notation to all uses of attributes in computable expressions. This means that all data expressions that can be computed with attribute values (e.g. damage codes, cyberware rating limits) can now also use attribute maxima and minima via `{[Abbreviation]Maximum}` and `{[Abbreviation]Minimum}` (replacing [Abbreviation] with the appropriate attribute's three-letter abbreviation), and all such fields now specifically always require attribute abbreviations and codes to be enclosed in curly brackets.
-- Autosaves are now always compressed in Fast compression mode, regardless of the program's settings around what compression to use for compressed saves. If an autosave takes longer than a minute, the next attempted autosaves will be uncompressed, and if three attempts time out in this manner, the program will no longer attempt to autosave the character.
+- Added two new compression settings for compressed saves: Fastest and Ultra. Fastest offers minimal compression and has negligible memory requirements, while Ultra offers near-maximum compression, but at slow speeds and with a large memory footprint of ca. 1 GB (that's in addition to the usual memory requirements of the program).
+- Autosaves are now saved uncompressed to make them as seamless as possible. Autosaving now also automatically times out after a minute, and after three attempts time out in this manner, the program will no longer attempt to autosave the character.
 - The skillgroupdisablechoice bonus node now allows the user to select any of the character's skill groups if it is empty.
 - After selecting an extended Detection spell in the spell selection screen, the program no longer incorrectly claims that all other spells are also extended. Fixes #5126
 
@@ -126,6 +127,8 @@ Changed/New Strings:
 - Node_UnequippedModularBioware
 - String_MinimumAttribute
 - String_MaximumAttribute
+- String_Fastest_Option
+- String_Ultra_Option
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

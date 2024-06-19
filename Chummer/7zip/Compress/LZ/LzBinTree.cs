@@ -169,6 +169,33 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        // Faster version of bottleneck code, inspired by the following post: https://stackoverflow.com/a/17598461
+        private unsafe uint GetMatchLengthFast(uint lenLimit, uint cur, uint pby1, uint len, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            const uint size = sizeof(ulong);
+            fixed (byte* p1 = &_bufferBase[cur])
+            fixed (byte* p2 = &_bufferBase[pby1])
+            {
+                // First do equality comparisons 8 bytes at a time to speed things up
+                if (lenLimit >= size)
+                {
+                    uint longLenLimit = lenLimit - size + 1;
+                    while (len < longLenLimit && *(ulong*)(p1 + len) == *(ulong*)(p2 + len))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        len += size;
+                    }
+                }
+                while (len < lenLimit && *(p1 + len) == *(p2 + len))
+                {
+                    token.ThrowIfCancellationRequested();
+                    ++len;
+                }
+            }
+            return len;
+        }
+
         [CLSCompliant(false)]
         public uint GetMatches(uint[] distances)
         {
@@ -271,13 +298,7 @@ namespace SevenZip.Compression.LZ
                     byte right = _bufferBase[cur + len];
                     if (left == right)
                     {
-                        while (++len != lenLimit)
-                        {
-                            left = _bufferBase[pby1 + len];
-                            right = _bufferBase[cur + len];
-                            if (left != right)
-                                break;
-                        }
+                        len = GetMatchLengthFast(lenLimit, cur, pby1, len);
 
                         if (maxLen < len)
                         {
@@ -290,6 +311,9 @@ namespace SevenZip.Compression.LZ
                                 break;
                             }
                         }
+
+                        left = _bufferBase[pby1 + len];
+                        right = _bufferBase[cur + len];
                     }
 
                     if (left < right)
@@ -417,14 +441,7 @@ namespace SevenZip.Compression.LZ
                     byte right = _bufferBase[cur + len];
                     if (left == right)
                     {
-                        while (++len != lenLimit)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            left = _bufferBase[pby1 + len];
-                            right = _bufferBase[cur + len];
-                            if (left != right)
-                                break;
-                        }
+                        len = GetMatchLengthFast(lenLimit, cur, pby1, len, token);
 
                         if (maxLen < len)
                         {
@@ -437,6 +454,9 @@ namespace SevenZip.Compression.LZ
                                 break;
                             }
                         }
+
+                        left = _bufferBase[pby1 + len];
+                        right = _bufferBase[cur + len];
                     }
 
                     if (left < right)
@@ -527,19 +547,16 @@ namespace SevenZip.Compression.LZ
                         byte right = _bufferBase[cur + len];
                         if (left == right)
                         {
-                            while (++len != lenLimit)
-                            {
-                                left = _bufferBase[pby1 + len];
-                                right = _bufferBase[cur + len];
-                                if (left != right)
-                                    break;
-                            }
+                            len = GetMatchLengthFast(lenLimit, cur, pby1, len);
                             if (len == lenLimit)
                             {
                                 _son[ptr1] = _son[cyclicPos];
                                 _son[ptr0] = _son[cyclicPos + 1];
                                 break;
                             }
+
+                            left = _bufferBase[pby1 + len];
+                            right = _bufferBase[cur + len];
                         }
 
                         if (left < right)
@@ -632,20 +649,16 @@ namespace SevenZip.Compression.LZ
                         byte right = _bufferBase[cur + len];
                         if (left == right)
                         {
-                            while (++len != lenLimit)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                left = _bufferBase[pby1 + len];
-                                right = _bufferBase[cur + len];
-                                if (left != right)
-                                    break;
-                            }
+                            len = GetMatchLengthFast(lenLimit, cur, pby1, len, token);
                             if (len == lenLimit)
                             {
                                 _son[ptr1] = _son[cyclicPos];
                                 _son[ptr0] = _son[cyclicPos + 1];
                                 break;
                             }
+
+                            left = _bufferBase[pby1 + len];
+                            right = _bufferBase[cur + len];
                         }
 
                         if (left < right)

@@ -1746,30 +1746,34 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                           out List<ListItem> lstChum5lzCompressionLevelOptions))
+                       out List<ListItem> lstChum5lzCompressionLevelOptions))
             {
+                lstChum5lzCompressionLevelOptions.Add(new ListItem(LzmaHelper.ChummerCompressionPreset.Fastest,
+                    await LanguageManager.GetStringAsync(
+                            "String_Fastest_Option", token: token)
+                        .ConfigureAwait(false)));
                 lstChum5lzCompressionLevelOptions.Add(new ListItem(LzmaHelper.ChummerCompressionPreset.Fast,
-                                                                   await LanguageManager.GetStringAsync(
-                                                                           "String_Fast_Option", token: token)
-                                                                       .ConfigureAwait(false)));
+                    await LanguageManager.GetStringAsync(
+                            "String_Fast_Option", token: token)
+                        .ConfigureAwait(false)));
                 lstChum5lzCompressionLevelOptions.Add(new ListItem(LzmaHelper.ChummerCompressionPreset.Balanced,
-                                                                   await LanguageManager.GetStringAsync(
-                                                                           "String_Balanced_Option", token: token)
-                                                                       .ConfigureAwait(false)));
+                    await LanguageManager.GetStringAsync(
+                            "String_Balanced_Option", token: token)
+                        .ConfigureAwait(false)));
                 lstChum5lzCompressionLevelOptions.Add(new ListItem(LzmaHelper.ChummerCompressionPreset.Thorough,
-                                                                   await LanguageManager.GetStringAsync(
-                                                                           "String_Thorough_Option", token: token)
-                                                                       .ConfigureAwait(false)));
+                    await LanguageManager.GetStringAsync(
+                            "String_Thorough_Option", token: token)
+                        .ConfigureAwait(false)));
 
                 LzmaHelper.ChummerCompressionPreset eOldSelected
                     = await cboChum5lzCompressionLevel.DoThreadSafeFuncAsync(
                         x => x.SelectedIndex >= 0
-                            ? (LzmaHelper.ChummerCompressionPreset) Enum.Parse(
+                            ? (LzmaHelper.ChummerCompressionPreset)Enum.Parse(
                                 typeof(LzmaHelper.ChummerCompressionPreset),
                                 x.SelectedValue.ToString())
                             : GlobalSettings.Chum5lzCompressionLevel, token).ConfigureAwait(false);
                 await cboChum5lzCompressionLevel.PopulateWithListItemsAsync(lstChum5lzCompressionLevelOptions, token)
-                                                .ConfigureAwait(false);
+                    .ConfigureAwait(false);
                 await cboChum5lzCompressionLevel.DoThreadSafeAsync(x =>
                 {
                     x.SelectedValue = eOldSelected;

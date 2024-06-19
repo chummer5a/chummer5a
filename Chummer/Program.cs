@@ -1339,10 +1339,10 @@ namespace Chummer
                 {
                     if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
                     {
-                        strAutosaveName = Path.GetFileNameWithoutExtension(strFileName);
-                        if (!string.IsNullOrEmpty(strAutosaveName))
+                        string strBaseFileName = Path.GetFileNameWithoutExtension(strFileName);
+                        if (!string.IsNullOrEmpty(strBaseFileName))
                         {
-                            strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5";
+                            strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
                             if (File.Exists(strAutosaveName))
                             {
                                 if (File.GetLastWriteTimeUtc(strAutosaveName) <= File.GetLastWriteTimeUtc(strFileName))
@@ -1351,8 +1351,10 @@ namespace Chummer
                                 }
                             }
                             else
+                                strAutosaveName = string.Empty;
+                            if (string.IsNullOrEmpty(strAutosaveName))
                             {
-                                strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5lz";
+                                strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5lz";
                                 if (File.Exists(strAutosaveName))
                                 {
                                     if (File.GetLastWriteTimeUtc(strAutosaveName)
@@ -1368,10 +1370,10 @@ namespace Chummer
 
                         if (string.IsNullOrEmpty(strAutosaveName) && !string.IsNullOrEmpty(strNewName))
                         {
-                            strAutosaveName = Path.GetFileNameWithoutExtension(strNewName);
-                            if (!string.IsNullOrEmpty(strAutosaveName))
+                            strBaseFileName = Path.GetFileNameWithoutExtension(strNewName);
+                            if (!string.IsNullOrEmpty(strBaseFileName))
                             {
-                                strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5";
+                                strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
                                 if (File.Exists(strAutosaveName))
                                 {
                                     if (File.GetLastWriteTimeUtc(strAutosaveName) <= File.GetLastWriteTimeUtc(strFileName))
@@ -1380,8 +1382,10 @@ namespace Chummer
                                     }
                                 }
                                 else
+                                    strAutosaveName = string.Empty;
+                                if (string.IsNullOrEmpty(strAutosaveName))
                                 {
-                                    strAutosaveName = Path.Combine(strAutosavesPath, strAutosaveName) + ".chum5lz";
+                                    strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5lz";
                                     if (File.Exists(strAutosaveName))
                                     {
                                         if (File.GetLastWriteTimeUtc(strAutosaveName)

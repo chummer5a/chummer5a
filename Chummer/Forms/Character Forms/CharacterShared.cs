@@ -387,8 +387,8 @@ namespace Chummer
                                 Path.GetFileNameWithoutExtension(await CharacterObject.GetFileNameAsync(token)
                                     .ConfigureAwait(false));
 
-                            // Autosaves are initially compressed (but at Fast settings), but if we've timed out at least once, don't even try that level of compression
-                            string strExtension = _intAutosaveTimeoutsCount > 0 ? ".chum5" : ".chum5lz";
+                            // Autosaves are uncompressed to make them happen as fast as possible
+                            string strExtension = ".chum5";
                             if (string.IsNullOrEmpty(strAutosaveFileName))
                                 strAutosaveFileName = strCharacterName.CleanForFileName() + strExtension;
                             else
@@ -405,8 +405,7 @@ namespace Chummer
                                     try
                                     {
                                         if (!await CharacterObject
-                                                .SaveAsync(strFilePath, false, false,
-                                                    LzmaHelper.ChummerCompressionPreset.Fast, objJoinedSource.Token)
+                                                .SaveAsync(strFilePath, false, false, token: objJoinedSource.Token)
                                                 .ConfigureAwait(false))
                                         {
                                             Log.Info("Autosave failed for character " + strCharacterName + " (" +
