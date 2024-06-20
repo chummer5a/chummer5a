@@ -239,16 +239,17 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
                     await sbdTitle
-                          .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
-                                                       .ConfigureAwait(false)).Append(':').Append(strSpace)
-                          .AppendJoinAsync(
-                              ',' + strSpace,
-                              _lstCharacters.Select(async x => x.CharacterName + strSpace + '-' + strSpace
-                                                               + (await x.GetCreatedAsync(token).ConfigureAwait(false)
-                                                                   ? strCareer
-                                                                   : strCreate) + strSpace + '('
-                                                               + (await x.GetSettingsAsync(token).ConfigureAwait(false))
-                                                               .Name + ')'), token: token).ConfigureAwait(false);
+                        .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
+                            .ConfigureAwait(false)).Append(':').Append(strSpace)
+                        .AppendJoinAsync(
+                            ',' + strSpace,
+                            _lstCharacters.Select(async x =>
+                                await x.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + '-' + strSpace
+                                + (await x.GetCreatedAsync(token).ConfigureAwait(false)
+                                    ? strCareer
+                                    : strCreate) + strSpace + '('
+                                + (await x.GetSettingsAsync(token).ConfigureAwait(false))
+                                .Name + ')'), token: token).ConfigureAwait(false);
                     strTitle = sbdTitle.ToString();
                 }
             }
@@ -496,22 +497,23 @@ namespace Chummer
                     {
                         PdfDocument objPdfDocument = new PdfDocument
                         {
-                            Html = webViewer.DocumentText,
+                            Html = await webViewer.DoThreadSafeFuncAsync(x => x.DocumentText, token: _objGenericToken)
+                                .ConfigureAwait(false),
                             ExtraParams = new Dictionary<string, string>(8)
                             {
-                                {"encoding", "UTF-8"},
-                                {"dpi", "300"},
-                                {"margin-top", "13"},
-                                {"margin-bottom", "19"},
-                                {"margin-left", "13"},
-                                {"margin-right", "13"},
-                                {"image-quality", "100"},
-                                {"print-media-type", string.Empty}
+                                { "encoding", "UTF-8" },
+                                { "dpi", "300" },
+                                { "margin-top", "13" },
+                                { "margin-bottom", "19" },
+                                { "margin-left", "13" },
+                                { "margin-right", "13" },
+                                { "image-quality", "100" },
+                                { "print-media-type", string.Empty }
                             }
                         };
                         PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
-                            {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
-                        PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
+                            { WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe") };
+                        PdfOutput objPdfOutput = new PdfOutput { OutputFilePath = strSaveFile };
                         await PdfConvert
                               .ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput,
                                                      _objGenericToken).ConfigureAwait(false);
@@ -554,9 +556,30 @@ namespace Chummer
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
-            imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2),
-                Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height));
+            string strOldPrintLanguage;
+            try
+            {
+                strOldPrintLanguage = Interlocked.Exchange(ref _strPrintLanguage,
+                    await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: _objGenericToken)
+                        .ConfigureAwait(false) ?? GlobalSettings.Language);
+            }
+            catch (OperationCanceledException)
+            {
+                return; //swallow this
+            }
+
+            try
+            {
+                await imgSheetLanguageFlag.DoThreadSafeAsync(x => x.Image = FlagImageGetter.GetFlagFromCountryCode(
+                    _strPrintLanguage.Substring(3, 2),
+                    Math.Min(x.Width, x.Height)), token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                _strPrintLanguage = strOldPrintLanguage;
+                return; //swallow this
+            }
+
             try
             {
                 _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);

@@ -192,6 +192,11 @@ namespace Chummer.UI.Skills
                         "/chummer/skills/skill[exotic = "
                         + bool.TrueString.CleanXPath()
                         + ']') != null;
+
+                SkillsSection objSkillSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                ThreadSafeBindingList<Skill> lstSkills = await objSkillSection.GetSkillsAsync(token).ConfigureAwait(false);
+                ThreadSafeBindingList<KnowledgeSkill> lstKnoSkills = await objSkillSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
+                ThreadSafeBindingList<SkillGroup> lstSkillGroups = await objSkillSection.GetSkillGroupsAsync(token).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(() =>
                 {
                     using (new FetchSafelyFromPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch parts))
@@ -204,7 +209,7 @@ namespace Chummer.UI.Skills
                         try
                         {
                             _lstActiveSkills
-                                = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
+                                = new BindingListDisplay<Skill>(lstSkills, MakeActiveSkill)
                                 {
                                     Dock = DockStyle.Fill
                                 };
@@ -225,7 +230,7 @@ namespace Chummer.UI.Skills
                             parts.TaskEnd("_lstActiveSkills add");
 
                             _lstKnowledgeSkills = new BindingListDisplay<KnowledgeSkill>(
-                                _objCharacter.SkillsSection.KnowledgeSkills,
+                                lstKnoSkills,
                                 knoSkill => new KnowledgeSkillControl(knoSkill, objMyToken))
                             {
                                 Dock = DockStyle.Fill
@@ -239,10 +244,10 @@ namespace Chummer.UI.Skills
 
                             parts.TaskEnd("_lstKnowledgeSkills add");
 
-                            if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
+                            if (lstSkillGroups.Count > 0)
                             {
                                 _lstSkillGroups = new BindingListDisplay<SkillGroup>(
-                                    _objCharacter.SkillsSection.SkillGroups,
+                                    lstSkillGroups,
                                     group => new SkillGroupControl(group, objMyToken))
                                 {
                                     Dock = DockStyle.Fill
@@ -252,7 +257,7 @@ namespace Chummer.UI.Skills
                                     z => z.SkillList.Any(y =>
                                         _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
                                     (z, t) => z.SkillList.AnyAsync(async y =>
-                                        await _objCharacter.SkillsSection.HasActiveSkillAsync(
+                                        await (await _objCharacter.GetSkillsSectionAsync(t).ConfigureAwait(false)).HasActiveSkillAsync(
                                             await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t).ConfigureAwait(false), t),
                                     true);
                                 _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
@@ -402,28 +407,28 @@ namespace Chummer.UI.Skills
                         .ConfigureAwait(false);
 
                     await lblKnoSp.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
-                        _objCharacter.SkillsSection,
+                        objSkillSection,
                         nameof(SkillsSection.HasKnowledgePoints),
                         x => x.GetHasKnowledgePointsAsync(objMyToken)
                             ,
                         token).ConfigureAwait(false);
                     await lblKnoBwk.RegisterOneWayAsyncDataBindingAsync(
-                        (x, y) => x.Visible = y, _objCharacter.SkillsSection,
+                        (x, y) => x.Visible = y, objSkillSection,
                         nameof(SkillsSection.HasKnowledgePoints),
                         x => x.GetHasKnowledgePointsAsync(objMyToken),
                         token).ConfigureAwait(false);
                     await UpdateKnoSkillRemainingAsync(token).ConfigureAwait(false);
                 }
 
-                IAsyncDisposable objLocker = await _objCharacter.SkillsSection.LockObject
+                IAsyncDisposable objLocker = await objSkillSection.LockObject
                     .EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    _objCharacter.SkillsSection.Skills.ListChangedAsync += SkillsOnListChanged;
-                    _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
-                    _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
-                    _objCharacter.SkillsSection.MultiplePropertiesChangedAsync += SkillsSectionOnPropertyChanged;
+                    lstSkills.ListChangedAsync += SkillsOnListChanged;
+                    lstSkillGroups.ListChanged += SkillGroupsOnListChanged;
+                    lstKnoSkills.ListChanged += KnowledgeSkillsOnListChanged;
+                    objSkillSection.MultiplePropertiesChangedAsync += SkillsSectionOnPropertyChanged;
                 }
                 finally
                 {
