@@ -75,6 +75,22 @@ namespace SevenZip.Compression.LZMA
                 }
                 return symbol;
             }
+
+            public async Task<uint> DecodeAsync(RangeCoder.Decoder rangeDecoder, uint posState, CancellationToken token = default)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await m_Choice.DecodeAsync(rangeDecoder, token).ConfigureAwait(false) == 0)
+                    return await m_LowCoder[posState].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
+                uint symbol = Base.kNumLowLenSymbols;
+                if (await m_Choice2.DecodeAsync(rangeDecoder, token).ConfigureAwait(false) == 0)
+                    symbol += await m_MidCoder[posState].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
+                else
+                {
+                    symbol += Base.kNumMidLenSymbols;
+                    symbol += await m_HighCoder.DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
+                }
+                return symbol;
+            }
         }
 
         private sealed class LiteralDecoder
@@ -101,6 +117,19 @@ namespace SevenZip.Compression.LZMA
                     }
                 }
 
+                public async Task<byte> DecodeNormalAsync(RangeCoder.Decoder rangeDecoder, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    uint symbol = 1;
+                    unchecked
+                    {
+                        do
+                            symbol = (symbol << 1) | await m_Decoders[symbol].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
+                        while (symbol < 0x100);
+                        return (byte)symbol;
+                    }
+                }
+
                 public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, byte matchByte)
                 {
                     unchecked
@@ -116,6 +145,30 @@ namespace SevenZip.Compression.LZMA
                             {
                                 while (symbol < 0x100)
                                     symbol = (symbol << 1) | m_Decoders[symbol].Decode(rangeDecoder);
+                                break;
+                            }
+                        } while (symbol < 0x100);
+
+                        return (byte)symbol;
+                    }
+                }
+
+                public async Task<byte> DecodeWithMatchByteAsync(RangeCoder.Decoder rangeDecoder, byte matchByte, CancellationToken token = default)
+                {
+                    token.ThrowIfCancellationRequested();
+                    unchecked
+                    {
+                        uint symbol = 1;
+                        do
+                        {
+                            uint matchBit = (uint)(matchByte >> 7) & 1;
+                            matchByte <<= 1;
+                            uint bit = await m_Decoders[((1 + matchBit) << 8) + symbol].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
+                            symbol = (symbol << 1) | bit;
+                            if (matchBit != bit)
+                            {
+                                while (symbol < 0x100)
+                                    symbol = (symbol << 1) | await m_Decoders[symbol].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
                                 break;
                             }
                         } while (symbol < 0x100);
@@ -168,8 +221,14 @@ namespace SevenZip.Compression.LZMA
             public byte DecodeNormal(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte)
             { return m_Coders[GetState(pos, prevByte)].DecodeNormal(rangeDecoder); }
 
+            public Task<byte> DecodeNormalAsync(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, CancellationToken token = default)
+            { return m_Coders[GetState(pos, prevByte)].DecodeNormalAsync(rangeDecoder, token); }
+
             public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte)
             { return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByte(rangeDecoder, matchByte); }
+
+            public Task<byte> DecodeWithMatchByteAsync(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte, CancellationToken token = default)
+            { return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByteAsync(rangeDecoder, matchByte, token); }
         }
 
         private readonly OutWindow m_OutWindow = new OutWindow();

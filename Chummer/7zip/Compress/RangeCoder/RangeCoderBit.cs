@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace SevenZip.Compression.RangeCoder
 {
     internal struct BitEncoder
@@ -68,6 +71,36 @@ namespace SevenZip.Compression.RangeCoder
                     encoder.ShiftLow();
                 }
             }
+        }
+
+        public Task EncodeAsync(Encoder encoder, uint symbol, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            // encoder.EncodeBit(Prob, kNumBitModelTotalBits, symbol);
+            // UpdateModel(symbol);
+            unchecked
+            {
+                uint newBound = (encoder.Range >> kNumBitModelTotalBits) * Prob;
+                if (symbol == 0)
+                {
+                    encoder.Range = newBound;
+                    Prob += (kBitModelTotal - Prob) >> kNumMoveBits;
+                }
+                else
+                {
+                    encoder.Low += newBound;
+                    encoder.Range -= newBound;
+                    Prob -= Prob >> kNumMoveBits;
+                }
+
+                if (encoder.Range < Encoder.kTopValue)
+                {
+                    encoder.Range <<= 8;
+                    return encoder.ShiftLowAsync(token);
+                }
+            }
+            return Task.CompletedTask;
         }
 
         private static readonly uint[] ProbPrices = new uint[kBitModelTotal >> kNumMoveReducingBits];
@@ -149,6 +182,38 @@ namespace SevenZip.Compression.RangeCoder
                 if (rangeDecoder.Range < Decoder.kTopValue)
                 {
                     rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte)rangeDecoder.Stream.ReadByte();
+                    rangeDecoder.Range <<= 8;
+                }
+
+                return 1;
+            }
+        }
+
+        public async Task<uint> DecodeAsync(Decoder rangeDecoder, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint newBound = (rangeDecoder.Range >> kNumBitModelTotalBits) * Prob;
+                if (rangeDecoder.Code < newBound)
+                {
+                    rangeDecoder.Range = newBound;
+                    Prob += (kBitModelTotal - Prob) >> kNumMoveBits;
+                    if (rangeDecoder.Range < Decoder.kTopValue)
+                    {
+                        rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte) await Chummer.StreamExtensions.ReadByteAsync(rangeDecoder.Stream, token).ConfigureAwait(false);
+                        rangeDecoder.Range <<= 8;
+                    }
+
+                    return 0;
+                }
+
+                rangeDecoder.Range -= newBound;
+                rangeDecoder.Code -= newBound;
+                Prob -= Prob >> kNumMoveBits;
+                if (rangeDecoder.Range < Decoder.kTopValue)
+                {
+                    rangeDecoder.Code = (rangeDecoder.Code << 8) | (byte) await Chummer.StreamExtensions.ReadByteAsync(rangeDecoder.Stream, token).ConfigureAwait(false);
                     rangeDecoder.Range <<= 8;
                 }
 
