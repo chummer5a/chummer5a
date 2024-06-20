@@ -150,12 +150,13 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     if (_cacheSize > 1)
                     {
-                        byte[] data = new byte[_cacheSize];
+                        int cacheSize = (int)_cacheSize;
+                        byte[] data = new byte[cacheSize];
                         data[0] = (byte)(_cache + shiftedLow);
                         byte paddingValue = (byte)(0xFF + shiftedLow);
-                        for (int i = 1; i < data.Length; ++i)
+                        for (int i = 1; i < cacheSize; ++i)
                             data[i] = paddingValue;
-                        await Stream.WriteAsync(data, 0, data.Length, token).ConfigureAwait(false);
+                        await Stream.WriteAsync(data, 0, cacheSize, token).ConfigureAwait(false);
                     }
                     else
                         Stream.WriteByte((byte)(_cache + shiftedLow));
