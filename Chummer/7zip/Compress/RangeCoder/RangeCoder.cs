@@ -62,13 +62,6 @@ namespace SevenZip.Compression.RangeCoder
                 ShiftLow();
         }
 
-        public async Task FlushDataAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            for (int i = 0; i < 5; i++)
-                await ShiftLowAsync(token).ConfigureAwait(false);
-        }
-
         public void FlushStream()
         {
             Stream.Flush();
@@ -98,21 +91,6 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async Task EncodeAsync(uint start, uint size, uint total, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            unchecked
-            {
-                Low += start * (Range /= total);
-                Range *= size;
-                while (Range < kTopValue)
-                {
-                    Range <<= 8;
-                    await ShiftLowAsync(token).ConfigureAwait(false);
-                }
-            }
-        }
-
         public void ShiftLow()
         {
             unchecked
@@ -123,28 +101,6 @@ namespace SevenZip.Compression.RangeCoder
                     do
                     {
                         Stream.WriteByte((byte)(temp + (Low >> 32)));
-                        temp = 0xFF;
-                    } while (--_cacheSize != 0);
-
-                    _cache = (byte)((uint)Low >> 24);
-                }
-
-                _cacheSize++;
-                Low = (uint)Low << 8;
-            }
-        }
-
-        public async Task ShiftLowAsync(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            unchecked
-            {
-                if ((uint)Low < 0xFF000000 || (uint)(Low >> 32) == 1)
-                {
-                    byte temp = _cache;
-                    do
-                    {
-                        await Chummer.StreamExtensions.WriteByteAsync(Stream, (byte)(temp + (Low >> 32)), token: token).ConfigureAwait(false);
                         temp = 0xFF;
                     } while (--_cacheSize != 0);
 
@@ -174,25 +130,6 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async Task EncodeDirectBitsAsync(uint v, int numTotalBits, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            unchecked
-            {
-                for (int i = numTotalBits - 1; i >= 0; i--)
-                {
-                    Range >>= 1;
-                    if (((v >> i) & 1) == 1)
-                        Low += Range;
-                    if (Range < kTopValue)
-                    {
-                        Range <<= 8;
-                        await ShiftLowAsync(token).ConfigureAwait(false);
-                    }
-                }
-            }
-        }
-
         public void EncodeBit(uint size0, int numTotalBits, uint symbol)
         {
             unchecked
@@ -210,28 +147,6 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     Range <<= 8;
                     ShiftLow();
-                }
-            }
-        }
-
-        public async Task EncodeBitAsync(uint size0, int numTotalBits, uint symbol, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            unchecked
-            {
-                uint newBound = (Range >> numTotalBits) * size0;
-                if (symbol == 0)
-                    Range = newBound;
-                else
-                {
-                    Low += newBound;
-                    Range -= newBound;
-                }
-
-                while (Range < kTopValue)
-                {
-                    Range <<= 8;
-                    await ShiftLowAsync(token).ConfigureAwait(false);
                 }
             }
         }
@@ -345,19 +260,6 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async Task Normalize2Async(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            unchecked
-            {
-                if (Range < kTopValue)
-                {
-                    Code = (Code << 8) | (byte)await Chummer.StreamExtensions.ReadByteAsync(Stream, token).ConfigureAwait(false);
-                    Range <<= 8;
-                }
-            }
-        }
-
         public uint GetThreshold(uint total)
         {
             return Code / (Range /= total);
@@ -409,43 +311,6 @@ namespace SevenZip.Compression.RangeCoder
                     if (range < kTopValue)
                     {
                         code = (code << 8) | (byte)Stream.ReadByte();
-                        range <<= 8;
-                    }
-                }
-            }
-
-            Range = range;
-            Code = code;
-            return result;
-        }
-
-        public async Task<uint> DecodeDirectBitsAsync(int numTotalBits, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            uint range = Range;
-            uint code = Code;
-            uint result = 0;
-            unchecked
-            {
-                for (int i = numTotalBits; i > 0; i--)
-                {
-                    token.ThrowIfCancellationRequested();
-                    range >>= 1;
-                    /*
-                    result <<= 1;
-                    if (code >= range)
-                    {
-                        code -= range;
-                        result |= 1;
-                    }
-                    */
-                    uint t = (code - range) >> 31;
-                    code -= range & (t - 1);
-                    result = (result << 1) | (1 - t);
-
-                    if (range < kTopValue)
-                    {
-                        code = (code << 8) | (byte)await Chummer.StreamExtensions.ReadByteAsync(Stream, token).ConfigureAwait(false);
                         range <<= 8;
                     }
                 }

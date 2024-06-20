@@ -17,9 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace SevenZip.Compression.RangeCoder
 {
     internal readonly struct BitTreeEncoder
@@ -57,22 +54,6 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async Task EncodeAsync(Encoder rangeEncoder, uint symbol, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            uint m = 1;
-            unchecked
-            {
-                for (int bitIndex = NumBitLevels; bitIndex > 0;)
-                {
-                    bitIndex--;
-                    uint bit = (symbol >> bitIndex) & 1;
-                    await Models[m].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
-                    m = (m << 1) | bit;
-                }
-            }
-        }
-
         public void ReverseEncode(Encoder rangeEncoder, uint symbol)
         {
             uint m = 1;
@@ -82,22 +63,6 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     uint bit = symbol & 1;
                     Models[m].Encode(rangeEncoder, bit);
-                    m = (m << 1) | bit;
-                    symbol >>= 1;
-                }
-            }
-        }
-
-        public async Task ReverseEncodeAsync(Encoder rangeEncoder, uint symbol, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            uint m = 1;
-            unchecked
-            {
-                for (uint i = 0; i < NumBitLevels; i++)
-                {
-                    uint bit = symbol & 1;
-                    await Models[m].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
                     m = (m << 1) | bit;
                     symbol >>= 1;
                 }
@@ -172,23 +137,6 @@ namespace SevenZip.Compression.RangeCoder
                 }
             }
         }
-
-        public static async Task ReverseEncodeAsync(BitEncoder[] Models, uint startIndex,
-                                         Encoder rangeEncoder, int NumBitLevels, uint symbol, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            uint m = 1;
-            unchecked
-            {
-                for (int i = 0; i < NumBitLevels; i++)
-                {
-                    uint bit = symbol & 1;
-                    await Models[startIndex + m].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
-                    m = (m << 1) | bit;
-                    symbol >>= 1;
-                }
-            }
-        }
     }
 
     internal readonly struct BitTreeDecoder
@@ -222,18 +170,6 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async Task<uint> DecodeAsync(Decoder rangeDecoder, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            uint m = 1;
-            unchecked
-            {
-                for (int bitIndex = NumBitLevels; bitIndex > 0; bitIndex--)
-                    m = (m << 1) + await Models[m].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
-                return m - ((uint)1 << NumBitLevels);
-            }
-        }
-
         public uint ReverseDecode(Decoder rangeDecoder)
         {
             uint m = 1;
@@ -262,45 +198,6 @@ namespace SevenZip.Compression.RangeCoder
                 for (int bitIndex = 0; bitIndex < NumBitLevels; bitIndex++)
                 {
                     uint bit = Models[startIndex + m].Decode(rangeDecoder);
-                    m <<= 1;
-                    m += bit;
-                    symbol |= bit << bitIndex;
-                }
-            }
-
-            return symbol;
-        }
-
-        public async Task<uint> ReverseDecodeAsync(Decoder rangeDecoder, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            uint m = 1;
-            uint symbol = 0;
-            unchecked
-            {
-                for (int bitIndex = 0; bitIndex < NumBitLevels; bitIndex++)
-                {
-                    uint bit = await Models[m].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
-                    m <<= 1;
-                    m += bit;
-                    symbol |= bit << bitIndex;
-                }
-            }
-
-            return symbol;
-        }
-
-        public static async Task<uint> ReverseDecodeAsync(BitDecoder[] Models, uint startIndex,
-                                                     Decoder rangeDecoder, int NumBitLevels, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            uint m = 1;
-            uint symbol = 0;
-            unchecked
-            {
-                for (int bitIndex = 0; bitIndex < NumBitLevels; bitIndex++)
-                {
-                    uint bit = await Models[startIndex + m].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
                     m <<= 1;
                     m += bit;
                     symbol |= bit << bitIndex;

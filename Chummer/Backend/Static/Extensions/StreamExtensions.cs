@@ -30,35 +30,6 @@ namespace Chummer
     public static class StreamExtensions
     {
         /// <summary>
-        /// Asynchronously reads a byte from the stream and advances the position within the stream by one byte, or returns -1 if at the end of the stream.
-        /// </summary>
-        /// <param name="objStream">Stream from which to read.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The unsigned byte cast to an Int32, or -1 if at the end of the stream.</returns>
-        public static async Task<int> ReadByteAsync(this Stream objStream, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            byte[] array = new byte[1];
-            if (await objStream.ReadAsync(array, 0, 1, token).ConfigureAwait(false) == 0)
-            {
-                return -1;
-            }
-
-            return array[0];
-        }
-
-        /// <summary>
-        /// Asynchronously writes a byte to the current position in the stream and advances the position within the stream by one byte.
-        /// </summary>
-        /// <param name="objStream">Stream to which to write.</param>
-        /// <param name="value">The byte to write to the stream.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        public static Task WriteByteAsync(this Stream objStream, byte value, CancellationToken token = default)
-        {
-            return objStream.WriteAsync(new[] { value }, 0, 1, token);
-        }
-
-        /// <summary>
         /// Similar to Stream.ToArray(), but allocates to a rented array from ArrayPool instead of to a newly allocated array.
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
