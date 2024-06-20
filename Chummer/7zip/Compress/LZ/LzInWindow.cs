@@ -31,7 +31,7 @@ namespace SevenZip.Compression.LZ
         public byte[] _bufferBase; // pointer to buffer with data
         private Stream _stream;
         private uint _posLimit; // offset (from _buffer) of first byte when new block reading must be done
-        private bool _streamEndWasReached; // if (true) then _streamPos shows real end of stream
+        protected bool _streamEndWasReached; // if (true) then _streamPos shows real end of stream
 
         private uint _pointerToLastSafePosition;
         
@@ -141,13 +141,13 @@ namespace SevenZip.Compression.LZ
             _pointerToLastSafePosition = _blockSize - keepSizeAfter;
         }
 
-        public void SetStream(Stream stream)
+        public virtual void SetStream(Stream stream)
         { _stream = stream; }
 
-        public void ReleaseStream()
+        public virtual void ReleaseStream()
         { _stream = null; }
 
-        public void Init()
+        public virtual void Init()
         {
             _bufferOffset = 0;
             _pos = 0;
@@ -156,7 +156,7 @@ namespace SevenZip.Compression.LZ
             ReadBlock();
         }
 
-        public Task InitAsync(CancellationToken token = default)
+        public virtual Task InitAsync(CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
@@ -167,7 +167,7 @@ namespace SevenZip.Compression.LZ
             return ReadBlockAsync(token);
         }
 
-        public void MovePos()
+        public virtual void MovePos()
         {
             unchecked
             {
@@ -182,7 +182,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
-        public Task MovePosAsync(CancellationToken token = default)
+        public virtual Task MovePosAsync(CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
@@ -202,7 +202,7 @@ namespace SevenZip.Compression.LZ
             return Task.CompletedTask;
         }
 
-        public byte GetIndexByte(int index)
+        public virtual byte GetIndexByte(int index)
         {
             unchecked
             {
@@ -212,7 +212,7 @@ namespace SevenZip.Compression.LZ
 
         // index + limit have not to exceed _keepSizeAfter;
         [CLSCompliant(false)]
-        public uint GetMatchLen(int index, uint distance, uint limit)
+        public virtual unsafe uint GetMatchLen(int index, uint distance, uint limit)
         {
             unchecked
             {
@@ -223,14 +223,28 @@ namespace SevenZip.Compression.LZ
                 uint pby = _bufferOffset + _pos + (uint)index;
                 uint pby2 = pby - distance;
                 uint i = 0;
-                while (i < limit && _bufferBase[pby + i] == _bufferBase[pby2 + i])
-                    ++i;
+                fixed (byte* p1 = &_bufferBase[pby])
+                fixed (byte* p2 = &_bufferBase[pby2])
+                {
+                    // First do equality comparisons 8 bytes at a time to speed things up
+                    const uint size = sizeof(ulong);
+                    if (limit >= size)
+                    {
+                        uint longLimit = limit - size + 1;
+                        while (i < longLimit && *(ulong*)(p1 + i) == *(ulong*)(p2 + i))
+                        {
+                            i += size;
+                        }
+                    }
+                    while (i < limit && *(p1 + i) == *(p2 + i))
+                        ++i;
+                }
 
                 return i;
             }
         }
 
-        public uint GetNumAvailableBytes()
+        public virtual uint GetNumAvailableBytes()
         { return _streamPos - _pos; }
 
         public void ReduceOffsets(int subValue)

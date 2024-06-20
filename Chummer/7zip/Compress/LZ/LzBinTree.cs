@@ -19,7 +19,6 @@
 // LzBinTree.cs
 
 using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -70,13 +69,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
-        public new void SetStream(Stream stream)
-        { base.SetStream(stream); }
-
-        public new void ReleaseStream()
-        { base.ReleaseStream(); }
-
-        public new void Init()
+        public override void Init()
         {
             base.Init();
             for (uint i = 0; i < _hashSizeSum; i++)
@@ -85,7 +78,7 @@ namespace SevenZip.Compression.LZ
             ReduceOffsets(-1);
         }
 
-        public new async Task InitAsync(CancellationToken token = default)
+        public override async Task InitAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             await base.InitAsync(token).ConfigureAwait(false);
@@ -95,7 +88,7 @@ namespace SevenZip.Compression.LZ
             ReduceOffsets(-1);
         }
 
-        public new void MovePos()
+        public override void MovePos()
         {
             if (++_cyclicBufferPos >= _cyclicBufferSize)
                 _cyclicBufferPos = 0;
@@ -104,7 +97,7 @@ namespace SevenZip.Compression.LZ
                 Normalize();
         }
 
-        public new async Task MovePosAsync(CancellationToken token = default)
+        public override async Task MovePosAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (++_cyclicBufferPos >= _cyclicBufferSize)
@@ -114,16 +107,20 @@ namespace SevenZip.Compression.LZ
                 Normalize();
         }
 
-        public new byte GetIndexByte(int index)
-        { return base.GetIndexByte(index); }
-
         [CLSCompliant(false)]
-        public new uint GetMatchLen(int index, uint distance, uint limit)
-        { return base.GetMatchLen(index, distance, limit); }
-
-        [CLSCompliant(false)]
-        public new uint GetNumAvailableBytes()
-        { return base.GetNumAvailableBytes(); }
+        public override uint GetMatchLen(int index, uint distance, uint limit)
+        {
+            unchecked
+            {
+                if (_streamEndWasReached && _pos + index + limit > _streamPos)
+                    limit = _streamPos - (uint)(_pos + index);
+                distance++;
+                // Byte *pby = _buffer + (size_t)_pos + index;
+                uint pby = _bufferOffset + _pos + (uint)index;
+                uint pby2 = pby - distance;
+                return GetMatchLengthFast(limit, pby, pby2);
+            }
+        }
 
         [CLSCompliant(false)]
         public void Create(uint historySize, uint keepAddBufferBefore,
@@ -170,7 +167,7 @@ namespace SevenZip.Compression.LZ
         }
 
         // Faster version of bottleneck code, inspired by the following post: https://stackoverflow.com/a/17598461
-        private unsafe uint GetMatchLengthFast(uint lenLimit, uint cur, uint pby1, uint len, CancellationToken token = default)
+        private unsafe uint GetMatchLengthFast(uint lenLimit, uint cur, uint pby1, uint len = 0, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             const uint size = sizeof(ulong);
