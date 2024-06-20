@@ -183,7 +183,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test02_LoadCharacters()
         {
-            Debug.WriteLine("Unit test initialized for: Test03_LoadCharacters()");
+            Debug.WriteLine("Unit test initialized for: Test02_LoadCharacters()");
             List<Character> lstCharacters = new List<Character>(CommonTestData.TestFileInfos.Length);
             foreach (Character objCharacter in GetTestCharacters())
             {
@@ -198,7 +198,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test03_SaveAsChum5lz()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_SaveAsChum5lz()");
+            Debug.WriteLine("Unit test initialized for: Test03_SaveAsChum5lz()");
             foreach (Character objCharacter in GetTestCharacters())
             {
                 string strFileName = Path.GetFileName(objCharacter.FileName)
@@ -225,7 +225,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test04_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Test05_LoadThenSaveIsDeterministic()");
+            Debug.WriteLine("Unit test initialized for: Test04_LoadThenSaveIsDeterministic()");
             DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
             foreach (Character objCharacterControl in GetTestCharacters())
             {
@@ -331,7 +331,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test05_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Test06_LoadThenPrint()");
+            Debug.WriteLine("Unit test initialized for: Test05_LoadThenPrint()");
             List<string> lstExportLanguages = new List<string>();
             foreach (string strFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "lang"), "*.xml"))
             {
@@ -367,7 +367,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void Test06_BasicStartup()
         {
-            Debug.WriteLine("Unit test initialized for: Test02_BasicStartup()");
+            Debug.WriteLine("Unit test initialized for: Test06_BasicStartup()");
             ChummerMainForm frmOldMainForm = Program.MainForm;
             ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
@@ -377,7 +377,7 @@ namespace Chummer.Tests
                 frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true, true)
                 {
                     ShowInTaskbar =
-                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                 });
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.DoThreadSafe(x =>
