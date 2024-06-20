@@ -40388,13 +40388,13 @@ namespace Chummer
                         int intDEPMinimumReduction = intDepMinReduction;
                         if (Settings.ESSLossReducesMaximumOnly)
                         {
-                            (int iI, int iJ) = await MAG.MinimumMaximumNoEssenceLossAsync(token: token);
+                            (int iI, int iJ) = await MAG.MinimumMaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
                             intMAGMinimumReduction = Math.Max(0, intMagMinReduction + iI - iJ);
-                            (iI, iJ) = await MAGAdept.MinimumMaximumNoEssenceLossAsync(token: token);
+                            (iI, iJ) = await MAGAdept.MinimumMaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
                             intMAGAdeptMinimumReduction = Math.Max(0, intMagMinReduction + iI - iJ);
-                            (iI, iJ) = await RES.MinimumMaximumNoEssenceLossAsync(token: token);
+                            (iI, iJ) = await RES.MinimumMaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
                             intRESMinimumReduction = Math.Max(0, intResMinReduction + iI - iJ);
-                            (iI, iJ) = await DEP.MinimumMaximumNoEssenceLossAsync(token: token);
+                            (iI, iJ) = await DEP.MinimumMaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
                             intDEPMinimumReduction = Math.Max(0, intDepMinReduction + iI - iJ);
                         }
 

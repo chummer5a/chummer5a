@@ -1044,7 +1044,7 @@ namespace Chummer.Backend.Attributes
         public async Task<int> MaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return (await MinimumMaximumNoEssenceLossAsync(blnUseEssenceAtSpecialStart, token)).Item2;
+            return (await MinimumMaximumNoEssenceLossAsync(blnUseEssenceAtSpecialStart, token).ConfigureAwait(false)).Item2;
         }
 
         /// <summary>
@@ -1061,7 +1061,7 @@ namespace Chummer.Backend.Attributes
         public async Task<int> MinimumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return (await MinimumMaximumNoEssenceLossAsync(blnUseEssenceAtSpecialStart, token)).Item1;
+            return (await MinimumMaximumNoEssenceLossAsync(blnUseEssenceAtSpecialStart, token).ConfigureAwait(false)).Item1;
         }
 
         /// <summary>
