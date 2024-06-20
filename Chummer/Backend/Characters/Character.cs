@@ -5698,13 +5698,20 @@ namespace Chummer
                         else
                         {
                             objStream.Seek(0, SeekOrigin.Begin);
-                            await objStream.CompressToLzmaFileAsync(
+                            if (blnSync)
+                                objStream.CompressToLzmaFile(
                                     objFileStream,
                                     eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
                                         ? GlobalSettings.Chum5lzCompressionLevel
-                                        : eOverrideCompressionLevel,
-                                    token: token)
-                                .ConfigureAwait(false);
+                                        : eOverrideCompressionLevel);
+                            else
+                                await objStream.CompressToLzmaFileAsync(
+                                        objFileStream,
+                                        eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
+                                            ? GlobalSettings.Chum5lzCompressionLevel
+                                            : eOverrideCompressionLevel,
+                                        token: token)
+                                    .ConfigureAwait(false);
                         }
                     }
                 }
@@ -5713,10 +5720,14 @@ namespace Chummer
                     Log.Error(e);
                     if (Utils.IsUnitTest)
                         throw;
-                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
-                        .GetStringAsync(
-                            "Message_Save_Error_Warning", token: token)
-                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    if (blnSync)
+                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
+                            token: token));
+                    else
+                        await Program.ShowScrollableMessageBoxAsync(await LanguageManager
+                            .GetStringAsync(
+                                "Message_Save_Error_Warning", token: token)
+                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     blnErrorFree = false;
                 }
                 catch (XmlException ex)
@@ -5724,18 +5735,26 @@ namespace Chummer
                     Log.Warn(ex);
                     if (Utils.IsUnitTest)
                         throw;
-                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
-                        .GetStringAsync(
-                            "Message_Save_Error_Warning", token: token)
-                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    if (blnSync)
+                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
+                            token: token));
+                    else
+                        await Program.ShowScrollableMessageBoxAsync(await LanguageManager
+                            .GetStringAsync(
+                                "Message_Save_Error_Warning", token: token)
+                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     blnErrorFree = false;
                 }
                 catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                 {
-                    await Program.ShowScrollableMessageBoxAsync(await LanguageManager
-                        .GetStringAsync(
-                            "Message_Save_Error_Warning", token: token)
-                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    if (blnSync)
+                        Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
+                            token: token));
+                    else
+                        await Program.ShowScrollableMessageBoxAsync(await LanguageManager
+                            .GetStringAsync(
+                                "Message_Save_Error_Warning", token: token)
+                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     blnErrorFree = false;
                 }
             }
