@@ -62,6 +62,13 @@ namespace SevenZip.Compression.RangeCoder
                 ShiftLow();
         }
 
+        public async Task FlushDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            for (int i = 0; i < 5; i++)
+                await ShiftLowAsync(token).ConfigureAwait(false);
+        }
+
         public void FlushStream()
         {
             Stream.Flush();
@@ -91,19 +98,68 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
+        public async Task EncodeAsync(uint start, uint size, uint total, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                Low += start * (Range /= total);
+                Range *= size;
+                while (Range < kTopValue)
+                {
+                    Range <<= 8;
+                    await ShiftLowAsync(token).ConfigureAwait(false);
+                }
+            }
+        }
+
         public void ShiftLow()
         {
             unchecked
             {
-                if ((uint)Low < 0xFF000000 || (uint)(Low >> 32) == 1)
+                uint shiftedLow = (uint) (Low >> 32);
+                if ((uint)Low < 0xFF000000 || shiftedLow == 1)
                 {
-                    byte temp = _cache;
-                    do
+                    if (_cacheSize > 1)
                     {
-                        Stream.WriteByte((byte)(temp + (Low >> 32)));
-                        temp = 0xFF;
-                    } while (--_cacheSize != 0);
+                        byte[] data = new byte[_cacheSize];
+                        data[0] = (byte) (_cache + shiftedLow);
+                        byte paddingValue = (byte) (0xFF + shiftedLow);
+                        for (int i = 1; i < data.Length; ++i)
+                            data[i] = paddingValue;
+                        Stream.Write(data, 0, data.Length);
+                    }
+                    else
+                        Stream.WriteByte((byte)(_cache + shiftedLow));
+                    _cacheSize = 0;
+                    _cache = (byte)((uint)Low >> 24);
+                }
 
+                _cacheSize++;
+                Low = (uint)Low << 8;
+            }
+        }
+
+        public async Task ShiftLowAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint shiftedLow = (uint)(Low >> 32);
+                if ((uint)Low < 0xFF000000 || shiftedLow == 1)
+                {
+                    if (_cacheSize > 1)
+                    {
+                        byte[] data = new byte[_cacheSize];
+                        data[0] = (byte)(_cache + shiftedLow);
+                        byte paddingValue = (byte)(0xFF + shiftedLow);
+                        for (int i = 1; i < data.Length; ++i)
+                            data[i] = paddingValue;
+                        await Stream.WriteAsync(data, 0, data.Length, token).ConfigureAwait(false);
+                    }
+                    else
+                        Stream.WriteByte((byte)(_cache + shiftedLow));
+                    _cacheSize = 0;
                     _cache = (byte)((uint)Low >> 24);
                 }
 
@@ -130,6 +186,25 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
+        public async Task EncodeDirectBitsAsync(uint v, int numTotalBits, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                for (int i = numTotalBits - 1; i >= 0; i--)
+                {
+                    Range >>= 1;
+                    if (((v >> i) & 1) == 1)
+                        Low += Range;
+                    if (Range < kTopValue)
+                    {
+                        Range <<= 8;
+                        await ShiftLowAsync(token).ConfigureAwait(false);
+                    }
+                }
+            }
+        }
+
         public void EncodeBit(uint size0, int numTotalBits, uint symbol)
         {
             unchecked
@@ -147,6 +222,28 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     Range <<= 8;
                     ShiftLow();
+                }
+            }
+        }
+
+        public async Task EncodeBitAsync(uint size0, int numTotalBits, uint symbol, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint newBound = (Range >> numTotalBits) * size0;
+                if (symbol == 0)
+                    Range = newBound;
+                else
+                {
+                    Low += newBound;
+                    Range -= newBound;
+                }
+
+                while (Range < kTopValue)
+                {
+                    Range <<= 8;
+                    await ShiftLowAsync(token).ConfigureAwait(false);
                 }
             }
         }

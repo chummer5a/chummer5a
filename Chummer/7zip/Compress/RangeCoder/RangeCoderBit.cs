@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace SevenZip.Compression.RangeCoder
 {
     internal struct BitEncoder
@@ -68,6 +71,36 @@ namespace SevenZip.Compression.RangeCoder
                     encoder.ShiftLow();
                 }
             }
+        }
+
+        public Task EncodeAsync(Encoder encoder, uint symbol, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            // encoder.EncodeBit(Prob, kNumBitModelTotalBits, symbol);
+            // UpdateModel(symbol);
+            unchecked
+            {
+                uint newBound = (encoder.Range >> kNumBitModelTotalBits) * Prob;
+                if (symbol == 0)
+                {
+                    encoder.Range = newBound;
+                    Prob += (kBitModelTotal - Prob) >> kNumMoveBits;
+                }
+                else
+                {
+                    encoder.Low += newBound;
+                    encoder.Range -= newBound;
+                    Prob -= Prob >> kNumMoveBits;
+                }
+
+                if (encoder.Range < Encoder.kTopValue)
+                {
+                    encoder.Range <<= 8;
+                    return encoder.ShiftLowAsync(token);
+                }
+            }
+            return Task.CompletedTask;
         }
 
         private static readonly uint[] ProbPrices = new uint[kBitModelTotal >> kNumMoveReducingBits];
