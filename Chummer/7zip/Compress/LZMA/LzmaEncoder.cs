@@ -122,21 +122,6 @@ namespace SevenZip.Compression.LZMA
                     }
                 }
 
-                public async Task EncodeAsync(RangeCoder.Encoder rangeEncoder, byte symbol, CancellationToken token = default)
-                {
-                    token.ThrowIfCancellationRequested();
-                    uint context = 1;
-                    unchecked
-                    {
-                        for (int i = 7; i >= 0; i--)
-                        {
-                            uint bit = (uint)((symbol >> i) & 1);
-                            await m_Encoders[context].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
-                            context = (context << 1) | bit;
-                        }
-                    }
-                }
-
                 public void EncodeMatched(RangeCoder.Encoder rangeEncoder, byte matchByte, byte symbol)
                 {
                     uint context = 1;
@@ -155,30 +140,6 @@ namespace SevenZip.Compression.LZMA
                             }
 
                             m_Encoders[state].Encode(rangeEncoder, bit);
-                            context = (context << 1) | bit;
-                        }
-                    }
-                }
-
-                public async Task EncodeMatchedAsync(RangeCoder.Encoder rangeEncoder, byte matchByte, byte symbol, CancellationToken token = default)
-                {
-                    token.ThrowIfCancellationRequested();
-                    uint context = 1;
-                    bool same = true;
-                    unchecked
-                    {
-                        for (int i = 7; i >= 0; i--)
-                        {
-                            uint bit = (uint)((symbol >> i) & 1);
-                            uint state = context;
-                            if (same)
-                            {
-                                uint matchBit = (uint)((matchByte >> i) & 1);
-                                state += (1 + matchBit) << 8;
-                                same = matchBit == bit;
-                            }
-
-                            await m_Encoders[state].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
                             context = (context << 1) | bit;
                         }
                     }
@@ -312,31 +273,6 @@ namespace SevenZip.Compression.LZMA
                 }
             }
 
-            public async Task EncodeAsync(RangeCoder.Encoder rangeEncoder, uint symbol, uint posState, CancellationToken token = default)
-            {
-                token.ThrowIfCancellationRequested();
-                if (symbol < Base.kNumLowLenSymbols)
-                {
-                    await _choice.EncodeAsync(rangeEncoder, 0, token).ConfigureAwait(false);
-                    await _lowCoder[posState].EncodeAsync(rangeEncoder, symbol, token).ConfigureAwait(false);
-                }
-                else
-                {
-                    symbol -= Base.kNumLowLenSymbols;
-                    await _choice.EncodeAsync(rangeEncoder, 1, token).ConfigureAwait(false);
-                    if (symbol < Base.kNumMidLenSymbols)
-                    {
-                        await _choice2.EncodeAsync(rangeEncoder, 0, token).ConfigureAwait(false);
-                        await _midCoder[posState].EncodeAsync(rangeEncoder, symbol, token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await _choice2.EncodeAsync(rangeEncoder, 1, token).ConfigureAwait(false);
-                        await _highCoder.EncodeAsync(rangeEncoder, symbol - Base.kNumMidLenSymbols, token).ConfigureAwait(false);
-                    }
-                }
-            }
-
             public void SetPrices(uint posState, uint numSymbols, uint[] prices, uint st)
             {
                 uint a0 = _choice.GetPrice0();
@@ -392,13 +328,6 @@ namespace SevenZip.Compression.LZMA
             public new void Encode(RangeCoder.Encoder rangeEncoder, uint symbol, uint posState)
             {
                 base.Encode(rangeEncoder, symbol, posState);
-                if (--_counters[posState] == 0)
-                    UpdateTable(posState);
-            }
-
-            public new async Task EncodeAsync(RangeCoder.Encoder rangeEncoder, uint symbol, uint posState, CancellationToken token = default)
-            {
-                await base.EncodeAsync(rangeEncoder, symbol, posState, token).ConfigureAwait(false);
                 if (--_counters[posState] == 0)
                     UpdateTable(posState);
             }
@@ -1797,29 +1726,6 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        private async Task WriteEndMarkerAsync(uint posState, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (!_writeEndMark)
-                return;
-
-            unchecked
-            {
-                await _isMatch[(_state.Index << Base.kNumPosStatesBitsMax) + posState].EncodeAsync(_rangeEncoder, 1, token).ConfigureAwait(false);
-                await _isRep[_state.Index].EncodeAsync(_rangeEncoder, 0, token).ConfigureAwait(false);
-                _state.UpdateMatch();
-                const uint len = Base.kMatchMinLen;
-                await _lenEncoder.EncodeAsync(_rangeEncoder, len - Base.kMatchMinLen, posState, token).ConfigureAwait(false);
-                const uint posSlot = (1 << Base.kNumPosSlotBits) - 1;
-                uint lenToPosState = Base.GetLenToPosState(len);
-                await _posSlotEncoder[lenToPosState].EncodeAsync(_rangeEncoder, posSlot, token).ConfigureAwait(false);
-                const int footerBits = 30;
-                const uint posReduced = ((uint)1 << footerBits) - 1;
-                await _rangeEncoder.EncodeDirectBitsAsync(posReduced >> Base.kNumAlignBits, footerBits - Base.kNumAlignBits, token).ConfigureAwait(false);
-                await _posAlignEncoder.ReverseEncodeAsync(_rangeEncoder, posReduced & Base.kAlignMask, token).ConfigureAwait(false);
-            }
-        }
-
         private void Flush(uint nowPos)
         {
             ReleaseMFStream();
@@ -1828,13 +1734,13 @@ namespace SevenZip.Compression.LZMA
             _rangeEncoder.FlushStream();
         }
 
-        private async Task FlushAsync(uint nowPos, CancellationToken token = default)
+        private Task FlushAsync(uint nowPos, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ReleaseMFStream();
-            await WriteEndMarkerAsync(nowPos & _posStateMask, token).ConfigureAwait(false);
-            await _rangeEncoder.FlushDataAsync(token).ConfigureAwait(false);
-            await _rangeEncoder.FlushStreamAsync(token).ConfigureAwait(false);
+            WriteEndMarker(nowPos & _posStateMask);
+            _rangeEncoder.FlushData();
+            return _rangeEncoder.FlushStreamAsync(token);
         }
 
         public void CodeOneBlock(out long inSize, out long outSize, out bool finished, CancellationToken token = default)
@@ -2098,12 +2004,13 @@ namespace SevenZip.Compression.LZMA
                     await ReadMatchDistancesAsync(token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     uint posState = (uint)_nowPos64 & _posStateMask;
-                    await _isMatch[(_state.Index << Base.kNumPosStatesBitsMax) + posState].EncodeAsync(_rangeEncoder, 0, token).ConfigureAwait(false);
+                    _isMatch[(_state.Index << Base.kNumPosStatesBitsMax) + posState].Encode(_rangeEncoder, 0);
                     token.ThrowIfCancellationRequested();
                     _state.UpdateChar();
                     token.ThrowIfCancellationRequested();
                     byte curByte = _matchFinder.GetIndexByte((int)(0 - _additionalOffset));
-                    await _literalEncoder.GetSubCoder((uint)_nowPos64, _previousByte).EncodeAsync(_rangeEncoder, curByte, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    _literalEncoder.GetSubCoder((uint)_nowPos64, _previousByte).Encode(_rangeEncoder, curByte);
                     _previousByte = curByte;
                     _additionalOffset--;
                     _nowPos64++;
@@ -2126,7 +2033,8 @@ namespace SevenZip.Compression.LZMA
 
                     if (len == 1 && pos == 0xFFFFFFFF)
                     {
-                        await _isMatch[complexState].EncodeAsync(_rangeEncoder, 0, token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        _isMatch[complexState].Encode(_rangeEncoder, 0);
                         token.ThrowIfCancellationRequested();
                         byte curByte = _matchFinder.GetIndexByte((int)(0 - _additionalOffset));
                         LiteralEncoder.Encoder2 subCoder = _literalEncoder.GetSubCoder((uint)_nowPos64, _previousByte);
@@ -2135,10 +2043,10 @@ namespace SevenZip.Compression.LZMA
                         {
                             byte matchByte
                                 = _matchFinder.GetIndexByte((int)(0 - _repDistances[0] - 1 - _additionalOffset));
-                            await subCoder.EncodeMatchedAsync(_rangeEncoder, matchByte, curByte, token).ConfigureAwait(false);
+                            subCoder.EncodeMatched(_rangeEncoder, matchByte, curByte);
                         }
                         else
-                            await subCoder.EncodeAsync(_rangeEncoder, curByte, token).ConfigureAwait(false);
+                            subCoder.Encode(_rangeEncoder, curByte);
                         token.ThrowIfCancellationRequested();
 
                         _previousByte = curByte;
@@ -2146,26 +2054,34 @@ namespace SevenZip.Compression.LZMA
                     }
                     else
                     {
-                        await _isMatch[complexState].EncodeAsync(_rangeEncoder, 1, token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        _isMatch[complexState].Encode(_rangeEncoder, 1);
                         if (pos < Base.kNumRepDistances)
                         {
-                            await _isRep[_state.Index].EncodeAsync(_rangeEncoder, 1, token).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            _isRep[_state.Index].Encode(_rangeEncoder, 1);
                             if (pos == 0)
                             {
-                                await _isRepG0[_state.Index].EncodeAsync(_rangeEncoder, 0, token).ConfigureAwait(false);
-                                await _isRep0Long[complexState].EncodeAsync(_rangeEncoder, len == 1 ? 0 : (uint)1, token).ConfigureAwait(false);
+                                token.ThrowIfCancellationRequested();
+                                _isRepG0[_state.Index].Encode(_rangeEncoder, 0);
+                                token.ThrowIfCancellationRequested();
+                                _isRep0Long[complexState].Encode(_rangeEncoder, len == 1 ? 0 : (uint)1);
                             }
                             else
                             {
-                                await _isRepG0[_state.Index].EncodeAsync(_rangeEncoder, 1, token).ConfigureAwait(false);
+                                token.ThrowIfCancellationRequested();
+                                _isRepG0[_state.Index].Encode(_rangeEncoder, 1);
                                 if (pos == 1)
                                 {
-                                    await _isRepG1[_state.Index].EncodeAsync(_rangeEncoder, 0, token).ConfigureAwait(false);
+                                    token.ThrowIfCancellationRequested();
+                                    _isRepG1[_state.Index].Encode(_rangeEncoder, 0);
                                 }
                                 else
                                 {
-                                    await _isRepG1[_state.Index].EncodeAsync(_rangeEncoder, 1, token).ConfigureAwait(false);
-                                    await _isRepG2[_state.Index].EncodeAsync(_rangeEncoder, pos - 2, token).ConfigureAwait(false);
+                                    token.ThrowIfCancellationRequested();
+                                    _isRepG1[_state.Index].Encode(_rangeEncoder, 1);
+                                    token.ThrowIfCancellationRequested();
+                                    _isRepG2[_state.Index].Encode(_rangeEncoder, pos - 2);
                                 }
                             }
 
@@ -2176,7 +2092,8 @@ namespace SevenZip.Compression.LZMA
                             }
                             else
                             {
-                                await _repMatchLenEncoder.EncodeAsync(_rangeEncoder, len - Base.kMatchMinLen, posState, token).ConfigureAwait(false);
+                                token.ThrowIfCancellationRequested();
+                                _repMatchLenEncoder.Encode(_rangeEncoder, len - Base.kMatchMinLen, posState);
                                 token.ThrowIfCancellationRequested();
                                 _state.UpdateRep();
                             }
@@ -2192,15 +2109,18 @@ namespace SevenZip.Compression.LZMA
                         }
                         else
                         {
-                            await _isRep[_state.Index].EncodeAsync(_rangeEncoder, 0, token).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            _isRep[_state.Index].Encode(_rangeEncoder, 0);
                             token.ThrowIfCancellationRequested();
                             _state.UpdateMatch();
-                            await _lenEncoder.EncodeAsync(_rangeEncoder, len - Base.kMatchMinLen, posState, token).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            _lenEncoder.Encode(_rangeEncoder, len - Base.kMatchMinLen, posState);
                             token.ThrowIfCancellationRequested();
                             pos -= Base.kNumRepDistances;
                             uint posSlot = GetPosSlot(pos);
                             uint lenToPosState = Base.GetLenToPosState(len);
-                            await _posSlotEncoder[lenToPosState].EncodeAsync(_rangeEncoder, posSlot, token).ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            _posSlotEncoder[lenToPosState].Encode(_rangeEncoder, posSlot);
 
                             if (posSlot >= Base.kStartPosModelIndex)
                             {
@@ -2210,15 +2130,18 @@ namespace SevenZip.Compression.LZMA
 
                                 if (posSlot < Base.kEndPosModelIndex)
                                 {
-                                    await BitTreeEncoder.ReverseEncodeAsync(_posEncoders,
-                                                                            baseVal - posSlot - 1, _rangeEncoder, footerBits,
-                                                                            posReduced, token).ConfigureAwait(false);
+                                    token.ThrowIfCancellationRequested();
+                                    BitTreeEncoder.ReverseEncode(_posEncoders,
+                                                                 baseVal - posSlot - 1, _rangeEncoder, footerBits,
+                                                                 posReduced);
                                 }
                                 else
                                 {
-                                    await _rangeEncoder.EncodeDirectBitsAsync(posReduced >> Base.kNumAlignBits,
-                                                                              footerBits - Base.kNumAlignBits, token).ConfigureAwait(false);
-                                    await _posAlignEncoder.ReverseEncodeAsync(_rangeEncoder, posReduced & Base.kAlignMask, token).ConfigureAwait(false);
+                                    token.ThrowIfCancellationRequested();
+                                    _rangeEncoder.EncodeDirectBits(posReduced >> Base.kNumAlignBits,
+                                                                   footerBits - Base.kNumAlignBits);
+                                    token.ThrowIfCancellationRequested();
+                                    _posAlignEncoder.ReverseEncode(_rangeEncoder, posReduced & Base.kAlignMask);
                                     _alignPriceCount++;
                                 }
                             }

@@ -75,22 +75,6 @@ namespace SevenZip.Compression.LZMA
                 }
                 return symbol;
             }
-
-            public async Task<uint> DecodeAsync(RangeCoder.Decoder rangeDecoder, uint posState, CancellationToken token = default)
-            {
-                token.ThrowIfCancellationRequested();
-                if (await m_Choice.DecodeAsync(rangeDecoder, token).ConfigureAwait(false) == 0)
-                    return await m_LowCoder[posState].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
-                uint symbol = Base.kNumLowLenSymbols;
-                if (await m_Choice2.DecodeAsync(rangeDecoder, token).ConfigureAwait(false) == 0)
-                    symbol += await m_MidCoder[posState].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
-                else
-                {
-                    symbol += Base.kNumMidLenSymbols;
-                    symbol += await m_HighCoder.DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
-                }
-                return symbol;
-            }
         }
 
         private sealed class LiteralDecoder
@@ -117,19 +101,6 @@ namespace SevenZip.Compression.LZMA
                     }
                 }
 
-                public async Task<byte> DecodeNormalAsync(RangeCoder.Decoder rangeDecoder, CancellationToken token = default)
-                {
-                    token.ThrowIfCancellationRequested();
-                    uint symbol = 1;
-                    unchecked
-                    {
-                        do
-                            symbol = (symbol << 1) | await m_Decoders[symbol].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
-                        while (symbol < 0x100);
-                        return (byte)symbol;
-                    }
-                }
-
                 public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, byte matchByte)
                 {
                     unchecked
@@ -145,30 +116,6 @@ namespace SevenZip.Compression.LZMA
                             {
                                 while (symbol < 0x100)
                                     symbol = (symbol << 1) | m_Decoders[symbol].Decode(rangeDecoder);
-                                break;
-                            }
-                        } while (symbol < 0x100);
-
-                        return (byte)symbol;
-                    }
-                }
-
-                public async Task<byte> DecodeWithMatchByteAsync(RangeCoder.Decoder rangeDecoder, byte matchByte, CancellationToken token = default)
-                {
-                    token.ThrowIfCancellationRequested();
-                    unchecked
-                    {
-                        uint symbol = 1;
-                        do
-                        {
-                            uint matchBit = (uint)(matchByte >> 7) & 1;
-                            matchByte <<= 1;
-                            uint bit = await m_Decoders[((1 + matchBit) << 8) + symbol].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
-                            symbol = (symbol << 1) | bit;
-                            if (matchBit != bit)
-                            {
-                                while (symbol < 0x100)
-                                    symbol = (symbol << 1) | await m_Decoders[symbol].DecodeAsync(rangeDecoder, token).ConfigureAwait(false);
                                 break;
                             }
                         } while (symbol < 0x100);
@@ -221,14 +168,8 @@ namespace SevenZip.Compression.LZMA
             public byte DecodeNormal(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte)
             { return m_Coders[GetState(pos, prevByte)].DecodeNormal(rangeDecoder); }
 
-            public Task<byte> DecodeNormalAsync(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, CancellationToken token = default)
-            { return m_Coders[GetState(pos, prevByte)].DecodeNormalAsync(rangeDecoder, token); }
-
             public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte)
             { return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByte(rangeDecoder, matchByte); }
-
-            public Task<byte> DecodeWithMatchByteAsync(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte, CancellationToken token = default)
-            { return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByteAsync(rangeDecoder, matchByte, token); }
         }
 
         private readonly OutWindow m_OutWindow = new OutWindow();
@@ -383,8 +324,7 @@ namespace SevenZip.Compression.LZMA
         }
 
         private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream,
-                                         long inSize, long outSize, ICodeProgress progress,
-                                         IAsyncCodeProgress progressAsync, CancellationToken token)
+                                         long inSize, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             if (blnSync)
@@ -402,33 +342,18 @@ namespace SevenZip.Compression.LZMA
                 {
                     uint rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
                     ulong nowPos64 = 0;
-                    ulong outSize64 = (ulong) outSize;
+                    ulong outSize64 = (ulong)outSize;
                     if (nowPos64 < outSize64)
                     {
-                        if (blnSync)
-                        {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (m_IsMatchDecoders[state.Index << Base.kNumPosStatesBitsMax].Decode(m_RangeDecoder) != 0)
-                                throw new DataErrorException();
-                        }
-                        else if (await m_IsMatchDecoders[state.Index << Base.kNumPosStatesBitsMax]
-                                       .DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false) != 0)
+                        if (m_IsMatchDecoders[state.Index << Base.kNumPosStatesBitsMax].Decode(m_RangeDecoder) != 0)
                             throw new DataErrorException();
-
                         state.UpdateChar();
+                        byte b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, 0, 0);
                         if (blnSync)
-                        {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            byte b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, 0, 0);
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             m_OutWindow.PutByte(b);
-                        }
                         else
-                        {
-                            byte b = await m_LiteralDecoder.DecodeNormalAsync(m_RangeDecoder, 0, 0, token).ConfigureAwait(false);
                             await m_OutWindow.PutByteAsync(b, token).ConfigureAwait(false);
-                        }
-
                         nowPos64++;
                     }
 
@@ -439,31 +364,18 @@ namespace SevenZip.Compression.LZMA
                         // UInt64 next = Math.Min(nowPos64 + (1 << 18), outSize64);
                         // while(nowPos64 < next)
                         {
-                            uint posState = (uint) nowPos64 & m_PosStateMask;
-                            if ((blnSync
-                                    ? m_IsMatchDecoders[(state.Index << Base.kNumPosStatesBitsMax) + posState]
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        .Decode(m_RangeDecoder)
-                                    : await m_IsMatchDecoders[(state.Index << Base.kNumPosStatesBitsMax) + posState]
-                                            .DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false)) == 0)
+                            uint posState = (uint)nowPos64 & m_PosStateMask;
+                            if (m_IsMatchDecoders[(state.Index << Base.kNumPosStatesBitsMax) + posState]
+                                    .Decode(m_RangeDecoder) == 0)
                             {
                                 byte b;
                                 byte prevByte = m_OutWindow.GetByte(0);
                                 if (!state.IsCharState())
-                                    b = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? m_LiteralDecoder.DecodeWithMatchByte(m_RangeDecoder,
-                                                                               (uint) nowPos64, prevByte,
-                                                                               m_OutWindow.GetByte(rep0))
-                                        : await m_LiteralDecoder.DecodeWithMatchByteAsync(m_RangeDecoder,
-                                            (uint) nowPos64, prevByte,
-                                            m_OutWindow.GetByte(rep0), token).ConfigureAwait(false);
+                                    b = m_LiteralDecoder.DecodeWithMatchByte(m_RangeDecoder,
+                                                                             (uint)nowPos64, prevByte,
+                                                                             m_OutWindow.GetByte(rep0));
                                 else
-                                    b = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? m_LiteralDecoder.DecodeNormal(m_RangeDecoder, (uint) nowPos64, prevByte)
-                                        : await m_LiteralDecoder.DecodeNormalAsync(
-                                            m_RangeDecoder, (uint) nowPos64, prevByte, token).ConfigureAwait(false);
+                                    b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, (uint)nowPos64, prevByte);
                                 token.ThrowIfCancellationRequested();
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -476,25 +388,12 @@ namespace SevenZip.Compression.LZMA
                             else
                             {
                                 uint len;
-                                if ((blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? m_IsRepDecoders[state.Index].Decode(m_RangeDecoder)
-                                        : await m_IsRepDecoders[state.Index].DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false)) == 1)
+                                if (m_IsRepDecoders[state.Index].Decode(m_RangeDecoder) == 1)
                                 {
-                                    if ((blnSync
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            ? m_IsRepG0Decoders[state.Index].Decode(m_RangeDecoder)
-                                            : await m_IsRepG0Decoders[state.Index].DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false))
-                                        == 0)
+                                    if (m_IsRepG0Decoders[state.Index].Decode(m_RangeDecoder) == 0)
                                     {
-                                        if ((blnSync
-                                                ? m_IsRep0LongDecoders[
-                                                        (state.Index << Base.kNumPosStatesBitsMax) + posState]
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    .Decode(m_RangeDecoder)
-                                                : await m_IsRep0LongDecoders[
-                                                            (state.Index << Base.kNumPosStatesBitsMax) + posState]
-                                                        .DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false)) == 0)
+                                        if (m_IsRep0LongDecoders[(state.Index << Base.kNumPosStatesBitsMax) + posState]
+                                                .Decode(m_RangeDecoder) == 0)
                                         {
                                             state.UpdateShortRep();
                                             token.ThrowIfCancellationRequested();
@@ -502,41 +401,29 @@ namespace SevenZip.Compression.LZMA
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 m_OutWindow.PutByte(m_OutWindow.GetByte(rep0));
                                             else
-                                                await m_OutWindow.PutByteAsync(m_OutWindow.GetByte(rep0), token)
-                                                                 .ConfigureAwait(false);
+                                                await m_OutWindow.PutByteAsync(m_OutWindow.GetByte(rep0), token).ConfigureAwait(false);
                                             nowPos64++;
                                             if (blnSync)
                                             {
-                                                progress?.SetProgress((long) outSize64, (long) nowPos64);
+                                                progress?.SetProgress((long)outSize64, (long)nowPos64);
                                             }
                                             else if (progressAsync != null)
                                             {
-                                                await progressAsync
-                                                      .SetProgressAsync((long) outSize64, (long) nowPos64, token)
-                                                      .ConfigureAwait(false);
+                                                await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token).ConfigureAwait(false);
                                             }
-
                                             continue;
                                         }
                                     }
                                     else
                                     {
                                         uint distance;
-                                        if ((blnSync
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                ? m_IsRepG1Decoders[state.Index].Decode(m_RangeDecoder)
-                                                : await m_IsRepG1Decoders[state.Index]
-                                                        .DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false)) == 0)
+                                        if (m_IsRepG1Decoders[state.Index].Decode(m_RangeDecoder) == 0)
                                         {
                                             distance = rep1;
                                         }
                                         else
                                         {
-                                            if ((blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    ? m_IsRepG2Decoders[state.Index].Decode(m_RangeDecoder)
-                                                    : await m_IsRepG2Decoders[state.Index]
-                                                            .DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false)) == 0)
+                                            if (m_IsRepG2Decoders[state.Index].Decode(m_RangeDecoder) == 0)
                                                 distance = rep2;
                                             else
                                             {
@@ -551,11 +438,7 @@ namespace SevenZip.Compression.LZMA
                                         rep0 = distance;
                                     }
 
-                                    len = (blnSync
-                                              // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                              ? m_RepLenDecoder.Decode(m_RangeDecoder, posState)
-                                              : await m_RepLenDecoder.DecodeAsync(m_RangeDecoder, posState, token).ConfigureAwait(false))
-                                          + Base.kMatchMinLen;
+                                    len = m_RepLenDecoder.Decode(m_RangeDecoder, posState) + Base.kMatchMinLen;
                                     state.UpdateRep();
                                 }
                                 else
@@ -563,58 +446,25 @@ namespace SevenZip.Compression.LZMA
                                     rep3 = rep2;
                                     rep2 = rep1;
                                     rep1 = rep0;
-                                    len = Base.kMatchMinLen + (blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? m_RepLenDecoder.Decode(m_RangeDecoder, posState)
-                                        : await m_RepLenDecoder.DecodeAsync(m_RangeDecoder, posState, token).ConfigureAwait(false));
+                                    len = Base.kMatchMinLen + m_LenDecoder.Decode(m_RangeDecoder, posState);
                                     state.UpdateMatch();
-                                    if (blnSync)
+                                    uint posSlot = m_PosSlotDecoder[Base.GetLenToPosState(len)].Decode(m_RangeDecoder);
+                                    if (posSlot >= Base.kStartPosModelIndex)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        uint posSlot = m_PosSlotDecoder[Base.GetLenToPosState(len)]
-                                            .Decode(m_RangeDecoder);
-                                        if (posSlot >= Base.kStartPosModelIndex)
-                                        {
-                                            int numDirectBits = (int) ((posSlot >> 1) - 1);
-                                            rep0 = (2 | (posSlot & 1)) << numDirectBits;
-                                            if (posSlot < Base.kEndPosModelIndex)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                rep0 += BitTreeDecoder.ReverseDecode(m_PosDecoders,
-                                                    rep0 - posSlot - 1, m_RangeDecoder, numDirectBits);
-                                            else
-                                            {
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                rep0 += m_RangeDecoder.DecodeDirectBits(
-                                                    numDirectBits - Base.kNumAlignBits) << Base.kNumAlignBits;
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                rep0 += m_PosAlignDecoder.ReverseDecode(m_RangeDecoder);
-                                            }
-                                        }
+                                        int numDirectBits = (int)((posSlot >> 1) - 1);
+                                        rep0 = (2 | (posSlot & 1)) << numDirectBits;
+                                        if (posSlot < Base.kEndPosModelIndex)
+                                            rep0 += BitTreeDecoder.ReverseDecode(m_PosDecoders,
+                                                rep0 - posSlot - 1, m_RangeDecoder, numDirectBits);
                                         else
-                                            rep0 = posSlot;
+                                        {
+                                            rep0 += m_RangeDecoder.DecodeDirectBits(
+                                                numDirectBits - Base.kNumAlignBits) << Base.kNumAlignBits;
+                                            rep0 += m_PosAlignDecoder.ReverseDecode(m_RangeDecoder);
+                                        }
                                     }
                                     else
-                                    {
-                                        uint posSlot = await m_PosSlotDecoder[Base.GetLenToPosState(len)]
-                                                             .DecodeAsync(m_RangeDecoder, token).ConfigureAwait(false);
-                                        if (posSlot >= Base.kStartPosModelIndex)
-                                        {
-                                            int numDirectBits = (int) ((posSlot >> 1) - 1);
-                                            rep0 = (2 | (posSlot & 1)) << numDirectBits;
-                                            if (posSlot < Base.kEndPosModelIndex)
-                                                rep0 += await BitTreeDecoder.ReverseDecodeAsync(m_PosDecoders,
-                                                    rep0 - posSlot - 1, m_RangeDecoder, numDirectBits, token).ConfigureAwait(false);
-                                            else
-                                            {
-                                                rep0 += await m_RangeDecoder.DecodeDirectBitsAsync(
-                                                    numDirectBits - Base.kNumAlignBits, token).ConfigureAwait(false) << Base.kNumAlignBits;
-                                                rep0 += await m_PosAlignDecoder.ReverseDecodeAsync(
-                                                    m_RangeDecoder, token).ConfigureAwait(false);
-                                            }
-                                        }
-                                        else
-                                            rep0 = posSlot;
-                                    }
+                                        rep0 = posSlot;
                                 }
 
                                 if (rep0 >= m_OutWindow.TrainSize + nowPos64 || rep0 >= m_DictionarySizeCheck)
@@ -635,12 +485,11 @@ namespace SevenZip.Compression.LZMA
                         }
                         if (blnSync)
                         {
-                            progress?.SetProgress((long) outSize64, (long) nowPos64);
+                            progress?.SetProgress((long)outSize64, (long)nowPos64);
                         }
                         else if (progressAsync != null)
                         {
-                            await progressAsync.SetProgressAsync((long) outSize64, (long) nowPos64, token)
-                                               .ConfigureAwait(false);
+                            await progressAsync.SetProgressAsync((long)outSize64, (long)nowPos64, token).ConfigureAwait(false);
                         }
                     }
                 }
