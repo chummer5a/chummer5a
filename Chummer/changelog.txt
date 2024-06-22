@@ -69,6 +69,7 @@ Application Changes:
 - Autosaves are now saved uncompressed to make them as seamless as possible. Autosaving now also automatically times out after a minute, and after three attempts time out in this manner, the program will no longer attempt to autosave the character.
 - The skillgroupdisablechoice bonus node now allows the user to select any of the character's skill groups if it is empty.
 - After selecting an extended Detection spell in the spell selection screen, the program no longer incorrectly claims that all other spells are also extended. Fixes #5126
+- Adept Way discounts now properly only take Magic rating into account and do not factor in Power Point metamagics. Fixes #5145.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.

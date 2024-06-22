@@ -47885,6 +47885,9 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                 {
+                    if (!AnyPowerAdeptWayDiscountEnabled)
+                        return false;
+
                     decimal decMAG;
                     if (IsMysticAdept && Settings.MysAdeptSecondMAGAttribute)
                     {
@@ -47897,11 +47900,7 @@ namespace Chummer
                         decMAG = MAG.TotalValue;
                     }
 
-                    // Add any Power Point Improvements to MAG.
-                    decMAG += ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints);
-
-                    return AnyPowerAdeptWayDiscountEnabled &&
-                           Powers.Count(p => p.DiscountedAdeptWay) < (decMAG / 2).ToInt32();
+                    return Powers.Count(p => p.DiscountedAdeptWay) < (decMAG / 2).ToInt32();
                 }
             }
         }
@@ -47913,6 +47912,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+
+                if (!await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
+                    return false;
+
                 decimal decMAG;
                 if (await GetIsMysticAdeptAsync(token).ConfigureAwait(false) &&
                     await (await GetSettingsAsync(token).ConfigureAwait(false))
@@ -47929,14 +47932,8 @@ namespace Chummer
                         .GetTotalValueAsync(token).ConfigureAwait(false);
                 }
 
-                // Add any Power Point Improvements to MAG.
-                decMAG += await ImprovementManager
-                    .ValueOfAsync(this, Improvement.ImprovementType.AdeptPowerPoints, token: token)
-                    .ConfigureAwait(false);
-
-                return await GetAnyPowerAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false) &&
-                       await Powers.CountAsync(p => p.GetDiscountedAdeptWayAsync(token), token: token)
-                           .ConfigureAwait(false) < (decMAG / 2).ToInt32();
+                return await Powers.CountAsync(p => p.GetDiscountedAdeptWayAsync(token), token: token)
+                    .ConfigureAwait(false) < (decMAG / 2).ToInt32();
             }
             finally
             {
