@@ -44,6 +44,8 @@ namespace Chummer.UI.Skills
         private readonly Font _fntItalic;
         private readonly Font _fntNormalName;
         private readonly Font _fntItalicName;
+        private readonly Font _fntNormalSpec;
+        private readonly Font _fntStrikethroughSpec;
         private CharacterAttrib _objAttributeActive;
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -172,6 +174,9 @@ namespace Chummer.UI.Skills
                         Text = "[Specializations]",
                         TextAlign = ContentAlignment.MiddleLeft
                     };
+                    _fntNormalSpec = lblCareerSpec.Font;
+                    _fntStrikethroughSpec = new Font(_fntNormalSpec, FontStyle.Strikeout);
+                    Disposed += (sender, args) => _fntStrikethroughSpec.Dispose();
 
                     tlpRight.Controls.Add(lblCareerSpec, 0, 0);
                     tlpRight.Controls.Add(btnAddSpec, 1, 0);
@@ -767,6 +772,14 @@ namespace Chummer.UI.Skills
                     {
                         await SetAttributeActiveAsync(_objSkill.AttributeObject, token).ConfigureAwait(false);
                     }
+                }
+
+                if ((blnAll || e.PropertyNames.Contains(nameof(Skill.CanHaveSpecs))) && _fntNormalSpec != null)
+                {
+                    bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
+                    await lblCareerSpec
+                        .DoThreadSafeAsync(x => x.Font = blnCanHaveSpecs ? _fntNormalSpec : _fntStrikethroughSpec,
+                            token).ConfigureAwait(false);
                 }
                 if (cboSpec != null && await cboSpec.DoThreadSafeFuncAsync(x => x.Visible, token: token)
                         .ConfigureAwait(false))

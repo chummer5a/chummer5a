@@ -563,15 +563,18 @@ namespace Chummer.Backend.Skills
                     xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
                     xmlSkillNode.TryGetInt32FieldQuickly("base", ref objLoadingSkill._intBase);
                     xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objLoadingSkill._blnBuyWithKarma);
-                    using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
+                    if (objCharacter.Created || objLoadingSkill.CanHaveSpecs)
                     {
-                        if (xmlSpecList == null)
-                            return objLoadingSkill;
-                        foreach (XmlNode xmlSpec in xmlSpecList)
+                        using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("specs/spec"))
                         {
-                            SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
-                            if (objSpec != null)
-                                objLoadingSkill._lstSpecializations.Add(objSpec);
+                            if (xmlSpecList == null)
+                                return objLoadingSkill;
+                            foreach (XmlNode xmlSpec in xmlSpecList)
+                            {
+                                SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                                if (objSpec != null)
+                                    objLoadingSkill._lstSpecializations.Add(objSpec);
+                            }
                         }
                     }
                 }
@@ -642,15 +645,18 @@ namespace Chummer.Backend.Skills
                 xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objSkill._blnBuyWithKarma);
             }
 
-            using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
+            if (objCharacter.Created || objSkill.CanHaveSpecs)
             {
-                if (xmlSpecList?.Count > 0)
+                using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
                 {
-                    foreach (XmlNode xmlSpec in xmlSpecList)
+                    if (xmlSpecList?.Count > 0)
                     {
-                        SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
-                        if (objSpec != null)
-                            objSkill.Specializations.Add(objSpec);
+                        foreach (XmlNode xmlSpec in xmlSpecList)
+                        {
+                            SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                            if (objSpec != null)
+                                objSkill.Specializations.Add(objSpec);
+                        }
                     }
                 }
             }
@@ -716,15 +722,20 @@ namespace Chummer.Backend.Skills
 
             objSkill.SkillId = suid;
 
-            foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization", token))
+            if (objCharacter.Created || objSkill.CanHaveSpecs)
             {
-                string strSpecializationName = xmlSpecializationNode.SelectSingleNodeAndCacheExpression("@bonustext", token)?.Value;
-                if (string.IsNullOrEmpty(strSpecializationName))
-                    continue;
-                int intLastPlus = strSpecializationName.LastIndexOf('+');
-                if (intLastPlus > strSpecializationName.Length)
-                    strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
-                objSkill.Specializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
+                foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization",
+                             token))
+                {
+                    string strSpecializationName = xmlSpecializationNode
+                        .SelectSingleNodeAndCacheExpression("@bonustext", token)?.Value;
+                    if (string.IsNullOrEmpty(strSpecializationName))
+                        continue;
+                    int intLastPlus = strSpecializationName.LastIndexOf('+');
+                    if (intLastPlus > strSpecializationName.Length)
+                        strSpecializationName = strSpecializationName.Substring(0, intLastPlus - 1);
+                    objSkill.Specializations.Add(new SkillSpecialization(objCharacter, strSpecializationName));
+                }
             }
 
             return objSkill;
@@ -1658,14 +1669,14 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterReadLock())
                     return (_blnBuyWithKarma || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma &&
-                           Specializations.Any(x => !x.Free);
+                           Specializations.Any(x => !x.Free) && CanHaveSpecs;
             }
             set
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     value = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma &&
-                            Specializations.Any(x => !x.Free);
+                            Specializations.Any(x => !x.Free) && CanHaveSpecs;
                     if (_blnBuyWithKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
@@ -1683,7 +1694,8 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                        && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
-                       && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                       && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                       && await GetCanHaveSpecsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -1701,7 +1713,8 @@ namespace Chummer.Backend.Skills
                         && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
                         && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
                             .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token)
-                            .ConfigureAwait(false);
+                            .ConfigureAwait(false)
+                        && await GetCanHaveSpecsAsync(token).ConfigureAwait(false);
                 if (_blnBuyWithKarma == value)
                     return;
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -2351,7 +2364,7 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                 {
                     int cost = BasePoints;
-                    if (!IsExoticSkill && !BuyWithKarma)
+                    if (!IsExoticSkill && !BuyWithKarma && CanHaveSpecs)
                         cost += Specializations.Count(x => !x.Free);
 
                     decimal decExtra = 0;
@@ -2425,7 +2438,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
                 int cost = intBasePoints;
-                if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
+                if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false) && await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
                     cost += await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
@@ -2545,7 +2558,7 @@ namespace Chummer.Backend.Skills
                     if (IsExoticSkill)
                         return Math.Max(0, intCost);
 
-                    int intSpecCount = BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables
+                    int intSpecCount = (BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables) && CanHaveSpecs
                         ? Specializations.Count(objSpec => !objSpec.Free)
                         : 0;
                     int intSpecCost = intSpecCount * CharacterObject.Settings.KarmaSpecialization;
@@ -2659,9 +2672,13 @@ namespace Chummer.Backend.Skills
                 if (IsExoticSkill)
                     return Math.Max(0, intCost);
 
-                int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
-                                   || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
-                    ? await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(async objSpec => !await objSpec.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                int intSpecCount = (await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
+                                    || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token)
+                                        .ConfigureAwait(false))
+                                   && await GetCanHaveSpecsAsync(token).ConfigureAwait(false)
+                    ? await (await GetSpecializationsAsync(token).ConfigureAwait(false))
+                        .CountAsync(async objSpec => !await objSpec.GetFreeAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false)
                     : 0;
                 int intSpecCost = intSpecCount *
                                   await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
@@ -4041,6 +4058,9 @@ namespace Chummer.Backend.Skills
                         return ((ExoticSkill)this).CurrentDisplaySpecific;
                     }
 
+                    if (!CanHaveSpecs)
+                        return string.Empty;
+
                     return Specializations.FirstOrDefault(x => !x.Free)?.CurrentDisplayName ?? string.Empty;
                 }
             }
@@ -4094,6 +4114,9 @@ namespace Chummer.Backend.Skills
                 {
                     return await ((ExoticSkill) this).GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false);
                 }
+
+                if (!await GetCanHaveSpecsAsync(token))
+                    return string.Empty;
 
                 SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return objSpec != null ? await objSpec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty;
@@ -4173,6 +4196,9 @@ namespace Chummer.Backend.Skills
                     return ((ExoticSkill)this).Specific == strSpecialization;
                 }
 
+                if (!CanHaveSpecs)
+                    return false;
+
                 return Specializations.Any(
                            x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization, token)
                        && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
@@ -4190,6 +4216,9 @@ namespace Chummer.Backend.Skills
                 {
                     return ((ExoticSkill)this).Specific == strSpecialization;
                 }
+
+                if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
+                    return false;
 
                 return await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(
                                async x => await x.GetNameAsync(token).ConfigureAwait(false) == strSpecialization ||
@@ -4217,6 +4246,9 @@ namespace Chummer.Backend.Skills
                     return Specializations[0];
                 }
 
+                if (!CanHaveSpecs)
+                    return null;
+
                 return HasSpecialization(strSpecialization)
                     ? Specializations.FirstOrDefault(x =>
                         x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
@@ -4234,6 +4266,9 @@ namespace Chummer.Backend.Skills
                 {
                     return await (await GetSpecializationsAsync(token).ConfigureAwait(false)).GetValueAtAsync(0, token).ConfigureAwait(false);
                 }
+
+                if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
+                    return null;
 
                 return await HasSpecializationAsync(strSpecialization, token).ConfigureAwait(false)
                     ? await (await GetSpecializationsAsync(token).ConfigureAwait(false))
@@ -4490,7 +4525,7 @@ namespace Chummer.Backend.Skills
                             CharacterObject
                                 .GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
                         SkillSpecialization objSpecialization = null;
-                        if (Specializations.Count > 0 && ImprovementManager
+                        if (Specializations.Count > 0 && CanHaveSpecs && ImprovementManager
                                 .GetCachedImprovementListForValueOf(
                                     CharacterObject,
                                     Improvement.ImprovementType.DisableSpecializationEffects,
@@ -4843,6 +4878,7 @@ namespace Chummer.Backend.Skills
                         ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
                             = await GetSpecializationsAsync(token).ConfigureAwait(false);
                         if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                            await GetCanHaveSpecsAsync(token).ConfigureAwait(false) &&
                             (await ImprovementManager
                                    .GetCachedImprovementListForValueOfAsync(
                                        CharacterObject,
@@ -5396,6 +5432,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (IsExoticSkill
                         || Specializations.Count == 0
+                        || !CanHaveSpecs
                         || ImprovementManager.GetCachedImprovementListForValueOf(
                                                  CharacterObject,
                                                  Improvement.ImprovementType.DisableSpecializationEffects,
@@ -5433,6 +5470,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (IsExoticSkill
                         || await Specializations.GetCountAsync(token).ConfigureAwait(false) == 0
+                        || !await GetCanHaveSpecsAsync(token).ConfigureAwait(false)
                         || (await ImprovementManager
                                   .GetCachedImprovementListForValueOfAsync(
                                       CharacterObject, Improvement.ImprovementType.DisableSpecializationEffects,
@@ -5464,7 +5502,7 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterReadLock())
             {
-                if (IsExoticSkill || TotalBaseRating == 0 || Specializations.Count == 0)
+                if (IsExoticSkill || TotalBaseRating == 0 || Specializations.Count == 0 || !CanHaveSpecs)
                     return 0;
                 SkillSpecialization objTargetSpecialization = default;
                 if (string.IsNullOrEmpty(strSpecialization))
@@ -5499,8 +5537,10 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (IsExoticSkill || await GetTotalBaseRatingAsync(token).ConfigureAwait(false) == 0 ||
-                    await Specializations.GetCountAsync(token).ConfigureAwait(false) == 0)
+                if (IsExoticSkill
+                    || await GetTotalBaseRatingAsync(token).ConfigureAwait(false) == 0
+                    || await Specializations.GetCountAsync(token).ConfigureAwait(false) == 0
+                    || !await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
                     return 0;
                 SkillSpecialization objTargetSpecialization = default;
                 if (string.IsNullOrEmpty(strSpecialization))
@@ -5820,7 +5860,9 @@ namespace Chummer.Backend.Skills
                                 new DependencyGraphNode<string, Skill>(nameof(Rating)),
                                 new DependencyGraphNode<string, Skill>(nameof(GetSpecializationBonus),
                                     new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
-                                    new DependencyGraphNode<string, Skill>(nameof(Specializations)),
+                                    new DependencyGraphNode<string, Skill>(nameof(Specializations),
+                                        new DependencyGraphNode<string, Skill>(nameof(CanHaveSpecs)) // Not strictly dependent like this, but fetched every time specializations are
+                                    ),
                                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating)),
                                     new DependencyGraphNode<string, Skill>(nameof(GetSpecialization),
                                         new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
@@ -6136,7 +6178,7 @@ namespace Chummer.Backend.Skills
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
                             {
                                 _intCachedCanHaveSpecs = -1;
-                                if (!CanHaveSpecs && Specializations.Count > 0)
+                                if (!CanHaveSpecs && !CharacterObject.Created && Specializations.Count > 0)
                                     Specializations.Clear();
                             }
                         }
@@ -6294,7 +6336,7 @@ namespace Chummer.Backend.Skills
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
                             {
                                 _intCachedCanHaveSpecs = -1;
-                                if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
+                                if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false) && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                                 {
                                     ThreadSafeObservableCollection<SkillSpecialization> lstSpecs = await GetSpecializationsAsync(token).ConfigureAwait(false);
                                     if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0)
@@ -6450,6 +6492,8 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
+                if (!await GetEnabledAsync(token).ConfigureAwait(false)) // Skip updates for disabled skills because it's unnecessary
+                    return;
                 CharacterSettings objSettings =
                     await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.Base)))
@@ -6479,8 +6523,6 @@ namespace Chummer.Backend.Skills
 
                 if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.Karma)))
                 {
-                    lstProperties.Add(nameof(Karma));
-                    lstProperties.Add(nameof(CurrentKarmaCost));
                     if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     {
                         if (!lstProperties.Contains(nameof(ForcedBuyWithKarma))
@@ -6498,11 +6540,17 @@ namespace Chummer.Backend.Skills
                             lstProperties.Add(nameof(ForcedBuyWithKarma));
                         }
 
-                        if (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) != 0
-                            && await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
-                            && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                        if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                         {
-                            lstProperties.Add(nameof(ForcedNotBuyWithKarma));
+                            lstProperties.Add(nameof(CurrentKarmaCost));
+                            if (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false))
+                            {
+                                lstProperties.Add(nameof(Karma));
+                                if (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) != 0)
+                                {
+                                    lstProperties.Add(nameof(ForcedNotBuyWithKarma));
+                                }
+                            }
                         }
                     }
                 }
@@ -6664,6 +6712,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 if (await Specializations.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                    await GetCanHaveSpecsAsync(token).ConfigureAwait(false) &&
                     (e.PropertyNames.Contains(nameof(CharacterSettings.SpecializationBonus))
                      || (e.PropertyNames.Contains(nameof(CharacterSettings.ExpertiseBonus))
                          && await Specializations.AnyAsync(x => x.GetExpertiseAsync(token), token: token)
@@ -7720,6 +7769,7 @@ namespace Chummer.Backend.Skills
                     {
                         intReturn = (!CharacterObject.IgnoreRules
                                      && Specializations.Any(x => !x.Free)
+                                     && CanHaveSpecs
                                      && ((KarmaPoints > 0
                                           && BasePoints + FreeBase == 0
                                           && !CharacterObject.Settings
@@ -7755,6 +7805,7 @@ namespace Chummer.Backend.Skills
                         (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
                          && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
                                   .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                         && await GetCanHaveSpecsAsync(token).ConfigureAwait(false)
                          && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
                               && await GetBasePointsAsync(token).ConfigureAwait(false)
                               + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
