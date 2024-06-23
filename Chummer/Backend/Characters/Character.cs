@@ -18160,6 +18160,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Burnt Street Cred.
+        /// </summary>
+        public async Task SetBurntStreetCredAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intBurntStreetCred, value) != value)
+                    await OnPropertyChangedAsync(nameof(BurntStreetCred), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Notoriety.
         /// </summary>
         [HubTag]

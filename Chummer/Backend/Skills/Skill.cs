@@ -4115,7 +4115,7 @@ namespace Chummer.Backend.Skills
                     return await ((ExoticSkill) this).GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false);
                 }
 
-                if (!await GetCanHaveSpecsAsync(token))
+                if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
                     return string.Empty;
 
                 SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);

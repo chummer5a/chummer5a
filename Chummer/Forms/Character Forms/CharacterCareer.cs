@@ -5437,10 +5437,12 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
-                    Character objMerge = new Character {FileName = CharacterObject.FileName};
+                    Character objMerge = new Character();
+                    await objMerge.SetFileNameAsync(await CharacterObject.GetFileNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                     try
                     {
-                        Character objVessel = new Character {FileName = strFileName};
+                        Character objVessel = new Character();
+                        await objVessel.SetFileNameAsync(strFileName, GenericToken).ConfigureAwait(false);
                         try
                         {
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
@@ -5477,7 +5479,7 @@ namespace Chummer
                                 }
 
                                 // Load the Spirit's save file into a new Merge character.
-                                frmLoadingBar.MyForm.CharacterFile = objMerge.FileName;
+                                frmLoadingBar.MyForm.CharacterFile = await objMerge.GetFileNameAsync(GenericToken).ConfigureAwait(false);
                                 blnSuccess = await objMerge
                                                    .LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
                                                    .ConfigureAwait(false);
@@ -5494,22 +5496,16 @@ namespace Chummer
                                 }
 
                                 objMerge.Possessed = true;
-                                objMerge.Alias = objVessel.CharacterName
+                                objMerge.Alias = await objVessel.GetCharacterNameAsync(GenericToken).ConfigureAwait(false)
                                                  + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
                                                                         .ConfigureAwait(false) + '('
                                                  + await LanguageManager.GetStringAsync("String_Possessed", token: GenericToken)
                                                                         .ConfigureAwait(false) + ')';
 
                                 // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                                bool blnHasImmunity = false;
-                                foreach (CritterPower objCritterPower in objMerge.CritterPowers)
-                                {
-                                    if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
-                                    {
-                                        blnHasImmunity = true;
-                                        break;
-                                    }
-                                }
+                                bool blnHasImmunity =
+                                    await objMerge.CritterPowers.FirstOrDefaultAsync(x =>
+                                        x.Name == "Immunity" && x.Extra == "Normal Weapons").ConfigureAwait(false) != null;
 
                                 if (!blnHasImmunity)
                                 {
@@ -5542,71 +5538,71 @@ namespace Chummer
                                                          .ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
                                 // Copy any Lifestyles the Vessel has.
-                                foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
-                                    await objMerge.Lifestyles.AddAsync(objLifestyle, GenericToken).ConfigureAwait(false);
+                                await objVessel.Lifestyles.ForEachWithSideEffectsAsync(objLifestyle =>
+                                    objMerge.Lifestyles.AddAsync(objLifestyle, GenericToken), GenericToken).ConfigureAwait(false);
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("Tab_Armor", token: GenericToken).ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
                                 // Copy any Armor the Vessel has.
-                                foreach (Armor objArmor in objVessel.Armor)
+                                await objVessel.Armor.ForEachWithSideEffectsAsync(async objArmor =>
                                 {
                                     await objMerge.Armor.AddAsync(objArmor, GenericToken).ConfigureAwait(false);
-                                    CopyArmorImprovements(objVessel, objMerge, objArmor);
-                                }
+                                    await CopyArmorImprovements(objVessel, objMerge, objArmor).ConfigureAwait(false);
+                                }, GenericToken).ConfigureAwait(false);
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("Tab_Gear", token: GenericToken).ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
                                 // Copy any Gear the Vessel has.
-                                foreach (Gear objGear in objVessel.Gear)
+                                await objVessel.Gear.ForEachWithSideEffectsAsync(async objGear =>
                                 {
                                     await objMerge.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
-                                    CopyGearImprovements(objVessel, objMerge, objGear);
-                                }
+                                    await CopyGearImprovements(objVessel, objMerge, objGear).ConfigureAwait(false);
+                                }, GenericToken).ConfigureAwait(false);
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("Tab_Cyberware", token: GenericToken).ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
                                 // Copy any Cyberware/Bioware the Vessel has.
-                                foreach (Cyberware objCyberware in objVessel.Cyberware)
+                                await objVessel.Cyberware.ForEachWithSideEffectsAsync(async objCyberware =>
                                 {
                                     await objMerge.Cyberware.AddAsync(objCyberware, GenericToken).ConfigureAwait(false);
-                                    CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
-                                }
+                                    await CopyCyberwareImprovements(objVessel, objMerge, objCyberware).ConfigureAwait(false);
+                                }, GenericToken).ConfigureAwait(false);
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("Tab_Weapons", token: GenericToken).ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
                                 // Copy any Weapons the Vessel has.
-                                foreach (Weapon objWeapon in objVessel.Weapons)
-                                    await objMerge.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                await objVessel.Weapons.ForEachWithSideEffectsAsync(objWeapon =>
+                                    objMerge.Weapons.AddAsync(objWeapon, GenericToken), GenericToken).ConfigureAwait(false);
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("Tab_Vehicles", token: GenericToken).ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
                                 // Copy and Vehicles the Vessel has.
-                                foreach (Vehicle objVehicle in objVessel.Vehicles)
-                                    await objMerge.Vehicles.AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
+                                await objVessel.Vehicles.ForEachWithSideEffectsAsync(objVehicle =>
+                                    objMerge.Vehicles.AddAsync(objVehicle, GenericToken), GenericToken).ConfigureAwait(false);
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_Settings", token: GenericToken).ConfigureAwait(false),
                                     token: GenericToken).ConfigureAwait(false);
                                 // Copy the character info.
-                                objMerge.Gender = objVessel.Gender;
-                                objMerge.Age = objVessel.Age;
-                                objMerge.Eyes = objVessel.Eyes;
-                                objMerge.Hair = objVessel.Hair;
-                                objMerge.Height = objVessel.Height;
-                                objMerge.Weight = objVessel.Weight;
-                                objMerge.Skin = objVessel.Skin;
-                                objMerge.Name = objVessel.Name;
-                                objMerge.StreetCred = objVessel.StreetCred;
-                                objMerge.BurntStreetCred = objVessel.BurntStreetCred;
-                                objMerge.Notoriety = objVessel.Notoriety;
-                                objMerge.PublicAwareness = objVessel.PublicAwareness;
-                                foreach (Image objMugshot in objVessel.Mugshots)
-                                    await objMerge.Mugshots.AddAsync(objMugshot, GenericToken).ConfigureAwait(false);
+                                await objMerge.SetGenderAsync(await objVessel.GetGenderAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetAgeAsync(await objVessel.GetAgeAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetEyesAsync(await objVessel.GetEyesAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetHairAsync(await objVessel.GetHairAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetHeightAsync(await objVessel.GetHeightAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetWeightAsync(await objVessel.GetWeightAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetSkinAsync(await objVessel.GetSkinAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetNameAsync(await objVessel.GetNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetStreetCredAsync(await objVessel.GetStreetCredAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetBurntStreetCredAsync(await objVessel.GetBurntStreetCredAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetNotorietyAsync(await objVessel.GetNotorietyAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetPublicAwarenessAsync(await objVessel.GetPublicAwarenessAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objVessel.Mugshots.ForEachWithSideEffectsAsync(objMugshot =>
+                                    objMerge.Mugshots.AddAsync(objMugshot, GenericToken), GenericToken).ConfigureAwait(false);
                             }
                         }
                         finally
@@ -10474,19 +10470,40 @@ namespace Chummer
             }
         }
 
-        private void cmdAddSustainedSpell_Click(object sender, EventArgs e)
+        private async void cmdAddSustainedSpell_Click(object sender, EventArgs e)
         {
-            AddSustainedSpell();
+            try
+            {
+                await AddSustainedSpell(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void cmdAddSustainedForm_Click(object sender, EventArgs e)
+        private async void cmdAddSustainedForm_Click(object sender, EventArgs e)
         {
-            AddSustainedComplexForm();
+            try
+            {
+                await AddSustainedComplexForm(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void cmdAddSustainedCritterPower_Click(object sender, EventArgs e)
+        private async void cmdAddSustainedCritterPower_Click(object sender, EventArgs e)
         {
-            AddSustainedCritterPower();
+            try
+            {
+                await AddSustainedCritterPower(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion Button Events
@@ -26809,35 +26826,26 @@ namespace Chummer
         /// <param name="objSource">Source character.</param>
         /// <param name="objDestination">Destination character.</param>
         /// <param name="objArmor">Armor to copy.</param>
-        private static void CopyArmorImprovements(Character objSource, Character objDestination, Armor objArmor)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async Task CopyArmorImprovements(Character objSource, Character objDestination, Armor objArmor, CancellationToken token = default)
         {
-            foreach (Improvement objImprovement in objSource.Improvements)
+            token.ThrowIfCancellationRequested();
+            await objSource.Improvements.ForEachAsync(async objImprovement =>
             {
-                if (objImprovement.SourceName == objArmor.InternalId)
-                {
-                    objDestination.Improvements.Add(objImprovement);
-                }
-            }
+                if (objImprovement.SourceName == objArmor.InternalId
+                    || await objArmor.ArmorMods.AnyAsync(x => objImprovement.SourceName == x.InternalId, token).ConfigureAwait(false))
+                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+            }, token: token).ConfigureAwait(false);
 
             // Look through any Armor Mods and add the Improvements as well.
-            foreach (ArmorMod objMod in objArmor.ArmorMods)
-            {
-                foreach (Improvement objImprovement in objSource.Improvements)
-                {
-                    if (objImprovement.SourceName == objMod.InternalId)
-                    {
-                        objDestination.Improvements.Add(objImprovement);
-                    }
-                }
-
+            await objArmor.ArmorMods.ForEachWithSideEffectsAsync(x =>
                 // Look through any children and add their Improvements as well.
-                foreach (Gear objChild in objMod.GearChildren)
-                    CopyGearImprovements(objSource, objDestination, objChild);
-            }
+                x.GearChildren.ForEachWithSideEffectsAsync(
+                    y => CopyGearImprovements(objSource, objDestination, y, token), token: token), token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            foreach (Gear objChild in objArmor.GearChildren)
-                CopyGearImprovements(objSource, objDestination, objChild);
+            await objArmor.Children.ForEachWithSideEffectsAsync(x =>
+                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -26846,19 +26854,19 @@ namespace Chummer
         /// <param name="objSource">Source character.</param>
         /// <param name="objDestination">Destination character.</param>
         /// <param name="objGear">Gear to copy.</param>
-        private static void CopyGearImprovements(Character objSource, Character objDestination, Gear objGear)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async Task CopyGearImprovements(Character objSource, Character objDestination, Gear objGear, CancellationToken token = default)
         {
-            foreach (Improvement objImprovement in objSource.Improvements)
+            token.ThrowIfCancellationRequested();
+            await objSource.Improvements.ForEachAsync(async objImprovement =>
             {
                 if (objImprovement.SourceName == objGear.InternalId)
-                {
-                    objDestination.Improvements.Add(objImprovement);
-                }
-            }
+                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+            }, token: token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            foreach (Gear objChild in objGear.Children)
-                CopyGearImprovements(objSource, objDestination, objChild);
+            await objGear.Children.ForEachWithSideEffectsAsync(x =>
+                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -26867,20 +26875,21 @@ namespace Chummer
         /// <param name="objSource">Source character.</param>
         /// <param name="objDestination">Destination character.</param>
         /// <param name="objCyberware">Cyberware to copy.</param>
-        private static void CopyCyberwareImprovements(Character objSource, Character objDestination,
-                                                      Cyberware objCyberware)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async Task CopyCyberwareImprovements(Character objSource, Character objDestination, Cyberware objCyberware, CancellationToken token = default)
         {
-            foreach (Improvement objImprovement in objSource.Improvements)
+            token.ThrowIfCancellationRequested();
+            await objSource.Improvements.ForEachAsync(async objImprovement =>
             {
                 if (objImprovement.SourceName == objCyberware.InternalId)
-                {
-                    objDestination.Improvements.Add(objImprovement);
-                }
-            }
+                    await objDestination.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+            }, token: token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            foreach (Cyberware objChild in objCyberware.Children)
-                CopyCyberwareImprovements(objSource, objDestination, objChild);
+            await objCyberware.Children.ForEachWithSideEffectsAsync(x =>
+                CopyCyberwareImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+            await objCyberware.GearChildren.ForEachWithSideEffectsAsync(x =>
+                CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -27145,42 +27154,46 @@ namespace Chummer
         /// <summary>
         /// Adds a sustained spell
         /// </summary>
-        private void AddSustainedSpell()
+        private async Task AddSustainedSpell(CancellationToken token = default)
         {
-            //Could be merged with AddSustainedComplex form and create an more or less universal method to add ISustainables from tre viewers. Not worth the trouble and probably not better at the moment.
-            if (treSpells.SelectedNode?.Level > 0 && treSpells.SelectedNode.Tag is Spell objSpell)
+            token.ThrowIfCancellationRequested();
+            TreeNode objNode = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
+            // Could be merged with AddSustainedComplex form and create an more or less universal method to add ISustainables from tre viewers. Not worth the trouble and probably not better at the moment.
+            if (objNode?.Level > 0 && objNode.Tag is Spell objSpell)
             {
                 SustainedObject objSustained = new SustainedObject(CharacterObject);
                 objSustained.Create(objSpell);
-                CharacterObject.SustainedCollection.Add(objSustained);
+                await CharacterObject.SustainedCollection.AddAsync(objSustained, token).ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// Adds a sustained complex form
         /// </summary>
-        private void AddSustainedComplexForm()
+        private async Task AddSustainedComplexForm(CancellationToken token = default)
         {
-            if (treComplexForms.SelectedNode?.Level > 0
-                && treComplexForms.SelectedNode.Tag is ComplexForm objComplexForm)
+            token.ThrowIfCancellationRequested();
+            TreeNode objNode = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
+            if (objNode?.Level > 0 && objNode.Tag is ComplexForm objComplexForm)
             {
                 SustainedObject objSustained = new SustainedObject(CharacterObject);
                 objSustained.Create(objComplexForm);
-                CharacterObject.SustainedCollection.Add(objSustained);
+                await CharacterObject.SustainedCollection.AddAsync(objSustained, token).ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// Add a sustained critter power
         /// </summary>
-        private void AddSustainedCritterPower()
+        private async Task AddSustainedCritterPower(CancellationToken token = default)
         {
-            if (treCritterPowers.SelectedNode?.Level > 0
-                && treCritterPowers.SelectedNode.Tag is CritterPower objCritterPower)
+            token.ThrowIfCancellationRequested();
+            TreeNode objNode = await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
+            if (objNode?.Level > 0 && objNode.Tag is CritterPower objCritterPower)
             {
                 SustainedObject objSustained = new SustainedObject(CharacterObject);
                 objSustained.Create(objCritterPower);
-                CharacterObject.SustainedCollection.Add(objSustained);
+                await CharacterObject.SustainedCollection.AddAsync(objSustained, token).ConfigureAwait(false);
             }
         }
 
