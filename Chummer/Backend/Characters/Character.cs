@@ -10246,6 +10246,53 @@ namespace Chummer
                                 }
                             }
 
+                            // Fix skills that shouldn't be allowed to have specializations having them anyway (needed at the last step because improvements and skill groups can affect this)
+                            using (Timekeeper.StartSyncron("load_char_badskillspecsfix", loadActivity))
+                            {
+                                if (blnSync)
+                                {
+                                    if (!Created)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        SkillsSection.Skills.EnumerateWithSideEffects().ForEach(x =>
+                                        {
+                                            if (x.Specializations.Count > 0 && !x.CanHaveSpecs)
+                                                x.Specializations.Clear();
+                                        });
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        SkillsSection.KnowledgeSkills.EnumerateWithSideEffects().ForEach(x =>
+                                        {
+                                            if (x.Specializations.Count > 0 && !x.CanHaveSpecs)
+                                                x.Specializations.Clear();
+                                        });
+                                    }
+                                }
+                                else if (!await GetCreatedAsync(token).ConfigureAwait(false))
+                                {
+                                    SkillsSection objSkillsSection = await GetSkillsSectionAsync(token).ConfigureAwait(false);
+                                    await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false))
+                                        .ForEachWithSideEffectsAsync(
+                                            async x =>
+                                            {
+                                                ThreadSafeObservableCollection<SkillSpecialization> lstSpecs =
+                                                    await x.GetSpecializationsAsync(token).ConfigureAwait(false);
+                                                if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                                                    !await x.GetCanHaveSpecsAsync(token).ConfigureAwait(false))
+                                                    await lstSpecs.ClearAsync(token).ConfigureAwait(false);
+                                            }, token).ConfigureAwait(false);
+                                    await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
+                                        .ForEachWithSideEffectsAsync(
+                                            async x =>
+                                            {
+                                                ThreadSafeObservableCollection<SkillSpecialization> lstSpecs =
+                                                    await x.GetSpecializationsAsync(token).ConfigureAwait(false);
+                                                if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                                                    !await x.GetCanHaveSpecsAsync(token).ConfigureAwait(false))
+                                                    await lstSpecs.ClearAsync(token).ConfigureAwait(false);
+                                            }, token).ConfigureAwait(false);
+                                }
+                            }
+
                             if (frmLoadingForm != null)
                             {
                                 if (blnSync)
