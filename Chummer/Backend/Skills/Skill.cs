@@ -3562,10 +3562,8 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                 {
                     return _strDictionaryKey = _strDictionaryKey
-                                               ?? (IsExoticSkill
-                                                   ? Name + " (" +
-                                                     DisplaySpecialization(GlobalSettings.DefaultLanguage) +
-                                                     ')'
+                                               ?? (this is ExoticSkill objExoticSkill
+                                                   ? Name + " (" + objExoticSkill.Specific + ')'
                                                    : Name);
                 }
             }
@@ -3578,10 +3576,9 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 return _strDictionaryKey = _strDictionaryKey
-                                           ?? (IsExoticSkill
+                                           ?? (this is ExoticSkill objExoticSkill
                                                ? await GetNameAsync(token).ConfigureAwait(false) + " (" +
-                                                 await DisplaySpecializationAsync(GlobalSettings.DefaultLanguage, token)
-                                                     .ConfigureAwait(false) + ')'
+                                                 await objExoticSkill.GetSpecificAsync(token).ConfigureAwait(false) + ')'
                                                : await GetNameAsync(token).ConfigureAwait(false));
             }
             finally
@@ -6058,9 +6055,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, Skill>(nameof(DictionaryKey),
                     new DependencyGraphNode<string, Skill>(nameof(Name)),
                     new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
-                    new DependencyGraphNode<string, Skill>(nameof(DisplaySpecialization), x => x.IsExoticSkill,
-                        new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill))
-                    )
+                    new DependencyGraphNode<string, Skill>(nameof(ExoticSkill.Specific), x => x.IsExoticSkill)
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(IsLanguage), x => x.IsKnowledgeSkill,
                     new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type)),
@@ -6527,6 +6522,7 @@ namespace Chummer.Backend.Skills
 
                 if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.Karma)))
                 {
+                    lstProperties.Add(nameof(Karma));
                     if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     {
                         if (!lstProperties.Contains(nameof(ForcedBuyWithKarma))
@@ -6547,13 +6543,10 @@ namespace Chummer.Backend.Skills
                         if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                         {
                             lstProperties.Add(nameof(CurrentKarmaCost));
-                            if (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false))
+                            if (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                                && await GetTotalBaseRatingAsync(token).ConfigureAwait(false) != 0)
                             {
-                                lstProperties.Add(nameof(Karma));
-                                if (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) != 0)
-                                {
-                                    lstProperties.Add(nameof(ForcedNotBuyWithKarma));
-                                }
+                                lstProperties.Add(nameof(ForcedNotBuyWithKarma));
                             }
                         }
                     }
