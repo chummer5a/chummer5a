@@ -43,8 +43,20 @@ namespace Chummer
 
             foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, null));
-                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, null));
+                if (objDownStreamNode.MyConditionAsync != null)
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                }
+                else
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition));
+                }
             }
         }
 
@@ -58,11 +70,24 @@ namespace Chummer
         public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependencyCondition, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
         {
             MyObject = objMyObject;
+            MyCondition = funcDependencyCondition;
 
             foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, funcDependencyCondition));
-                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, funcDependencyCondition));
+                if (objDownStreamNode.MyConditionAsync != null)
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                }
+                else
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition));
+                }
             }
         }
 
@@ -77,11 +102,25 @@ namespace Chummer
         public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependencyCondition, Func<T2, CancellationToken, Task<bool>> funcDependencyConditionAsync, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
         {
             MyObject = objMyObject;
+            MyCondition = funcDependencyCondition;
+            MyConditionAsync = funcDependencyConditionAsync;
 
             foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, funcDependencyCondition, funcDependencyConditionAsync));
-                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, funcDependencyCondition, funcDependencyConditionAsync));
+                if (objDownStreamNode.MyConditionAsync != null)
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                }
+                else
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition));
+                }
             }
         }
 
@@ -122,6 +161,16 @@ namespace Chummer
         /// Collection of all items on which the object tied to this node depends.
         /// </summary>
         public HashSet<DependencyGraphNodeWithCondition<T, T2>> DownStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T, T2>>();
+
+        /// <summary>
+        /// Dependency condition that is set in this node's constructor. Used to construct conditional node edges when processed by parent constructors of this node.
+        /// </summary>
+        private Func<T2, bool> MyCondition { get; }
+
+        /// <summary>
+        /// Dependency condition that is set in this node's constructor. Used to construct conditional node edges when processed by parent constructors of this node.
+        /// </summary>
+        private Func<T2, CancellationToken, Task<bool>> MyConditionAsync { get; }
 
         public override bool Equals(object obj)
         {
