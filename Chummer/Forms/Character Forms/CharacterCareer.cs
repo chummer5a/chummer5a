@@ -20087,7 +20087,7 @@ namespace Chummer
             try
             {
                 if (sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    await ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.PhysicalCMFilled = i, token: GenericToken)
+                    await ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.SetPhysicalCMFilledAsync(i, GenericToken), token: GenericToken)
                         .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -20101,7 +20101,7 @@ namespace Chummer
             try
             {
                 if (sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    await ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.StunCMFilled = i, token: GenericToken)
+                    await ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.SetStunCMFilledAsync(i, GenericToken), token: GenericToken)
                         .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -20409,7 +20409,7 @@ namespace Chummer
         /// <param name="blnDoUIUpdate">Whether to update all the other boxes in the UI or not. If something like ProcessEquipmentConditionMonitorBoxDisplays would be called later, this can be false.</param>
         /// <param name="token">Cancellation token to use.</param>
         private async Task ProcessConditionMonitorCheckedChanged(DpiFriendlyCheckBoxDisguisedAsButton chkSender,
-                                                                      Action<int> funcPropertyToUpdate = null,
+                                                                      Func<int, Task> funcPropertyToUpdate = null,
                                                                       bool blnDoUIUpdate = true,
                                                                       CancellationToken token = default)
         {
@@ -20492,7 +20492,8 @@ namespace Chummer
                                                       .ConfigureAwait(false);
                     }
 
-                    funcPropertyToUpdate?.Invoke(intFillCount);
+                    if (funcPropertyToUpdate != null)
+                        await funcPropertyToUpdate.Invoke(intFillCount).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -20506,7 +20507,7 @@ namespace Chummer
                                       GlobalSettings.InvariantCultureInfo);
                 if (!await chkSender.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                     --intFillCount;
-                funcPropertyToUpdate.Invoke(intFillCount);
+                await funcPropertyToUpdate.Invoke(intFillCount).ConfigureAwait(false);
             }
 
             await SetDirty(true, token).ConfigureAwait(false);
@@ -20521,7 +20522,10 @@ namespace Chummer
             {
                 if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
                         IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false, token: GenericToken)
+                    await ProcessConditionMonitorCheckedChanged(objBox, i => {
+                            objItem.MatrixCMFilled = i;
+                            return Task.CompletedTask;
+                        }, false, token: GenericToken)
                         .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -20547,7 +20551,10 @@ namespace Chummer
                 }, GenericToken).ConfigureAwait(false);
 
                 if (objGearNode?.Tag is Gear objGear && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    await ProcessConditionMonitorCheckedChanged(objBox, i => objGear.MatrixCMFilled = i, false, token: GenericToken)
+                    await ProcessConditionMonitorCheckedChanged(objBox, i => {
+                            objGear.MatrixCMFilled = i;
+                            return Task.CompletedTask;
+                        }, false, token: GenericToken)
                         .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -20565,7 +20572,10 @@ namespace Chummer
             {
                 if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
                         IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false, token: GenericToken)
+                    await ProcessConditionMonitorCheckedChanged(objBox, i => {
+                            objItem.MatrixCMFilled = i;
+                            return Task.CompletedTask;
+                        }, false, token: GenericToken)
                         .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -20583,7 +20593,10 @@ namespace Chummer
             {
                 if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
                         IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false, token: GenericToken)
+                    await ProcessConditionMonitorCheckedChanged(objBox, i => {
+                            objItem.MatrixCMFilled = i;
+                            return Task.CompletedTask;
+                        }, false, token: GenericToken)
                         .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -20611,12 +20624,19 @@ namespace Chummer
                     }, GenericToken).ConfigureAwait(false);
 
                     if (objVehicleNode?.Tag is Vehicle objVehicle && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                        await ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i, token: GenericToken)
+                        await ProcessConditionMonitorCheckedChanged(objBox, i => {
+                                objVehicle.PhysicalCMFilled = i;
+                                return Task.CompletedTask;
+                            }, token: GenericToken)
                             .ConfigureAwait(false);
                 }
                 else if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is
                              IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false, token: GenericToken)
+                    await ProcessConditionMonitorCheckedChanged(objBox, i =>
+                        {
+                            objItem.MatrixCMFilled = i;
+                            return Task.CompletedTask;
+                        }, false, token: GenericToken)
                         .ConfigureAwait(false);
             }
             catch (OperationCanceledException)

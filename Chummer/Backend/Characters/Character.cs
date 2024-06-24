@@ -18832,8 +18832,7 @@ namespace Chummer
                     }
                     else if (Interlocked.Exchange(ref _intPhysicalCMFilled, value) != value)
                     {
-                        using (LockObject.EnterWriteLock())
-                            OnPropertyChanged();
+                        OnPropertyChanged();
                     }
                 }
             }
@@ -18853,6 +18852,44 @@ namespace Chummer
                     return objVehicle.PhysicalCMFilled;
 
                 return _intPhysicalCMFilled;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number of Physical Condition Monitor Boxes that are filled.
+        /// </summary>
+        public async Task SetPhysicalCMFilledAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (HomeNode is Vehicle objVehicle)
+                {
+                    if (objVehicle.PhysicalCMFilled != value)
+                    {
+                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objVehicle.PhysicalCMFilled = value;
+                            await OnPropertyChangedAsync(nameof(PhysicalCMFilled), token);
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else if (Interlocked.Exchange(ref _intPhysicalCMFilled, value) != value)
+                {
+                    await OnPropertyChangedAsync(nameof(PhysicalCMFilled), token);
+                }
             }
             finally
             {
@@ -18896,8 +18933,7 @@ namespace Chummer
                     }
                     else if (Interlocked.Exchange(ref _intStunCMFilled, value) != value)
                     {
-                        using (LockObject.EnterWriteLock())
-                            OnPropertyChanged();
+                        OnPropertyChanged();
                     }
                 }
             }
@@ -18924,6 +18960,53 @@ namespace Chummer
                 }
 
                 return _intStunCMFilled;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number of Stun Condition Monitor Boxes that are filled.
+        /// </summary>
+        public async Task SetStunCMFilledAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetIsAIAsync(token).ConfigureAwait(false))
+                {
+                    IHasMatrixAttributes objHomeNode = await GetHomeNodeAsync(token).ConfigureAwait(false);
+                    if (objHomeNode != null)
+                    {
+                        // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
+                        if (HomeNode.MatrixCMFilled != value)
+                        {
+                            IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                HomeNode.MatrixCMFilled = value;
+                                await OnPropertyChangedAsync(nameof(StunCMFilled), token);
+                            }
+                            finally
+                            {
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    else if (Interlocked.Exchange(ref _intStunCMFilled, value) != value)
+                    {
+                        await OnPropertyChangedAsync(nameof(StunCMFilled), token);
+                    }
+                }
+                else if (Interlocked.Exchange(ref _intStunCMFilled, value) != value)
+                {
+                    await OnPropertyChangedAsync(nameof(StunCMFilled), token);
+                }
             }
             finally
             {
