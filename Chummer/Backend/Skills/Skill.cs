@@ -5852,8 +5852,8 @@ namespace Chummer.Backend.Skills
                             new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements)))),
                     new DependencyGraphNode<string, Skill>(nameof(DisplayPool),
                         new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
-                        new DependencyGraphNode<string, Skill>(nameof(Attribute), x => !x.IsNativeLanguage),
-                        new DependencyGraphNode<string, Skill>(nameof(DisplayOtherAttribute), x => !x.IsNativeLanguage,
+                        new DependencyGraphNode<string, Skill>(nameof(Attribute), x => !x.IsNativeLanguage, async (x, t) => !await x.GetIsNativeLanguageAsync(t).ConfigureAwait(false)),
+                        new DependencyGraphNode<string, Skill>(nameof(DisplayOtherAttribute), x => !x.IsNativeLanguage, async (x, t) => !await x.GetIsNativeLanguageAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute),
                                 new DependencyGraphNode<string, Skill>(nameof(Enabled)),
                                 new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
@@ -5861,7 +5861,7 @@ namespace Chummer.Backend.Skills
                                 new DependencyGraphNode<string, Skill>(nameof(GetSpecializationBonus),
                                     new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
                                     new DependencyGraphNode<string, Skill>(nameof(Specializations),
-                                        new DependencyGraphNode<string, Skill>(nameof(CanHaveSpecs)) // Not strictly dependent like this, but fetched every time specializations are
+                                        new DependencyGraphNode<string, Skill>(nameof(CanHaveSpecs), x => !x.IsExoticSkill) // Not strictly dependent like this, but fetched every time specializations are
                                     ),
                                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating)),
                                     new DependencyGraphNode<string, Skill>(nameof(GetSpecialization),
@@ -6000,8 +6000,10 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentKarmaCost),
                     new DependencyGraphNode<string, Skill>(nameof(RangeCost),
-                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled),
-                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null)
+                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled, async (x, t) => await
+                            (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && await x.GetEnabledAsync(t).ConfigureAwait(false)),
+                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null, async (x, t) => await
+                            (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && x.SkillGroupObject != null)
                     ),
                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating)),
                     new DependencyGraphNode<string, Skill>(nameof(Base)),
@@ -6010,8 +6012,10 @@ namespace Chummer.Backend.Skills
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CanUpgradeCareer),
                     new DependencyGraphNode<string, Skill>(nameof(UpgradeKarmaCost),
-                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled),
-                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null)
+                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled, async (x, t) => await
+                            (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && await x.GetEnabledAsync(t).ConfigureAwait(false)),
+                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null, async (x, t) => await
+                            (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetCompensateSkillGroupKarmaDifferenceAsync(t).ConfigureAwait(false) && x.SkillGroupObject != null)
                     ),
                     new DependencyGraphNode<string, Skill>(nameof(RatingMaximum)),
                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating))
@@ -6297,11 +6301,11 @@ namespace Chummer.Backend.Skills
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_SkillDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_SkillDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_SkillDependencyGraph
-                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_SkillDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }

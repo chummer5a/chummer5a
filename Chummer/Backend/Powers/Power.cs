@@ -2432,7 +2432,7 @@ namespace Chummer
                             new DependencyGraphNode<string, Power>(nameof(Rating),
                                 new DependencyGraphNode<string, Power>(nameof(TotalMaximumLevels),
                                     new DependencyGraphNode<string, Power>(nameof(LevelsEnabled)),
-                                    new DependencyGraphNode<string, Power>(nameof(MaxLevels), x => x.LevelsEnabled)
+                                    new DependencyGraphNode<string, Power>(nameof(MaxLevels), x => x.LevelsEnabled, (x, t) => x.GetLevelsEnabledAsync(t))
                                 )
                             ),
                             new DependencyGraphNode<string, Power>(nameof(FreeLevels),
@@ -2679,12 +2679,12 @@ namespace Chummer
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_PowerDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_PowerDependencyGraph
-                                         .GetWithAllDependentsEnumerable(
-                                             this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_PowerDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(
+                                             this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }

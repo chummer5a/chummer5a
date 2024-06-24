@@ -1917,7 +1917,8 @@ namespace Chummer.Backend.Skills
                         new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                     ),
                     new DependencyGraphNode<string, SkillGroup>(nameof(IsBroken),
-                        new DependencyGraphNode<string, SkillGroup>(nameof(HasAnyBreakingSkills), x => !x.IsBroken || x.CharacterObject.Settings.AllowSkillRegrouping,
+                        new DependencyGraphNode<string, SkillGroup>(nameof(HasAnyBreakingSkills), x => !x.IsBroken || x.CharacterObject.Settings.AllowSkillRegrouping, async (x, t) => !await x.GetIsBrokenAsync(t).ConfigureAwait(false) || await
+                                (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetAllowSkillRegroupingAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
                         )
                     ),
@@ -1961,7 +1962,7 @@ namespace Chummer.Backend.Skills
                 new DependencyGraphNode<string, SkillGroup>(nameof(BaseUnbroken),
                     new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled)),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
-                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Settings.UsePointsOnBrokenGroups)
+                    new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Settings.UsePointsOnBrokenGroups, async (x, t) => await (await x._objCharacter.GetSettingsAsync(t).ConfigureAwait(false)).GetUsePointsOnBrokenGroupsAsync(t).ConfigureAwait(false))
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(ToolTip),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
@@ -2610,11 +2611,11 @@ namespace Chummer.Backend.Skills
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_SkillGroupDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_SkillGroupDependencyGraph
-                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_SkillGroupDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }

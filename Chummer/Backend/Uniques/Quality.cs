@@ -2818,11 +2818,11 @@ namespace Chummer
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_QualityDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_QualityDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_QualityDependencyGraph
-                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_QualityDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }

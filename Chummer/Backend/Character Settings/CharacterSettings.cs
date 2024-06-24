@@ -446,11 +446,11 @@ namespace Chummer
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_CharacterSettingsDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_CharacterSettingsDependencyGraph
-                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_CharacterSettingsDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }

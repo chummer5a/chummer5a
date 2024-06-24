@@ -3824,7 +3824,7 @@ namespace Chummer.Backend.Equipment
                                 new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
                             )
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost), x => x.TrustFund,
+                        new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost), x => x.TrustFund, (x, t) => x.GetTrustFundAsync(t),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
                         new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
@@ -3838,7 +3838,7 @@ namespace Chummer.Backend.Equipment
                             new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => !x.PrimaryTenant,
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => !x.PrimaryTenant, async (x, t) => !await x.GetPrimaryTenantAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, Lifestyle>(nameof(PrimaryTenant))
                         ),
                         new DependencyGraphNode<string, Lifestyle>(nameof(IncrementType)),
@@ -4061,11 +4061,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_LifestyleDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_LifestyleDependencyGraph
-                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_LifestyleDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }

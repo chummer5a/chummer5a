@@ -6559,12 +6559,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (setNamesOfChangedProperties == null)
                         setNamesOfChangedProperties =
-                            s_GearDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                            await s_GearDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                     else
                     {
-                        foreach (string strLoopChangedProperty in s_GearDependencyGraph.GetWithAllDependentsEnumerable(
-                                     this,
-                                     strPropertyName))
+                        foreach (string strLoopChangedProperty in await s_GearDependencyGraph.GetWithAllDependentsEnumerableAsync(
+                                     this, strPropertyName, token).ConfigureAwait(false))
                             setNamesOfChangedProperties.Add(strLoopChangedProperty);
                     }
                 }

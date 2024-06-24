@@ -2148,11 +2148,11 @@ namespace Chummer
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_SpiritDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
                             foreach (string strLoopChangedProperty in
-                                     s_SpiritDependencyGraph.GetWithAllDependentsEnumerable(this, strPropertyName))
+                                     await s_SpiritDependencyGraph.GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }
@@ -2269,7 +2269,7 @@ namespace Chummer
                     new DependencyGraphNode<string, Spirit>(nameof(CritterName),
                         new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                     ),
-                    new DependencyGraphNode<string, Spirit>(nameof(Name), x => string.IsNullOrEmpty(x.CritterName))
+                    new DependencyGraphNode<string, Spirit>(nameof(Name), x => string.IsNullOrEmpty(x.CritterName), async (x, t) => string.IsNullOrEmpty(await x.GetCritterNameAsync(t).ConfigureAwait(false)))
                 ),
                 new DependencyGraphNode<string, Spirit>(nameof(MainMugshot),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter)),

@@ -42572,7 +42572,7 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(CurrentDisplayName),
                         new DependencyGraphNode<string, Character>(nameof(CharacterName),
                             new DependencyGraphNode<string, Character>(nameof(Alias)),
-                            new DependencyGraphNode<string, Character>(nameof(Name), x => string.IsNullOrWhiteSpace(x.Alias),
+                            new DependencyGraphNode<string, Character>(nameof(Name), x => string.IsNullOrWhiteSpace(x.Alias), async (x, t) => string.IsNullOrWhiteSpace(await x.GetAliasAsync(t).ConfigureAwait(false)),
                                 new DependencyGraphNode<string, Character>(nameof(Alias))
                             )
                         )
@@ -42585,7 +42585,7 @@ namespace Chummer
                                     new DependencyGraphNode<string, Character>(nameof(MagicianEnabled))
                                 )
                             ),
-                            new DependencyGraphNode<string, Character>(nameof(MysticAdeptPowerPoints), x => x.UseMysticAdeptPPs,
+                            new DependencyGraphNode<string, Character>(nameof(MysticAdeptPowerPoints), x => x.UseMysticAdeptPPs, (x, t) => x.GetUseMysticAdeptPPsAsync(t),
                                 new DependencyGraphNode<string, Character>(nameof(UseMysticAdeptPPs))
                             )
                         ),
@@ -42628,19 +42628,19 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(MatrixInitiative),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(InitiativeDice), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(InitiativeDice), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 )
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 ),
-                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 ),
-                                new DependencyGraphNode<string, Character>(nameof(InitiativeValue), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(InitiativeValue), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 )
                             )
@@ -42649,27 +42649,27 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeColdToolTip),
                         new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeCold),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI,
+                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI))
                             ),
-                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI))
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeColdDice),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 )
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeColdValue),
-                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 ),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 ),
-                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 )
                             )
@@ -42678,27 +42678,27 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHotToolTip),
                         new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHot),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI,
+                            new DependencyGraphNode<string, Character>(nameof(MatrixInitiative), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI))
                             ),
-                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                            new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI))
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHotDice),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeDice), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 )
                             ),
                             new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeHotValue),
-                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(ActiveCommlink), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 ),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(MatrixInitiativeValue), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 ),
-                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI,
+                                new DependencyGraphNode<string, Character>(nameof(WoundModifier), x => !x.IsAI, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false),
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 )
                             )
@@ -42725,7 +42725,7 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(DisplayStunCM),
                         new DependencyGraphNode<string, Character>(nameof(IsAI)),
                         new DependencyGraphNode<string, Character>(nameof(HomeNode)),
-                        new DependencyGraphNode<string, Character>(nameof(StunCM), x => !x.IsAI || x.HomeNode != null)
+                        new DependencyGraphNode<string, Character>(nameof(StunCM), x => !x.IsAI || x.HomeNode != null, async (x, t) => !await x.GetIsAIAsync(t).ConfigureAwait(false) || await x.GetHomeNodeAsync(t).ConfigureAwait(false) != null)
                     ),
                     new DependencyGraphNode<string, Character>(nameof(StunCMLabelText),
                         new DependencyGraphNode<string, Character>(nameof(IsAI)),
@@ -42760,7 +42760,8 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(CMThreshold)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI))
                         ),
-                        new DependencyGraphNode<string, Character>(nameof(Encumbrance), x => x.Settings.DoEncumbrancePenaltyWoundModifier)
+                        new DependencyGraphNode<string, Character>(nameof(Encumbrance), x => x.Settings.DoEncumbrancePenaltyWoundModifier, async (x, t) =>
+                            await (await x.GetSettingsAsync(t).ConfigureAwait(false)).GetDoEncumbrancePenaltyWoundModifierAsync(t).ConfigureAwait(false))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(CMThresholdOffsets),
                         new DependencyGraphNode<string, Character>(nameof(PhysicalCMThresholdOffset)),
@@ -42780,7 +42781,7 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(DamageResistancePool),
                             new DependencyGraphNode<string, Character>(nameof(TotalArmorRating)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI))
                             )
                         )
@@ -42811,7 +42812,7 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(SpellDefenseIndirectSoak),
                             new DependencyGraphNode<string, Character>(nameof(TotalArmorRating)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI))
                             ),
                             new DependencyGraphNode<string, Character>(nameof(SpellResistance))
@@ -42966,7 +42967,7 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(SpellDefenseManipulationPhysical),
                             new DependencyGraphNode<string, Character>(nameof(SpellResistance)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI)),
-                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI,
+                            new DependencyGraphNode<string, Character>(nameof(HomeNode), x => x.IsAI, (x, t) => x.GetIsAIAsync(t),
                                 new DependencyGraphNode<string, Character>(nameof(IsAI))
                             )
                         )
@@ -43120,9 +43121,9 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(CalculatedPublicAwareness),
                                 new DependencyGraphNode<string, Character>(nameof(PublicAwareness)),
                                 new DependencyGraphNode<string, Character>(nameof(TotalStreetCred),
-                                    x => x.Settings.UseCalculatedPublicAwareness),
+                                    x => x.Settings.UseCalculatedPublicAwareness, async (x, t) => await (await x.GetSettingsAsync(t).ConfigureAwait(false)).GetUseCalculatedPublicAwarenessAsync(t).ConfigureAwait(false)),
                                 new DependencyGraphNode<string, Character>(nameof(TotalNotoriety),
-                                    x => x.Settings.UseCalculatedPublicAwareness)
+                                    x => x.Settings.UseCalculatedPublicAwareness, async (x, t) => await (await x.GetSettingsAsync(t).ConfigureAwait(false)).GetUseCalculatedPublicAwarenessAsync(t).ConfigureAwait(false))
                             )
                         )
                     ),
@@ -43184,30 +43185,42 @@ namespace Chummer
                                     new DependencyGraphNode<string, Character>(nameof(CurrentWalkingRateString),
                                         new DependencyGraphNode<string, Character>(nameof(WalkString),
                                             x => x.AttributeSection.AttributeCategory ==
-                                                 CharacterAttrib.AttributeCategory.Standard),
+                                                 CharacterAttrib.AttributeCategory.Standard,
+                                            async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) ==
+                                                            CharacterAttrib.AttributeCategory.Standard),
                                         new DependencyGraphNode<string, Character>(nameof(WalkAltString),
                                             x => x.AttributeSection.AttributeCategory !=
-                                                 CharacterAttrib.AttributeCategory.Standard)
+                                                 CharacterAttrib.AttributeCategory.Standard,
+                                            async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) !=
+                                                            CharacterAttrib.AttributeCategory.Standard)
                                     )
                                 ),
                                 new DependencyGraphNode<string, Character>(nameof(RunningRate),
                                     new DependencyGraphNode<string, Character>(nameof(CurrentRunningRateString),
                                         new DependencyGraphNode<string, Character>(nameof(RunString),
                                             x => x.AttributeSection.AttributeCategory ==
-                                                 CharacterAttrib.AttributeCategory.Standard),
+                                                 CharacterAttrib.AttributeCategory.Standard,
+                                            async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) ==
+                                                            CharacterAttrib.AttributeCategory.Standard),
                                         new DependencyGraphNode<string, Character>(nameof(RunAltString),
                                             x => x.AttributeSection.AttributeCategory !=
-                                                 CharacterAttrib.AttributeCategory.Standard)
+                                                 CharacterAttrib.AttributeCategory.Standard,
+                                            async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) !=
+                                                            CharacterAttrib.AttributeCategory.Standard)
                                     )
                                 ),
                                 new DependencyGraphNode<string, Character>(nameof(SprintingRate),
                                     new DependencyGraphNode<string, Character>(nameof(CurrentSprintingRateString),
                                         new DependencyGraphNode<string, Character>(nameof(SprintString),
                                             x => x.AttributeSection.AttributeCategory ==
-                                                 CharacterAttrib.AttributeCategory.Standard),
+                                                 CharacterAttrib.AttributeCategory.Standard,
+                                            async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) ==
+                                                            CharacterAttrib.AttributeCategory.Standard),
                                         new DependencyGraphNode<string, Character>(nameof(SprintAltString),
                                             x => x.AttributeSection.AttributeCategory !=
-                                                 CharacterAttrib.AttributeCategory.Standard)
+                                                 CharacterAttrib.AttributeCategory.Standard,
+                                            async (x, t) => await (await x.GetAttributeSectionAsync(t).ConfigureAwait(false)).GetAttributeCategoryAsync(t).ConfigureAwait(false) !=
+                                                            CharacterAttrib.AttributeCategory.Standard)
                                     )
                                 )
                             )
@@ -43610,12 +43623,12 @@ namespace Chummer
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_CharacterDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_CharacterDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_CharacterDependencyGraph
-                                         .GetWithAllDependentsEnumerable(
-                                             this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_CharacterDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(
+                                             this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }

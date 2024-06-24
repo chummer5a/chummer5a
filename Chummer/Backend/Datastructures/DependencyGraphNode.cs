@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -51,16 +53,35 @@ namespace Chummer
         /// Use this constructor when specifying arguments for a DependencyGraph constructor.
         /// </summary>
         /// <param name="objMyObject">Object associated with the current node</param>
-        /// <param name="funcDependancyCondition">Function that must return true at the time of collecting dependencies in order for the dependency to register.</param>
+        /// <param name="funcDependencyCondition">Function that must return true at the time of collecting dependencies in order for the dependency to register.</param>
         /// <param name="lstDownStreamNodes">Any objects that depend on the object associated with the current node</param>
-        public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependancyCondition, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
+        public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependencyCondition, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
         {
             MyObject = objMyObject;
 
             foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, funcDependancyCondition));
-                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, funcDependancyCondition));
+                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, funcDependencyCondition));
+                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, funcDependencyCondition));
+            }
+        }
+
+        /// <summary>
+        /// Constructor used for to make a blueprint of a DependencyGraph.
+        /// Use this constructor when specifying arguments for a DependencyGraph constructor.
+        /// </summary>
+        /// <param name="objMyObject">Object associated with the current node</param>
+        /// <param name="funcDependencyCondition">Function that must return true at the time of collecting dependencies in order for the dependency to register.</param>
+        /// <param name="funcDependencyConditionAsync">Async version of <paramref name="funcDependencyCondition"/>.</param>
+        /// <param name="lstDownStreamNodes">Any objects that depend on the object associated with the current node</param>
+        public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependencyCondition, Func<T2, CancellationToken, Task<bool>> funcDependencyConditionAsync, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
+        {
+            MyObject = objMyObject;
+
+            foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
+            {
+                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, funcDependencyCondition, funcDependencyConditionAsync));
+                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, funcDependencyCondition, funcDependencyConditionAsync));
             }
         }
 

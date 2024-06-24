@@ -3569,11 +3569,11 @@ namespace Chummer.Backend.Attributes
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_AttributeDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_AttributeDependencyGraph
-                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_AttributeDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }
@@ -3778,7 +3778,7 @@ namespace Chummer.Backend.Attributes
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
                             )
                         ),
-                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue), x => x.HasModifiers(),
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue), x => x.HasModifiers(), (x, t) => x.HasModifiersAsync(t),
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers))
                         ),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers))

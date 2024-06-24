@@ -2234,11 +2234,11 @@ namespace Chummer.Backend.Equipment
                                 new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
                                 new DependencyGraphNode<string, LifestyleQuality>(nameof(IsFreeByLifestyle),
                                     new DependencyGraphNode<string, LifestyleQuality>(nameof(OriginSource)),
-                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => x.OriginSource != QualitySource.BuiltIn),
-                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => x.OriginSource != QualitySource.BuiltIn && x.UseLPCost)
+                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => x.OriginSource != QualitySource.BuiltIn, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn),
+                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => x.OriginSource != QualitySource.BuiltIn && x.UseLPCost, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn && !await x.GetUseLPCostAsync(t).ConfigureAwait(false))
                                 )
                             ),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.CostFree)
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.CostFree, async (x, t) => !await x.GetCostFreeAsync(t).ConfigureAwait(false))
                         ),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(Multiplier),
                             new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree))
@@ -2248,8 +2248,8 @@ namespace Chummer.Backend.Equipment
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(LPCost),
                     new DependencyGraphNode<string, LifestyleQuality>(nameof(LPFree),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free && x.CanBeFreeByLifestyle),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => !x.Free && !x.UseLPCost)
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free && x.CanBeFreeByLifestyle, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false) && !await x.GetCanBeFreeByLifestyleAsync(t).ConfigureAwait(false)),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => !x.Free && !x.UseLPCost, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false) && !await x.GetUseLPCostAsync(t).ConfigureAwait(false))
                     )
                 ),
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(BaseMultiplier),
@@ -2457,11 +2457,11 @@ namespace Chummer.Backend.Equipment
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = s_LifestyleQualityDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                                = await s_LifestyleQualityDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
-                            foreach (string strLoopChangedProperty in s_LifestyleQualityDependencyGraph
-                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            foreach (string strLoopChangedProperty in await s_LifestyleQualityDependencyGraph
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }
