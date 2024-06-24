@@ -6182,7 +6182,7 @@ namespace Chummer.Backend.Skills
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
                             {
                                 _intCachedCanHaveSpecs = -1;
-                                if (!CanHaveSpecs && !CharacterObject.Created && Specializations.Count > 0)
+                                if (!CharacterObject.Created && Specializations.Count > 0 && !CanHaveSpecs)
                                     Specializations.Clear();
                             }
                         }
@@ -6340,10 +6340,10 @@ namespace Chummer.Backend.Skills
                             if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
                             {
                                 _intCachedCanHaveSpecs = -1;
-                                if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false) && !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                                if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                                 {
                                     ThreadSafeObservableCollection<SkillSpecialization> lstSpecs = await GetSpecializationsAsync(token).ConfigureAwait(false);
-                                    if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0)
+                                    if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0 && !await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
                                         await lstSpecs.ClearAsync(token).ConfigureAwait(false);
                                 }
                             }
