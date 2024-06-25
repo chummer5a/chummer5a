@@ -10254,17 +10254,17 @@ namespace Chummer
                                     if (!Created)
                                     {
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        SkillsSection.Skills.EnumerateWithSideEffects().ForEach(x =>
+                                        SkillsSection.Skills.ForEach(x =>
                                         {
                                             if (x.Specializations.Count > 0 && !x.CanHaveSpecs)
                                                 x.Specializations.Clear();
-                                        });
+                                        }, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        SkillsSection.KnowledgeSkills.EnumerateWithSideEffects().ForEach(x =>
+                                        SkillsSection.KnowledgeSkills.ForEach(x =>
                                         {
                                             if (x.Specializations.Count > 0 && !x.CanHaveSpecs)
                                                 x.Specializations.Clear();
-                                        });
+                                        }, token);
                                     }
                                 }
                                 else if (!await GetCreatedAsync(token).ConfigureAwait(false))
