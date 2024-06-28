@@ -64,9 +64,17 @@ namespace Chummer.UI.Table
                 T tValue = newValue as T;
                 if (MinExtractor != null)
                 {
-                    _spinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
+                    if (MaxExtractor != null)
+                    {
+                        decimal decMin = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
+                        decimal decMax = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
+                        _spinner.Minimum = Math.Min(decMin, decMax);
+                        _spinner.Maximum = Math.Max(decMax, decMin);
+                    }
+                    else
+                        _spinner.Minimum = Utils.SafelyRunSynchronously(() => MinExtractor(tValue, _objMyToken), _objMyToken);
                 }
-                if (MaxExtractor != null)
+                else if (MaxExtractor != null)
                 {
                     _spinner.Maximum = Utils.SafelyRunSynchronously(() => MaxExtractor(tValue, _objMyToken), _objMyToken);
                 }
@@ -81,7 +89,7 @@ namespace Chummer.UI.Table
                     return;
                 try
                 {
-                    _spinner.Value = Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken);
+                    _spinner.Value = Math.Min(Math.Max(Utils.SafelyRunSynchronously(() => ValueGetter(tValue, _objMyToken), _objMyToken), _spinner.Minimum), _spinner.Maximum);
                 }
                 finally
                 {
@@ -114,9 +122,9 @@ namespace Chummer.UI.Table
                         await _spinner.DoThreadSafeAsync(x =>
                         {
                             if (blnDoMin)
-                                x.Minimum = decMin;
+                                x.Minimum = Math.Min(decMin, decMax);
                             if (blnDoMax)
-                                x.Maximum = decMax;
+                                x.Maximum = Math.Max(decMax, decMin);
                             if (blnDoEnabled)
                                 x.Enabled = blnEnabled;
                         }, token: token).ConfigureAwait(false);
@@ -130,12 +138,12 @@ namespace Chummer.UI.Table
                     await _spinner.DoThreadSafeAsync(x =>
                     {
                         if (blnDoMin)
-                            x.Minimum = decMin;
+                            x.Minimum = Math.Min(decMin, decMax);
                         if (blnDoMax)
-                            x.Maximum = decMax;
+                            x.Maximum = Math.Max(decMax, decMin);
                         if (blnDoEnabled)
                             x.Enabled = blnEnabled;
-                        x.Value = decValue;
+                        x.Value = Math.Min(Math.Max(decValue, x.Minimum), x.Maximum);
                     }, token: token).ConfigureAwait(false);
                 }
                 finally
@@ -154,8 +162,8 @@ namespace Chummer.UI.Table
                         decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
                         await _spinner.DoThreadSafeAsync(x =>
                         {
-                            x.Minimum = decMin;
-                            x.Maximum = decMax;
+                            x.Minimum = Math.Min(decMin, decMax);
+                            x.Maximum = Math.Max(decMax, decMin);
                             x.Enabled = blnEnabled;
                         }, token: token).ConfigureAwait(false);
                     }
@@ -188,8 +196,8 @@ namespace Chummer.UI.Table
                     decimal decMin = await MinExtractor(tValue, token).ConfigureAwait(false);
                     await _spinner.DoThreadSafeAsync(x =>
                     {
-                        x.Minimum = decMin;
-                        x.Maximum = decMax;
+                        x.Minimum = Math.Min(decMin, decMax);
+                        x.Maximum = Math.Max(decMax, decMin);
                     }, token: token).ConfigureAwait(false);
                 }
                 else
