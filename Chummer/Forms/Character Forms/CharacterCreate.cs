@@ -122,7 +122,7 @@ namespace Chummer
             tabSkillsUc.CachedCharacter = objCharacter;
             tabPowerUc.CachedCharacter = objCharacter;
 
-            GlobalSettings.ClipboardChanged += RefreshPasteStatus;
+            GlobalSettings.ClipboardChangedAsync += RefreshPasteStatusAsync;
             tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
@@ -1916,7 +1916,7 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
-                        GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
+                        GlobalSettings.ClipboardChangedAsync -= RefreshPasteStatusAsync;
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -=
@@ -23383,6 +23383,14 @@ namespace Chummer
             {
                 //swallow this
             }
+        }
+
+        /// <summary>
+        /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
+        /// </summary>
+        private Task RefreshPasteStatusAsync(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        {
+            return DoRefreshPasteStatus(token);
         }
 
         private async Task DoRefreshPasteStatus(CancellationToken token = default)

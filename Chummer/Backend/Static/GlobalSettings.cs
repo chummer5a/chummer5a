@@ -226,6 +226,8 @@ namespace Chummer
 
         public static event PropertyChangedEventHandler ClipboardChanged;
 
+        public static event PropertyChangedAsyncEventHandler ClipboardChangedAsync;
+
         public const int MaxMruSize = 10;
         private static readonly MostRecentlyUsedCollection<string> s_LstMostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
         private static readonly MostRecentlyUsedCollection<string> s_LstFavoriteCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
@@ -1571,6 +1573,8 @@ namespace Chummer
                         return;
                 }
 
+                if (ClipboardChangedAsync != null)
+                    Utils.SafelyRunSynchronously(() => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token), token);
                 ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
             }
         }
@@ -1619,6 +1623,8 @@ namespace Chummer
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
+                if (ClipboardChangedAsync != null)
+                    await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token);
                 ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
             }
             finally
