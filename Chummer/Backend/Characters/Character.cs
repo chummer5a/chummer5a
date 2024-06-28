@@ -18890,7 +18890,7 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             objVehicle.PhysicalCMFilled = value;
-                            await OnPropertyChangedAsync(nameof(PhysicalCMFilled), token);
+                            await OnPropertyChangedAsync(nameof(PhysicalCMFilled), token).ConfigureAwait(false);
                         }
                         finally
                         {
@@ -18900,7 +18900,7 @@ namespace Chummer
                 }
                 else if (Interlocked.Exchange(ref _intPhysicalCMFilled, value) != value)
                 {
-                    await OnPropertyChangedAsync(nameof(PhysicalCMFilled), token);
+                    await OnPropertyChangedAsync(nameof(PhysicalCMFilled), token).ConfigureAwait(false);
                 }
             }
             finally
@@ -19002,7 +19002,7 @@ namespace Chummer
                             {
                                 token.ThrowIfCancellationRequested();
                                 HomeNode.MatrixCMFilled = value;
-                                await OnPropertyChangedAsync(nameof(StunCMFilled), token);
+                                await OnPropertyChangedAsync(nameof(StunCMFilled), token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -19012,12 +19012,12 @@ namespace Chummer
                     }
                     else if (Interlocked.Exchange(ref _intStunCMFilled, value) != value)
                     {
-                        await OnPropertyChangedAsync(nameof(StunCMFilled), token);
+                        await OnPropertyChangedAsync(nameof(StunCMFilled), token).ConfigureAwait(false);
                     }
                 }
                 else if (Interlocked.Exchange(ref _intStunCMFilled, value) != value)
                 {
-                    await OnPropertyChangedAsync(nameof(StunCMFilled), token);
+                    await OnPropertyChangedAsync(nameof(StunCMFilled), token).ConfigureAwait(false);
                 }
             }
             finally

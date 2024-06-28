@@ -6287,11 +6287,11 @@ namespace Chummer.Backend.Skills
                     {
                         if (setNamesOfChangedProperties == null)
                             setNamesOfChangedProperties
-                                = await s_SkillDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token);
+                                = await s_SkillDependencyGraph.GetWithAllDependentsAsync(this, strPropertyName, true, token).ConfigureAwait(false);
                         else
                         {
                             foreach (string strLoopChangedProperty in await s_SkillDependencyGraph
-                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token))
+                                         .GetWithAllDependentsEnumerableAsync(this, strPropertyName, token).ConfigureAwait(false))
                                 setNamesOfChangedProperties.Add(strLoopChangedProperty);
                         }
                     }
