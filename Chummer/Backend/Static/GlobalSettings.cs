@@ -1491,9 +1491,13 @@ namespace Chummer
         public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
         private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
+        private static AsyncFriendlyReaderWriterLock _objClipboardLocker = new AsyncFriendlyReaderWriterLock();
+
         private static readonly Lazy<Regex> s_RgxInvalidUnicodeCharsExpression = new Lazy<Regex>(() => new Regex(
             @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+
+        private static ClipboardContentType _eClipboardContentType;
 
         /// <summary>
         /// XmlReaderSettings that should be used when reading almost Xml readable.
@@ -1512,22 +1516,146 @@ namespace Chummer
         public static Regex InvalidUnicodeCharsExpression => s_RgxInvalidUnicodeCharsExpression.Value;
 
         /// <summary>
+        /// Lock the clipboard for reading.
+        /// </summary>
+        public static IDisposable EnterClipboardReadLock(CancellationToken token = default) =>
+            _objClipboardLocker.EnterReadLock(token);
+
+        /// <summary>
+        /// Lock the clipboard for reading.
+        /// </summary>
+        public static Task<IAsyncDisposable> EnterClipboardReadLockAsync(CancellationToken token = default) =>
+            _objClipboardLocker.EnterReadLockAsync(token);
+
+        /// <summary>
+        /// Lock the clipboard for upgradeable reading.
+        /// </summary>
+        public static IDisposable EnterClipboardUpgradeableReadLock(CancellationToken token = default) =>
+            _objClipboardLocker.EnterUpgradeableReadLock(token);
+
+        /// <summary>
+        /// Lock the clipboard for upgradeable reading.
+        /// </summary>
+        public static Task<IAsyncDisposable> EnterClipboardUpgradeableReadLockAsync(CancellationToken token = default) =>
+            _objClipboardLocker.EnterUpgradeableReadLockAsync(token);
+
+        /// <summary>
         /// Clipboard.
         /// </summary>
         public static XmlDocument Clipboard
         {
-            get => _xmlClipboard;
-            set
+            get
             {
-                if (Interlocked.Exchange(ref _xmlClipboard, value) != value)
-                    ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+                using (_objClipboardLocker.EnterReadLock())
+                    return _xmlClipboard;
+            }
+        }
+
+        /// <summary>
+        /// Clipboard.
+        /// </summary>
+        public static void SetClipboard(XmlDocument value, ClipboardContentType eType, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (_objClipboardLocker.EnterUpgradeableReadLock(token))
+            {
+                token.ThrowIfCancellationRequested();
+                if (_xmlClipboard == value && eType == _eClipboardContentType)
+                    return;
+
+                using (_objClipboardLocker.EnterWriteLock(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _xmlClipboard, value) == value
+                        && InterlockedExtensions.Exchange(ref _eClipboardContentType, eType) == eType)
+                        return;
+                }
+
+                ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+            }
+        }
+
+        /// <summary>
+        /// Clipboard.
+        /// </summary>
+        public static async Task<XmlDocument> GetClipboardAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _xmlClipboard;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Clipboard.
+        /// </summary>
+        public static async Task SetClipboardAsync(XmlDocument value, ClipboardContentType eType, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objClipboardLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_xmlClipboard == value && eType == _eClipboardContentType)
+                    return;
+
+                IAsyncDisposable objLocker2 = await _objClipboardLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _xmlClipboard, value) == value
+                        && InterlockedExtensions.Exchange(ref _eClipboardContentType, eType) == eType)
+                        return;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// Type of data that is currently stored in the clipboard.
         /// </summary>
-        public static ClipboardContentType ClipboardContentType { get; set; }
+        public static ClipboardContentType ClipboardContentType
+        {
+            get
+            {
+                using (_objClipboardLocker.EnterReadLock())
+                    return _eClipboardContentType;
+            }
+        }
+
+        /// <summary>
+        /// Type of data that is currently stored in the clipboard.
+        /// </summary>
+        public static async Task<ClipboardContentType> GetClipboardContentTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _eClipboardContentType;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
 
         /// <summary>
         /// Default character sheet to use when printing.

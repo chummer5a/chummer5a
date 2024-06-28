@@ -788,6 +788,17 @@ namespace Chummer.Backend.Equipment
         public bool IsWeaponsFull => Weapons.Count(x => string.IsNullOrEmpty(x.ParentID) || Weapons.DeepFindById(x.ParentID) == null) >= _intWeaponCapacity;
 
         /// <summary>
+        /// Whether this mount can accommodate any more weapons or not
+        /// </summary>
+        public async Task<bool> GetIsWeaponsFullAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await Weapons.CountAsync(x =>
+                       string.IsNullOrEmpty(x.ParentID) || Weapons.DeepFindById(x.ParentID) == null, token: token).ConfigureAwait(false) >=
+                   _intWeaponCapacity;
+        }
+
+        /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -1987,37 +1998,46 @@ namespace Chummer.Backend.Equipment
             await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
 
-        public bool AllowPasteXml
+        public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
-            get
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                switch (GlobalSettings.ClipboardContentType)
+                token.ThrowIfCancellationRequested();
+                switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.Weapon:
+                    {
+                        if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
-                            if (!string.IsNullOrEmpty(AllowedWeapons))
-                            {
-                                string strCheckValue = GlobalSettings.Clipboard["name"]?.InnerText;
-                                if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
-                                    return false;
-                            }
-                            if (!string.IsNullOrEmpty(AllowedWeaponCategories))
-                            {
-                                string strCheckValue = GlobalSettings.Clipboard["category"]?.InnerText;
-                                if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
-                                    return false;
-                            }
-
-                            return IsWeaponsFull;
+                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("name")?.Value ?? string.Empty;
+                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
+                                return false;
                         }
+
+                        if (!string.IsNullOrEmpty(AllowedWeaponCategories))
+                        {
+                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category")?.Value ?? string.Empty;
+                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
+                                return false;
+                        }
+
+                        return await GetIsWeaponsFullAsync(token).ConfigureAwait(false);
+                    }
                     default:
                         return false;
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public bool AllowPasteObject(object input)
+        public Task<bool> AllowPasteObject(object input, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             throw new NotImplementedException();
         }
 

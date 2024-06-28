@@ -5989,46 +5989,57 @@ namespace Chummer
             }
         }
 
-        private void mnuEditCopy_Click(object sender, EventArgs e)
+        private async void mnuEditCopy_Click(object sender, EventArgs e)
         {
-            object selectedObject = null;
-            if (tabCharacterTabs.SelectedTab == tabStreetGear)
-            {
-                // Lifestyle Tab.
-                if (tabStreetGearTabs.SelectedTab == tabLifestyle)
-                {
-                    selectedObject = treLifestyles.SelectedNode?.Tag;
-                }
-                // Armor Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabArmor)
-                {
-                    selectedObject = treArmor.SelectedNode?.Tag;
-                }
-                // Weapons Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabWeapons)
-                {
-                    selectedObject = treWeapons.SelectedNode?.Tag;
-                }
-                // Gear Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabGear)
-                {
-                    selectedObject = treGear.SelectedNode?.Tag;
-                }
-            }
-            // Cyberware Tab.
-            else if (tabCharacterTabs.SelectedTab == tabCyberware)
-            {
-                selectedObject = treCyberware.SelectedNode?.Tag;
-            }
-            // Vehicles Tab.
-            else if (tabCharacterTabs.SelectedTab == tabVehicles)
-            {
-                selectedObject = treVehicles.SelectedNode?.Tag;
-            }
-
             try
             {
-                CopyObject(selectedObject, GenericToken);
+                if (tabCharacterTabs != null)
+                {
+                    object objSelectedObject = await tabCharacterTabs.DoThreadSafeFuncAsync(x =>
+                    {
+                        if (x.SelectedTab == tabStreetGear && tabStreetGearTabs != null)
+                        {
+                            if (tabStreetGearTabs.SelectedTab == tabArmor)
+                            {
+                                return treArmor.SelectedNode?.Tag;
+                            }
+
+                            if (tabStreetGearTabs.SelectedTab == tabWeapons)
+                            {
+                                return treWeapons.SelectedNode?.Tag;
+                            }
+
+                            if (tabStreetGearTabs.SelectedTab == tabGear)
+                            {
+                                return treGear.SelectedNode?.Tag;
+                            }
+
+                            if (tabStreetGearTabs.SelectedTab == tabLifestyle)
+                            {
+                                return treLifestyles.SelectedNode?.Tag;
+                            }
+
+                            Utils.BreakIfDebug();
+                            return null;
+                        }
+
+                        if (x.SelectedTab == tabVehicles)
+                        {
+                            return treVehicles.SelectedNode?.Tag;
+                        }
+
+                        if (x.SelectedTab == tabCyberware)
+                        {
+                            return treCyberware.SelectedNode?.Tag;
+                        }
+
+                        Utils.BreakIfDebug();
+                        return null;
+                    }, GenericToken).ConfigureAwait(false);
+
+                    if (objSelectedObject != null)
+                        await CopyObject(objSelectedObject, GenericToken).ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {

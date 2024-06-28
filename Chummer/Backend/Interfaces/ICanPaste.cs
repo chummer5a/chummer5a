@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     public interface ICanPaste
@@ -24,8 +27,8 @@ namespace Chummer
         /// <summary>
         /// Does this object allow the current clipboard content to be pasted into it?
         /// </summary>
-        bool AllowPasteXml { get; }
+        Task<bool> AllowPasteXml(CancellationToken token = default);
 
-        bool AllowPasteObject(object input);
+        Task<bool> AllowPasteObject(object input, CancellationToken token = default);
     }
 }

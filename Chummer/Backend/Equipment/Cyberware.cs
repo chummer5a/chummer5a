@@ -3807,7 +3807,59 @@ namespace Chummer.Backend.Equipment
             set
             {
                 using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_strLocation == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strLocation = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The location of a Cyberlimb (Left or Right).
+        /// </summary>
+        public async Task<string> GetLocationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strLocation;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The location of a Cyberlimb (Left or Right).
+        /// </summary>
+        public async Task SetLocationAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strLocation == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     _strLocation = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4081,6 +4133,23 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The modular mount this cyberware contains. Returns string.Empty if it contains no mount.
+        /// </summary>
+        public async Task<string> GetHasModularMountAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strHasModularMount;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// What modular mount this cyberware plugs into. Returns string.Empty if it doesn't plug into a modular mount.
         /// </summary>
         public string PlugsIntoModularMount
@@ -4094,6 +4163,23 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterUpgradeableReadLock())
                     _strPlugsIntoModularMount = value;
+            }
+        }
+
+        /// <summary>
+        /// What modular mount this cyberware plugs into. Returns string.Empty if it doesn't plug into a modular mount.
+        /// </summary>
+        public async Task<string> GetPlugsIntoModularMountAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPlugsIntoModularMount;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5044,6 +5130,23 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterUpgradeableReadLock())
                     _strBlocksMounts = value;
+            }
+        }
+
+        /// <summary>
+        /// Comma-separated list of mount locations with which this 'ware is mutually exclusive.
+        /// </summary>
+        public async Task<string> GetBlocksMountsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strBlocksMounts;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -11518,23 +11621,36 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool AllowPasteXml
+        public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
-            get
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                switch (GlobalSettings.ClipboardContentType)
+                token.ThrowIfCancellationRequested();
+                switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.Gear:
                         string strCategory =
-                            GlobalSettings.Clipboard.SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/category")?.Value;
+                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/category")?.Value;
                         string strName =
-                            GlobalSettings.Clipboard.SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/name")?.Value;
-                        using (LockObject.EnterReadLock())
+                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/name")
+                                ?.Value;
+                        IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                        try
                         {
-                            if (AllowGear?.SelectSingleNode("gearcategory[. = " + strCategory.CleanXPath() + "] | gearname[. = " + strName.CleanXPath() + ']') != null)
+                            token.ThrowIfCancellationRequested();
+                            if (AllowGear?.SelectSingleNode("gearcategory[. = " + strCategory.CleanXPath() +
+                                                            "] | gearname[. = " + strName.CleanXPath() + ']') != null)
                             {
                                 return true;
                             }
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
 
                         break;
@@ -11546,29 +11662,39 @@ namespace Chummer.Backend.Equipment
                     default:
                         return false;
                 }
-
-                return false;
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            return false;
         }
 
-        public bool AllowPasteObject(object input)
+        public async Task<bool> AllowPasteObject(object input, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!(input is Cyberware objCyberware))
                 return true;
-            using (LockObject.EnterReadLock())
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                token.ThrowIfCancellationRequested();
+                string strPlugsIntoModularMount = await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strPlugsIntoModularMount))
                 {
-                    if (objCyberware.PlugsIntoModularMount != HasModularMount)
+                    if (strPlugsIntoModularMount != await GetHasModularMountAsync(token).ConfigureAwait(false))
                         return false;
-                    string strInputHasModularMount = objCyberware.HasModularMount;
-                    if (Children.Any(x => x.PlugsIntoModularMount == strInputHasModularMount))
+                    string strInputHasModularMount = await objCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                    if (await Children.AnyAsync(
+                            async x => await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) == strInputHasModularMount,
+                            token: token).ConfigureAwait(false))
                         return false;
 
-                    objCyberware.Location = Location;
+                    objCyberware.Location = await GetLocationAsync(token).ConfigureAwait(false);
                 }
 
-                if (objCyberware.SourceType != SourceType)
+                if (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) != await GetSourceTypeAsync(token).ConfigureAwait(false))
                     return true;
                 string strAllowedSubsystems = AllowedSubsystems;
                 if (!string.IsNullOrEmpty(strAllowedSubsystems))
@@ -11577,33 +11703,34 @@ namespace Chummer.Backend.Equipment
                     return strAllowedSubsystems.SplitNoAlloc(',').All(strSubsystem => strCategory != strSubsystem);
                 }
 
-                if (string.IsNullOrEmpty(objCyberware.HasModularMount) &&
-                    string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                if (string.IsNullOrEmpty(await objCyberware.GetHasModularMountAsync(token).ConfigureAwait(false)) &&
+                    string.IsNullOrEmpty(await objCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)))
                     return true;
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                out HashSet<string> setDisallowedMounts))
+                           out HashSet<string> setDisallowedMounts))
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                out HashSet<string> setHasMounts))
+                           out HashSet<string> setHasMounts))
                 {
-                    foreach (string strLoop in BlocksMounts.SplitNoAlloc(','))
+                    foreach (string strLoop in (await objCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(','))
                         setDisallowedMounts.Add(strLoop + Location);
-                    string strLoopHasModularMount = HasModularMount;
+                    string strLoopHasModularMount = await GetHasModularMountAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                         setHasMounts.Add(strLoopHasModularMount);
-                    foreach (Cyberware objLoopCyberware in Children.DeepWhere(
-                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount)))
+                    foreach (Cyberware objLoopCyberware in await Children.DeepWhereAsync(
+                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token: token).ConfigureAwait(false))
                     {
-                        foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(','))
+                        foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(
+                                     ','))
                         {
                             setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                         }
 
-                        strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                        strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strLoopHasModularMount))
                             setHasMounts.Add(strLoopHasModularMount);
                     }
 
-                    if (!string.IsNullOrEmpty(objCyberware.HasModularMount) &&
+                    if (!string.IsNullOrEmpty(await objCyberware.GetHasModularMountAsync(token).ConfigureAwait(false)) &&
                         setDisallowedMounts.Count > 0)
                     {
                         foreach (string strLoop in setDisallowedMounts)
@@ -11618,20 +11745,28 @@ namespace Chummer.Backend.Equipment
                                     continue;
                             }
 
-                            if (strCheck == objCyberware.HasModularMount)
+                            if (strCheck == await objCyberware.GetHasModularMountAsync(token).ConfigureAwait(false))
                             {
                                 return false;
                             }
                         }
                     }
 
-                    if (string.IsNullOrEmpty(objCyberware.BlocksMounts))
+                    if (string.IsNullOrEmpty(await objCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)))
                         return true;
-                    if (string.IsNullOrEmpty(objCyberware.Location) && string.IsNullOrEmpty(Location) &&
-                        (Children.All(x => x.Location != "Left") || Children.All(x => x.Location != "Right")))
+                    if (string.IsNullOrEmpty(await objCyberware.GetLocationAsync(token).ConfigureAwait(false)) &&
+                        string.IsNullOrEmpty(await GetLocationAsync(token).ConfigureAwait(false)) &&
+                        (await Children.AllAsync(async x => await x.GetLocationAsync(token).ConfigureAwait(false) != "Left", token: token).ConfigureAwait(false)
+                         || await Children.AllAsync(async x => await x.GetLocationAsync(token).ConfigureAwait(false) != "Right",
+                             token: token).ConfigureAwait(false)))
                         return true;
-                    return objCyberware.BlocksMounts.SplitNoAlloc(',').All(strLoop => !setHasMounts.Contains(strLoop));
+                    return (await objCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(',')
+                        .All(strLoop => !setHasMounts.Contains(strLoop));
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

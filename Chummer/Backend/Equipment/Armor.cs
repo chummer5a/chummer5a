@@ -3478,45 +3478,57 @@ namespace Chummer.Backend.Equipment
             return intRestrictedCount;
         }
 
-        public bool AllowPasteXml
+        public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
-            get
+            token.ThrowIfCancellationRequested();
+            string strCapacity = await CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token)
+                .ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
+                return false;
+            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                string strCapacity = CalculatedCapacity(GlobalSettings.InvariantCultureInfo);
-                if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
-                    return false;
-                string strPasteCategory = GlobalSettings.Clipboard["category"]?.InnerText ?? string.Empty;
-                switch (GlobalSettings.ClipboardContentType)
+                token.ThrowIfCancellationRequested();
+                string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category")?.Value ?? string.Empty;
+                switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.ArmorMod:
-                        {
-                            XPathNavigator xmlNode = this.GetNodeXPath();
-                            if (xmlNode == null)
-                                return strPasteCategory == "General";
-                            XPathNavigator xmlForceModCategory = xmlNode.SelectSingleNodeAndCacheExpression("forcemodcategory");
-                            if (xmlForceModCategory != null)
-                                return xmlForceModCategory.Value == strPasteCategory;
-                            if (strPasteCategory == "General")
-                                return true;
-                            XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
-                            return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
-                        }
+                    {
+                        XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                        if (xmlNode == null)
+                            return strPasteCategory == "General";
+                        XPathNavigator xmlForceModCategory =
+                            xmlNode.SelectSingleNodeAndCacheExpression("forcemodcategory");
+                        if (xmlForceModCategory != null)
+                            return xmlForceModCategory.Value == strPasteCategory;
+                        if (strPasteCategory == "General")
+                            return true;
+                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
+                        return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
+                            .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
+                    }
                     case ClipboardContentType.Gear:
-                        {
-                            XPathNavigator xmlNode = this.GetNodeXPath();
-                            if (xmlNode == null)
-                                return false;
-                            XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
-                            return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strPasteCategory);
-                        }
+                    {
+                        XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                        if (xmlNode == null)
+                            return false;
+                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
+                        return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
+                            .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
+                    }
                     default:
                         return false;
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public bool AllowPasteObject(object input)
+        public Task<bool> AllowPasteObject(object input, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             throw new NotImplementedException();
         }
 

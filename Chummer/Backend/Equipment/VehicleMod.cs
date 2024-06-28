@@ -2649,25 +2649,25 @@ namespace Chummer.Backend.Equipment
             await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
 
-        public bool AllowPasteXml
+        public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
-            get
+            token.ThrowIfCancellationRequested();
+            switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
             {
-                switch (GlobalSettings.ClipboardContentType)
+                case ClipboardContentType.Weapon:
                 {
-                    case ClipboardContentType.Weapon:
-                        {
-                            // TODO: Make this not depend on string names
-                            return Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) || Name.Contains("Drone Arm");
-                        }
-                    default:
-                        return false;
+                    // TODO: Make this not depend on string names
+                    return Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) ||
+                           Name.Contains("Drone Arm");
                 }
+                default:
+                    return false;
             }
         }
 
-        public bool AllowPasteObject(object input)
+        public Task<bool> AllowPasteObject(object input, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             throw new NotImplementedException();
         }
 
