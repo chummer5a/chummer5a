@@ -7139,29 +7139,51 @@ namespace Chummer
             }
         }
 
-        private void nudMugshotIndex_ValueChanged(object sender, EventArgs e)
+        private async void nudMugshotIndex_ValueChanged(object sender, EventArgs e)
         {
-            if (CharacterObject.Mugshots.Count == 0)
+            try
             {
-                nudMugshotIndex.Minimum = 0;
-                nudMugshotIndex.Maximum = 0;
-                nudMugshotIndex.Value = 0;
+                if (await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false) == 0)
+                {
+                    await nudMugshotIndex.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = 0;
+                        x.Maximum = 0;
+                        x.Value = 0;
+                    }, GenericToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await nudMugshotIndex.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = 1;
+                        if (x.Value < x.Minimum)
+                            x.Value = x.Maximum;
+                        else if (x.Value > x.Maximum)
+                            x.Value = x.Minimum;
+                    }, GenericToken).ConfigureAwait(false);
+                }
+
+                int intMainMugshotIndex = await CharacterObject.GetMainMugshotIndexAsync(GenericToken).ConfigureAwait(false);
+                int intCurrentMugshotIndex =
+                    await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false);
+                if (intCurrentMugshotIndex - 1 == intMainMugshotIndex)
+                    await chkIsMainMugshot.DoThreadSafeAsync(x => x.Checked = true, GenericToken).ConfigureAwait(false);
+                else
+                {
+                    await chkIsMainMugshot.DoThreadSafeAsync(x =>
+                    {
+                        if (x.Checked)
+                            x.Checked = false;
+                    }, GenericToken).ConfigureAwait(false);
+                }
+
+                await UpdateMugshotAsync(picMugshot, intCurrentMugshotIndex - 1, GenericToken).ConfigureAwait(false);
             }
-            else
+            catch (OperationCanceledException)
             {
-                nudMugshotIndex.Minimum = 1;
-                if (nudMugshotIndex.Value < nudMugshotIndex.Minimum)
-                    nudMugshotIndex.Value = nudMugshotIndex.Maximum;
-                else if (nudMugshotIndex.Value > nudMugshotIndex.Maximum)
-                    nudMugshotIndex.Value = nudMugshotIndex.Minimum;
+                //swallow this
             }
-
-            if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
-                chkIsMainMugshot.Checked = true;
-            else if (chkIsMainMugshot.Checked)
-                chkIsMainMugshot.Checked = false;
-
-            UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
         }
 
         private async void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)

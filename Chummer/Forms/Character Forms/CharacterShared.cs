@@ -10383,23 +10383,26 @@ namespace Chummer
         /// <summary>
         /// Update the mugshot info of a character.
         /// </summary>
-        /// <param name="picMugshot"></param>
-        /// <param name="intCurrentMugshotIndexInList"></param>
         protected void UpdateMugshot(PictureBox picMugshot, int intCurrentMugshotIndexInList)
         {
             if (picMugshot == null)
                 return;
-            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= CharacterObject.Mugshots.Count || CharacterObject.Mugshots[intCurrentMugshotIndexInList] == null)
+            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= CharacterObject.Mugshots.Count)
             {
                 picMugshot.Image = null;
                 return;
             }
 
             Image imgMugshot = CharacterObject.Mugshots[intCurrentMugshotIndexInList];
+            if (imgMugshot == null)
+            {
+                picMugshot.Image = null;
+                return;
+            }
 
             try
             {
-                picMugshot.SizeMode = imgMugshot != null && picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width
+                picMugshot.SizeMode = picMugshot.Height >= imgMugshot.Height && picMugshot.Width >= imgMugshot.Width
                     ? PictureBoxSizeMode.CenterImage
                     : PictureBoxSizeMode.Zoom;
             }
@@ -10408,6 +10411,45 @@ namespace Chummer
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
             }
             picMugshot.Image = imgMugshot;
+        }
+
+        /// <summary>
+        /// Update the mugshot info of a character.
+        /// </summary>
+        protected async Task UpdateMugshotAsync(PictureBox picMugshot, int intCurrentMugshotIndexInList, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (picMugshot == null)
+                return;
+            if (intCurrentMugshotIndexInList < 0
+                || intCurrentMugshotIndexInList >= await CharacterObject.Mugshots.GetCountAsync(token).ConfigureAwait(false))
+            {
+                await picMugshot.DoThreadSafeAsync(x => x.Image = null, token: token).ConfigureAwait(false);
+                return;
+            }
+
+            Image imgMugshot = await CharacterObject.Mugshots.GetValueAtAsync(intCurrentMugshotIndexInList, token).ConfigureAwait(false);
+            if (imgMugshot == null)
+            {
+                await picMugshot.DoThreadSafeAsync(x => x.Image = null, token: token).ConfigureAwait(false);
+                return;
+            }
+
+            await picMugshot.DoThreadSafeAsync(x =>
+            {
+                try
+                {
+                    x.SizeMode = x.Height >= imgMugshot.Height && x.Width >= imgMugshot.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    x.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+
+                x.Image = imgMugshot;
+            }, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
