@@ -427,6 +427,7 @@ namespace Chummer
         /// </summary>
         private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IDisposable objLocker = null;
             IAsyncDisposable objLockerAsync = null;
             if (blnSync)

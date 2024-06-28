@@ -8695,12 +8695,19 @@ namespace Chummer
                                 foreach (XmlNode objXmlCyberware in objXmlNodeList)
                                 {
                                     Cyberware objCyberware = new Cyberware(this);
-                                    objCyberware.Load(objXmlCyberware);
                                     if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objCyberware.Load(objXmlCyberware);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstCyberware.Add(objCyberware);
+                                    }
                                     else
+                                    {
+                                        await objCyberware.LoadAsync(objXmlCyberware, token: token).ConfigureAwait(false);
                                         await _lstCyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                                    }
+
                                     // Legacy shim #1
                                     if (objCyberware.Name == "Myostatin Inhibitor" &&
                                         LastSavedVersion <= new Version(5, 195, 1) &&
@@ -14390,6 +14397,73 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Return a specific Cyberware grade based on its name.
+        /// </summary>
+        /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
+        /// <param name="strName">Name of the grade to fetch.</param>
+        /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task<Grade> GetGradeByNameAsync(Improvement.ImprovementSource objSource, string strName, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Grade objStandardGrade = null;
+                string strXPath;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                {
+                    var objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                    if (objSettings != null)
+                    {
+                        sbdFilter.Append('(').Append(await objSettings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(") and ");
+                        if (!await GetIgnoreRulesAsync(token).ConfigureAwait(false) && !await GetCreatedAsync(token).ConfigureAwait(false) && !blnIgnoreBannedGrades)
+                        {
+                            foreach (string strBannedGrade in objSettings.BannedWareGrades)
+                            {
+                                sbdFilter.Append("not(contains(name, ").Append(strBannedGrade.CleanXPath())
+                                    .Append(")) and ");
+                            }
+                        }
+                    }
+
+                    if (sbdFilter.Length != 0)
+                    {
+                        sbdFilter.Length -= 5;
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
+                    }
+                    else
+                        strXPath = "/chummer/grades/grade";
+                }
+
+                using (XmlNodeList xmlGradeList =
+                       (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource), token: token).ConfigureAwait(false))
+                           .SelectNodes(strXPath))
+                {
+                    if (xmlGradeList?.Count > 0)
+                    {
+                        foreach (XmlNode objNode in xmlGradeList)
+                        {
+                            Grade objGrade = new Grade(this, objSource);
+                            objGrade.Load(objNode);
+                            if (objGrade.Name == strName)
+                                return objGrade;
+                            else if (objGrade.Name == "Standard")
+                                objStandardGrade = objGrade;
+                        }
+                    }
+                }
+
+                return objStandardGrade;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -27145,7 +27145,7 @@ namespace Chummer
                 await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
                 Grade objGrade
-                    = Grade.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);
+                    = await Grade.ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerText, objSource, CharacterObject, token).ConfigureAwait(false);
 
                 // Run through each of the items in the Suite and add them to the character.
                 using (XmlNodeList xmlItemList = xmlSuite.SelectNodes(strType + "s/" + strType))

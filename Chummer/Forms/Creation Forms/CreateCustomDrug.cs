@@ -146,7 +146,7 @@ namespace Chummer
                     ? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                     : string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedGrade))
-                    objNewDrug.Grade = Grade.ConvertToCyberwareGrade(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter);
+                    objNewDrug.Grade = await Grade.ConvertToCyberwareGradeAsync(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter, token).ConfigureAwait(false);
             }
 
             foreach (DrugNodeData objNodeData in _lstSelectedDrugComponents)

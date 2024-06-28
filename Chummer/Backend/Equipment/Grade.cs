@@ -163,6 +163,18 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Convert a string to a Grade.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="objSource">Source representing whether this is a cyberware, drug or bioware grade.</param>
+        /// <param name="objCharacter">Character from which to fetch a grade list</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<Grade> ConvertToCyberwareGradeAsync(string strValue, Improvement.ImprovementSource objSource, Character objCharacter, CancellationToken token = default)
+        {
+            return objCharacter.GetGradeByNameAsync(objSource, strValue, true, token);
+        }
+
+        /// <summary>
         /// Gets the name of the data file to use that corresponds to a particular Improvement Source denoting the type of object being used.
         /// </summary>
         /// <param name="eSource">Type of object being looked at that has grades. Should be either drug, bioware, or cyberware.</param>

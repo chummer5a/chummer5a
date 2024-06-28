@@ -23437,7 +23437,7 @@ namespace Chummer
                 if (xmlSuite == null)
                     return;
                 Grade objGrade
-                    = Grade.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);
+                    = await Grade.ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerText, objSource, CharacterObject, token).ConfigureAwait(false);
 
                 string strXPathPrefix = strType + "s/" + strType;
                 // Run through each of the items in the Suite and add them to the character.
@@ -23599,8 +23599,8 @@ namespace Chummer
                                        XmlDocument xmlGearDocument, XmlNode xmlCyberware, object objParentObject,
                                        bool blnCreateChildren, CancellationToken token = default)
         {
-            Grade objGrade = Grade.ConvertToCyberwareGrade(xmlCyberware["grade"]?.InnerText,
-                                                           Improvement.ImprovementSource.Cyberware, CharacterObject);
+            Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(xmlCyberware["grade"]?.InnerText,
+                Improvement.ImprovementSource.Cyberware, CharacterObject, token).ConfigureAwait(false);
 
             int intRating = Convert.ToInt32(xmlCyberware["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
 
