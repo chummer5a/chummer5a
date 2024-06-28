@@ -9144,12 +9144,18 @@ namespace Chummer
                                             else
                                             {
                                                 Power objPower = new Power(this);
-                                                objPower.Load(xmlPower);
                                                 if (blnSync)
+                                                {
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    objPower.Load(xmlPower, token);
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstPowers.Add(objPower);
+                                                }
                                                 else
+                                                {
+                                                    await objPower.LoadAsync(xmlPower, token).ConfigureAwait(false);
                                                     await _lstPowers.AddAsync(objPower, token).ConfigureAwait(false);
+                                                }
                                             }
                                         }
 
@@ -9164,12 +9170,18 @@ namespace Chummer
                                             if (objNode != null)
                                             {
                                                 Power objPower = new Power(this);
-                                                objPower.Load(objNode);
                                                 if (blnSync)
+                                                {
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    objPower.Load(objNode, token);
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstPowers.Add(objPower);
+                                                }
                                                 else
+                                                {
+                                                    await objPower.LoadAsync(objNode, token).ConfigureAwait(false);
                                                     await _lstPowers.AddAsync(objPower, token).ConfigureAwait(false);
+                                                }
                                             }
                                         }
                                     }
@@ -46497,7 +46509,10 @@ namespace Chummer
                                                 objPower.Extra = strForcedValue;
                                             else
                                                 await objPower.SetExtraAsync(strForcedValue, token).ConfigureAwait(false);
-                                            objPower.Create(xmlPowerData, intRating);
+                                            if (blnSync)
+                                                objPower.Create(xmlPowerData, intRating);
+                                            else
+                                                await objPower.CreateAsync(xmlPowerData, intRating, token: token).ConfigureAwait(false);
                                             objPower.Notes = xmlHeroLabPower.SelectSingleNodeAndCacheExpression(
                                                 "description", token)?.Value;
                                             if (blnSync)

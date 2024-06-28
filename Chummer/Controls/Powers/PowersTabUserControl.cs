@@ -433,10 +433,8 @@ namespace Chummer.UI.Powers
                                                       frmPickPower.MyForm.SelectedPower)
                                                   ?? throw new AbortedException();
 
-                            if (objPower.Create(objXmlPower))
-                            {
+                            if (await objPower.CreateAsync(objXmlPower, token: MyToken).ConfigureAwait(false))
                                 await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
-                            }
                             else
                                 await objPower.DeletePowerAsync(MyToken).ConfigureAwait(false);
                         }

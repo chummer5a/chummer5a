@@ -258,6 +258,108 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> CreateAsync(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null,
+            bool blnCreateImprovements = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objNode.TryGetStringFieldQuickly("name", ref _strName);
+                objNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+                objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
+                objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
+                objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
+                _intRating = intRating;
+                if (!objNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                objNode.TryGetStringFieldQuickly("source", ref _strSource);
+                objNode.TryGetStringFieldQuickly("page", ref _strPage);
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    Notes = await CommonFunctions.GetBookNotesAsync(objNode,
+                        await GetNameAsync(token).ConfigureAwait(false),
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), CharacterObject,
+                        token).ConfigureAwait(false);
+                }
+
+                if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
+                {
+                    objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
+                }
+
+                objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
+                objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
+                objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
+                objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints);
+                objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost);
+                objNode.TryGetStringFieldQuickly("action", ref _strAction);
+                Bonus = objNode["bonus"];
+                if (objBonusNodeOverride != null)
+                    Bonus = objBonusNodeOverride;
+                _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator();
+                XmlElement nodEnhancements = objNode["enhancements"];
+                if (nodEnhancements != null)
+                {
+                    using (XmlNodeList xmlEnhancementList = nodEnhancements.SelectNodes("enhancement"))
+                    {
+                        if (xmlEnhancementList != null)
+                        {
+                            foreach (XmlNode nodEnhancement in xmlEnhancementList)
+                            {
+                                Enhancement objEnhancement = new Enhancement(CharacterObject);
+                                objEnhancement.Load(nodEnhancement);
+                                objEnhancement.Parent = this;
+                                await Enhancements.AddAsync(objEnhancement, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+
+                XmlNode nodBonus = await GetBonusAsync(token).ConfigureAwait(false);
+                if (blnCreateImprovements && nodBonus?.HasChildNodes == true)
+                {
+                    string strOldForce = ImprovementManager.ForcedValue;
+                    string strOldSelected = ImprovementManager.SelectedValue;
+                    ImprovementManager.ForcedValue = await GetExtraAsync(token).ConfigureAwait(false);
+                    if (!await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                Improvement.ImprovementSource.Power,
+                                InternalId, nodBonus, await GetTotalRatingAsync(token).ConfigureAwait(false),
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false))
+                    {
+                        ImprovementManager.ForcedValue = strOldForce;
+                        return false;
+                    }
+
+                    await SetExtraAsync(ImprovementManager.SelectedValue, token).ConfigureAwait(false);
+                    ImprovementManager.SelectedValue = strOldSelected;
+                    ImprovementManager.ForcedValue = strOldForce;
+                }
+
+                int intTotalMaximumLevels = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
+                if (await GetRatingAsync(token).ConfigureAwait(false) > intTotalMaximumLevels)
+                {
+                    await SetRatingAsync(intTotalMaximumLevels, token).ConfigureAwait(false);
+                }
+
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private SourceString _objCachedSourceDetail;
 
         public SourceString SourceDetail
@@ -299,13 +401,42 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the Power from the XmlNode.
+        /// Load the Power from the XmlNode synchronously.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, token), token);
+        }
+
+        /// <summary>
+        /// Load the Power from the XmlNode asynchronously.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        /// <summary>
+        /// Load the Power from the XmlNode.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -316,21 +447,29 @@ namespace Chummer
                 _objCachedMyXPathNode = null;
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    if (this.GetNodeXPath().TryGetField("id", Guid.TryParse, out _guiSourceID))
+                    if ((blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? this.GetNodeXPath()
+                            : await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
+                        .TryGetField("id", Guid.TryParse, out _guiSourceID))
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
                     }
                     else
                     {
-                        string strPowerName = Name;
+                        string strPowerName = blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false);
                         int intPos = strPowerName.IndexOf('(');
                         if (intPos != -1)
                             strPowerName = strPowerName.Substring(0, intPos - 1);
-                        XPathNavigator xmlPower = CharacterObject.LoadDataXPath("powers.xml")
-                                                                 .SelectSingleNode(
-                                                                     "/chummer/powers/power[starts-with(./name, "
-                                                                     + strPowerName.CleanXPath() + ")]");
+                        XPathNavigator xmlPower = (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? CharacterObject.LoadDataXPath("powers.xml")
+                                : await CharacterObject.LoadDataXPathAsync("powers.xml", token: token)
+                                    .ConfigureAwait(false))
+                            .SelectSingleNode(
+                                "/chummer/powers/power[starts-with(./name, "
+                                + strPowerName.CleanXPath() + ")]");
                         if (xmlPower.TryGetField("id", Guid.TryParse, out _guiSourceID))
                         {
                             _objCachedMyXmlNode = null;
@@ -339,7 +478,10 @@ namespace Chummer
                     }
                 }
 
-                Extra = objNode["extra"]?.InnerText ?? string.Empty;
+                if (blnSync)
+                    Extra = objNode["extra"]?.InnerText ?? string.Empty;
+                else
+                    await SetExtraAsync(objNode["extra"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
                 _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                 objNode.TryGetStringFieldQuickly("action", ref _strAction);
                 _strAdeptWayDiscount = objNode["adeptway"]?.InnerText;
@@ -349,10 +491,14 @@ namespace Chummer
                     int intPos = strPowerName.IndexOf('(');
                     if (intPos != -1)
                         strPowerName = strPowerName.Substring(0, intPos - 1);
-                    _strAdeptWayDiscount = CharacterObject.LoadDataXPath("powers.xml")
-                                                          .SelectSingleNode(
-                                                              "/chummer/powers/power[starts-with(./name, "
-                                                              + strPowerName.CleanXPath() + ")]/adeptway")?.Value
+                    _strAdeptWayDiscount = (blnSync
+                                               // ReSharper disable once MethodHasAsyncOverload
+                                               ? CharacterObject.LoadDataXPath("powers.xml")
+                                               : await CharacterObject.LoadDataXPathAsync("powers.xml", token: token)
+                                                   .ConfigureAwait(false))
+                                           .SelectSingleNode(
+                                               "/chummer/powers/power[starts-with(./name, "
+                                               + strPowerName.CleanXPath() + ")]/adeptway")?.Value
                                            ?? string.Empty;
                 }
 
@@ -379,20 +525,35 @@ namespace Chummer
                 Bonus = objNode["bonus"];
                 if (objNode["adeptway"] != null)
                 {
-                    _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator()
-                                               ?? this.GetNodeXPath()
-                                                      ?.SelectSingleNodeAndCacheExpression("adeptwayrequires");
+                    _nodAdeptWayRequirements = objNode["adeptwayrequires"]?.CreateNavigator();
+                    if (_nodAdeptWayRequirements == null)
+                    {
+                        XPathNavigator objWayRequirements =
+                            // ReSharper disable once MethodHasAsyncOverload
+                            blnSync ? this.GetNodeXPath() : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+                        _nodAdeptWayRequirements =
+                            objWayRequirements?.SelectSingleNodeAndCacheExpression("adeptwayrequires");
+                    }
                 }
 
-                if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
+                string strName = blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false);
+                if (strName != "Improved Reflexes" && strName.StartsWith("Improved Reflexes", StringComparison.Ordinal))
                 {
-                    XmlNode objXmlPower = CharacterObject.LoadData("powers.xml")
-                                                         .SelectSingleNode(
-                                                             "/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
+                    XmlNode objXmlPower =
+                        (blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? CharacterObject.LoadData("powers.xml")
+                            : await CharacterObject.LoadDataAsync("powers.xml", token: token).ConfigureAwait(false))
+                        .SelectSingleNode(
+                            "/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                     if (objXmlPower != null
-                        && int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
+                        && int.TryParse(strName.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
                     {
-                        Create(objXmlPower, intTemp, null, false);
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            Create(objXmlPower, intTemp, null, false);
+                        else
+                            await CreateAsync(objXmlPower, intTemp, null, false, token).ConfigureAwait(false);
                         objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
                         sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
@@ -410,22 +571,52 @@ namespace Chummer
                             Enhancement objEnhancement = new Enhancement(CharacterObject);
                             objEnhancement.Load(nodEnhancement);
                             objEnhancement.Parent = this;
-                            Enhancements.Add(objEnhancement);
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Enhancements.Add(objEnhancement);
+                            else
+                                await Enhancements.AddAsync(objEnhancement, token).ConfigureAwait(false);
                         }
                     }
                 }
 
                 //TODO: Seems that the MysAd Second Attribute house rule gets accidentally enabled sometimes?
-                if (Rating > TotalMaximumLevels)
+                if (blnSync)
                 {
-                    Utils.BreakIfDebug();
-                    Rating = TotalMaximumLevels;
+                    if (Rating > TotalMaximumLevels)
+                    {
+                        Utils.BreakIfDebug();
+                        Rating = TotalMaximumLevels;
+                    }
+                    else if (Rating + FreeLevels > TotalMaximumLevels)
+                    {
+                        Utils.BreakIfDebug();
+                        TotalRating = TotalMaximumLevels;
+                    }
                 }
-                else if (Rating + FreeLevels > TotalMaximumLevels)
+                else
                 {
-                    Utils.BreakIfDebug();
-                    TotalRating = TotalMaximumLevels;
+                    int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                    int intTotalMaximumLevels = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
+                    if (intRating > intTotalMaximumLevels)
+                    {
+                        Utils.BreakIfDebug();
+                        await SetRatingAsync(intTotalMaximumLevels, token).ConfigureAwait(false);
+                    }
+                    else if (intRating + await GetFreeLevelsAsync(token).ConfigureAwait(false) > intTotalMaximumLevels)
+                    {
+                        Utils.BreakIfDebug();
+                        await SetTotalRatingAsync(intTotalMaximumLevels, token).ConfigureAwait(false);
+                    }
                 }
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
