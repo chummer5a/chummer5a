@@ -49,7 +49,7 @@ namespace Chummer
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
 
         // List of sourcebook infos, needed to make sure we don't directly modify ones in the options unless we save our options
-        private readonly ConcurrentDictionary<string, SourcebookInfo> _dicSourcebookInfos;
+        private ConcurrentDictionary<string, SourcebookInfo> _dicSourcebookInfos;
 
         private bool _blnDirty;
         private int _intSkipRefresh;
@@ -77,7 +77,6 @@ namespace Chummer
 
             _setCustomDataDirectoryInfos
                 = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
-            _dicSourcebookInfos = new ConcurrentDictionary<string, SourcebookInfo>(GlobalSettings.SourcebookInfos);
             Disposed += (sender, args) =>
             {
                 Stack<HashSet<string>> stkToReturn = new Stack<HashSet<string>>(_dicCachedPdfAppNames.Values);
@@ -98,6 +97,9 @@ namespace Chummer
 
         private async void EditGlobalSettings_Load(object sender, EventArgs e)
         {
+            _dicSourcebookInfos =
+                new ConcurrentDictionary<string, SourcebookInfo>(await GlobalSettings.GetSourcebookInfosAsync()
+                    .ConfigureAwait(false));
             await PopulateDefaultCharacterSettingLists().ConfigureAwait(false);
             await PopulateMugshotCompressionOptions().ConfigureAwait(false);
             await PopulateChum5lzCompressionLevelOptions().ConfigureAwait(false);
