@@ -5203,19 +5203,6 @@ namespace Chummer
                             {
                                 if (blnSync)
                                 {
-                                    if (objImprovedPower.TotalRating <= 0)
-                                    {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objImprovedPower.DeletePower();
-                                    }
-                                }
-                                else if (await objImprovedPower.GetTotalRatingAsync(token).ConfigureAwait(false) <= 0)
-                                {
-                                    await objImprovedPower.DeletePowerAsync(token).ConfigureAwait(false);
-                                }
-
-                                if (blnSync)
-                                {
                                     // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                                     if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
                                         objImprovedPower.OnMultiplePropertyChanged(
@@ -5223,16 +5210,30 @@ namespace Chummer
                                     else
                                         objImprovedPower.OnMultiplePropertyChanged(
                                             nameof(Power.TotalRating), nameof(Power.FreePoints));
+
+                                    if (objImprovedPower.TotalRating <= 0)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objImprovedPower.DeletePower();
+                                    }
                                 }
                                 // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                                else if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
-                                    await objImprovedPower.OnMultiplePropertyChangedAsync(token,
-                                            nameof(Power.TotalRating), nameof(Power.FreeLevels))
-                                        .ConfigureAwait(false);
                                 else
-                                    await objImprovedPower.OnMultiplePropertyChangedAsync(token,
-                                            nameof(Power.TotalRating), nameof(Power.FreePoints))
-                                        .ConfigureAwait(false);
+                                {
+                                    if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels)
+                                        await objImprovedPower.OnMultiplePropertyChangedAsync(token,
+                                                nameof(Power.TotalRating), nameof(Power.FreeLevels))
+                                            .ConfigureAwait(false);
+                                    else
+                                        await objImprovedPower.OnMultiplePropertyChangedAsync(token,
+                                                nameof(Power.TotalRating), nameof(Power.FreePoints))
+                                            .ConfigureAwait(false);
+
+                                    if (await objImprovedPower.GetTotalRatingAsync(token).ConfigureAwait(false) <= 0)
+                                    {
+                                        await objImprovedPower.DeletePowerAsync(token).ConfigureAwait(false);
+                                    }
+                                }
                             }
 
                             break;

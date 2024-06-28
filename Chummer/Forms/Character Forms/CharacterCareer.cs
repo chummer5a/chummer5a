@@ -13229,8 +13229,6 @@ namespace Chummer
                                     }
                                 }
                             }, GenericToken).ConfigureAwait(false);
-                            objFocus.GearObject.Bonded = false;
-                            await CharacterObject.Foci.RemoveAsync(objFocus, GenericToken).ConfigureAwait(false);
                         }
 
                         if (!blnFound)
@@ -13301,8 +13299,6 @@ namespace Chummer
                                         }
                                     }
                                 }, GenericToken).ConfigureAwait(false);
-                                objFocus.GearObject.Bonded = false;
-                                await CharacterObject.Foci.RemoveAsync(objFocus, GenericToken).ConfigureAwait(false);
                             }
                         }
 
