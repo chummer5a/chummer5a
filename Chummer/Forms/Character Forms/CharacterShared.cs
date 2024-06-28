@@ -6400,17 +6400,17 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
                                                 token: token).ConfigureAwait(false);
-                                            for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                             {
-                                                if (i < CharacterObject.Foci.Count)
+                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
                                                 {
-                                                    Focus objFocus = CharacterObject.Foci[i];
+                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
                                                         intFociTotal += objFocus.Rating;
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal &&
-                                                            !CharacterObject.IgnoreRules)
+                                                            !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                                                         {
                                                             objGear.Bonded = false;
                                                             await CharacterObject.Foci.RemoveAtAsync(i, token: token)
@@ -6440,7 +6440,7 @@ namespace Chummer
 
                                                     if (objStack.Bonded)
                                                     {
-                                                        foreach (Gear objFociGear in objStack.Gear)
+                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                 ImprovementManager.ForcedValue = objFociGear.Extra;
@@ -6467,7 +6467,7 @@ namespace Chummer
                                                                             GlobalSettings.Language, token)
                                                                         .ConfigureAwait(false),
                                                                     token: token).ConfigureAwait(false);
-                                                        }
+                                                        }, token).ConfigureAwait(false);
                                                     }
 
                                                     await AddToTree(
@@ -6531,17 +6531,17 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetStringAsync("String_Force", token: token),
                                                 token: token).ConfigureAwait(false);
-                                            for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                             {
-                                                if (i < CharacterObject.Foci.Count)
+                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
                                                 {
-                                                    Focus objFocus = CharacterObject.Foci[i];
+                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
                                                         intFociTotal += objFocus.Rating;
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal &&
-                                                            !CharacterObject.IgnoreRules)
+                                                            !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                                                         {
                                                             // Mark the Gear a Bonded.
                                                             objGear.Bonded = false;
@@ -6585,7 +6585,7 @@ namespace Chummer
 
                                                     if (objStack.Bonded)
                                                     {
-                                                        foreach (Gear objFociGear in objStack.Gear)
+                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                 ImprovementManager.ForcedValue = objFociGear.Extra;
@@ -6610,7 +6610,7 @@ namespace Chummer
                                                                                 GlobalSettings.Language, token)
                                                                             .ConfigureAwait(false), token: token)
                                                                     .ConfigureAwait(false);
-                                                        }
+                                                        }, token).ConfigureAwait(false);
                                                     }
 
                                                     await AddToTree(await objStack
@@ -6635,11 +6635,11 @@ namespace Chummer
                                         case "Foci":
                                         case "Metamagic Foci":
                                         {
-                                            for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                             {
-                                                if (i < CharacterObject.Foci.Count)
+                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
                                                 {
-                                                    Focus objFocus = CharacterObject.Foci[i];
+                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
                                                         await CharacterObject.Foci.RemoveAtAsync(i, token: token)
@@ -6655,11 +6655,11 @@ namespace Chummer
 
                                         case "Stacked Focus":
                                         {
-                                            for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
+                                            for (int i = await CharacterObject.StackedFoci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                             {
-                                                if (i < CharacterObject.StackedFoci.Count)
+                                                if (i < await CharacterObject.StackedFoci.GetCountAsync(token).ConfigureAwait(false))
                                                 {
-                                                    StackedFocus objStack = CharacterObject.StackedFoci[i];
+                                                    StackedFocus objStack = await CharacterObject.StackedFoci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
                                                         await CharacterObject.StackedFoci.RemoveAtAsync(i, token: token)
@@ -6689,11 +6689,11 @@ namespace Chummer
                                         case "Foci":
                                         case "Metamagic Foci":
                                         {
-                                            for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                             {
-                                                if (i < CharacterObject.Foci.Count)
+                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
                                                 {
-                                                    Focus objFocus = CharacterObject.Foci[i];
+                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
                                                         await CharacterObject.Foci.RemoveAtAsync(i, token: token)
@@ -6709,11 +6709,11 @@ namespace Chummer
 
                                         case "Stacked Focus":
                                         {
-                                            for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
+                                            for (int i = await CharacterObject.StackedFoci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                             {
-                                                if (i < CharacterObject.StackedFoci.Count)
+                                                if (i < await CharacterObject.StackedFoci.GetCountAsync(token).ConfigureAwait(false))
                                                 {
-                                                    StackedFocus objStack = CharacterObject.StackedFoci[i];
+                                                    StackedFocus objStack = await CharacterObject.StackedFoci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
                                                         await CharacterObject.StackedFoci.RemoveAtAsync(i, token: token)
@@ -6768,17 +6768,17 @@ namespace Chummer
                                                     .ConfigureAwait(false),
                                                 () => LanguageManager.GetString("String_Force", token: token),
                                                 token: token).ConfigureAwait(false);
-                                            for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                            for (int i = await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                                             {
-                                                if (i < CharacterObject.Foci.Count)
+                                                if (i < await CharacterObject.Foci.GetCountAsync(token).ConfigureAwait(false))
                                                 {
-                                                    Focus objFocus = CharacterObject.Foci[i];
+                                                    Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
                                                         intFociTotal += objFocus.Rating;
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal &&
-                                                            !CharacterObject.IgnoreRules)
+                                                            !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                                                         {
                                                             // Mark the Gear a Bonded.
                                                             objGear.Bonded = false;
@@ -6822,7 +6822,7 @@ namespace Chummer
 
                                                     if (objStack.Bonded)
                                                     {
-                                                        foreach (Gear objFociGear in objStack.Gear)
+                                                        await objStack.Gear.ForEachAsync(async objFociGear =>
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                 ImprovementManager.ForcedValue = objFociGear.Extra;
@@ -6847,7 +6847,7 @@ namespace Chummer
                                                                                 GlobalSettings.Language, token)
                                                                             .ConfigureAwait(false), token: token)
                                                                     .ConfigureAwait(false);
-                                                        }
+                                                        }, token).ConfigureAwait(false);
                                                     }
 
                                                     await AddToTree(await objStack

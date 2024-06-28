@@ -13201,6 +13201,7 @@ namespace Chummer
                     case KarmaExpenseType.BindFocus:
                     {
                         // Locate the Focus that was bound.
+                        bool blnFound = false;
                         for (int i = await CharacterObject.Foci.GetCountAsync(GenericToken).ConfigureAwait(false) - 1;
                              i >= 0;
                              --i)
@@ -13211,9 +13212,10 @@ namespace Chummer
                                                                   .ConfigureAwait(false);
                             if (objFocus.InternalId != strUndoId)
                                 continue;
+                            blnFound = true;
                             await treFoci.DoThreadSafeAsync(x =>
                             {
-                                TreeNode objNode = x.FindNode(objFocus.InternalId);
+                                TreeNode objNode = x.FindNode(objFocus.InternalId) ?? x.FindNode(objFocus.GearObject.InternalId);
                                 if (objNode != null)
                                 {
                                     IsRefreshing = true;
@@ -13227,40 +13229,80 @@ namespace Chummer
                                     }
                                 }
                             }, GenericToken).ConfigureAwait(false);
+                            objFocus.GearObject.Bonded = false;
                             await CharacterObject.Foci.RemoveAsync(objFocus, GenericToken).ConfigureAwait(false);
                         }
 
-                        // Locate the Stacked Focus that was bound.
-                        for (int i = await CharacterObject.StackedFoci.GetCountAsync(GenericToken).ConfigureAwait(false)
-                                     - 1;
-                             i >= 0;
-                             --i)
+                        if (!blnFound)
                         {
-                            if (i >= await CharacterObject.StackedFoci.GetCountAsync(GenericToken)
-                                                          .ConfigureAwait(false))
-                                continue;
-                            StackedFocus objStack = await CharacterObject.StackedFoci.GetValueAtAsync(i, GenericToken)
-                                                                         .ConfigureAwait(false);
-                            if (objStack.InternalId != strUndoId)
-                                continue;
-                            TreeNode objNode
-                                = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId),
-                                                                      GenericToken).ConfigureAwait(false);
-                            if (objNode == null)
-                                continue;
+                            // Locate the Stacked Focus that was bound.
+                            for (int i = await CharacterObject.StackedFoci.GetCountAsync(GenericToken)
+                                             .ConfigureAwait(false)
+                                         - 1;
+                                 i >= 0;
+                                 --i)
+                            {
+                                if (i >= await CharacterObject.StackedFoci.GetCountAsync(GenericToken)
+                                        .ConfigureAwait(false))
+                                    continue;
+                                StackedFocus objStack = await CharacterObject.StackedFoci
+                                    .GetValueAtAsync(i, GenericToken)
+                                    .ConfigureAwait(false);
+                                if (objStack.InternalId != strUndoId)
+                                    continue;
+                                TreeNode objNode
+                                    = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId),
+                                        GenericToken).ConfigureAwait(false);
+                                if (objNode == null)
+                                    continue;
 
-                            IsRefreshing = true;
-                            try
-                            {
-                                await treFoci.DoThreadSafeAsync(() =>
+                                IsRefreshing = true;
+                                try
                                 {
-                                    objNode.Checked = false;
-                                    objStack.Bonded = false;
-                                }, GenericToken).ConfigureAwait(false);
+                                    await treFoci.DoThreadSafeAsync(() =>
+                                    {
+                                        objNode.Checked = false;
+                                        objStack.Bonded = false;
+                                    }, GenericToken).ConfigureAwait(false);
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
                             }
-                            finally
+                        }
+
+                        // Legacy fix for bad ID in undo entry (used the focus' gear object's ID instead of the focus')
+                        if (!blnFound)
+                        {
+                            for (int i = await CharacterObject.Foci.GetCountAsync(GenericToken).ConfigureAwait(false) - 1;
+                                 i >= 0;
+                                 --i)
                             {
-                                IsRefreshing = false;
+                                if (i >= await CharacterObject.Foci.GetCountAsync(GenericToken).ConfigureAwait(false))
+                                    continue;
+                                Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, GenericToken)
+                                    .ConfigureAwait(false);
+                                if (objFocus.GearObject.InternalId != strUndoId)
+                                    continue;
+                                await treFoci.DoThreadSafeAsync(x =>
+                                {
+                                    TreeNode objNode = x.FindNode(objFocus.InternalId) ?? x.FindNode(objFocus.GearObject.InternalId);
+                                    if (objNode != null)
+                                    {
+                                        IsRefreshing = true;
+                                        try
+                                        {
+                                            objNode.Checked = false;
+                                        }
+                                        finally
+                                        {
+                                            IsRefreshing = false;
+                                        }
+                                    }
+                                }, GenericToken).ConfigureAwait(false);
+                                objFocus.GearObject.Bonded = false;
+                                await CharacterObject.Foci.RemoveAsync(objFocus, GenericToken).ConfigureAwait(false);
                             }
                         }
 
@@ -18332,7 +18374,7 @@ namespace Chummer
                                     .ConfigureAwait(false);
 
                                 ExpenseUndo objUndo = new ExpenseUndo();
-                                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objSelectedFocus.InternalId);
+                                objUndo.CreateKarma(KarmaExpenseType.BindFocus, objFocus.InternalId);
                                 objExpense.Undo = objUndo;
 
                                 await CharacterObject.Foci.AddAsync(objFocus, GenericToken).ConfigureAwait(false);
