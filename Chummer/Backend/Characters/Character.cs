@@ -42926,7 +42926,7 @@ namespace Chummer
                                 continue;
                             if (intLoopForce == intSupportedForce)
                             {
-                                if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                                if (lstSupportedObjects.Count > 0 && lstSupportedObjects.Count + 1 > intNumSupportsPossible)
                                     // Remove the last element because we know it's the lowest
                                     lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
                                 // Safe to insert object at the top because we cannot get objects with more Force in the list
@@ -42938,7 +42938,7 @@ namespace Chummer
                             }
                             else
                             {
-                                if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                                if (lstSupportedObjects.Count > 0 && lstSupportedObjects.Count + 1 > intNumSupportsPossible)
                                 {
                                     // Check against the last element because we know it'll be the lowest, only replace item if loop has a higher force than this one
                                     if (intLoopForce <= lstSupportedObjects[lstSupportedObjects.Count - 1].Force)
@@ -43022,7 +43022,7 @@ namespace Chummer
                                 continue;
                             if (intLoopForce == intSupportedForce)
                             {
-                                if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                                if (lstSupportedObjects.Count > 0 && lstSupportedObjects.Count + 1 > intNumSupportsPossible)
                                     // Remove the last element because we know it's the lowest
                                     lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
                                 // Safe to insert object at the top because we cannot get objects with more Force in the list
@@ -43034,7 +43034,7 @@ namespace Chummer
                             }
                             else
                             {
-                                if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                                if (lstSupportedObjects.Count > 0 && lstSupportedObjects.Count + 1 > intNumSupportsPossible)
                                 {
                                     // Check against the last element because we know it'll be the lowest, only replace item if loop has a higher force than this one
                                     if (intLoopForce <= lstSupportedObjects[lstSupportedObjects.Count - 1].Force)
