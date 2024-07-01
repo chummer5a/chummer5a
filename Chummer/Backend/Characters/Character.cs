@@ -4841,59 +4841,6 @@ namespace Chummer
                             objWriter.WriteEndDocument();
                             objWriter.Flush();
                             // ReSharper restore AccessToDisposedClosure
-
-                            objStream.Seek(0, SeekOrigin.Begin);
-
-                            // Validate that the character can save properly. If there's no error, save the file to the listed file location.
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                XmlDocument objDoc = new XmlDocument { XmlResolver = null };
-                                using (XmlReader objXmlReader
-                                       = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                    objDoc.Load(objXmlReader);
-                                using (FileStream objFileStream
-                                       = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                                {
-                                    if (strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                        objDoc.Save(objFileStream);
-                                    else
-                                    {
-                                        objStream.Seek(0, SeekOrigin.Begin);
-                                        objStream.CompressToLzmaFile(objFileStream,
-                                            eOverrideCompressionLevel == LzmaHelper.ChummerCompressionPreset.None
-                                                ? GlobalSettings.Chum5lzCompressionLevel
-                                                : eOverrideCompressionLevel);
-                                    }
-                                }
-                            }
-                            catch (IOException e)
-                            {
-                                Log.Error(e);
-                                if (Utils.IsUnitTest)
-                                    throw;
-                                // ReSharper disable once MethodHasAsyncOverload
-                                Program.ShowScrollableMessageBox(
-                                    LanguageManager.GetString("Message_Save_Error_Warning", token: token));
-                                blnErrorFree = false;
-                            }
-                            catch (XmlException ex)
-                            {
-                                Log.Warn(ex);
-                                if (Utils.IsUnitTest)
-                                    throw;
-                                // ReSharper disable once MethodHasAsyncOverload
-                                Program.ShowScrollableMessageBox(
-                                    LanguageManager.GetString("Message_Save_Error_Warning", token: token));
-                                blnErrorFree = false;
-                            }
-                            catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
-                            {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                Program.ShowScrollableMessageBox(
-                                    LanguageManager.GetString("Message_Save_Error_Warning", token: token));
-                                blnErrorFree = false;
-                            }
                         }
 
                         async Task DoSaveAsync()
@@ -5721,6 +5668,8 @@ namespace Chummer
                     if (Utils.IsUnitTest)
                         throw;
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
                             token: token));
                     else
@@ -5736,6 +5685,8 @@ namespace Chummer
                     if (Utils.IsUnitTest)
                         throw;
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
                             token: token));
                     else
@@ -5748,6 +5699,8 @@ namespace Chummer
                 catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                 {
                     if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Save_Error_Warning",
                             token: token));
                     else
@@ -5762,13 +5715,10 @@ namespace Chummer
             if (addToMRU)
             {
                 if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
+                    GlobalSettings.MostRecentlyUsedCharacters.Insert(0, strFileName);
                 else
-                    await GlobalSettings.MostRecentlyUsedCharacters
-                        .InsertAsync(0, await GetFileNameAsync(token).ConfigureAwait(false), token)
-                        .ConfigureAwait(false);
+                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, strFileName, token).ConfigureAwait(false);
             }
 
             if (callOnSaveCallBack)

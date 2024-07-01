@@ -76,7 +76,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strFilePath, value);
             }
         }
@@ -90,7 +90,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strFileName, value);
             }
         }
@@ -104,7 +104,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strErrorText, value);
             }
         }
@@ -118,7 +118,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strDescription, value);
             }
         }
@@ -132,7 +132,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strBackground, value);
             }
         }
@@ -146,7 +146,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strGameNotes, value);
             }
         }
@@ -160,7 +160,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strCharacterNotes, value);
             }
         }
@@ -174,7 +174,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strConcept, value);
             }
         }
@@ -188,7 +188,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strKarma, value);
             }
         }
@@ -202,7 +202,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strMetatype, value);
             }
         }
@@ -216,7 +216,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strMetavariant, value);
             }
         }
@@ -230,7 +230,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strPlayerName, value);
             }
         }
@@ -244,7 +244,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strCharacterName, value);
             }
         }
@@ -258,7 +258,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strCharacterAlias, value);
             }
         }
@@ -272,7 +272,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strBuildMethod, value);
             }
         }
@@ -286,7 +286,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strEssence, value);
             }
         }
@@ -303,7 +303,7 @@ namespace Chummer
             }
             private set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _imgMugshot, value)?.Dispose();
             }
         }
@@ -318,7 +318,7 @@ namespace Chummer
             set
             {
                 int intNewValue = value.ToInt32();
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _intCreated, intNewValue);
             }
         }
@@ -332,7 +332,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _strSettingsFile, value);
             }
         }
@@ -359,7 +359,7 @@ namespace Chummer
             set
             {
                 Task<string> tskOld;
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
                 if (tskOld != null && tskOld != value)
                     Utils.SafelyRunSynchronously(() => tskOld);
@@ -490,7 +490,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyDoubleClick, value);
             }
         }
@@ -507,7 +507,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyContextMenuDeleteClick, value);
             }
         }
@@ -524,7 +524,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyAfterSelect, value);
             }
         }
@@ -541,7 +541,7 @@ namespace Chummer
             }
             set
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterUpgradeableReadLock())
                     Interlocked.Exchange(ref _onMyKeyDown, value);
             }
         }
