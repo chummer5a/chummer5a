@@ -1483,8 +1483,8 @@ namespace Chummer
 
                 if (_objParentNode != null)
                     sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
-                else if (ParentVehicle == null && ((!_objCharacter.AddCyberwareEnabled && _eMode == Mode.Cyberware)
-                                                   || (!_objCharacter.AddBiowareEnabled && _eMode == Mode.Bioware)))
+                else if (ParentVehicle == null && ((!await _objCharacter.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false) && _eMode == Mode.Cyberware)
+                                                   || (!await _objCharacter.GetAddBiowareEnabledAsync(token).ConfigureAwait(false) && _eMode == Mode.Bioware)))
                 {
                     sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
                              .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
@@ -1520,8 +1520,8 @@ namespace Chummer
                 return false;
             }
 
-            bool blnCyberwareDisabled = !_objCharacter.AddCyberwareEnabled;
-            bool blnBiowareDisabled = !_objCharacter.AddBiowareEnabled;
+            bool blnCyberwareDisabled = !await _objCharacter.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false);
+            bool blnBiowareDisabled = !await _objCharacter.GetAddBiowareEnabledAsync(token).ConfigureAwait(false);
             int intOverLimit = 0;
             List<ListItem> lstCyberwares = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
             try

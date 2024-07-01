@@ -78,9 +78,9 @@ namespace Chummer
                             {
                                 string strName = objChoice.SelectSingleNodeAndCacheExpression("name")?.Value
                                                  ?? string.Empty;
-                                if ((_objCharacter.AdeptEnabled ||
+                                if ((await _objCharacter.GetAdeptEnabledAsync().ConfigureAwait(false) ||
                                      !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
-                                    (_objCharacter.MagicianEnabled ||
+                                    (await _objCharacter.GetMagicianEnabledAsync().ConfigureAwait(false) ||
                                      !strName.StartsWith("Magician:", StringComparison.Ordinal)))
                                 {
                                     if (objChoice.SelectSingleNodeAndCacheExpression("@set")?.Value == "2")

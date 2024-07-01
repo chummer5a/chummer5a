@@ -2573,45 +2573,6 @@ namespace Chummer
                         treImprovements.DragEnter -= treImprovements_DragEnter;
                         treImprovements.DragDrop -= treImprovements_DragDrop;
 
-                        foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
-                        {
-                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objContactControl.DeleteContact -= DeleteContact;
-                            objContactControl.MouseDown -= DragContactControl;
-                        }
-
-                        foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
-                        {
-                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objContactControl.DeleteContact -= DeleteEnemy;
-                            objContactControl.MouseDown -= DragContactControl;
-                        }
-
-                        foreach (PetControl objContactControl in panPets.Controls.OfType<PetControl>())
-                        {
-                            objContactControl.DeleteContact -= DeletePet;
-                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        }
-
-                        foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
-                        {
-                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                        }
-
-                        foreach (SpiritControl objSpiritControl in panSprites.Controls.OfType<SpiritControl>())
-                        {
-                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                        }
-
-                        foreach (SustainedObjectControl objSustainedSpellControl in flpSustainedSpells.Controls
-                                     .OfType<SustainedObjectControl>())
-                        {
-                            objSustainedSpellControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
-                        }
-
                         await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
                             RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
                             RefreshArmorClearBindings(treArmor, CancellationToken.None),
@@ -2634,6 +2595,8 @@ namespace Chummer
                         {
                             //swallow this
                         }
+
+                        blnDoClose = true;
                     }
                     finally
                     {
@@ -3258,7 +3221,7 @@ namespace Chummer
                 if (e.PropertyNames.Contains(nameof(Character.AdvancedProgramsEnabled)))
                 {
                     // Change to the status of Advanced Programs being enabled.
-                    if (CharacterObject.AdvancedProgramsEnabled)
+                    if (await CharacterObject.GetAdvancedProgramsEnabledAsync(token).ConfigureAwait(false))
                     {
                         await tabCharacterTabs.DoThreadSafeAsync(x =>
                         {
@@ -3292,7 +3255,7 @@ namespace Chummer
                     }
                 }
 
-                if (e.PropertyNames.Contains(nameof(Character.AddBiowareEnabled)) && !CharacterObject.AddBiowareEnabled)
+                if (e.PropertyNames.Contains(nameof(Character.AddBiowareEnabled)) && !await CharacterObject.GetAddBiowareEnabledAsync(token).ConfigureAwait(false))
                 {
                     string strBiowareDisabledSource = string.Empty;
                     Improvement objDisablingImprovement = (await ImprovementManager
@@ -3359,7 +3322,7 @@ namespace Chummer
                     }
                 }
 
-                if (e.PropertyNames.Contains(nameof(Character.AddCyberwareEnabled)) && !CharacterObject.AddCyberwareEnabled)
+                if (e.PropertyNames.Contains(nameof(Character.AddCyberwareEnabled)) && !await CharacterObject.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false))
                 {
                     string strCyberwareDisabledSource = string.Empty;
                     Improvement objDisablingImprovement = (await ImprovementManager
@@ -3498,7 +3461,7 @@ namespace Chummer
                 if (e.PropertyNames.Contains(nameof(Character.InitiationEnabled)))
                 {
                     // Change the status of the Initiation tab being show.
-                    if (CharacterObject.InitiationEnabled)
+                    if (await CharacterObject.GetInitiationEnabledAsync(token).ConfigureAwait(false))
                     {
                         await tabCharacterTabs.DoThreadSafeAsync(x =>
                         {
@@ -12936,7 +12899,7 @@ namespace Chummer
                     }
                     case KarmaExpenseType.AddPowerPoint:
                     {
-                        --CharacterObject.MysticAdeptPowerPoints;
+                        await CharacterObject.ModifyMysticAdeptPowerPointsAsync(-1, GenericToken).ConfigureAwait(false);
                         break;
                     }
                     case KarmaExpenseType.AddQuality:
@@ -18901,7 +18864,7 @@ namespace Chummer
         private async Task RefreshSelectedMetamagic(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!CharacterObject.InitiationEnabled)
+            if (!await CharacterObject.GetInitiationEnabledAsync(token).ConfigureAwait(false))
                 return;
             IsRefreshing = true;
             try
@@ -27340,7 +27303,7 @@ namespace Chummer
                 objUndo.CreateKarma(KarmaExpenseType.AddPowerPoint, string.Empty);
                 objExpense.Undo = objUndo;
 
-                ++CharacterObject.MysticAdeptPowerPoints;
+                await CharacterObject.ModifyMysticAdeptPowerPointsAsync(1, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

@@ -10454,14 +10454,16 @@ namespace Chummer
                                 }
                             }
 
-                            if (!InitiationEnabled || !(blnSync ? AddInitiationsAllowed : await GetAddInitiationsAllowedAsync(token).ConfigureAwait(false)))
+                            if (blnSync)
                             {
-                                if (blnSync)
+                                if (!InitiationEnabled || !AddInitiationsAllowed)
+                                {
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ClearInitiations(token);
-                                else
-                                    await ClearInitiationsAsync(token).ConfigureAwait(false);
+                                }
                             }
+                            else if (!await GetInitiationEnabledAsync(token).ConfigureAwait(false) || !await GetAddInitiationsAllowedAsync(token).ConfigureAwait(false))
+                                await ClearInitiationsAsync(token).ConfigureAwait(false);
 
                             // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
                             if (blnSync)
@@ -10968,52 +10970,53 @@ namespace Chummer
                         .ConfigureAwait(false);
                     // <created />
                     await objWriter.WriteElementStringAsync(
-                            "created", Created.ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                            "created", (await GetCreatedAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     // <nuyen />
                     await objWriter
-                        .WriteElementStringAsync("nuyen", Nuyen.ToString(Settings.NuyenFormat, objCulture),
+                        .WriteElementStringAsync("nuyen", (await GetNuyenAsync(token).ConfigureAwait(false)).ToString(Settings.NuyenFormat, objCulture),
                             token: token).ConfigureAwait(false);
                     // <adept />
                     await objWriter.WriteElementStringAsync(
-                            "adept", AdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                            "adept", (await GetAdeptEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token)
                         .ConfigureAwait(false);
                     // <magician />
                     await objWriter.WriteElementStringAsync(
-                            "magician", MagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                            "magician", (await GetMagicianEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token)
                         .ConfigureAwait(false);
                     // <technomancer />
                     await objWriter.WriteElementStringAsync("technomancer",
-                            TechnomancerEnabled.ToString(
+                            (await GetTechnomancerEnabledAsync(token).ConfigureAwait(false)).ToString(
                                 GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     // <ai />
                     await objWriter.WriteElementStringAsync("ai",
-                            AdvancedProgramsEnabled.ToString(
+                            (await GetAdvancedProgramsEnabledAsync(token).ConfigureAwait(false)).ToString(
                                 GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     // <cyberwaredisabled />
                     await objWriter.WriteElementStringAsync("cyberwaredisabled",
-                            CyberwareDisabled.ToString(
+                            (await GetCyberwareDisabledAsync(token).ConfigureAwait(false)).ToString(
                                 GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
                     // <critter />
                     await objWriter.WriteElementStringAsync(
-                            "critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo),
+                            "critter", (await GetCritterEnabledAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token)
                         .ConfigureAwait(false);
 
                     await objWriter.WriteElementStringAsync(
                         "totaless",
                         (await EssenceAsync(token: token).ConfigureAwait(false)).ToString(
-                            Settings.EssenceFormat, objCulture), token: token).ConfigureAwait(false);
+                            await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceFormatAsync(token).ConfigureAwait(false), objCulture), token: token).ConfigureAwait(false);
 
                     // <tradition />
-                    if (MagicTradition.Type != TraditionType.None)
+                    Tradition objTradition = await GetMagicTraditionAsync(token).ConfigureAwait(false);
+                    if (objTradition.Type != TraditionType.None)
                     {
-                        await MagicTradition.Print(objWriter, objCulture, strLanguageToPrint, token)
+                        await objTradition.Print(objWriter, objCulture, strLanguageToPrint, token)
                             .ConfigureAwait(false);
                     }
 
@@ -14418,7 +14421,7 @@ namespace Chummer
                 string strXPath;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    var objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                    CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
                     if (objSettings != null)
                     {
                         sbdFilter.Append('(').Append(await objSettings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(") and ");
@@ -15962,6 +15965,81 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Clear all Spell tab elements from the character.
+        /// </summary>
+        public async Task ClearMagicAsync(bool blnKeepAdeptEligible, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpells, token: token).ConfigureAwait(false))
+                        .Count > 0
+                    || (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpellsATT, token: token).ConfigureAwait(false)).Count > 0
+                    || (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpellsSkill, token: token).ConfigureAwait(false)).Count >
+                    0)
+                {
+                    // Run through all of the Spells and remove their Improvements.
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        ThreadSafeObservableCollection<Spell> lstSpells = await GetSpellsAsync(token).ConfigureAwait(false);
+                        for (int i = await lstSpells.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                        {
+                            if (i < await lstSpells.GetCountAsync(token).ConfigureAwait(false))
+                            {
+                                Spell objToRemove = await lstSpells.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (objToRemove.Grade == 0)
+                                {
+                                    if (blnKeepAdeptEligible && objToRemove.Category == "Rituals" &&
+                                        !objToRemove.Descriptors.Contains("Spell"))
+                                        continue;
+                                    // Remove the Improvements created by the Spell.
+                                    await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Spell,
+                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
+                                    await lstSpells.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    ThreadSafeObservableCollection<Spirit> lstSpirits = await GetSpiritsAsync(token).ConfigureAwait(false);
+                    for (int i = await lstSpirits.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                    {
+                        if (i < await lstSpirits.GetCountAsync(token).ConfigureAwait(false))
+                        {
+                            Spirit objToRemove = await lstSpirits.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objToRemove.EntityType == SpiritType.Spirit)
+                            {
+                                await lstSpirits.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Clear all Adept tab elements from the character.
         /// </summary>
         public void ClearAdeptPowers(CancellationToken token = default)
@@ -15985,6 +16063,40 @@ namespace Chummer
                             objToRemove.Rating = 0;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clear all Adept tab elements from the character.
+        /// </summary>
+        public async Task ClearAdeptPowersAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                ThreadSafeBindingList<Power> lstPowers = await GetPowersAsync(token).ConfigureAwait(false);
+                // Run through all powers and remove the ones not added by improvements or foci
+                for (int i = await lstPowers.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                {
+                    if (i < await lstPowers.GetCountAsync(token).ConfigureAwait(false))
+                    {
+                        Power objToRemove = await lstPowers.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (await objToRemove.GetFreeLevelsAsync(token).ConfigureAwait(false) == 0 && await objToRemove.GetFreePointsAsync(token).ConfigureAwait(false) == 0)
+                        {
+                            // Remove the Improvements created by the Power.
+                            await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Power,
+                                objToRemove.InternalId, token: token).ConfigureAwait(false);
+                            await lstPowers.RemoveAtAsync(i, token).ConfigureAwait(false);
+                        }
+                        else
+                            await objToRemove.SetRatingAsync(0, token).ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16026,6 +16138,52 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Clear all Technomancer tab elements from the character.
+        /// </summary>
+        public async Task ClearResonanceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                ThreadSafeObservableCollection<ComplexForm> lstComplexForms = await GetComplexFormsAsync(token).ConfigureAwait(false);
+                // Run through all of the Complex Forms and remove their Improvements.
+                for (int i = await lstComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                {
+                    if (i < await lstComplexForms.GetCountAsync(token).ConfigureAwait(false))
+                    {
+                        ComplexForm objToRemove = await lstComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objToRemove.Grade == 0)
+                        {
+                            // Remove the Improvements created by the Spell.
+                            await ImprovementManager.RemoveImprovementsAsync(this,
+                                Improvement.ImprovementSource.ComplexForm,
+                                objToRemove.InternalId, token: token).ConfigureAwait(false);
+                            await lstComplexForms.RemoveAtAsync(i, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                ThreadSafeObservableCollection<Spirit> lstSpirits = await GetSpiritsAsync(token).ConfigureAwait(false);
+                for (int i = await lstSpirits.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                {
+                    if (i < await lstSpirits.GetCountAsync(token).ConfigureAwait(false))
+                    {
+                        Spirit objToRemove = await lstSpirits.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objToRemove.EntityType == SpiritType.Sprite)
+                        {
+                            await lstSpirits.RemoveAtAsync(i, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Clear all Advanced Programs tab elements from the character.
         /// </summary>
         public void ClearAdvancedPrograms(CancellationToken token = default)
@@ -16047,6 +16205,37 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clear all Advanced Programs tab elements from the character.
+        /// </summary>
+        public async Task ClearAdvancedProgramsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                ThreadSafeObservableCollection<AIProgram> lstAIPrograms = await GetAIProgramsAsync(token).ConfigureAwait(false);
+                for (int i = await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                {
+                    if (i < await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false))
+                    {
+                        AIProgram objToRemove = await lstAIPrograms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objToRemove.CanDelete)
+                        {
+                            // Remove the Improvements created by the Program.
+                            await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.AIProgram,
+                                objToRemove.InternalId, token: token).ConfigureAwait(false);
+                            await lstAIPrograms.RemoveAtAsync(i, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16112,6 +16301,81 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Clear all cyberware and bioware implanted on the character.
+        /// </summary>
+        public async Task ClearCyberwareTabAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strDisabledSource = string.Empty;
+                if (await GetCreatedAsync(token).ConfigureAwait(false))
+                {
+                    Improvement objDisablingImprovement = (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                this,
+                                Improvement.ImprovementType.SpecialTab,
+                                "Cyberware", token: token).ConfigureAwait(false))
+                        .Find(x => x.UniqueName == "disabletab");
+                    if (objDisablingImprovement != null)
+                    {
+                        strDisabledSource = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
+                                            '(' + await GetObjectNameAsync(objDisablingImprovement, GlobalSettings.Language, token: token).ConfigureAwait(false) +
+                                            ')' +
+                                            await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    }
+                }
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (Cyberware objCyberware in await Cyberware
+                                 .ToListAsync(async x => x.SourceID != Backend.Equipment.Cyberware.EssenceHoleGUID
+                                                         && x.SourceID != Backend.Equipment.Cyberware
+                                                             .EssenceAntiHoleGUID &&
+                                                         await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    {
+                        if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                        {
+                            if (await objCyberware.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false))
+                            {
+                                var objParent = objCyberware.Parent;
+                                if (objParent != null)
+                                    await objParent.Children.RemoveAsync(objCyberware, token).ConfigureAwait(false);
+                                await Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                                await objCyberware.ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
+                            }
+                        }
+                        else if (await objCyberware.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false))
+                        {
+                            await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(this);
+                            string strEntry = await LanguageManager.GetStringAsync(
+                                objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
+                                    ? "String_ExpenseSoldCyberware"
+                                    : "String_ExpenseSoldBioware", token: token).ConfigureAwait(false);
+                            objExpense.Create(0,
+                                strEntry + strDisabledSource
+                                         + await objCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                ExpenseType.Nuyen, DateTime.Now);
+                            await ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Clear all Critter tab elements from the character.
         /// </summary>
         public void ClearCritterPowers(CancellationToken token = default)
@@ -16132,6 +16396,38 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clear all Critter tab elements from the character.
+        /// </summary>
+        public async Task ClearCritterPowersAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                ThreadSafeObservableCollection<CritterPower> lstCritterPowers = await GetCritterPowersAsync(token).ConfigureAwait(false);
+                for (int i = await lstCritterPowers.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                {
+                    if (i < await lstCritterPowers.GetCountAsync(token).ConfigureAwait(false))
+                    {
+                        CritterPower objToRemove = await lstCritterPowers.GetValueAtAsync(i, token).ConfigureAwait(false);
+                        if (objToRemove.Grade >= 0)
+                        {
+                            // Remove the Improvements created by the Metamagic.
+                            await ImprovementManager.RemoveImprovementsAsync(this,
+                                Improvement.ImprovementSource.CritterPower,
+                                objToRemove.InternalId, token: token).ConfigureAwait(false);
+                            await lstCritterPowers.RemoveAtAsync(i, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -21882,6 +22178,29 @@ namespace Chummer
         /// Amount of Power Points for Mystic Adepts.
         /// </summary>
         public async Task SetMysticAdeptPowerPointsAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                value = _intMAGAdept + Math.Min(value,
+                    await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token)
+                        .ConfigureAwait(false));
+                if (Interlocked.Exchange(ref _intMAGAdept, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(MysticAdeptPowerPoints), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Amount of Power Points for Mystic Adepts.
+        /// </summary>
+        public async Task ModifyMysticAdeptPowerPointsAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
@@ -35567,6 +35886,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether Adept options are enabled.
+        /// </summary>
+        public async Task SetAdeptEnabledAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAdeptEnabled == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnAdeptEnabled = value;
+                    if (!value)
+                        await ClearAdeptPowersAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(AdeptEnabled), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether Magician options are enabled.
         /// </summary>
         public bool MagicianEnabled
@@ -35604,6 +35954,37 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _blnMagicianEnabled;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether Magician options are enabled.
+        /// </summary>
+        public async Task SetMagicianEnabledAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnMagicianEnabled == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnMagicianEnabled = value;
+                    if (!value)
+                        await ClearMagicAsync(await GetAdeptEnabledAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(MagicianEnabled), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -35657,6 +36038,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether Technomancer options are enabled.
+        /// </summary>
+        public async Task SetTechnomancerEnabledAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnTechnomancerEnabled == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnTechnomancerEnabled = value;
+                    if (!value)
+                        await ClearResonanceAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(TechnomancerEnabled), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether the Drug Psyche is active
         /// </summary>
         public bool PsycheActive
@@ -35675,8 +36087,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnPsycheActive = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -35716,13 +36128,12 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     _blnPsycheActive = value;
+                    await OnPropertyChangedAsync(nameof(PsycheActive), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(PsycheActive), token).ConfigureAwait(false);
             }
             finally
             {
@@ -35759,6 +36170,54 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether Advanced Program options are enabled.
+        /// </summary>
+        public async Task<bool> GetAdvancedProgramsEnabledAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnAdvancedProgramsEnabled;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether Advanced Program options are enabled.
+        /// </summary>
+        public async Task SetAdvancedProgramsEnabledAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnAdvancedProgramsEnabled == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnAdvancedProgramsEnabled = value;
+                    if (!value)
+                        await ClearAdvancedProgramsAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(AdvancedProgramsEnabled), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether Cyberware options are disabled.
         /// </summary>
         public bool CyberwareDisabled
@@ -35786,6 +36245,54 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Whether Cyberware options are disabled.
+        /// </summary>
+        public async Task<bool> GetCyberwareDisabledAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnCyberwareDisabled;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether Cyberware options are disabled.
+        /// </summary>
+        public async Task SetCyberwareDisabledAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnCyberwareDisabled == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnCyberwareDisabled = value;
+                    if (value)
+                        await ClearCyberwareTabAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(CyberwareDisabled), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool AddCyberwareEnabled
         {
             get
@@ -35799,6 +36306,24 @@ namespace Chummer
             }
         }
 
+        public async Task<bool> GetAddCyberwareEnabledAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return !await GetCyberwareDisabledAsync(token).ConfigureAwait(false) && !await GetIsAIAsync(token).ConfigureAwait(false)
+                                                               && (await ImprovementManager
+                                                                   .GetCachedImprovementListForValueOfAsync(
+                                                                       this, Improvement.ImprovementType.DisableCyberware, token: token).ConfigureAwait(false))
+                                                               .Count == 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool AddBiowareEnabled
         {
             get
@@ -35809,6 +36334,24 @@ namespace Chummer
                                                  .GetCachedImprovementListForValueOf(
                                                      this, Improvement.ImprovementType.DisableBioware)
                                                  .Count == 0;
+            }
+        }
+
+        public async Task<bool> GetAddBiowareEnabledAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return !await GetCyberwareDisabledAsync(token).ConfigureAwait(false) && !await GetIsAIAsync(token).ConfigureAwait(false)
+                                          && (await ImprovementManager
+                                              .GetCachedImprovementListForValueOfAsync(
+                                                  this, Improvement.ImprovementType.DisableBioware, token: token).ConfigureAwait(false))
+                                              .Count == 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -35830,6 +36373,28 @@ namespace Chummer
 
                     return _intCachedInitiationEnabled > 0;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether the Initiation tab should be shown (override for BP mode).
+        /// </summary>
+        public async Task<bool> GetInitiationEnabledAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intCachedInitiationEnabled < 0)
+                {
+                    _intCachedInitiationEnabled = (!await GetInitiationForceDisabledAsync(token).ConfigureAwait(false) && (await GetMAGEnabledAsync(token).ConfigureAwait(false) || await GetRESEnabledAsync(token).ConfigureAwait(false))).ToInt32();
+                }
+
+                return _intCachedInitiationEnabled > 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -35855,6 +36420,48 @@ namespace Chummer
                         OnPropertyChanged();
                     }
                 }
+            }
+        }
+
+        public async Task<bool> GetInitiationForceDisabledAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnInitiationDisabled;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetInitiationForceDisabledAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnInitiationDisabled == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnInitiationDisabled = value;
+                    if (value)
+                        await ClearInitiationsAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(InitiationForceDisabled), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -35897,6 +36504,37 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _blnCritterEnabled;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether Critter options are enabled.
+        /// </summary>
+        public async Task SetCritterEnabledAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnCritterEnabled == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnCritterEnabled = value;
+                    if (!value)
+                        await ClearCritterPowersAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(CritterEnabled), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -36897,6 +37535,55 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _decPrototypeTranshuman;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether user is getting free bioware from Prototype Transhuman.
+        /// </summary>
+        public async Task SetPrototypeTranshumanAsync(decimal value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decPrototypeTranshuman == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decPrototypeTranshuman = value;
+                    await OnPropertyChangedAsync(nameof(PrototypeTranshuman), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether user is getting free bioware from Prototype Transhuman.
+        /// </summary>
+        public async Task ModifyPrototypeTranshumanAsync(decimal value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _decPrototypeTranshuman += value;
+                await OnPropertyChangedAsync(nameof(PrototypeTranshuman), token).ConfigureAwait(false);
             }
             finally
             {
@@ -40053,7 +40740,7 @@ namespace Chummer
 
                 // Only worry about essence loss attribute modifiers if this character actually has any attributes that would be affected by essence loss
                 // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
-                if (EssenceAtSpecialStart != decimal.MinValue)
+                if (await GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false) != decimal.MinValue)
                 {
                     decimal decSpecialAttBurnMultiplier = 1.0m;
                     decimal decTotalSpecialAttBurnMultiplier = 1.0m;
@@ -40082,9 +40769,9 @@ namespace Chummer
                     decimal decESSMag = await EssenceAsync(true, "MAG", token).ConfigureAwait(false);
                     decimal decESSRes = await EssenceAsync(true, "RES", token).ConfigureAwait(false);
                     decimal decESSDep = await EssenceAsync(true, "DEP", token).ConfigureAwait(false);
-                    if (!Settings.DontRoundEssenceInternally)
+                    if (!await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
                     {
-                        int intESSDecimals = Settings.EssenceDecimals;
+                        int intESSDecimals = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceDecimalsAsync(token).ConfigureAwait(false);
                         decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
                         decESSRes = decimal.Round(decESSRes, intESSDecimals, MidpointRounding.AwayFromZero);
                         decESSDep = decimal.Round(decESSDep, intESSDecimals, MidpointRounding.AwayFromZero);
@@ -40103,9 +40790,9 @@ namespace Chummer
                                                                * decTotalSpecialAttBurnMultiplier).StandardRound();
                     // Character has the option set where essence loss just acts as an augmented malus, so just replace old essence loss improvements with new ones that apply an augmented malus
                     // equal to the amount by which the attribute's maximum would normally be reduced.
-                    if (Settings.SpecialKarmaCostBasedOnShownValue)
+                    if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetSpecialKarmaCostBasedOnShownValueAsync(token).ConfigureAwait(false))
                     {
-                        Improvement.ImprovementSource eEssenceLossSource = Created
+                        Improvement.ImprovementSource eEssenceLossSource = await GetCreatedAsync(token).ConfigureAwait(false)
                             ? Improvement.ImprovementSource.EssenceLoss
                             : Improvement.ImprovementSource.EssenceLossChargen;
                         IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -40137,7 +40824,7 @@ namespace Chummer
                                         Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
                                         -intMagMaxReduction, token: token).ConfigureAwait(false);
                                     // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
-                                    if (UseMysticAdeptPPs)
+                                    if (await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
                                         await ImprovementManager.CreateImprovementAsync(
                                             this, string.Empty, eEssenceLossSource,
                                             string.Empty,
@@ -40149,27 +40836,31 @@ namespace Chummer
                                 if (intResMaxReduction != 0)
                                 {
                                     int intRESReduction = intResMaxReduction;
-                                    if (TechnomancerEnabled && SubmersionGrade > 0 && (await ImprovementManager
+                                    if (await GetTechnomancerEnabledAsync(token).ConfigureAwait(false) && (await ImprovementManager
                                             .GetCachedImprovementListForValueOfAsync(this,
                                                 Improvement.ImprovementType
                                                     .CyberadeptDaemon, token: token).ConfigureAwait(false))
                                         .Count > 0)
                                     {
-                                        decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
-                                        int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
-                                                                          Math.Floor(decNonCyberwareEssence)
-                                            ? (int)Math.Ceiling(CyberwareEssence)
-                                            : (int)Math.Floor(CyberwareEssence);
-                                        int intCyberadeptDaemonBonus = 0;
-                                        for (int i = 1; i <= SubmersionGrade; ++i)
+                                        int intSubmersionGrade = await GetSubmersionGradeAsync(token).ConfigureAwait(false);
+                                        if (intSubmersionGrade > 0)
                                         {
-                                            intCyberadeptDaemonBonus += i.DivAwayFromZero(2);
-                                        }
+                                            decimal decNonCyberwareEssence = await GetBiowareEssenceAsync(token).ConfigureAwait(false) + await GetEssenceHoleAsync(token).ConfigureAwait(false);
+                                            int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
+                                                                              Math.Floor(decNonCyberwareEssence)
+                                                ? (int)Math.Ceiling(CyberwareEssence)
+                                                : (int)Math.Floor(CyberwareEssence);
+                                            int intCyberadeptDaemonBonus = 0;
+                                            for (int i = 1; i <= intSubmersionGrade; ++i)
+                                            {
+                                                intCyberadeptDaemonBonus += i.DivAwayFromZero(2);
+                                            }
 
-                                        intRESReduction
-                                            -= Math.Min(intCyberadeptDaemonBonus, intMaxCyberadeptDaemonBonus);
-                                        if (intRESReduction < 0)
-                                            intRESReduction = 0;
+                                            intRESReduction
+                                                -= Math.Min(intCyberadeptDaemonBonus, intMaxCyberadeptDaemonBonus);
+                                            if (intRESReduction < 0)
+                                                intRESReduction = 0;
+                                        }
                                     }
 
                                     if (intRESReduction != 0)
@@ -40208,15 +40899,15 @@ namespace Chummer
                     {
                         // "Base" minimum reduction. This is the amount by which the character's special attribute minima would be reduced across career and create modes if there wasn't any funny business
                         int intMagMinReduction
-                            = ((EssenceAtSpecialStart - decESSMag) * decSpecialAttBurnMultiplier
+                            = ((await GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false) - decESSMag) * decSpecialAttBurnMultiplier
                                                                    * decTotalSpecialAttBurnMultiplier)
                             .StandardRound();
                         int intResMinReduction
-                            = ((EssenceAtSpecialStart - decESSRes) * decSpecialAttBurnMultiplier
+                            = ((await GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false) - decESSRes) * decSpecialAttBurnMultiplier
                                                                    * decTotalSpecialAttBurnMultiplier)
                             .StandardRound();
                         int intDepMinReduction
-                            = ((EssenceAtSpecialStart - decESSDep) * decSpecialAttBurnMultiplier
+                            = ((await GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false) - decESSDep) * decSpecialAttBurnMultiplier
                                                                    * decTotalSpecialAttBurnMultiplier)
                             .StandardRound();
 
@@ -40224,7 +40915,7 @@ namespace Chummer
                         // They are extra amounts by which the relevant attributes' karma levels should be burned
                         int intExtraRESBurn = Math.Max(0,
                             Math.Max(
-                                RES.Base + await RES.GetFreeBaseAsync(token)
+                                await RES.GetBaseAsync(token).ConfigureAwait(false) + await RES.GetFreeBaseAsync(token)
                                              .ConfigureAwait(false)
                                          + await RES.GetRawMinimumAsync(token)
                                              .ConfigureAwait(false)
@@ -40232,12 +40923,12 @@ namespace Chummer
                                                  token)
                                              .ConfigureAwait(false),
                                 await RES.GetTotalMinimumAsync(token)
-                                    .ConfigureAwait(false)) + RES.Karma
+                                    .ConfigureAwait(false)) + await RES.GetKarmaAsync(token).ConfigureAwait(false)
                             - await RES.GetTotalMaximumAsync(token)
                                 .ConfigureAwait(false));
                         int intExtraDEPBurn = Math.Max(0,
                             Math.Max(
-                                DEP.Base + await DEP.GetFreeBaseAsync(token)
+                                await DEP.GetBaseAsync(token).ConfigureAwait(false) + await DEP.GetFreeBaseAsync(token)
                                              .ConfigureAwait(false)
                                          + await DEP.GetRawMinimumAsync(token)
                                              .ConfigureAwait(false)
@@ -40245,12 +40936,12 @@ namespace Chummer
                                                  token)
                                              .ConfigureAwait(false),
                                 await DEP.GetTotalMinimumAsync(token)
-                                    .ConfigureAwait(false)) + DEP.Karma
+                                    .ConfigureAwait(false)) + await DEP.GetKarmaAsync(token).ConfigureAwait(false)
                             - await DEP.GetTotalMaximumAsync(token)
                                 .ConfigureAwait(false));
                         int intExtraMAGBurn = Math.Max(0,
                             Math.Max(
-                                MAG.Base + await MAG.GetFreeBaseAsync(token)
+                                await MAG.GetBaseAsync(token).ConfigureAwait(false) + await MAG.GetFreeBaseAsync(token)
                                              .ConfigureAwait(false)
                                          + await MAG.GetRawMinimumAsync(token)
                                              .ConfigureAwait(false)
@@ -40258,21 +40949,21 @@ namespace Chummer
                                                  token)
                                              .ConfigureAwait(false),
                                 await MAG.GetTotalMinimumAsync(token)
-                                    .ConfigureAwait(false)) + MAG.Karma
+                                    .ConfigureAwait(false)) + await MAG.GetKarmaAsync(token).ConfigureAwait(false)
                             - await MAG.GetTotalMaximumAsync(token)
                                 .ConfigureAwait(false));
                         int intExtraMAGAdeptBurn = MAG == MAGAdept
                             ? intExtraMAGBurn
                             : Math.Max(0,
                                 Math.Max(
-                                    MAGAdept.Base
+                                    await MAGAdept.GetBaseAsync(token).ConfigureAwait(false)
                                     + await MAGAdept.GetFreeBaseAsync(token).ConfigureAwait(false)
                                     + await MAGAdept.GetRawMinimumAsync(token).ConfigureAwait(false)
                                     +
                                     await MAGAdept.GetAttributeValueModifiersAsync(token)
                                         .ConfigureAwait(false),
                                     await MAGAdept.GetTotalMinimumAsync(token).ConfigureAwait(false))
-                                + MAGAdept.Karma
+                                + await MAGAdept.GetKarmaAsync(token).ConfigureAwait(false)
                                 - await MAGAdept.GetTotalMaximumAsync(token).ConfigureAwait(false));
                         // Old values for minimum reduction from essence loss in career mode. These are used to determine if any karma needs to get burned.
                         int intOldRESCareerMinimumReduction = 0;
@@ -40351,7 +41042,7 @@ namespace Chummer
                                 int intMAGMinimumReduction;
                                 int intMAGAdeptMinimumReduction;
                                 // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
-                                if (Settings.ESSLossReducesMaximumOnly)
+                                if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetESSLossReducesMaximumOnlyAsync(token).ConfigureAwait(false))
                                 {
                                     intMAGMinimumReduction = Math.Max(0,
                                         intMagMinReduction
@@ -40390,24 +41081,25 @@ namespace Chummer
                                 {
                                     // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
                                     if (intMAGMinimumReduction >
-                                        MAG.Base + await MAG.GetFreeBaseAsync(token).ConfigureAwait(false)
-                                                 + await MAG.GetRawMinimumAsync(token).ConfigureAwait(false)
-                                                 + await MAG.GetAttributeValueModifiersAsync(token)
-                                                     .ConfigureAwait(false))
+                                        await MAG.GetBaseAsync(token).ConfigureAwait(false)
+                                        + await MAG.GetFreeBaseAsync(token).ConfigureAwait(false)
+                                        + await MAG.GetRawMinimumAsync(token).ConfigureAwait(false)
+                                        + await MAG.GetAttributeValueModifiersAsync(token)
+                                            .ConfigureAwait(false))
                                     {
                                         // intMAGMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                         // Besides, this only fires if intMAGMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                        intExtraMAGBurn += Math.Min(MAG.Karma, intMAGMinimumReductionDelta);
-                                        MAG.Karma -= intExtraMAGBurn;
+                                        intExtraMAGBurn += Math.Min(await MAG.GetKarmaAsync(token).ConfigureAwait(false), intMAGMinimumReductionDelta);
+                                        await MAG.ModifyKarmaAsync(-intExtraMAGBurn, token).ConfigureAwait(false);
                                     }
 
                                     // Mystic Adept PPs may need to be burned away based on the change of our MAG attribute
-                                    if (UseMysticAdeptPPs)
+                                    if (await GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false))
                                     {
                                         // First burn away PPs gained during chargen...
                                         int intChargenPPBurn =
-                                            Math.Min(MysticAdeptPowerPoints, intMAGMinimumReductionDelta);
-                                        MysticAdeptPowerPoints -= intChargenPPBurn;
+                                            Math.Min(await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false), intMAGMinimumReductionDelta);
+                                        await ModifyMysticAdeptPowerPointsAsync(-intChargenPPBurn, token).ConfigureAwait(false);
                                         // ... now burn away PPs gained from initiations.
                                         decimal decPPBurn = Math.Min(intMAGMinimumReductionDelta - intChargenPPBurn,
                                             await ImprovementManager.ValueOfAsync(
@@ -40453,7 +41145,7 @@ namespace Chummer
                                     if (intMAGAdeptMinimumReductionDelta > 0)
                                     {
                                         // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
-                                        if (intMAGAdeptMinimumReduction > MAGAdept.Base
+                                        if (intMAGAdeptMinimumReduction > await MAGAdept.GetBaseAsync(token).ConfigureAwait(false)
                                             + await MAGAdept.GetFreeBaseAsync(token).ConfigureAwait(false) +
                                             await MAGAdept.GetRawMinimumAsync(token).ConfigureAwait(false)
                                             + await MAGAdept.GetAttributeValueModifiersAsync(token)
@@ -40461,9 +41153,9 @@ namespace Chummer
                                         {
                                             // intMAGAdeptMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                             // Besides, this only fires if intMAGAdeptMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                            intExtraMAGAdeptBurn += Math.Min(MAGAdept.Karma,
+                                            intExtraMAGAdeptBurn += Math.Min(await MAGAdept.GetKarmaAsync(token).ConfigureAwait(false),
                                                 intMAGAdeptMinimumReductionDelta);
-                                            MAGAdept.Karma -= intExtraMAGAdeptBurn;
+                                            await MAGAdept.ModifyKarmaAsync(-intExtraMAGAdeptBurn, token).ConfigureAwait(false);
                                         }
                                     }
                                     // If the new MAGAdept reduction is less than our old one, the character doesn't actually get any new values back
@@ -40516,7 +41208,7 @@ namespace Chummer
                                 // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
                                 int intRESMinimumReduction;
                                 // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
-                                if (Settings.ESSLossReducesMaximumOnly)
+                                if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetESSLossReducesMaximumOnlyAsync(token).ConfigureAwait(false))
                                 {
                                     intRESMinimumReduction = Math.Max(0,
                                         intResMinReduction
@@ -40541,15 +41233,15 @@ namespace Chummer
                                 {
                                     // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
                                     if (intRESMinimumReduction >
-                                        RES.Base + await RES.GetFreeBaseAsync(token).ConfigureAwait(false)
+                                        await RES.GetBaseAsync(token).ConfigureAwait(false) + await RES.GetFreeBaseAsync(token).ConfigureAwait(false)
                                                  + await RES.GetRawMinimumAsync(token).ConfigureAwait(false)
                                                  + await RES.GetAttributeValueModifiersAsync(token)
                                                      .ConfigureAwait(false))
                                     {
                                         // intRESMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                         // Besides, this only fires if intRESMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                        intExtraRESBurn += Math.Min(RES.Karma, intRESMinimumReductionDelta);
-                                        RES.Karma -= intExtraRESBurn;
+                                        intExtraRESBurn += Math.Min(await RES.GetKarmaAsync(token).ConfigureAwait(false), intRESMinimumReductionDelta);
+                                        await RES.ModifyKarmaAsync(-intExtraRESBurn, token).ConfigureAwait(false);
                                     }
                                 }
                                 // If the new RES reduction is less than our old one, the character doesn't actually get any new values back
@@ -40590,7 +41282,7 @@ namespace Chummer
                                 // This is the step where create mode attribute loss regarding attribute minimum loss gets factored out.
                                 int intDEPMinimumReduction;
                                 // If only maxima would be reduced, use the attribute's current total value instead of its current maximum, as this makes sure minima will only get reduced if the maximum reduction would eat into the current value
-                                if (Settings.ESSLossReducesMaximumOnly)
+                                if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetESSLossReducesMaximumOnlyAsync(token).ConfigureAwait(false))
                                 {
                                     intDEPMinimumReduction = Math.Max(0,
                                         intDepMinReduction
@@ -40615,15 +41307,15 @@ namespace Chummer
                                 {
                                     // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
                                     if (intDEPMinimumReduction >
-                                        DEP.Base + await DEP.GetFreeBaseAsync(token).ConfigureAwait(false)
+                                        await DEP.GetBaseAsync(token).ConfigureAwait(false) + await DEP.GetFreeBaseAsync(token).ConfigureAwait(false)
                                                  + await DEP.GetRawMinimumAsync(token).ConfigureAwait(false)
                                                  + await DEP.GetAttributeValueModifiersAsync(token)
                                                      .ConfigureAwait(false))
                                     {
                                         // intDEPMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                         // Besides, this only fires if intDEPMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
-                                        intExtraDEPBurn += Math.Min(DEP.Karma, intDEPMinimumReductionDelta);
-                                        DEP.Karma -= intExtraDEPBurn;
+                                        intExtraDEPBurn += Math.Min(await DEP.GetKarmaAsync(token).ConfigureAwait(false), intDEPMinimumReductionDelta);
+                                        await DEP.ModifyKarmaAsync(-intExtraDEPBurn, token).ConfigureAwait(false);
                                     }
                                 }
                                 // If the new DEP reduction is less than our old one, the character doesn't actually get any new values back
@@ -40666,22 +41358,22 @@ namespace Chummer
                     else
                     {
                         int intMagMinReduction
-                            = ((EssenceAtSpecialStart - decESSMag) * decSpecialAttBurnMultiplier
+                            = ((await GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false) - decESSMag) * decSpecialAttBurnMultiplier
                                                                    * decTotalSpecialAttBurnMultiplier)
                             .StandardRound();
                         int intResMinReduction
-                            = ((EssenceAtSpecialStart - decESSRes) * decSpecialAttBurnMultiplier
+                            = ((await GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false) - decESSRes) * decSpecialAttBurnMultiplier
                                                                    * decTotalSpecialAttBurnMultiplier)
                             .StandardRound();
                         int intDepMinReduction
-                            = ((EssenceAtSpecialStart - decESSDep) * decSpecialAttBurnMultiplier
+                            = ((await GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false) - decESSDep) * decSpecialAttBurnMultiplier
                                                                    * decTotalSpecialAttBurnMultiplier)
                             .StandardRound();
                         int intMAGMinimumReduction = intMagMinReduction;
                         int intMAGAdeptMinimumReduction = intMagMinReduction;
                         int intRESMinimumReduction = intResMinReduction;
                         int intDEPMinimumReduction = intDepMinReduction;
-                        if (Settings.ESSLossReducesMaximumOnly)
+                        if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetESSLossReducesMaximumOnlyAsync(token).ConfigureAwait(false))
                         {
                             (int iI, int iJ) = await MAG.MinimumMaximumNoEssenceLossAsync(token: token).ConfigureAwait(false);
                             intMAGMinimumReduction = Math.Max(0, intMagMinReduction + iI - iJ);
@@ -40771,15 +41463,17 @@ namespace Chummer
                                                 >= await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false))
                                             {
                                                 await MAG.AssignBaseKarmaLimitsAsync(
-                                                        MAGAdept.Base, MAGAdept.Karma, MAGAdept.RawMetatypeMinimum,
-                                                        MAGAdept.RawMetatypeMaximum,
-                                                        MAGAdept.RawMetatypeAugmentedMaximum,
+                                                        await MAGAdept.GetBaseAsync(token).ConfigureAwait(false),
+                                                        await MAGAdept.GetKarmaAsync(token).ConfigureAwait(false),
+                                                        await MAGAdept.GetRawMetatypeMinimumAsync(token).ConfigureAwait(false),
+                                                        await MAGAdept.GetRawMetatypeMaximumAsync(token).ConfigureAwait(false),
+                                                        await MAGAdept.GetRawMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false),
                                                         token)
                                                     .ConfigureAwait(false);
                                                 await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
                                                     .ConfigureAwait(false);
 
-                                                MagicianEnabled = false;
+                                                await SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                             }
 
                                             if (intMagMaxReduction
@@ -40788,10 +41482,10 @@ namespace Chummer
                                                 await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
                                                     .ConfigureAwait(false);
 
-                                                AdeptEnabled = false;
+                                                await SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                             }
 
-                                            if (!MagicianEnabled && !AdeptEnabled)
+                                            if (!await GetMagicianEnabledAsync(token).ConfigureAwait(false) && !await GetAdeptEnabledAsync(token).ConfigureAwait(false))
                                                 await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                         }
                                         else if (intMagMaxReduction
@@ -40800,8 +41494,8 @@ namespace Chummer
                                             await MAG.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
                                                 .ConfigureAwait(false);
 
-                                            MagicianEnabled = false;
-                                            AdeptEnabled = false;
+                                            await SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
+                                            await SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                             await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                         }
                                     }
@@ -40810,15 +41504,17 @@ namespace Chummer
                                         if (await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
                                         {
                                             await MAG.AssignBaseKarmaLimitsAsync(
-                                                    MAGAdept.Base, MAGAdept.Karma, MAGAdept.RawMetatypeMinimum,
-                                                    MAGAdept.RawMetatypeMaximum,
-                                                    MAGAdept.RawMetatypeAugmentedMaximum,
+                                                    await MAGAdept.GetBaseAsync(token).ConfigureAwait(false),
+                                                    await MAGAdept.GetKarmaAsync(token).ConfigureAwait(false),
+                                                    await MAGAdept.GetRawMetatypeMinimumAsync(token).ConfigureAwait(false),
+                                                    await MAGAdept.GetRawMetatypeMaximumAsync(token).ConfigureAwait(false),
+                                                    await MAGAdept.GetRawMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false),
                                                     token)
                                                 .ConfigureAwait(false);
                                             await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
                                                 .ConfigureAwait(false);
 
-                                            MagicianEnabled = false;
+                                            await SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                         }
 
                                         if (await MAGAdept.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
@@ -40826,10 +41522,10 @@ namespace Chummer
                                             await MAGAdept.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
                                                 .ConfigureAwait(false);
 
-                                            AdeptEnabled = false;
+                                            await SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                         }
 
-                                        if (!MagicianEnabled && !AdeptEnabled)
+                                        if (!await GetMagicianEnabledAsync(token).ConfigureAwait(false) && !await GetAdeptEnabledAsync(token).ConfigureAwait(false))
                                             await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                     }
                                     else if (await MAG.GetTotalMaximumAsync(token).ConfigureAwait(false) < 1)
@@ -40837,8 +41533,8 @@ namespace Chummer
                                         await MAG.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
                                             .ConfigureAwait(false);
 
-                                        MagicianEnabled = false;
-                                        AdeptEnabled = false;
+                                        await SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
+                                        await SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                         await SetMAGEnabledAsync(false, token).ConfigureAwait(false);
                                     }
                                 }
@@ -40847,16 +41543,16 @@ namespace Chummer
                                 {
                                     int intResTotalMaximum
                                         = await RES.GetTotalMaximumAsync(token).ConfigureAwait(false);
-                                    if (Settings.SpecialKarmaCostBasedOnShownValue
+                                    if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetSpecialKarmaCostBasedOnShownValueAsync(token).ConfigureAwait(false)
                                         && intResMaxReduction >= intResTotalMaximum
-                                        || !Settings.SpecialKarmaCostBasedOnShownValue
+                                        || !await (await GetSettingsAsync(token).ConfigureAwait(false)).GetSpecialKarmaCostBasedOnShownValueAsync(token).ConfigureAwait(false)
                                         && intResTotalMaximum < 1)
                                     {
                                         await RES.AssignBaseKarmaLimitsAsync(0, 0, 0, 0, 0, token)
                                             .ConfigureAwait(false);
 
                                         await SetRESEnabledAsync(false, token).ConfigureAwait(false);
-                                        TechnomancerEnabled = false;
+                                        await SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
                                     }
                                 }
                             }
@@ -40881,7 +41577,7 @@ namespace Chummer
                 }
 
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
-                if (MetatypeCategory == "Cyberzombie")
+                if (await GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie")
                 {
                     int intESSModifier = (-await EssenceAsync(token: token).ConfigureAwait(false)).StandardRound();
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -47262,23 +47958,38 @@ namespace Chummer
                             }
 
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
-                            if (MysticAdeptPowerPoints > 0)
+                            if (blnSync)
                             {
-                                int intMAGTotalValue = blnSync
-                                    ? MAG.TotalValue
-                                    : await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
-                                if (MysticAdeptPowerPoints > intMAGTotalValue)
-                                    MysticAdeptPowerPoints = intMAGTotalValue;
+                                if (MysticAdeptPowerPoints > 0)
+                                {
+                                    int intMAGTotalValue = MAG.TotalValue;
+                                    if (MysticAdeptPowerPoints > intMAGTotalValue)
+                                        MysticAdeptPowerPoints = intMAGTotalValue;
+                                }
+                            }
+                            else
+                            {
+                                int intMysticAdeptPowerPoints = await GetMysticAdeptPowerPointsAsync(token).ConfigureAwait(false);
+                                if (intMysticAdeptPowerPoints > 0)
+                                {
+                                    int intMAGTotalValue =
+                                        await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                            .GetTotalValueAsync(token).ConfigureAwait(false);
+                                    if (intMysticAdeptPowerPoints > intMAGTotalValue)
+                                        await SetMysticAdeptPowerPointsAsync(intMAGTotalValue, token).ConfigureAwait(false);
+                                }
                             }
 
-                            if (!InitiationEnabled || !AddInitiationsAllowed)
+                            if (blnSync)
                             {
-                                if (blnSync)
+                                if (!InitiationEnabled || !AddInitiationsAllowed)
+                                {
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ClearInitiations(token);
-                                else
-                                    await ClearInitiationsAsync(token).ConfigureAwait(false);
+                                }
                             }
+                            else if (!await GetInitiationEnabledAsync(token).ConfigureAwait(false) || !await GetAddInitiationsAllowedAsync(token).ConfigureAwait(false))
+                                await ClearInitiationsAsync(token).ConfigureAwait(false);
                             //Timekeeper.Finish("load_char_improvementrefreshers");
                         }
                     }

@@ -882,7 +882,7 @@ namespace Chummer
                 case "critterpower":
                 {
                     // Run through all of the Powers the character has and see if the current required item exists.
-                    if (objCharacter.CritterEnabled)
+                    if (blnSync ? objCharacter.CritterEnabled : await objCharacter.GetCritterEnabledAsync(token).ConfigureAwait(false))
                     {
                         CritterPower objCritterPower = blnSync
                             // ReSharper disable once MethodHasAsyncOverload

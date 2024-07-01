@@ -1992,38 +1992,6 @@ namespace Chummer
                         treVehicles.DragEnter -= treVehicles_DragEnter;
                         treVehicles.DragDrop -= treVehicles_DragDrop;
 
-                        foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
-                        {
-                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objContactControl.DeleteContact -= DeleteContact;
-                            objContactControl.MouseDown -= DragContactControl;
-                        }
-
-                        foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
-                        {
-                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objContactControl.DeleteContact -= DeleteEnemy;
-                            objContactControl.MouseDown -= DragContactControl;
-                        }
-
-                        foreach (PetControl objPetControl in panPets.Controls.OfType<PetControl>())
-                        {
-                            objPetControl.DeleteContact -= DeletePet;
-                            objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                        }
-
-                        foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
-                        {
-                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                        }
-
-                        foreach (SpiritControl objSpiritControl in panSprites.Controls.OfType<SpiritControl>())
-                        {
-                            objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                            objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                        }
-
                         await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
                             RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
                             RefreshArmorClearBindings(treArmor, CancellationToken.None),
@@ -2482,8 +2450,9 @@ namespace Chummer
                 if (e.PropertyNames.Contains(nameof(Character.MagicianEnabled)))
                 {
                     // Change to the status of Magician being enabled.
-                    if (await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false) ||
-                        await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false))
+                    bool blnMagicianEnabled =
+                        await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false);
+                    if (blnMagicianEnabled || await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false))
                     {
                         await tabCharacterTabs.DoThreadSafeAsync(x =>
                         {
@@ -2521,9 +2490,9 @@ namespace Chummer
                         }
                     }
 
-                    await cmdAddSpirit.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled,
+                    await cmdAddSpirit.DoThreadSafeAsync(x => x.Visible = blnMagicianEnabled,
                         token).ConfigureAwait(false);
-                    await panSpirits.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled,
+                    await panSpirits.DoThreadSafeAsync(x => x.Visible = blnMagicianEnabled,
                         token).ConfigureAwait(false);
                 }
 
@@ -2608,7 +2577,7 @@ namespace Chummer
                 if (e.PropertyNames.Contains(nameof(Character.AdvancedProgramsEnabled)))
                 {
                     // Change to the status of Advanced Programs being enabled.
-                    if (CharacterObject.AdvancedProgramsEnabled)
+                    if (await CharacterObject.GetAdvancedProgramsEnabledAsync(token).ConfigureAwait(false))
                     {
                         await tabCharacterTabs.DoThreadSafeAsync(x =>
                         {
@@ -2642,7 +2611,7 @@ namespace Chummer
                     }
                 }
 
-                if (e.PropertyNames.Contains(nameof(Character.AddBiowareEnabled)) && !CharacterObject.AddBiowareEnabled)
+                if (e.PropertyNames.Contains(nameof(Character.AddBiowareEnabled)) && !await CharacterObject.GetAddBiowareEnabledAsync(token).ConfigureAwait(false))
                 {
                     foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
                                  x => x.Children, async x =>
@@ -2672,7 +2641,7 @@ namespace Chummer
                 }
 
                 if (e.PropertyNames.Contains(nameof(Character.AddCyberwareEnabled)) &&
-                    !CharacterObject.AddCyberwareEnabled)
+                    !await CharacterObject.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false))
                 {
                     foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
                                      x => x.Children, async x =>
@@ -2742,7 +2711,7 @@ namespace Chummer
                 if (e.PropertyNames.Contains(nameof(Character.InitiationEnabled)))
                 {
                     // Change the status of the Initiation tab being show.
-                    if (CharacterObject.InitiationEnabled)
+                    if (await CharacterObject.GetInitiationEnabledAsync(token).ConfigureAwait(false))
                     {
                         await tabCharacterTabs.DoThreadSafeAsync(x =>
                         {
@@ -5069,8 +5038,8 @@ namespace Chummer
 
                                 objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
                                 // Barehanded Adept
-                                if (objSpell.FreeBonus && CharacterObject.AdeptEnabled
-                                                       && !CharacterObject.MagicianEnabled
+                                if (objSpell.FreeBonus && await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
+                                                       && !await CharacterObject.GetMagicianEnabledAsync(GenericToken).ConfigureAwait(false)
                                                        && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
                                 {
                                     objSpell.BarehandedAdept = true;
@@ -13132,7 +13101,7 @@ namespace Chummer
         private async Task RefreshSelectedMetamagic(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!CharacterObject.InitiationEnabled)
+            if (!await CharacterObject.GetInitiationEnabledAsync(token).ConfigureAwait(false))
                 return;
             IsRefreshing = true;
             try

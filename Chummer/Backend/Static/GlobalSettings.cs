@@ -1624,7 +1624,7 @@ namespace Chummer
                 }
 
                 if (ClipboardChangedAsync != null)
-                    await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token);
+                    await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);
                 ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
             }
             finally

@@ -321,6 +321,24 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Minimum value for the CharacterAttribute as set by the character's Metatype.
+        /// </summary>
+        public async Task<int> GetRawMetatypeMinimumAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMetatypeMin;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Minimum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
         /// </summary>
         public int MetatypeMinimum
@@ -355,8 +373,8 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
-                    return RawMetatypeMinimum;
-                int intReturn = RawMetatypeMinimum;
+                    return await GetRawMetatypeMinimumAsync(token).ConfigureAwait(false);
+                int intReturn = await GetRawMetatypeMinimumAsync(token).ConfigureAwait(false);
                 Improvement objImprovement = await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).LastOrDefaultAsync(
                     x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev
                         && x.Enabled && x.Minimum != 0, token: token).ConfigureAwait(false);
@@ -393,6 +411,24 @@ namespace Chummer.Backend.Attributes
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Maximum value for the CharacterAttribute as set by the character's Metatype.
+        /// </summary>
+        public async Task<int> GetRawMetatypeMaximumAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMetatypeMax;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -446,13 +482,13 @@ namespace Chummer.Backend.Attributes
                     if (objDepth != null)
                         return await objDepth.GetTotalValueAsync(token).ConfigureAwait(false);
                     return _objCharacter.IsLoading
-                        ? RawMetatypeMaximum
+                        ? await GetRawMetatypeMaximumAsync(token).ConfigureAwait(false)
                         : throw new NullReferenceException(nameof(Character.DEP));
                 }
 
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
-                    return RawMetatypeMaximum;
-                int intReturn = RawMetatypeMaximum;
+                    return await GetRawMetatypeMaximumAsync(token).ConfigureAwait(false);
+                int intReturn = await GetRawMetatypeMaximumAsync(token).ConfigureAwait(false);
                 Improvement objImprovement = await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
                     .LastOrDefaultAsync(
                         x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute &&
@@ -502,6 +538,24 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype.
+        /// </summary>
+        public async Task<int> GetRawMetatypeAugmentedMaximumAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intMetatypeAugMax;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
         /// </summary>
         public int MetatypeAugmentedMaximum
@@ -536,8 +590,8 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 if (MetatypeCategory == AttributeCategory.Shapeshifter)
-                    return RawMetatypeAugmentedMaximum;
-                int intReturn = RawMetatypeAugmentedMaximum;
+                    return await GetRawMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false);
+                int intReturn = await GetRawMetatypeAugmentedMaximumAsync(token).ConfigureAwait(false);
                 Improvement objImprovement = await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
                     .LastOrDefaultAsync(
                         x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute &&

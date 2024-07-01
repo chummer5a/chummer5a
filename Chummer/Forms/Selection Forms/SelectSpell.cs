@@ -822,7 +822,7 @@ namespace Chummer
             await lblDV.DoThreadSafeAsync(x => x.Text = strDV, token: token).ConfigureAwait(false);
             await lblDVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDV), token: token).ConfigureAwait(false);
 
-            if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled && _blnCanTouchOnlySpellBeFree && xmlSpell.SelectSingleNodeAndCacheExpression("range", token)?.Value == "T")
+            if (await _objCharacter.GetAdeptEnabledAsync(token).ConfigureAwait(false) && !await _objCharacter.GetMagicianEnabledAsync(token).ConfigureAwait(false) && _blnCanTouchOnlySpellBeFree && xmlSpell.SelectSingleNodeAndCacheExpression("range", token)?.Value == "T")
             {
                 await chkFreeBonus.DoThreadSafeAsync(x =>
                 {

@@ -2731,23 +2731,38 @@ namespace Chummer
                                     switch (strImprovedName)
                                     {
                                         case "Magician":
-                                            objCharacter.MagicianEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.MagicianEnabled = true;
+                                            else
+                                                await objCharacter.SetMagicianEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Adept":
-                                            objCharacter.AdeptEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.AdeptEnabled = true;
+                                            else
+                                                await objCharacter.SetAdeptEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Technomancer":
-                                            objCharacter.TechnomancerEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.TechnomancerEnabled = true;
+                                            else
+                                                await objCharacter.SetTechnomancerEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Advanced Programs":
-                                            objCharacter.AdvancedProgramsEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.AdvancedProgramsEnabled = true;
+                                            else
+                                                await objCharacter.SetAdvancedProgramsEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Critter":
-                                            objCharacter.CritterEnabled = true;
+                                            if (blnSync)
+                                                objCharacter.CritterEnabled = true;
+                                            else
+                                                await objCharacter.SetCritterEnabledAsync(true, token).ConfigureAwait(false);
                                             break;
                                     }
 
@@ -2757,11 +2772,17 @@ namespace Chummer
                                     switch (strImprovedName)
                                     {
                                         case "Cyberware":
-                                            objCharacter.CyberwareDisabled = true;
+                                            if (blnSync)
+                                                objCharacter.CyberwareDisabled = true;
+                                            else
+                                                await objCharacter.SetCyberwareDisabledAsync(true, token).ConfigureAwait(false);
                                             break;
 
                                         case "Initiation":
-                                            objCharacter.InitiationForceDisabled = true;
+                                            if (blnSync)
+                                                objCharacter.InitiationForceDisabled = true;
+                                            else
+                                                await objCharacter.SetInitiationForceDisabledAsync(true, token).ConfigureAwait(false);
                                             break;
                                     }
 
@@ -2773,10 +2794,18 @@ namespace Chummer
                         case Improvement.ImprovementType.PrototypeTranshuman:
                             // Legacy compatibility
                             if (string.IsNullOrEmpty(strImprovedName))
-                                objCharacter.PrototypeTranshuman = 1;
-                            else
+                            {
+                                if (blnSync)
+                                    objCharacter.PrototypeTranshuman = 1;
+                                else
+                                    await objCharacter.SetPrototypeTranshumanAsync(1, token).ConfigureAwait(false);
+                            }
+                            else if (blnSync)
                                 objCharacter.PrototypeTranshuman
                                     += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            else
+                                await objCharacter.ModifyPrototypeTranshumanAsync(
+                                    Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                             break;
 
                         case Improvement.ImprovementType.AddContact:
@@ -3361,23 +3390,38 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Magician":
-                                                objCharacter.MagicianEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.MagicianEnabled = false;
+                                                else
+                                                    await objCharacter.SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Adept":
-                                                objCharacter.AdeptEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdeptEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Technomancer":
-                                                objCharacter.TechnomancerEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.TechnomancerEnabled = false;
+                                                else
+                                                    await objCharacter.SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Advanced Programs":
-                                                objCharacter.AdvancedProgramsEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdvancedProgramsEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdvancedProgramsEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Critter":
-                                                objCharacter.CritterEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CritterEnabled = false;
+                                                else
+                                                    await objCharacter.SetCritterEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -3387,11 +3431,17 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Cyberware":
-                                                objCharacter.CyberwareDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CyberwareDisabled = false;
+                                                else
+                                                    await objCharacter.SetCyberwareDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Initiation":
-                                                objCharacter.InitiationForceDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.InitiationForceDisabled = false;
+                                                else
+                                                    await objCharacter.SetInitiationForceDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -3406,11 +3456,19 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strImprovedName))
                             {
                                 if (!blnHasDuplicate)
-                                    objCharacter.PrototypeTranshuman = 0;
+                                {
+                                    if (blnSync)
+                                        objCharacter.PrototypeTranshuman = 0;
+                                    else
+                                        await objCharacter.SetPrototypeTranshumanAsync(0, token).ConfigureAwait(false);
+                                }
                             }
-                            else
+                            else if (blnSync)
                                 objCharacter.PrototypeTranshuman
                                     -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            else
+                                await objCharacter.ModifyPrototypeTranshumanAsync(
+                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
 
                             break;
 
@@ -4746,23 +4804,38 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Magician":
-                                                objCharacter.MagicianEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.MagicianEnabled = false;
+                                                else
+                                                    await objCharacter.SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Adept":
-                                                objCharacter.AdeptEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdeptEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Technomancer":
-                                                objCharacter.TechnomancerEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.TechnomancerEnabled = false;
+                                                else
+                                                    await objCharacter.SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Advanced Programs":
-                                                objCharacter.AdvancedProgramsEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.AdvancedProgramsEnabled = false;
+                                                else
+                                                    await objCharacter.SetAdvancedProgramsEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Critter":
-                                                objCharacter.CritterEnabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CritterEnabled = false;
+                                                else
+                                                    await objCharacter.SetCritterEnabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -4772,11 +4845,17 @@ namespace Chummer
                                         switch (strImprovedName)
                                         {
                                             case "Cyberware":
-                                                objCharacter.CyberwareDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.CyberwareDisabled = false;
+                                                else
+                                                    await objCharacter.SetCyberwareDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
 
                                             case "Initiation":
-                                                objCharacter.InitiationForceDisabled = false;
+                                                if (blnSync)
+                                                    objCharacter.InitiationForceDisabled = false;
+                                                else
+                                                    await objCharacter.SetInitiationForceDisabledAsync(false, token).ConfigureAwait(false);
                                                 break;
                                         }
 
@@ -4791,13 +4870,19 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strImprovedName))
                             {
                                 if (!blnHasDuplicate)
-                                    objCharacter.PrototypeTranshuman = 0;
+                                {
+                                    if (blnSync)
+                                        objCharacter.PrototypeTranshuman = 0;
+                                    else
+                                        await objCharacter.SetPrototypeTranshumanAsync(0, token).ConfigureAwait(false);
+                                }
                             }
-                            else
-                            {
+                            else if (blnSync)
                                 objCharacter.PrototypeTranshuman
                                     -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
-                            }
+                            else
+                                await objCharacter.ModifyPrototypeTranshumanAsync(
+                                    -Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
 
                             break;
 

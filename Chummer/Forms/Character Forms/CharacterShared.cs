@@ -9149,7 +9149,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9203,7 +9203,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9274,7 +9274,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9328,7 +9328,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9365,7 +9365,7 @@ namespace Chummer
                                     using (XmlReader objXmlReader =
                                            XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                         // Put the stream into an XmlDocument
-                                        await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                        await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                                 }
                             }
 
@@ -9404,7 +9404,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9446,7 +9446,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
@@ -9488,7 +9488,7 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken);
+                                    await Task.Run(() => objCharacterXml.Load(objXmlReader), GenericToken).ConfigureAwait(false);
                             }
 
                             await GlobalSettings
