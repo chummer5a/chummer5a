@@ -613,11 +613,10 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromSp, value);
                 await OnPropertyChangedAsync(nameof(BasePoints), token).ConfigureAwait(false);
             }
@@ -693,11 +692,10 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromKarma, value);
                 await OnPropertyChangedAsync(nameof(KarmaPoints), token).ConfigureAwait(false);
             }
@@ -1066,8 +1064,10 @@ namespace Chummer.Backend.Skills
                     if (_blnIsBroken == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnIsBroken = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1105,13 +1105,12 @@ namespace Chummer.Backend.Skills
                 {
                     token.ThrowIfCancellationRequested();
                     _blnIsBroken = value;
+                    await OnPropertyChangedAsync(nameof(IsBroken), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(IsBroken), token).ConfigureAwait(false);
             }
             finally
             {

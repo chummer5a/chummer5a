@@ -1073,11 +1073,10 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
                 await OnPropertyChangedAsync(nameof(BasePoints), token).ConfigureAwait(false);
             }
@@ -1153,11 +1152,10 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
                 await OnPropertyChangedAsync(nameof(KarmaPoints), token).ConfigureAwait(false);
             }
@@ -1671,8 +1669,10 @@ namespace Chummer.Backend.Skills
                     if (_blnBuyWithKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnBuyWithKarma = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3218,8 +3218,10 @@ namespace Chummer.Backend.Skills
                     if (_blnForceDisabled == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnForceDisabled = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3244,8 +3246,10 @@ namespace Chummer.Backend.Skills
                     if (_blnRequiresGroundMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnRequiresGroundMovement = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3285,8 +3289,10 @@ namespace Chummer.Backend.Skills
                     if (_blnRequiresSwimMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnRequiresSwimMovement = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3326,8 +3332,10 @@ namespace Chummer.Backend.Skills
                     if (_blnRequiresFlyMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnRequiresFlyMovement = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3444,8 +3452,10 @@ namespace Chummer.Backend.Skills
                     if (_blnDefault == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnDefault = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3597,8 +3607,8 @@ namespace Chummer.Backend.Skills
                         _strDictionaryKey = null;
                         _intCachedFreeBase = int.MinValue;
                         _intCachedFreeKarma = int.MinValue;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -3633,13 +3643,12 @@ namespace Chummer.Backend.Skills
                     _strDictionaryKey = null;
                     _intCachedFreeBase = int.MinValue;
                     _intCachedFreeKarma = int.MinValue;
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
             }
             finally
             {
@@ -3673,8 +3682,10 @@ namespace Chummer.Backend.Skills
                     if (_guidInternalId == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _guidInternalId = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3738,8 +3749,8 @@ namespace Chummer.Backend.Skills
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
                         _blnRecalculateCachedSuggestedSpecializations = true;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -3797,13 +3808,12 @@ namespace Chummer.Backend.Skills
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                     _blnRecalculateCachedSuggestedSpecializations = true;
+                    await OnPropertyChangedAsync(nameof(SkillId), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(SkillId), token).ConfigureAwait(false);
             }
             finally
             {
@@ -5209,8 +5219,10 @@ namespace Chummer.Backend.Skills
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

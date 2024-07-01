@@ -2425,6 +2425,18 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        internal Task ForceAttributePropertyChangedNotificationAllAsync(params string[] lstNames)
+        {
+            return ForceAttributePropertyChangedNotificationAllAsync(default, lstNames);
+        }
+
+        internal Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, params string[] lstNames)
+        {
+            ReadOnlyCollection<string> lstNamesToUse = Array.AsReadOnly(lstNames);
+            return AttributeList.ForEachWithSideEffectsAsync(
+                att => att.OnMultiplePropertiesChangedAsync(lstNamesToUse, token), token);
+        }
+
         public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XPathNavigator xmlDoc)
         {
             if (objSource == null || objTarget == null)
@@ -3580,6 +3592,32 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 return _eAttributeCategory;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetAttributeCategoryAsync(CharacterAttrib.AttributeCategory value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // No need to write lock because interlocked guarantees safety
+                if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) == value)
+                    return;
+
+                if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                {
+                    await ResetBindingsAsync(token).ConfigureAwait(false);
+                    await ForceAttributePropertyChangedNotificationAllAsync(token,
+                        nameof(CharacterAttrib.MetatypeMaximum),
+                        nameof(CharacterAttrib.MetatypeMinimum)).ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(AttributeCategory), token).ConfigureAwait(false);
             }
             finally
             {

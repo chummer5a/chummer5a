@@ -10983,9 +10983,9 @@ namespace Chummer
                 IsRefreshing = true;
                 try
                 {
-                    objLifestyle.Increments = await nudLifestyleMonths
-                                                    .DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                    .ConfigureAwait(false);
+                    await objLifestyle.SetIncrementsAsync(
+                        await nudLifestyleMonths.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {

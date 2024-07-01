@@ -507,9 +507,9 @@ namespace Chummer
             await _objLifestyle.SetCostAsync(Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
             await _objLifestyle.SetRoommatesAsync(await _objLifestyle.GetTrustFundAsync(token).ConfigureAwait(false) ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetPercentageAsync(await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-            _objLifestyle.StyleType = StyleType;
-            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+            await _objLifestyle.SetStyleTypeAsync(StyleType, token).ConfigureAwait(false);
+            await _objLifestyle.SetDiceAsync(Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+            await _objLifestyle.SetMultiplierAsync(Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
             await _objLifestyle.SetPrimaryTenantAsync(await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetTrustFundAsync(await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetCityAsync(await cboCity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), token).ConfigureAwait(false);

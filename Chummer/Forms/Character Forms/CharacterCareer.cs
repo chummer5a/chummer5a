@@ -28546,11 +28546,11 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
-                    CharacterObject.AttributeSection.AttributeCategory
-                        = AttributeSection.ConvertAttributeCategory(
+                    await CharacterObject.AttributeSection.SetAttributeCategoryAsync(
+                        AttributeSection.ConvertAttributeCategory(
                             await cboAttributeCategory
-                                  .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
-                                  .ConfigureAwait(false));
+                                .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
+                                .ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {

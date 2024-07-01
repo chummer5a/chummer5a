@@ -709,11 +709,10 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
                 await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
             }
@@ -854,11 +853,10 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
                 await OnPropertyChangedAsync(nameof(Karma), token).ConfigureAwait(false);
             }
