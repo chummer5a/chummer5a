@@ -7458,19 +7458,71 @@ namespace Chummer
                                             break;
                                     }
 
-                                    if ((blnRemoveImprovements || showWarnings) && objXmlImprovement["custom"]?.InnerText != bool.TrueString)
+                                    if ((blnRemoveImprovements || showWarnings) && objXmlImprovement["custom"]?.InnerText != bool.TrueString && !string.IsNullOrEmpty(strCharacterInnerXml))
                                     {
                                         string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                                         if (!string.IsNullOrEmpty(strLoopSourceName)
                                             && strLoopSourceName.IsGuid())
                                         {
-                                            string[] astrToCheck =
+                                            // Specialized version of ContainsAny that has been optimized for this specific case because it's a bottleneck
+                                            bool ContainsAnySourceId(string strHaystack, string strId)
                                             {
-                                                "<guid>" + strLoopSourceName + "</guid>",
-                                                "<metatypeid>" + strLoopSourceName + "</metatypeid>",
-                                                "<metavariantid>" + strLoopSourceName + "</metavariantid>"
-                                            };
-                                            if (!strCharacterInnerXml.ContainsAnyParallel(astrToCheck, StringComparison.OrdinalIgnoreCase))
+                                                int intHaystackLength = strHaystack.Length;
+                                                if (intHaystackLength < strId.Length + 13)
+                                                    return false;
+
+                                                string strCommonNeedle = "id>" + strId + "</";
+                                                string strNeedle1 = "<guid>" + strId + "</guid>";
+                                                int intNeedle1Length = strNeedle1.Length;
+                                                string strNeedle2 = "<metatypeid>" + strId + "</metatypeid>";
+                                                int intNeedle2Length = strNeedle2.Length;
+                                                string strNeedle3 = "<metavariantid>" + strId + "</metavariantid>";
+                                                int intNeedle3Length = strNeedle3.Length;
+                                                unsafe
+                                                {
+                                                    fixed (char* pchrLoop = strHaystack)
+                                                    {
+                                                        for (int intLoopIndex = strHaystack.IndexOf(strCommonNeedle, 3,
+                                                                 StringComparison.OrdinalIgnoreCase);
+                                                             intLoopIndex >= 3 && intHaystackLength - intLoopIndex + 3 <
+                                                             intNeedle1Length;
+                                                             intLoopIndex = strHaystack.IndexOf(strCommonNeedle,
+                                                                 intLoopIndex, StringComparison.OrdinalIgnoreCase))
+                                                        {
+                                                            if (*(pchrLoop + intLoopIndex - 3) == '<'
+                                                                && string.Equals(
+                                                                    strHaystack.Substring(intLoopIndex - 3,
+                                                                        intNeedle1Length), strNeedle1,
+                                                                    StringComparison.OrdinalIgnoreCase))
+                                                                return true;
+                                                            if (intLoopIndex < 9 ||
+                                                                intHaystackLength - intLoopIndex + 9 <
+                                                                intNeedle2Length)
+                                                                continue;
+                                                            if (*(pchrLoop + intLoopIndex - 9) == '<'
+                                                                && string.Equals(
+                                                                    strHaystack.Substring(intLoopIndex - 9,
+                                                                        intNeedle2Length), strNeedle2,
+                                                                    StringComparison.OrdinalIgnoreCase))
+                                                                return true;
+                                                            if (intLoopIndex < 12 ||
+                                                                intHaystackLength - intLoopIndex + 12 <
+                                                                intNeedle3Length)
+                                                                continue;
+                                                            if (*(pchrLoop + intLoopIndex - 12) == '<'
+                                                                && string.Equals(
+                                                                    strHaystack.Substring(intLoopIndex - 12,
+                                                                        intNeedle3Length), strNeedle3,
+                                                                    StringComparison.OrdinalIgnoreCase))
+                                                                return true;
+                                                        }
+                                                    }
+                                                }
+
+                                                return false;
+                                            }
+
+                                            if (!ContainsAnySourceId(strCharacterInnerXml, strLoopSourceName))
                                             {
                                                 //Utils.BreakIfDebug();
                                                 if (blnRemoveImprovements)
