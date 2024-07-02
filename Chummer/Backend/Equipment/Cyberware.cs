@@ -10642,7 +10642,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
                 Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
+                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.GetCountAsync(innerToken), y,
                         funcMakeDirty, token: innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
@@ -10697,7 +10697,7 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGearsClearBindings(treCyberware, y, innerToken);
 
                 Task FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.Count, y,
+                    this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.GetCountAsync(innerToken), y,
                         funcMakeDirty, token: innerToken);
 
                 Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);

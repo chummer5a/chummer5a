@@ -21322,7 +21322,7 @@ namespace Chummer
                                 intReturn += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                                 {
                                     int intReturn2 = 0;
-                                    if (await objMount.Weapons.token > objMount.WeaponCapacity)
+                                    if (await objMount.Weapons.GetCountAsync(token).ConfigureAwait(false) > objMount.WeaponCapacity)
                                     {
                                         lstOverCapacity.Add(await objMount.GetCurrentDisplayNameShortAsync(token)
                                                                           .ConfigureAwait(false));

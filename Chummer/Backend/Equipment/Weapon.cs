@@ -9105,7 +9105,7 @@ namespace Chummer.Backend.Equipment
 
                 Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                        () => UnderbarrelWeapons.Count, y, funcMakeDirty, token: innerToken);
+                        () => UnderbarrelWeapons.GetCountAsync(innerToken), y, funcMakeDirty, token: innerToken);
 
                 UnderbarrelWeapons.AddTaggedBeforeClearCollectionChanged(treWeapons,
                     FuncUnderbarrelWeaponsBeforeClearToAdd);
@@ -9181,7 +9181,7 @@ namespace Chummer.Backend.Equipment
 
                 Task FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                     this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                        () => UnderbarrelWeapons.Count, y, funcMakeDirty, token: innerToken);
+                        () => UnderbarrelWeapons.GetCountAsync(innerToken), y, funcMakeDirty, token: innerToken);
 
                 UnderbarrelWeapons.AddTaggedBeforeClearCollectionChanged(treWeapons,
                     FuncUnderbarrelWeaponsBeforeClearToAdd);
