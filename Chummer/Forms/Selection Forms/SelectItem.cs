@@ -66,7 +66,7 @@ namespace Chummer
                             {
                                 sbdAmmoName.Append(await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                                 // Retrieve the plugin information if it has any.
-                                if (objGear.Children.Count > 0)
+                                if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
                                     // Append the plugin information to the name.
                                     (await sbdAmmoName.Append(strSpace).Append('[')

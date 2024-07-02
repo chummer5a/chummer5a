@@ -80,7 +80,7 @@ namespace Chummer
                         strName += strSpace + '(' + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ')';
 
                     // Retrieve the plugin information if it has any.
-                    if (objGear.Children.Count > 0)
+                    if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdPlugins))

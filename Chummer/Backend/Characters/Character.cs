@@ -15814,6 +15814,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveImprovementNode(TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objDestination == null)
                 return;
             if (!(nodOldNode?.Tag is Improvement objImprovement))
@@ -15821,12 +15822,16 @@ namespace Chummer
             TreeNode objNewParent = objDestination;
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
+            TreeView treView = objNewParent.TreeView;
 
             using (LockObject.EnterWriteLock(token))
             {
-                objImprovement.CustomGroup = objNewParent.Tag.ToString() == "Node_SelectedImprovements"
+                objImprovement.CustomGroup = treView?.DoThreadSafeFunc(() =>
+                    objNewParent.Tag.ToString() == "Node_SelectedImprovements"
+                        ? string.Empty
+                        : objNewParent.Text) ?? (objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                     ? string.Empty
-                    : objNewParent.Text;
+                    : objNewParent.Text);
                 Improvements[Improvements.IndexOf(objImprovement)] = objImprovement;
             }
         }

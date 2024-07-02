@@ -3794,8 +3794,9 @@ namespace Chummer
                             {
                                 Quality objQuality = await CharacterObject.Qualities.GetValueAtAsync(j, token)
                                                                           .ConfigureAwait(false);
-                                if (objQuality.OriginSource == QualitySource.Improvement
-                                    || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false);
+                                if (eOriginSource == QualitySource.Improvement
+                                    || eOriginSource == QualitySource.MetatypeRemovedAtChargen)
                                     continue;
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
@@ -3834,15 +3835,15 @@ namespace Chummer
                                     if (objQuality.FirstLevelBonus?.HasChildNodes == true)
                                     {
                                         bool blnDoFirstLevel = true;
-                                        for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
+                                        for (int k = 0; k < await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false); ++k)
                                         {
-                                            Quality objCheckQuality = CharacterObject.Qualities[k];
+                                            Quality objCheckQuality = await CharacterObject.Qualities.GetValueAtAsync(k, token).ConfigureAwait(false);
                                             if (j != k
                                                 && objCheckQuality.SourceID == objQuality.SourceID
                                                 && objCheckQuality.Extra == objQuality.Extra
                                                 && objCheckQuality.SourceName == objQuality.SourceName
                                                 && (k < j
-                                                    || objCheckQuality.OriginSource == QualitySource.Improvement
+                                                    || await objCheckQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Improvement
                                                     || lstInternalIdFilter?.Contains(objCheckQuality.InternalId)
                                                     == false))
                                             {
@@ -4187,7 +4188,7 @@ namespace Chummer
 
                             // Refresh Cyberware and Bioware.
                             Dictionary<Cyberware, int> dicPairableCyberwares
-                                = new Dictionary<Cyberware, int>(CharacterObject.Cyberware.Count);
+                                = new Dictionary<Cyberware, int>(await CharacterObject.Cyberware.GetCountAsync(token).ConfigureAwait(false));
                             foreach (Cyberware objCyberware in await CharacterObject.Cyberware.GetAllDescendantsAsync(
                                          x => x.Children, token).ConfigureAwait(false))
                             {
@@ -13976,7 +13977,7 @@ namespace Chummer
                             }
                             else
                                 // Add in the Techniques
-                                intMartialArtsPoints += Math.Max(objMartialArt.Techniques.Count - 1, 0)
+                                intMartialArtsPoints += Math.Max(await objMartialArt.Techniques.GetCountAsync(token).ConfigureAwait(false) - 1, 0)
                                                         * intKarmaTechnique;
                         }, token).ConfigureAwait(false);
 
@@ -21321,15 +21322,15 @@ namespace Chummer
                                 intReturn += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                                 {
                                     int intReturn2 = 0;
-                                    if (objMount.Weapons.Count > objMount.WeaponCapacity)
+                                    if (await objMount.Weapons.token > objMount.WeaponCapacity)
                                     {
                                         lstOverCapacity.Add(await objMount.GetCurrentDisplayNameShortAsync(token)
                                                                           .ConfigureAwait(false));
                                         intReturn2++;
                                     }
 
-                                    foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(
-                                                 x => x.Children, x => x.WeaponAccessories.Count > 0, token))
+                                    foreach (Weapon objWeapon in await objMount.Weapons.DeepWhereAsync(
+                                                 x => x.Children, async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                                     {
                                         intReturn2 += await objWeapon.WeaponAccessories.SumAsync(async objAccessory =>
                                         {

@@ -4621,11 +4621,12 @@ namespace Chummer
 
                             // Refresh Qualities.
                             // We cannot use foreach because qualities can add more qualities
-                            for (int j = 0; j < CharacterObject.Qualities.Count; j++)
+                            for (int j = 0; j < await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false); j++)
                             {
-                                Quality objQuality = CharacterObject.Qualities[j];
-                                if (objQuality.OriginSource == QualitySource.Improvement
-                                    || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                Quality objQuality = await CharacterObject.Qualities.GetValueAtAsync(j, token).ConfigureAwait(false);
+                                QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false);
+                                if (eOriginSource == QualitySource.Improvement
+                                    || eOriginSource == QualitySource.MetatypeRemovedAtChargen)
                                     continue;
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
@@ -4664,15 +4665,15 @@ namespace Chummer
                                     if (objQuality.FirstLevelBonus?.HasChildNodes == true)
                                     {
                                         bool blnDoFirstLevel = true;
-                                        for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
+                                        for (int k = 0; k < await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false); ++k)
                                         {
-                                            Quality objCheckQuality = CharacterObject.Qualities[k];
+                                            Quality objCheckQuality = await CharacterObject.Qualities.GetValueAtAsync(k, token).ConfigureAwait(false);
                                             if (j != k
                                                 && objCheckQuality.SourceID == objQuality.SourceID
                                                 && objCheckQuality.Extra == objQuality.Extra
                                                 && objCheckQuality.SourceName == objQuality.SourceName
                                                 && (k < j
-                                                    || objCheckQuality.OriginSource == QualitySource.Improvement
+                                                    || await objCheckQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Improvement
                                                     || lstInternalIdFilter?.Contains(objCheckQuality.InternalId)
                                                     == false))
                                             {
@@ -4977,9 +4978,9 @@ namespace Chummer
                             // Refresh Metamagics and Echoes.
                             // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
                             // ReSharper disable once ForCanBeConvertedToForeach
-                            for (int j = 0; j < CharacterObject.Metamagics.Count; j++)
+                            for (int j = 0; j < await CharacterObject.Metamagics.GetCountAsync(token).ConfigureAwait(false); j++)
                             {
-                                Metamagic objMetamagic = CharacterObject.Metamagics[j];
+                                Metamagic objMetamagic = await CharacterObject.Metamagics.GetValueAtAsync(j, token).ConfigureAwait(false);
                                 if (objMetamagic.Grade < 0)
                                     continue;
                                 // We're only re-apply improvements a list of items, not all of them
@@ -5008,7 +5009,7 @@ namespace Chummer
 
                             // Refresh Cyberware and Bioware.
                             Dictionary<Cyberware, int> dicPairableCyberwares
-                                = new Dictionary<Cyberware, int>(CharacterObject.Cyberware.Count);
+                                = new Dictionary<Cyberware, int>(await CharacterObject.Cyberware.GetCountAsync(token).ConfigureAwait(false));
                             foreach (Cyberware objCyberware in await CharacterObject.Cyberware.GetAllDescendantsAsync(
                                          x => x.Children, token).ConfigureAwait(false))
                             {
@@ -11725,8 +11726,8 @@ namespace Chummer
 
                             blnAddAgain = frmPickMartialArtTechnique.MyForm.AddAgain;
 
-                            int karmaCost = objMartialArt.Techniques.Count > 0
-                                ? CharacterObjectSettings.KarmaTechnique
+                            int karmaCost = await objMartialArt.Techniques.GetCountAsync(GenericToken).ConfigureAwait(false) > 0
+                                ? await CharacterObjectSettings.GetKarmaTechniqueAsync(GenericToken).ConfigureAwait(false)
                                 : 0;
                             await objMartialArt.Techniques.AddAsync(objTechnique, GenericToken).ConfigureAwait(false);
 
@@ -13161,7 +13162,7 @@ namespace Chummer
                                                             .ConfigureAwait(false))
                                     continue;
                                 MartialArtTechnique objTechnique = await objMartialArt.Techniques
-                                    .GetValueAtAsync(i, GenericToken).ConfigureAwait(false);
+                                    .GetValueAtAsync(j, GenericToken).ConfigureAwait(false);
                                 if (objTechnique.InternalId == strUndoId)
                                     await objTechnique.RemoveAsync(false, GenericToken)
                                                       .ConfigureAwait(
@@ -16222,7 +16223,7 @@ namespace Chummer
                 }
 
                 objLifestyle.SetInternalId(strGuid);
-                CharacterObject.Lifestyles[intPosition] = objLifestyle;
+                await CharacterObject.Lifestyles.SetValueAtAsync(intPosition, objLifestyle, GenericToken).ConfigureAwait(false);
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
 
@@ -16846,7 +16847,7 @@ namespace Chummer
                                 {
                                     if ((objVehicleMod.Name.Contains("Drone Arm") ||
                                          objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)) &&
-                                        objVehicleMod.Weapons.Count == 0)
+                                        await objVehicleMod.Weapons.GetCountAsync(GenericToken).ConfigureAwait(false) == 0)
                                         lstItems.Add(new ListItem(objVehicleMod.InternalId,
                                                                   await objVehicleMod
                                                                         .GetCurrentDisplayNameAsync(GenericToken)
@@ -16858,7 +16859,7 @@ namespace Chummer
                         {
                             if ((objVehicleMod.Name.Contains("Drone Arm") ||
                                  objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal))
-                                && objVehicleMod.Weapons.Count == 0)
+                                && await objVehicleMod.Weapons.GetCountAsync(GenericToken).ConfigureAwait(false) == 0)
                                 lstItems.Add(new ListItem(objVehicleMod.InternalId,
                                                           await objVehicleMod.GetCurrentDisplayNameAsync(GenericToken)
                                                                              .ConfigureAwait(false)));
@@ -16907,7 +16908,7 @@ namespace Chummer
                             objGear.ChangeEquippedStatusAsync(false, token: GenericToken), GenericToken), GenericToken)
                     .ConfigureAwait(false);
 
-                if (objWeapon.UnderbarrelWeapons.Count > 0)
+                if (await objWeapon.UnderbarrelWeapons.GetCountAsync(GenericToken).ConfigureAwait(false) > 0)
                 {
                     foreach (Weapon objUnderbarrelWeapon in await objWeapon.UnderbarrelWeapons
                                  .GetAllDescendantsAsync(objUnderbarrelWeapon => objUnderbarrelWeapon.Children)
@@ -21586,9 +21587,10 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Text = objWeapon.DisplayConcealability;
                             }, token).ConfigureAwait(false);
+                            bool blnVisible = blnDeleteWeaponEnabled && await CharacterObject.Vehicles.GetCountAsync(token).ConfigureAwait(false) > 0;
                             await cmdWeaponMoveToVehicle
                                   .DoThreadSafeAsync(
-                                      x => x.Visible = blnDeleteWeaponEnabled && CharacterObject.Vehicles.Count > 0,
+                                      x => x.Visible = blnVisible,
                                       token).ConfigureAwait(false);
                             string strText2 = await LanguageManager.GetStringAsync(
                                                                        objWeapon.Parent == null
@@ -23211,31 +23213,33 @@ namespace Chummer
                         await lblGearQty
                               .DoThreadSafeAsync(x => x.Text = objGear.Quantity.ToString(GlobalSettings.CultureInfo),
                                                  token).ConfigureAwait(false);
+                        bool blnEnabled = !objGear.IncludedInParent;
                         await cmdGearIncreaseQty.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
-                            x.Enabled = !objGear.IncludedInParent;
+                            x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
                         await cmdGearReduceQty.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
-                            x.Enabled = !objGear.IncludedInParent;
+                            x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
                         await cmdGearSplitQty.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
-                            x.Enabled = !objGear.IncludedInParent;
+                            x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
                         await cmdGearMergeQty.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
-                            x.Enabled = !objGear.IncludedInParent;
+                            x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
+                        blnEnabled = blnEnabled && objGear.LoadedIntoClip == null
+                                                && await CharacterObject.Vehicles.GetCountAsync(token).ConfigureAwait(false) > 0;
                         await cmdGearMoveToVehicle.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
-                            x.Enabled = !objGear.IncludedInParent && objGear.LoadedIntoClip == null
-                                                                  && CharacterObject.Vehicles.Count > 0;
+                            x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
                         string strAvail = await objGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                         await lblGearAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)

@@ -759,8 +759,8 @@ namespace Chummer
                                         {
                                             // Always process newest autosave if all MRUs are empty
                                             bool blnAnyAutosaveInMru
-                                                = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                  GlobalSettings.FavoriteCharacters.Count == 0;
+                                                = await GlobalSettings.MostRecentlyUsedCharacters.GetCountAsync(_objGenericToken).ConfigureAwait(false) == 0 &&
+                                                  await GlobalSettings.FavoriteCharacters.GetCountAsync(_objGenericToken).ConfigureAwait(false) == 0;
                                             FileInfo objMostRecentAutosave = null;
                                             List<string> lstOldAutosaves = new List<string>(10);
                                             DateTime objOldAutosaveTimeThreshold =

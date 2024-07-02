@@ -3079,16 +3079,16 @@ namespace Chummer
                     decimal decReturn = 0;
                     if (blnFullRemoval)
                     {
-                        for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                        for (int i = await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
                             token.ThrowIfCancellationRequested();
-                            if (i >= _objCharacter.Qualities.Count)
+                            if (i >= await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false))
                                 continue;
-                            Quality objLoopQuality = _objCharacter.Qualities[i];
+                            Quality objLoopQuality = await _objCharacter.Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
                             if (objLoopQuality.SourceID == SourceID
                                 && objLoopQuality.Extra == Extra
                                 && objLoopQuality.SourceName == SourceName
-                                && objLoopQuality.Type == Type
+                                && await objLoopQuality.GetTypeAsync(token).ConfigureAwait(false) == Type
                                 && !ReferenceEquals(this, objLoopQuality))
                                 decReturn += await objLoopQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         }

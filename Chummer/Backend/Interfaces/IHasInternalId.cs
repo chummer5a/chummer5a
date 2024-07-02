@@ -44,7 +44,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenGears(this IHasInternalId objParent, TreeView treGear, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treGear == null)
                 return;
@@ -59,7 +59,7 @@ namespace Chummer
                     {
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Gear objGear in e.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
@@ -94,7 +94,7 @@ namespace Chummer
 
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Gear objGear in e.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
@@ -120,7 +120,7 @@ namespace Chummer
                         }, token: token).ConfigureAwait(false);
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Gear objGear in e.NewItems)
                         {
                             await AddToTree(objGear, intNewIndex).ConfigureAwait(false);
@@ -207,7 +207,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenCyberware(this IHasInternalId objParent, TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treCyberware == null)
                 return;
@@ -222,7 +222,7 @@ namespace Chummer
                     {
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Cyberware objCyberware in e.NewItems)
                         {
                             await AddToTree(objCyberware, intNewIndex).ConfigureAwait(false);
@@ -252,7 +252,7 @@ namespace Chummer
                         }
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Cyberware objCyberware in e.NewItems)
                         {
                             await AddToTree(objCyberware, intNewIndex).ConfigureAwait(false);
@@ -276,7 +276,7 @@ namespace Chummer
                         }, token: token).ConfigureAwait(false);
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Cyberware objCyberware in e.NewItems)
                         {
                             await AddToTree(objCyberware, intNewIndex).ConfigureAwait(false);
@@ -338,7 +338,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshChildrenWeapons(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treWeapons == null)
                 return;
@@ -353,7 +353,7 @@ namespace Chummer
                     {
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Weapon objWeapon in e.NewItems)
                         {
                             await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
@@ -387,7 +387,7 @@ namespace Chummer
 
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (Weapon objWeapon in e.NewItems)
                         {
                             await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
@@ -473,7 +473,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshWeaponAccessories(this IHasInternalId objParent, TreeView treWeapons, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (e == null || objParent == null || treWeapons == null)
                 return;
@@ -488,7 +488,7 @@ namespace Chummer
                     {
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (WeaponAccessory objWeaponAccessory in e.NewItems)
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
@@ -541,7 +541,7 @@ namespace Chummer
 
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (WeaponAccessory objWeaponAccessory in e.NewItems)
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
@@ -579,7 +579,7 @@ namespace Chummer
 
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (WeaponAccessory objWeaponAccessory in e.NewItems)
                         {
                             await AddToTree(objWeaponAccessory, intNewIndex).ConfigureAwait(false);
@@ -642,7 +642,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (treVehicles == null || e == null)
                 return;
@@ -657,7 +657,7 @@ namespace Chummer
                     {
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (VehicleMod objVehicleMod in e.NewItems)
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
@@ -677,7 +677,7 @@ namespace Chummer
                             Task FuncVehicleModWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                                 objVehicleMod.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
+                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.GetCountAsync(innerToken), y, funcMakeDirty, token: innerToken);
 
                             objVehicleMod.Cyberware.AddTaggedBeforeClearCollectionChanged(treVehicles, FuncVehicleModCyberwareBeforeClearToAdd);
                             objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncVehicleModCyberwareToAdd);
@@ -721,7 +721,7 @@ namespace Chummer
                         }
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (VehicleMod objVehicleMod in e.NewItems)
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
@@ -741,7 +741,7 @@ namespace Chummer
                             Task FuncVehicleModWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
                                 objVehicleMod.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
+                                    cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.GetCountAsync(innerToken), y, funcMakeDirty, token: innerToken);
 
                             objVehicleMod.Cyberware.AddTaggedBeforeClearCollectionChanged(treVehicles, FuncVehicleModCyberwareBeforeClearToAdd);
                             objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncVehicleModCyberwareToAdd);
@@ -774,7 +774,7 @@ namespace Chummer
                         }, token: token).ConfigureAwait(false);
                         int intNewIndex = e.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
                         foreach (VehicleMod objVehicleMod in e.NewItems)
                         {
                             await AddToTree(objVehicleMod, intNewIndex).ConfigureAwait(false);
@@ -854,7 +854,7 @@ namespace Chummer
             }
         }
 
-        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
+        public static async Task RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, AsyncNotifyCollectionChangedEventHandler funcMakeDirty, CancellationToken token = default)
         {
             if (treVehicles == null || e == null)
                 return;
@@ -894,7 +894,7 @@ namespace Chummer
                                 CancellationToken innerToken = default) =>
                                 objWeaponMount.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y, funcMakeDirty,
+                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.GetCountAsync(innerToken), y, funcMakeDirty,
                                     token: innerToken);
 
                             objWeaponMount.Mods.AddTaggedBeforeClearCollectionChanged(treVehicles,
@@ -943,7 +943,7 @@ namespace Chummer
                                     objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
-                                        () => objMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
+                                        () => objMod.Cyberware.GetCountAsync(innerToken), y, funcMakeDirty, token: innerToken);
 
                                 objMod.Cyberware.AddTaggedBeforeClearCollectionChanged(treVehicles,
                                     FuncWeaponMountVehicleModCyberwareBeforeClearToAdd);
@@ -1062,7 +1062,7 @@ namespace Chummer
                                 CancellationToken innerToken = default) =>
                                 objWeaponMount.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y, funcMakeDirty,
+                                    cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.GetCountAsync(innerToken), y, funcMakeDirty,
                                     token: innerToken);
 
                             objWeaponMount.Mods.AddTaggedBeforeClearCollectionChanged(treVehicles,
@@ -1106,7 +1106,7 @@ namespace Chummer
                                     objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
-                                        () => objMod.Cyberware.Count, y, funcMakeDirty, token: innerToken);
+                                        () => objMod.Cyberware.GetCountAsync(innerToken), y, funcMakeDirty, token: innerToken);
 
                                 objMod.Cyberware.AddTaggedBeforeClearCollectionChanged(treVehicles,
                                     FuncWeaponMountVehicleModCyberwareBeforeClearToAdd);
@@ -1192,10 +1192,11 @@ namespace Chummer
                         Tag = "String_WeaponMounts",
                         Text = await LanguageManager.GetStringAsync("String_WeaponMounts", token: token).ConfigureAwait(false)
                     };
+                    int intOffset = funcOffset != null ? await funcOffset.Invoke().ConfigureAwait(false) : 0;
                     await treVehicles.DoThreadSafeAsync(() =>
                     {
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        nodVehicleParent.Nodes.Insert(funcOffset?.Invoke() ?? 0, nodParent);
+                        nodVehicleParent.Nodes.Insert(intOffset, nodParent);
                         nodParent.Expand();
                     }, token: token).ConfigureAwait(false);
                 }
