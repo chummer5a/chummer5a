@@ -10281,7 +10281,7 @@ namespace Chummer
                                 else if (!await GetCreatedAsync(token).ConfigureAwait(false))
                                 {
                                     await AttributeSection.AllAttributes
-                                        .ForEachAsync(async x => await x.DoBaseFixAsync(token).ConfigureAwait(false),
+                                        .ForEachAsync(async x => await x.DoBaseFixAsync(token: token).ConfigureAwait(false),
                                             token).ConfigureAwait(false);
                                 }
                             }
