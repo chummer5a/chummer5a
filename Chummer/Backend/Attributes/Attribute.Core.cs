@@ -175,15 +175,6 @@ namespace Chummer.Backend.Attributes
                     _eMetatypeCategory =
                         ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
                 }
-
-                if (!_objCharacter.Created)
-                {
-                    while (KarmaMaximum < 0 && Base > 0)
-                        --Base;
-                    // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
-                    if (Karma > KarmaMaximum)
-                        Karma = KarmaMaximum;
-                }
             }
         }
 
@@ -609,6 +600,60 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public void DoBaseFix(bool blnDoBaseOnPropertyChanged = false)
+        {
+            using (LockObject.EnterWriteLock())
+            {
+                int intKarmaMaximum = KarmaMaximum;
+                while (intKarmaMaximum < 0 && _intBase > 0)
+                {
+                    blnDoBaseOnPropertyChanged = true;
+                    --_intBase;
+                    intKarmaMaximum = KarmaMaximum;
+                }
+
+                // Very rough fix for when values somehow exceed maxima after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                int intPriorityMaximum = PriorityMaximum;
+                if (Base > intPriorityMaximum)
+                    Base = intPriorityMaximum;
+                else if (blnDoBaseOnPropertyChanged)
+                    OnPropertyChanged(nameof(Base));
+
+                if (Karma > intKarmaMaximum)
+                    Karma = intKarmaMaximum;
+            }
+        }
+
+        public async Task DoBaseFixAsync(bool blnDoBaseOnPropertyChanged = false, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intKarmaMaximum = await GetKarmaMaximumAsync(token).ConfigureAwait(false);
+                while (intKarmaMaximum < 0 && _intBase > 0)
+                {
+                    blnDoBaseOnPropertyChanged = true;
+                    --_intBase;
+                    intKarmaMaximum = await GetKarmaMaximumAsync(token).ConfigureAwait(false);
+                }
+
+                // Very rough fix for when values somehow exceed maxima after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                int intPriorityMaximum = await GetPriorityMaximumAsync(token).ConfigureAwait(false);
+                if (await GetBaseAsync(token).ConfigureAwait(false) > intPriorityMaximum)
+                    await SetBaseAsync(intPriorityMaximum, token).ConfigureAwait(false);
+                else if (blnDoBaseOnPropertyChanged)
+                    await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
+
+                if (await GetKarmaAsync(token).ConfigureAwait(false) > intKarmaMaximum)
+                    await SetKarmaAsync(intKarmaMaximum, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Current base value (priority points spent) of the CharacterAttribute.
         /// </summary>
@@ -628,19 +673,8 @@ namespace Chummer.Backend.Attributes
                     using (LockObject.EnterWriteLock())
                     {
                         _intBase = value;
-                        int intKarmaMaximum = KarmaMaximum;
-                        while (intKarmaMaximum < 0 && _intBase > 0)
-                        {
-                            --_intBase;
-                            intKarmaMaximum = KarmaMaximum;
-                        }
-
-                        // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
-                        if (Karma > intKarmaMaximum)
-                            Karma = intKarmaMaximum;
+                        DoBaseFix(true);
                     }
-
-                    OnPropertyChanged();
                 }
             }
         }
@@ -678,23 +712,12 @@ namespace Chummer.Backend.Attributes
                 {
                     token.ThrowIfCancellationRequested();
                     _intBase = value;
-                    int intKarmaMaximum = await GetKarmaMaximumAsync(token).ConfigureAwait(false);
-                    while (intKarmaMaximum < 0 && _intBase > 0)
-                    {
-                        --_intBase;
-                        intKarmaMaximum = await GetKarmaMaximumAsync(token).ConfigureAwait(false);
-                    }
-
-                    // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
-                    if (await GetKarmaAsync(token).ConfigureAwait(false) > intKarmaMaximum)
-                        await SetKarmaAsync(intKarmaMaximum, token).ConfigureAwait(false);
+                    await DoBaseFixAsync(true, token);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
             }
             finally
             {
@@ -714,7 +737,7 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 Interlocked.Add(ref _intBase, value);
-                await OnPropertyChangedAsync(nameof(Base), token).ConfigureAwait(false);
+                await DoBaseFixAsync(true, token);
             }
             finally
             {
@@ -744,7 +767,8 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 return Math.Max(
-                    Base + await GetFreeBaseAsync(token).ConfigureAwait(false) +
+                    await GetBaseAsync(token).ConfigureAwait(false) +
+                    await GetFreeBaseAsync(token).ConfigureAwait(false) +
                     await GetRawMinimumAsync(token).ConfigureAwait(false),
                     await GetTotalMinimumAsync(token).ConfigureAwait(false));
             }
@@ -3006,7 +3030,8 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 return Math.Max(
-                    await GetTotalMaximumAsync(token).ConfigureAwait(false) - Karma -
+                    await GetTotalMaximumAsync(token).ConfigureAwait(false) -
+                    await GetKarmaAsync(token).ConfigureAwait(false) -
                     await GetFreeBaseAsync(token).ConfigureAwait(false) -
                     await GetRawMinimumAsync(token).ConfigureAwait(false), 0);
             }

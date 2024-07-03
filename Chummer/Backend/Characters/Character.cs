@@ -10267,6 +10267,25 @@ namespace Chummer
                                 }
                             }
 
+                            // Fix legacy cases where characters have more attribute points assigned than allowed
+                            using (Timekeeper.StartSyncron("load_char_badattributesfix", loadActivity))
+                            {
+                                if (blnSync)
+                                {
+                                    if (!Created)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        AttributeSection.AllAttributes.ForEach(x => x.DoBaseFix(), token);
+                                    }
+                                }
+                                else if (!await GetCreatedAsync(token).ConfigureAwait(false))
+                                {
+                                    await AttributeSection.AllAttributes
+                                        .ForEachAsync(async x => await x.DoBaseFixAsync(token).ConfigureAwait(false),
+                                            token).ConfigureAwait(false);
+                                }
+                            }
+
                             // Fix skills that shouldn't be allowed to have specializations having them anyway (needed at the last step because improvements and skill groups can affect this)
                             using (Timekeeper.StartSyncron("load_char_badskillspecsfix", loadActivity))
                             {

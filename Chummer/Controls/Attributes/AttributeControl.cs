@@ -270,7 +270,8 @@ namespace Chummer.UI.Attributes
                             }, token)
                             .ConfigureAwait(false);
                     }
-                    await nudBase.DoThreadSafeAsync(x => x.Maximum = intPriorityMaximum, token)
+                    else
+                        await nudBase.DoThreadSafeAsync(x => x.Maximum = intPriorityMaximum, token)
                             .ConfigureAwait(false);
                 }
                 else if (e.PropertyNames.Contains(nameof(CharacterAttrib.BaseUnlocked)))
@@ -351,22 +352,27 @@ namespace Chummer.UI.Attributes
                         string strName = await objAttrib.GetDisplayNameFormattedAsync(_objMyToken).ConfigureAwait(false);
                         await lblName.DoThreadSafeAsync(x => x.Text = strName, _objMyToken).ConfigureAwait(false);
                         string strValue = await objAttrib.GetDisplayValueAsync(_objMyToken).ConfigureAwait(false);
-                        await lblValue.DoThreadSafeAsync(x => x.Text = strValue, _objMyToken).ConfigureAwait(false);
                         string strAugmentedMetatypeLimits =
                             await objAttrib.GetAugmentedMetatypeLimitsAsync(_objMyToken).ConfigureAwait(false);
                         await lblLimits.DoThreadSafeAsync(x => x.Text = strAugmentedMetatypeLimits, _objMyToken)
                             .ConfigureAwait(false);
                         string strToolTip = await objAttrib.GetToolTipAsync(_objMyToken).ConfigureAwait(false);
-                        await lblValue.DoThreadSafeAsync(x => x.ToolTipText = strToolTip, _objMyToken).ConfigureAwait(false);
+                        await lblValue.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strValue;
+                            x.ToolTipText = strToolTip;
+                        }, _objMyToken).ConfigureAwait(false);
                         if (await _objCharacter.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
                         {
                             string strUpgradeToolTip =
                                 await objAttrib.GetUpgradeToolTipAsync(_objMyToken).ConfigureAwait(false);
-                            await cmdImproveATT.DoThreadSafeAsync(x => x.ToolTipText = strUpgradeToolTip, _objMyToken)
-                                .ConfigureAwait(false);
                             bool blnCanUpgradeCareer =
                                 await objAttrib.GetCanUpgradeCareerAsync(_objMyToken).ConfigureAwait(false);
-                            await cmdImproveATT.DoThreadSafeAsync(x => x.Enabled = blnCanUpgradeCareer, _objMyToken)
+                            await cmdImproveATT.DoThreadSafeAsync(x =>
+                                {
+                                    x.ToolTipText = strUpgradeToolTip;
+                                    x.Enabled = blnCanUpgradeCareer;
+                                }, _objMyToken)
                                 .ConfigureAwait(false);
                         }
                         else
@@ -375,24 +381,29 @@ namespace Chummer.UI.Attributes
                                 await objAttrib.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
                             int intPriorityMaximum =
                                 await objAttrib.GetPriorityMaximumAsync(_objMyToken).ConfigureAwait(false);
-                            await nudBase.DoThreadSafeAsync(x => x.Maximum = intPriorityMaximum, _objMyToken)
-                                .ConfigureAwait(false);
                             bool blnBaseUnlocked =
                                 await objAttrib.GetBaseUnlockedAsync(_objMyToken).ConfigureAwait(false);
-                            await nudBase.DoThreadSafeAsync(x => x.Enabled = blnBaseUnlocked, _objMyToken)
-                                .ConfigureAwait(false);
-                            await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
-                                nameof(Character.EffectiveBuildMethodUsesPriorityTables),
-                                x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(_objMyToken), token: _objMyToken).ConfigureAwait(false);
-                            await nudKarma.DoThreadSafeAsync(x => x.Maximum = intKarmaMaximum, _objMyToken)
-                                .ConfigureAwait(false);
                             int intBase =
                                 await objAttrib.GetBaseAsync(_objMyToken).ConfigureAwait(false);
-                            await nudBase.DoThreadSafeAsync(x => x.Value = intBase, _objMyToken)
-                                .ConfigureAwait(false);
                             int intKarma =
                                 await objAttrib.GetKarmaAsync(_objMyToken).ConfigureAwait(false);
-                            await nudKarma.DoThreadSafeAsync(x => x.Value = intKarma, _objMyToken)
+                            await nudKarma.DoThreadSafeAsync(x =>
+                                {
+                                    x.Maximum = intKarmaMaximum;
+                                    x.Value = intKarma;
+                                }, _objMyToken)
+                                .ConfigureAwait(false);
+                            await nudBase.DoThreadSafeAsync(x =>
+                                {
+                                    x.Enabled = blnBaseUnlocked;
+                                    x.Maximum = intPriorityMaximum;
+                                    x.Value = intBase;
+                                }, _objMyToken)
+                                .ConfigureAwait(false);
+                            await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
+                                    nameof(Character.EffectiveBuildMethodUsesPriorityTables),
+                                    x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync(_objMyToken),
+                                    token: _objMyToken)
                                 .ConfigureAwait(false);
                         }
 
