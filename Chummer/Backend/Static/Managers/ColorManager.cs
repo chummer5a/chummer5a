@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -585,7 +586,7 @@ namespace Chummer
                         {
                             x.ForeColor = WindowTextLight;
                             x.BackColor = WindowLight;
-                            foreach (DiceRollerListViewItem objItem in x.Items)
+                            foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                             {
                                 if (objItem.IsHit)
                                 {
@@ -616,7 +617,7 @@ namespace Chummer
                         {
                             x.ForeColor = WindowTextDark;
                             x.BackColor = WindowDark;
-                            foreach (DiceRollerListViewItem objItem in x.Items)
+                            foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                             {
                                 if (objItem.IsHit)
                                 {
@@ -1074,7 +1075,7 @@ namespace Chummer
                             x.BackColor = objBackColor;
                             if (blnLightMode)
                             {
-                                foreach (DiceRollerListViewItem objItem in x.Items)
+                                foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                                 {
                                     if (objItem.IsHit)
                                     {
@@ -1103,7 +1104,7 @@ namespace Chummer
                             }
                             else
                             {
-                                foreach (DiceRollerListViewItem objItem in x.Items)
+                                foreach (DiceRollerListViewItem objItem in x.Items.OfType<DiceRollerListViewItem>())
                                 {
                                     if (objItem.IsHit)
                                     {
