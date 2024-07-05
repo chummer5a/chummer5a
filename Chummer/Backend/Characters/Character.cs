@@ -7487,7 +7487,7 @@ namespace Chummer
                                                              intLoopIndex >= 3 && intHaystackLength - intLoopIndex + 3 >
                                                              intNeedle1Length;
                                                              intLoopIndex = strHaystack.IndexOf(strCommonNeedle,
-                                                                 intLoopIndex, StringComparison.OrdinalIgnoreCase))
+                                                                 intLoopIndex + 1, StringComparison.OrdinalIgnoreCase))
                                                         {
                                                             if (*(pchrLoop + intLoopIndex - 3) == '<'
                                                                 && string.Equals(
