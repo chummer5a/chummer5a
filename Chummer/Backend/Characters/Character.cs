@@ -7484,7 +7484,7 @@ namespace Chummer
                                                     {
                                                         for (int intLoopIndex = strHaystack.IndexOf(strCommonNeedle, 3,
                                                                  StringComparison.OrdinalIgnoreCase);
-                                                             intLoopIndex >= 3 && intHaystackLength - intLoopIndex + 3 <
+                                                             intLoopIndex >= 3 && intHaystackLength - intLoopIndex + 3 >
                                                              intNeedle1Length;
                                                              intLoopIndex = strHaystack.IndexOf(strCommonNeedle,
                                                                  intLoopIndex, StringComparison.OrdinalIgnoreCase))
