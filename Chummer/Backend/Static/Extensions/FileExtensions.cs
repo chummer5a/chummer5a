@@ -309,14 +309,17 @@ namespace Chummer
         /// </summary>
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
-        public static async Task WriteAllTextAsync(string strPath, string strContents)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task WriteAllTextAsync(string strPath, string strContents, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath))
                 return;
             using (FileStream objFileStream
                    = new FileStream(strPath, FileMode.Append, FileAccess.Write, FileShare.Write, 4096, true))
             using (StreamWriter objWriter = new StreamWriter(objFileStream))
             {
+                token.ThrowIfCancellationRequested();
                 await objWriter.WriteAsync(strContents).ConfigureAwait(false);
             }
         }
@@ -327,15 +330,69 @@ namespace Chummer
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
         /// <param name="eEncoding">Specific encoding to use when writing to the file.</param>
-        public static async Task WriteAllTextAsync(string strPath, string strContents, Encoding eEncoding)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task WriteAllTextAsync(string strPath, string strContents, Encoding eEncoding, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath))
                 return;
             using (FileStream objFileStream
                    = new FileStream(strPath, FileMode.Append, FileAccess.Write, FileShare.Write, 4096, true))
             using (StreamWriter objWriter = new StreamWriter(objFileStream, eEncoding))
             {
+                token.ThrowIfCancellationRequested();
                 await objWriter.WriteAsync(strContents).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// An extended version of File.ReadAllBytes() that is asynchronous.
+        /// </summary>
+        /// <param name="strPath">The file to open for reading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<byte[]> ReadAllBytesAsync(string strPath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
+                return Array.Empty<byte>();
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+            {
+                long lngLength = objFileStream.Length;
+                if (lngLength == 0)
+                    return Array.Empty<byte>();
+                int intCount = lngLength <= int.MaxValue ? (int)lngLength : throw new IOException("File too large.");
+                byte[] achrReturn = new byte[intCount];
+                int intLoop;
+                for (int intOffset = 0; intCount > 0; intCount -= intLoop)
+                {
+                    token.ThrowIfCancellationRequested();
+                    intLoop = await objFileStream.ReadAsync(achrReturn, intOffset, intCount, token).ConfigureAwait(false);
+                    if (intLoop == 0)
+                        throw new EndOfStreamException();
+                    intOffset += intLoop;
+                }
+                return achrReturn;
+            }
+        }
+
+        /// <summary>
+        /// An extended version of File.WriteAllBytes() that is asynchronous.
+        /// </summary>
+        /// <param name="strPath">The file to write to.</param>
+        /// <param name="achrBytes">The bytes to write to the file.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task WriteAllBytesAsync(string strPath, byte[] achrBytes, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentException("Path is empty.", nameof(strPath));
+            if (achrBytes == null)
+                throw new ArgumentNullException(nameof(achrBytes));
+
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
+            {
+                token.ThrowIfCancellationRequested();
+                await objFileStream.WriteAsync(achrBytes, 0, achrBytes.Length, token).ConfigureAwait(false);
             }
         }
     }

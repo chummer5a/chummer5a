@@ -793,8 +793,8 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> GetIsWeaponsFullAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await Weapons.CountAsync(x =>
-                       string.IsNullOrEmpty(x.ParentID) || Weapons.DeepFindById(x.ParentID) == null, token: token).ConfigureAwait(false) >=
+            return await Weapons.CountAsync(async x =>
+                       string.IsNullOrEmpty(x.ParentID) || await Weapons.DeepFindByIdAsync(x.ParentID, token: token).ConfigureAwait(false) == null, token: token).ConfigureAwait(false) >=
                    _intWeaponCapacity;
         }
 

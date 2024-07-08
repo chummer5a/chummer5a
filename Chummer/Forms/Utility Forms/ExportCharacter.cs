@@ -886,7 +886,7 @@ namespace Chummer
                     out Tuple<string, string> strBoxText)
                     ? strBoxText.Item1
                     : await txtText.DoThreadSafeFuncAsync(x => x.Text, token: token)
-                        .ConfigureAwait(false), Encoding.UTF8).ConfigureAwait(false);
+                        .ConfigureAwait(false), Encoding.UTF8, token).ConfigureAwait(false);
         }
 
         #endregion JSON

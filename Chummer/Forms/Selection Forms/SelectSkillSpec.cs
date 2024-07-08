@@ -195,7 +195,7 @@ namespace Chummer
         /// <summary>
         /// Whether the Form should be accepted if there is only one item left in the list.
         /// </summary>
-        public bool AllowAutoSelect { get; set; } = true;
+        public bool AllowAutoSelect { get; } = true;
 
         /// <summary>
         /// Type of skill that we're selecting. Used to differentiate knowledge skills.

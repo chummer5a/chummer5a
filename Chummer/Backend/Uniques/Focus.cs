@@ -73,10 +73,39 @@ namespace Chummer
             string strGearId = string.Empty;
             if (objNode.TryGetStringFieldQuickly("gearid", ref strGearId))
             {
-                GearObject = _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGearId) ??
-                             (_objCharacter.Armor.FindArmorGear(strGearId) ?? (_objCharacter.Weapons.FindWeaponGear(strGearId) ??
-                                                                               (_objCharacter.Cyberware.FindCyberwareGear(strGearId) ??
-                                                                                _objCharacter.Vehicles.FindVehicleGear(strGearId))));
+                GearObject = _objCharacter.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGearId)
+                             ?? _objCharacter.Armor.FindArmorGear(strGearId)
+                             ?? _objCharacter.Weapons.FindWeaponGear(strGearId)
+                             ?? _objCharacter.Cyberware.FindCyberwareGear(strGearId)
+                             ?? _objCharacter.Vehicles.FindVehicleGear(strGearId);
+            }
+        }
+
+        /// <summary>
+        /// Load the Focus from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objNode == null)
+                return;
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            string strGearId = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("gearid", ref strGearId))
+            {
+                GearObject = await _objCharacter.Gear
+                                 .DeepFirstOrDefaultAsync(x => x.Children, x => x.InternalId == strGearId, token: token)
+                                 .ConfigureAwait(false)
+                             ?? (await _objCharacter.Armor.FindArmorGearAsync(strGearId, token: token)
+                                 .ConfigureAwait(false)).Item1
+                             ?? (await _objCharacter.Weapons.FindWeaponGearAsync(strGearId, token: token)
+                                 .ConfigureAwait(false)).Item1
+                             ?? (await _objCharacter.Cyberware.FindCyberwareGearAsync(strGearId, token: token)
+                                 .ConfigureAwait(false)).Item1
+                             ?? (await _objCharacter.Vehicles.FindVehicleGearAsync(strGearId, token: token)
+                                 .ConfigureAwait(false)).Item1;
             }
         }
 

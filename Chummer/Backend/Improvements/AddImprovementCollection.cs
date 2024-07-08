@@ -2337,7 +2337,6 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strNodeOuterXml = bonusNode.OuterXml;
             string strForcedValue = ForcedValue;
 
             bool blnIsKnowledgeSkill = true;

@@ -4936,28 +4936,36 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<Cyberware> FindVehicleCyberwareAsync([NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
+        public async Task<Tuple<Cyberware, VehicleMod>> FindVehicleCyberwareAsync([NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             Cyberware objReturn = null;
+            VehicleMod objReturnMod = null;
             await Mods.ForEachWithBreakAsync(async objMod =>
             {
                 objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.Children, funcPredicate, token: token).ConfigureAwait(false);
-                return objReturn == null;
+                if (objReturn == null)
+                    return true;
+                objReturnMod = objMod;
+                return false;
             }, token).ConfigureAwait(false);
             if (objReturn != null)
-                return objReturn;
+                return new Tuple<Cyberware, VehicleMod>(objReturn, objReturnMod);
 
             await WeaponMounts.ForEachWithBreakAsync(async objMount =>
             {
                 await objMount.Mods.ForEachWithBreakAsync(async objMod =>
                 {
                     objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.Children, funcPredicate, token: token).ConfigureAwait(false);
-                    return objReturn == null;
+                    if (objReturn == null)
+                        return true;
+                    objReturnMod = objMod;
+                    return false;
                 }, token).ConfigureAwait(false);
                 return objReturn == null;
             }, token).ConfigureAwait(false);
 
-            return objReturn;
+            return new Tuple<Cyberware, VehicleMod>(objReturn, objReturnMod);
         }
 
         /// <summary>
@@ -5002,19 +5010,24 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<VehicleMod> FindVehicleModAsync([NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
+        public async Task<Tuple<VehicleMod, WeaponMount>> FindVehicleModAsync([NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             VehicleMod objMod = await Mods.FirstOrDefaultAsync(funcPredicate, token).ConfigureAwait(false);
             if (objMod != null)
-                return objMod;
+                return new Tuple<VehicleMod, WeaponMount>(objMod, null);
 
+            WeaponMount objReturnMount = null;
             await WeaponMounts.ForEachWithBreakAsync(async objMount =>
             {
                 objMod = await objMount.Mods.FirstOrDefaultAsync(funcPredicate, token).ConfigureAwait(false);
-                return objMod == null;
+                if (objMod == null)
+                    return true;
+                objReturnMount = objMount;
+                return false;
             }, token).ConfigureAwait(false);
 
-            return null;
+            return new Tuple<VehicleMod, WeaponMount>(objMod, objReturnMount);
         }
 
         /// <summary>
@@ -5079,31 +5092,33 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<Gear> FindVehicleGearAsync(string strGuid, CancellationToken token = default)
+        public async Task<Tuple<Gear, WeaponAccessory, Cyberware>> FindVehicleGearAsync(string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
-                return null;
+                return new Tuple<Gear, WeaponAccessory, Cyberware>(null, null, null);
             Gear objReturn = await GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
             if (objReturn != null)
-                return objReturn;
+                return new Tuple<Gear, WeaponAccessory, Cyberware>(objReturn, null, null);
 
+            WeaponAccessory objReturnAccessory = null;
+            Cyberware objReturnCyberware = null;
             // Look for any Gear that might be attached to this Vehicle through Weapon Accessories or Cyberware.
             await Mods.ForEachWithBreakAsync(async objMod =>
             {
                 // Weapon Accessories.
-                objReturn = await objMod.Weapons.FindWeaponGearAsync(strGuid, token).ConfigureAwait(false);
+                (objReturn, objReturnAccessory) = await objMod.Weapons.FindWeaponGearAsync(strGuid, token).ConfigureAwait(false);
 
                 if (objReturn != null)
                     return false;
 
                 // Cyberware.
-                objReturn = await objMod.Cyberware.FindCyberwareGearAsync(strGuid, token).ConfigureAwait(false);
+                (objReturn, objReturnCyberware) = await objMod.Cyberware.FindCyberwareGearAsync(strGuid, token).ConfigureAwait(false);
 
                 return objReturn == null;
             }, token).ConfigureAwait(false);
 
-            return objReturn;
+            return new Tuple<Gear, WeaponAccessory, Cyberware>(objReturn, objReturnAccessory, objReturnCyberware);
         }
 
         public int GetBaseMatrixAttribute(string strAttributeName)

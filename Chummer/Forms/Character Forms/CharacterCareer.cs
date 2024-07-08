@@ -8209,7 +8209,7 @@ namespace Chummer
                         == DialogResult.Cancel)
                         return;
 
-                    objSelectedGear = CharacterObject.Gear.DeepFindById(frmPickItem.MyForm.SelectedItem);
+                    objSelectedGear = await CharacterObject.Gear.DeepFindByIdAsync(frmPickItem.MyForm.SelectedItem, GenericToken).ConfigureAwait(false);
                 }
 
                 decimal decMinimumAmount = 1.0m;
@@ -8407,8 +8407,7 @@ namespace Chummer
                     // Locate the selected Weapon.
                     case Weapon objWeapon:
                     {
-                        CharacterObject.Vehicles.FindVehicleWeapon(objWeapon.InternalId, out Vehicle objVehicle,
-                                                                   out WeaponMount objMount, out VehicleMod objMod);
+                        (_ , Vehicle objVehicle, WeaponMount objMount, VehicleMod objMod) = await CharacterObject.Vehicles.FindVehicleWeaponAsync(objWeapon.InternalId, GenericToken).ConfigureAwait(false);
                         // Move the Weapons from the Vehicle Mod (or Vehicle) to the character.
                         Weapon objParent = objWeapon.Parent;
                         if (objParent != null)
@@ -8465,9 +8464,6 @@ namespace Chummer
                     }
                     case Gear objSelectedGear:
                     {
-                        // Locate the selected Gear.
-                        CharacterObject.Vehicles.FindVehicleGear(objSelectedGear.InternalId);
-
                         decimal decMinimumAmount = 1.0m;
                         int intDecimalPlaces = 0;
                         if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
@@ -11208,11 +11204,10 @@ namespace Chummer
                 Vehicle objVehicle = null;
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
+                    (objWeaponMount, objVehicle) = await CharacterObject.Vehicles.FindVehicleWeaponMountAsync(strSelectedId, GenericToken).ConfigureAwait(false);
                     if (objWeaponMount == null)
                     {
-                        objMod = CharacterObject.Vehicles.FindVehicleMod(
-                            x => x.InternalId == strSelectedId, out objVehicle, out objWeaponMount);
+                        (objMod, objVehicle, objWeaponMount) = await CharacterObject.Vehicles.FindVehicleModAsync(x => x.InternalId == strSelectedId, GenericToken).ConfigureAwait(false);
                         if (objMod?.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) == false
                             && !objMod.Name.Contains("Drone Arm"))
                         {
@@ -11934,8 +11929,9 @@ namespace Chummer
 
                             if (lstWeapons.Count > 0)
                             {
-                                CharacterObject.Vehicles.FindVehicleGear(objSensor.InternalId, out Vehicle objVehicle,
-                                                                         out WeaponAccessory _, out Cyberware _);
+                                Vehicle objVehicle =
+                                    (await CharacterObject.Vehicles.FindVehicleGearAsync(objSensor.InternalId,
+                                        GenericToken).ConfigureAwait(false)).Item2;
                                 foreach (Weapon objWeapon in lstWeapons)
                                 {
                                     await objVehicle.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
@@ -13502,8 +13498,8 @@ namespace Chummer
                         {
                             // Locate the Cyberware that was added.
                             Cyberware objCyberware = await CharacterObject.Cyberware.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
-                                                     await CharacterObject.Vehicles.FindVehicleCyberwareAsync(
-                                                         x => x.InternalId == strUndoId, GenericToken).ConfigureAwait(false);
+                                                     (await CharacterObject.Vehicles.FindVehicleCyberwareAsync(
+                                                         x => x.InternalId == strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                             if (objCyberware != null)
                                 await objCyberware.DeleteCyberwareAsync(blnIncreaseEssenceHole: false, token: GenericToken)
                                                   .ConfigureAwait(false);
@@ -13523,7 +13519,7 @@ namespace Chummer
                             }
                             else
                             {
-                                objGear = await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
+                                objGear = (await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                                 if (objGear != null)
                                     objNode = await treVehicles.DoThreadSafeFuncAsync(
                                         x => x.FindNode(objGear.InternalId), GenericToken).ConfigureAwait(false);
@@ -13550,7 +13546,7 @@ namespace Chummer
                         case NuyenExpenseType.AddVehicle:
                         {
                             // Locate the Vehicle that was added.
-                            Vehicle objVehicle = CharacterObject.Vehicles.FindById(strUndoId);
+                            Vehicle objVehicle = await CharacterObject.Vehicles.FindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objVehicle != null)
                                 await objVehicle.DeleteVehicleAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -13560,7 +13556,7 @@ namespace Chummer
                         {
                             // Locate the Vehicle Mod that was added.
                             VehicleMod objVehicleMod
-                                = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strUndoId);
+                                = (await CharacterObject.Vehicles.FindVehicleModAsync(x => x.InternalId == strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                             if (objVehicleMod != null)
                                 await objVehicleMod.DeleteVehicleModAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -13570,16 +13566,18 @@ namespace Chummer
                         {
                             // Locate the Gear that was added.
                             TreeNode objNode = null;
-                            Gear objGear = await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
+                            Gear objGear = (await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                             if (objGear == null)
                             {
                                 objGear = await CharacterObject.Gear.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                                 if (objGear == null)
                                 {
-                                    objGear = await CharacterObject.Cyberware.FindCyberwareGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
+                                    objGear = (await CharacterObject.Cyberware
+                                        .FindCyberwareGearAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                                     if (objGear == null)
                                     {
-                                        objGear = await CharacterObject.Weapons.FindWeaponGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
+                                        objGear = (await CharacterObject.Weapons
+                                            .FindWeaponGearAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                                         if (objGear != null)
                                             objNode = await treWeapons.DoThreadSafeFuncAsync(
                                                 x => x.FindNode(strUndoId), GenericToken).ConfigureAwait(false);
@@ -13620,7 +13618,7 @@ namespace Chummer
                         case NuyenExpenseType.AddVehicleWeapon:
                         {
                             // Locate the Weapon that was added.
-                            Weapon objWeapon = await CharacterObject.Vehicles.FindVehicleWeaponAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                            Weapon objWeapon = (await CharacterObject.Vehicles.FindVehicleWeaponAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1 ??
                                                await CharacterObject.Weapons.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objWeapon != null)
                                 await objWeapon.DeleteWeaponAsync(token: GenericToken).ConfigureAwait(false);
@@ -13631,8 +13629,8 @@ namespace Chummer
                         {
                             // Locate the Weapon Accessory that was added.
                             WeaponAccessory objWeaponAccessory
-                                = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId) ??
-                                  CharacterObject.Weapons.FindWeaponAccessory(strUndoId);
+                                = await CharacterObject.Vehicles.FindVehicleWeaponAccessoryAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                  await CharacterObject.Weapons.FindWeaponAccessoryAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objWeaponAccessory != null)
                                 await objWeaponAccessory.DeleteWeaponAccessoryAsync(token: GenericToken)
                                                         .ConfigureAwait(false);
@@ -13641,7 +13639,7 @@ namespace Chummer
 
                         case NuyenExpenseType.AddVehicleWeaponMount:
                         {
-                            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strUndoId);
+                            WeaponMount objWeaponMount = (await CharacterObject.Vehicles.FindVehicleWeaponMountAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                             if (objWeaponMount != null)
                                 await objWeaponMount.DeleteWeaponMountAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -13649,7 +13647,7 @@ namespace Chummer
 
                         case NuyenExpenseType.AddVehicleWeaponMountMod:
                         {
-                            VehicleMod objVehicleMod = CharacterObject.Vehicles.FindVehicleWeaponMountMod(strUndoId);
+                            VehicleMod objVehicleMod = (await CharacterObject.Vehicles.FindVehicleWeaponMountModAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                             if (objVehicleMod != null)
                                 await objVehicleMod.DeleteVehicleModAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -13658,7 +13656,7 @@ namespace Chummer
                         case NuyenExpenseType.AddArmor:
                         {
                             // Locate the Armor that was added.
-                            Armor objArmor = CharacterObject.Armor.FindById(strUndoId);
+                            Armor objArmor = await CharacterObject.Armor.FindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objArmor != null)
                                 await objArmor.DeleteArmorAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -13667,7 +13665,7 @@ namespace Chummer
                         case NuyenExpenseType.AddArmorMod:
                         {
                             // Locate the Armor Mod that was added.
-                            ArmorMod objArmorMod = CharacterObject.Armor.FindArmorMod(strUndoId);
+                            ArmorMod objArmorMod = await CharacterObject.Armor.FindArmorModAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objArmorMod != null)
                                 await objArmorMod.DeleteArmorModAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -13677,7 +13675,9 @@ namespace Chummer
                         {
                             // Locate the Weapon that was added.
                             Weapon objWeapon = await CharacterObject.Weapons.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
-                                               await CharacterObject.Vehicles.FindVehicleWeaponAsync(strUndoId, GenericToken).ConfigureAwait(false);
+                                               (await CharacterObject.Vehicles
+                                                   .FindVehicleWeaponAsync(strUndoId, GenericToken)
+                                                   .ConfigureAwait(false)).Item1;
                             if (objWeapon != null)
                                 await objWeapon.DeleteWeaponAsync(token: GenericToken).ConfigureAwait(false);
                         }
@@ -13687,8 +13687,8 @@ namespace Chummer
                         {
                             // Locate the Weapon Accessory that was added.
                             WeaponAccessory objWeaponAccessory
-                                = CharacterObject.Weapons.FindWeaponAccessory(strUndoId) ??
-                                  CharacterObject.Vehicles.FindVehicleWeaponAccessory(strUndoId);
+                                = await CharacterObject.Weapons.FindWeaponAccessoryAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                                  await CharacterObject.Vehicles.FindVehicleWeaponAccessoryAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objWeaponAccessory != null)
                                 await objWeaponAccessory.DeleteWeaponAccessoryAsync(token: GenericToken)
                                                         .ConfigureAwait(false);
@@ -13709,7 +13709,7 @@ namespace Chummer
                         case NuyenExpenseType.AddArmorGear:
                         {
                             // Locate the Armor Gear that was added.
-                            Gear objGear = await CharacterObject.Armor.FindArmorGearAsync(strUndoId, GenericToken).ConfigureAwait(false);
+                            Gear objGear = (await CharacterObject.Armor.FindArmorGearAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1;
                             if (objGear != null)
                             {
                                 // Deduct the Qty from the Gear.
@@ -13739,8 +13739,8 @@ namespace Chummer
                         {
                             // Locate the Cyberware that was added.
                             Cyberware objCyberware
-                                = await CharacterObject.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == strUndoId, GenericToken).ConfigureAwait(false) ??
-                                  await CharacterObject.Cyberware.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
+                                = (await CharacterObject.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == strUndoId, GenericToken).ConfigureAwait(false)).Item1
+                                  ?? await CharacterObject.Cyberware.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objCyberware != null)
                                 await objCyberware
                                       .DeleteCyberwareAsync(blnIncreaseEssenceHole: false, token: GenericToken)
@@ -13751,8 +13751,10 @@ namespace Chummer
                         case NuyenExpenseType.AddCyberwareGear:
                         {
                             // Locate the Gear that was added.
-                            Gear objGear = await CharacterObject.Cyberware.FindCyberwareGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
-                                           await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                            Gear objGear = (await CharacterObject.Cyberware
+                                               .FindCyberwareGearAsync(strUndoId, GenericToken).ConfigureAwait(false)).Item1 ??
+                                           (await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken)
+                                               .ConfigureAwait(false)).Item1 ??
                                            await CharacterObject.Gear.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objGear != null)
                                 await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
@@ -13762,8 +13764,10 @@ namespace Chummer
                         case NuyenExpenseType.AddWeaponGear:
                         {
                             // Locate the Gear that was added.
-                            Gear objGear = await CharacterObject.Weapons.FindWeaponGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
-                                           await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken).ConfigureAwait(false) ??
+                            Gear objGear = (await CharacterObject.Weapons.FindWeaponGearAsync(strUndoId, GenericToken)
+                                               .ConfigureAwait(false)).Item1 ??
+                                           (await CharacterObject.Vehicles.FindVehicleGearAsync(strUndoId, GenericToken)
+                                               .ConfigureAwait(false)).Item1 ??
                                            await CharacterObject.Gear.DeepFindByIdAsync(strUndoId, GenericToken).ConfigureAwait(false);
                             if (objGear != null)
                                 await objGear.DeleteGearAsync(token: GenericToken).ConfigureAwait(false);
@@ -14104,12 +14108,11 @@ namespace Chummer
                 }
 
                 Cyberware objCyberwareParent = null;
-                VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(
-                    x => x.InternalId == strSelectedId.InternalId, out Vehicle objVehicle, out WeaponMount _);
+                (VehicleMod objMod, Vehicle objVehicle, _)
+                    = await CharacterObject.Vehicles.FindVehicleModAsync(x => x.InternalId == strSelectedId.InternalId, GenericToken).ConfigureAwait(false);
                 if (objMod == null)
-                    objCyberwareParent
-                        = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strSelectedId.InternalId,
-                                                                        out objMod);
+                    (objCyberwareParent, objMod)
+                        = await CharacterObject.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == strSelectedId.InternalId, GenericToken).ConfigureAwait(false);
 
                 if (objCyberwareParent == null && objMod?.AllowCyberware != true)
                 {
@@ -14993,7 +14996,8 @@ namespace Chummer
                     return;
                 }
 
-                CharacterObject.Cyberware.FindCyberwareGear(objSensor.InternalId, out Cyberware objCyberware);
+                Cyberware objCyberware =
+                    (await CharacterObject.Cyberware.FindCyberwareGearAsync(objSensor.InternalId, GenericToken).ConfigureAwait(false)).Item2;
 
                 string strCategories = string.Empty;
                 XPathNavigator objSensorNode = await objSensor.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
@@ -15426,7 +15430,8 @@ namespace Chummer
                     return;
                 }
 
-                CharacterObject.Weapons.FindWeaponGear(objSensor.InternalId, out WeaponAccessory objAccessory);
+                WeaponAccessory objAccessory =
+                    (await CharacterObject.Weapons.FindWeaponGearAsync(objSensor.InternalId, GenericToken).ConfigureAwait(false)).Item2;
 
                 // Open the Gear XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken)
@@ -15745,8 +15750,9 @@ namespace Chummer
                             }
 
                             await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
-                            CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out _,
-                                                                     out _);
+                            Vehicle objVehicle =
+                                (await CharacterObject.Vehicles.FindVehicleGearAsync(objGear.InternalId,
+                                    GenericToken).ConfigureAwait(false)).Item2;
                             foreach (Weapon objWeapon in lstWeapons)
                             {
                                 objWeapon.ParentVehicle = objVehicle;
@@ -16351,8 +16357,7 @@ namespace Chummer
                             objGear.Equipped = blnChecked;
                             if (blnChecked)
                             {
-                                CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor,
-                                                                    out ArmorMod objParentMod);
+                                (_, Armor objParentArmor, ArmorMod objParentMod) = await CharacterObject.Armor.FindArmorGearAsync(objGear.InternalId, GenericToken).ConfigureAwait(false);
                                 // Add the Gear's Improvements to the character.
                                 if (objParentArmor.Equipped && objParentMod?.Equipped != false)
                                 {
@@ -16891,7 +16896,7 @@ namespace Chummer
                         // Locate the selected Vehicle Mod.
                         if (objWeaponMount == null)
                         {
-                            objMod = objVehicle.FindVehicleMod(x => x.InternalId == strId, out objWeaponMount);
+                            (objMod, objWeaponMount) = await objVehicle.FindVehicleModAsync(x => x.InternalId == strId, GenericToken).ConfigureAwait(false);
                             if (objMod == null)
                                 return;
                         }
@@ -18082,7 +18087,7 @@ namespace Chummer
             try
             {
                 Focus objFocus
-                    = await CharacterObject.Foci.FindAsync(x => x.GearObject.InternalId == objId.InternalId,
+                    = await CharacterObject.Foci.FindAsync(x => x.GearObject?.InternalId == objId.InternalId,
                                                            GenericToken).ConfigureAwait(false);
 
                 // Mark the Gear as not Bonded and remove any Improvements.
@@ -18394,7 +18399,7 @@ namespace Chummer
                                     return;
                                 }
 
-                                Gear objStackGear = CharacterObject.Gear.DeepFindById(objStackedFocus.GearId);
+                                Gear objStackGear = await CharacterObject.Gear.DeepFindByIdAsync(objStackedFocus.GearId, GenericToken).ConfigureAwait(false);
                                 if (objStackGear == null)
                                 {
                                     e.Cancel = true;
@@ -21644,7 +21649,7 @@ namespace Chummer
                                 x.DicePool = intPool;
                                 x.CanBeRolled = true;
                             }, token).ConfigureAwait(false);
-                            await dpcWeaponDicePool.SetLabelToolTipAsync(objWeapon.DicePoolTooltip, token)
+                            await dpcWeaponDicePool.SetLabelToolTipAsync(await objWeapon.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
                                                    .ConfigureAwait(false);
                             if (objWeapon.RangeType == "Ranged")
                             {
@@ -22763,21 +22768,24 @@ namespace Chummer
                                     await lblArmorAvail
                                           .DoThreadSafeAsync(x => x.Text = strAvail, token)
                                           .ConfigureAwait(false);
-                                    CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
-                                                                        out objArmorMod);
+                                    (_, objArmor, objArmorMod) = await CharacterObject.Armor.FindArmorGearAsync(objSelectedGear.InternalId, token).ConfigureAwait(false);
                                     if (objArmorMod != null)
-                                        await lblArmorCapacity
-                                              .DoThreadSafeAsync(x => x.Text = objSelectedGear.CalculatedCapacity,
-                                                                 token).ConfigureAwait(false);
+                                    {
+                                        string strCapacity = await objSelectedGear.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                                        await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token).ConfigureAwait(false);
+                                    }
                                     else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                                    {
                                         await lblArmorCapacity
-                                              .DoThreadSafeAsync(
-                                                  x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']',
-                                                  token).ConfigureAwait(false);
+                                            .DoThreadSafeAsync(
+                                                x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']',
+                                                token).ConfigureAwait(false);
+                                    }
                                     else
-                                        await lblArmorCapacity
-                                              .DoThreadSafeAsync(x => x.Text = objSelectedGear.CalculatedArmorCapacity,
-                                                                 token).ConfigureAwait(false);
+                                    {
+                                        string strCapacity = await objSelectedGear.GetCalculatedArmorCapacityAsync(token).ConfigureAwait(false);
+                                        await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token).ConfigureAwait(false);
+                                    }
                                     int intMaxRatingValue = await objSelectedGear.GetMaxRatingValueAsync(token).ConfigureAwait(false);
                                     if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
                                     {
@@ -24131,10 +24139,10 @@ namespace Chummer
 
             if (objSelectedArmor == null)
             {
-                objSelectedGear
-                    = CharacterObject.Armor.FindArmorGear(strSelectedId, out objSelectedArmor, out objSelectedMod);
+                (objSelectedGear, objSelectedArmor, objSelectedMod)
+                    = await CharacterObject.Armor.FindArmorGearAsync(strSelectedId, token).ConfigureAwait(false);
                 if (objSelectedGear == null)
-                    objSelectedMod = CharacterObject.Armor.FindArmorMod(strSelectedId);
+                    objSelectedMod = await CharacterObject.Armor.FindArmorModAsync(strSelectedId, token).ConfigureAwait(false);
             }
 
             // Open the Gear XML file and locate the selected Gear.
@@ -25249,7 +25257,7 @@ namespace Chummer
                                 x.DicePool = intPool;
                                 x.CanBeRolled = true;
                             }, token).ConfigureAwait(false);
-                            await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(objWeapon.DicePoolTooltip, token)
+                            await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(await objWeapon.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
                                                           .ConfigureAwait(false);
                             if (objWeapon.RangeType == "Ranged")
                             {
@@ -28374,7 +28382,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
+                    Cyberware objNewParent = await CharacterObject.Cyberware.DeepFindByIdAsync(strSelectedParentID, GenericToken).ConfigureAwait(false);
                     if (objNewParent != null)
                     {
                         if (objOldParent != null)
@@ -28388,12 +28396,14 @@ namespace Chummer
                     }
                     else
                     {
+                        ThreadSafeObservableCollection<Vehicle> lstVehicles
+                            = await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false);
                         VehicleMod objNewVehicleModParent
-                            = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
+                            = (await lstVehicles.FindVehicleModAsync(x => x.InternalId == strSelectedParentID, GenericToken).ConfigureAwait(false)).Item1;
                         if (objNewVehicleModParent == null)
-                            objNewParent
-                                = CharacterObject.Vehicles.FindVehicleCyberware(
-                                    x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
+                            (objNewParent, objNewVehicleModParent)
+                                = await lstVehicles.FindVehicleCyberwareAsync(
+                                    x => x.InternalId == strSelectedParentID, GenericToken).ConfigureAwait(false);
                         if (objNewVehicleModParent != null || objNewParent != null)
                         {
                             if (objOldParent != null)
@@ -28472,8 +28482,7 @@ namespace Chummer
                     }
                 }
 
-                CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId,
-                                                              out VehicleMod objOldParentVehicleMod);
+                VehicleMod objOldParentVehicleMod = (await CharacterObject.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == objModularCyberware.InternalId, GenericToken).ConfigureAwait(false)).Item2;
 
                 Cyberware objOldParent = objModularCyberware.Parent;
                 if (objOldParent != null)
@@ -28489,7 +28498,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
+                    Cyberware objNewParent = await CharacterObject.Cyberware.DeepFindByIdAsync(strSelectedParentID, GenericToken).ConfigureAwait(false);
                     if (objNewParent != null)
                     {
                         if (objOldParent != null)
@@ -28504,12 +28513,14 @@ namespace Chummer
                     }
                     else
                     {
+                        ThreadSafeObservableCollection<Vehicle> lstVehicles
+                            = await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false);
                         VehicleMod objNewVehicleModParent
-                            = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strSelectedParentID);
+                            = (await lstVehicles.FindVehicleModAsync(x => x.InternalId == strSelectedParentID, GenericToken).ConfigureAwait(false)).Item1;
                         if (objNewVehicleModParent == null)
-                            objNewParent
-                                = CharacterObject.Vehicles.FindVehicleCyberware(
-                                    x => x.InternalId == strSelectedParentID, out objNewVehicleModParent);
+                            (objNewParent, objNewVehicleModParent)
+                                = await lstVehicles.FindVehicleCyberwareAsync(
+                                    x => x.InternalId == strSelectedParentID, GenericToken).ConfigureAwait(false);
                         if (objNewVehicleModParent != null || objNewParent != null)
                         {
                             if (objOldParent != null)

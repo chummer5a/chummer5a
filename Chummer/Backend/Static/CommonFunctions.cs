@@ -380,18 +380,6 @@ namespace Chummer
         #region Find Functions
 
         /// <summary>
-        /// Locate a piece of Gear by matching on its Weapon ID.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Weapon to find.</param>
-        /// <param name="lstGear">List of Gear to search.</param>
-        public static Drug FindDrug(string strGuid, IEnumerable<Drug> lstGear)
-        {
-            if (lstGear == null)
-                throw new ArgumentNullException(nameof(lstGear));
-            return lstGear.FirstOrDefault(objDrug => objDrug.InternalId == strGuid);
-        }
-
-        /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
@@ -441,23 +429,31 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<Gear> FindVehicleGearAsync(this IAsyncEnumerable<Vehicle> lstVehicles, string strGuid,
+        public static async Task<Tuple<Gear, Vehicle, WeaponAccessory, Cyberware>> FindVehicleGearAsync(this IAsyncEnumerable<Vehicle> lstVehicles, string strGuid,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
             Gear objReturn = null;
+            WeaponAccessory objReturnAccessory = null;
+            Cyberware objReturnCyberware = null;
+            Vehicle objReturnVehicle = null;
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
                 await lstVehicles.ForEachWithBreakAsync(async objVehicle =>
                 {
-                    objReturn = await objVehicle.FindVehicleGearAsync(strGuid, token).ConfigureAwait(false);
-                    return objReturn == null;
+                    (objReturn, objReturnAccessory, objReturnCyberware) = await objVehicle.FindVehicleGearAsync(strGuid, token).ConfigureAwait(false);
+                    if (objReturn != null)
+                    {
+                        objReturnVehicle = objVehicle;
+                        return false;
+                    }
+                    return true;
                 }, token).ConfigureAwait(false);
             }
 
-            return objReturn;
+            return new Tuple<Gear, Vehicle, WeaponAccessory, Cyberware>(objReturn, objReturnVehicle, objReturnAccessory, objReturnCyberware);
         }
 
         /// <summary>
@@ -499,6 +495,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Locate a VehicleMod within the character's Vehicles.
+        /// </summary>
+        /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>
+        /// <param name="lstVehicles">List of Vehicles to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<Tuple<VehicleMod, Vehicle, WeaponMount>> FindVehicleModAsync([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
+        {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            foreach (Vehicle objVehicle in lstVehicles)
+            {
+                (VehicleMod objMod, WeaponMount objFoundWeaponMount) = await objVehicle.FindVehicleModAsync(funcPredicate, token).ConfigureAwait(false);
+                if (objMod != null)
+                {
+                    return new Tuple<VehicleMod, Vehicle, WeaponMount>(objMod, objVehicle, objFoundWeaponMount);
+                }
+            }
+
+            return new Tuple<VehicleMod, Vehicle, WeaponMount>(null, null, null);
+        }
+
+        /// <summary>
         /// Locate a Weapon within the character's Vehicles.
         /// </summary>
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
@@ -508,19 +526,6 @@ namespace Chummer
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
             return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle _, out WeaponMount _, out VehicleMod _);
-        }
-
-        /// <summary>
-        /// Locate a Weapon within the character's Vehicles.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Weapon to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        /// <param name="objFoundVehicle">Vehicle that the Weapon was found in.</param>
-        public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
-        {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
-            return lstVehicles.FindVehicleWeapon(strGuid, out objFoundVehicle, out WeaponMount _, out VehicleMod _);
         }
 
         /// <summary>
@@ -598,47 +603,73 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<Weapon> FindVehicleWeaponAsync(this IAsyncEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
+        public static async Task<Tuple<Weapon, Vehicle, WeaponMount, VehicleMod>> FindVehicleWeaponAsync(this IAsyncEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
             Weapon objReturn = null;
+            Vehicle objReturnVehicle = null;
+            WeaponMount objReturnMount = null;
+            VehicleMod objReturnMod = null;
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 await lstVehicles.ForEachWithBreakAsync(async objVehicle =>
                 {
                     objReturn = await objVehicle.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                     if (objReturn != null)
+                    {
+                        objReturnVehicle = objVehicle;
                         return false;
+                    }
 
                     await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
                     {
-                        objReturn = objWeaponMount.Weapons.DeepFindById(strGuid);
+                        objReturn = await objWeaponMount.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                         if (objReturn != null)
+                        {
+                            objReturnMount = objWeaponMount;
                             return false;
+                        }
 
                         await objWeaponMount.Mods.ForEachWithBreakAsync(async objMod =>
                         {
                             objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
-                            return objReturn == null;
+                            if (objReturn == null)
+                                return true;
+                            objReturnMod = objMod;
+                            return false;
                         }, token).ConfigureAwait(false);
-                        return objReturn == null;
+
+                        if (objReturn == null)
+                            return true;
+                        objReturnMount = objWeaponMount;
+                        return false;
                     }, token).ConfigureAwait(false);
                     if (objReturn != null)
+                    {
+                        objReturnVehicle = objVehicle;
                         return false;
+                    }
 
                     await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
                     {
                         objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
-                        return objReturn == null;
+                        if (objReturn == null)
+                            return true;
+                        objReturnMod = objMod;
+                        return false;
                     }, token).ConfigureAwait(false);
 
-                    return objReturn != null;
+                    if (objReturn == null)
+                        return true;
+                    objReturnVehicle = objVehicle;
+                    return false;
+
                 }, token).ConfigureAwait(false);
             }
 
-            return objReturn;
+            return new Tuple<Weapon, Vehicle, WeaponMount, VehicleMod>(objReturn, objReturnVehicle, objReturnMount, objReturnMod);
         }
 
         /// <summary>
@@ -658,7 +689,6 @@ namespace Chummer
         /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
         /// <param name="lstVehicles">List of root vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle in which the Weapon Mount was found.</param>
-        /// <returns></returns>
         public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
             if (lstVehicles == null)
@@ -683,11 +713,35 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Locate a Weapon Mount within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<Tuple<WeaponMount, Vehicle>> FindVehicleWeaponMountAsync(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    WeaponMount objMod =
+                        await objVehicle.WeaponMounts.FirstOrDefaultAsync(x => x.InternalId == strGuid, token: token).ConfigureAwait(false);
+                    if (objMod != null)
+                        return new Tuple<WeaponMount, Vehicle>(objMod, objVehicle);
+                }
+            }
+
+            return new Tuple<WeaponMount, Vehicle>(null, null);
+        }
+
+        /// <summary>
         /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
         /// </summary>
         /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
         /// <param name="lstVehicles">List of root vehicles to search.</param>
-        /// <returns></returns>
         public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
             return FindVehicleWeaponMountMod(lstVehicles, strGuid, out WeaponMount _);
@@ -699,7 +753,6 @@ namespace Chummer
         /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
         /// <param name="lstVehicles">List of root vehicles to search.</param>
         /// <param name="outMount">Weapon Mount in which the Vehicle Mod was found.</param>
-        /// <returns></returns>
         public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid, out WeaponMount outMount)
         {
             if (lstVehicles == null)
@@ -724,6 +777,42 @@ namespace Chummer
 
             outMount = null;
             return null;
+        }
+
+        /// <summary>
+        /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
+        /// </summary>
+        /// <param name="strGuid">Internal Id with which to look for the vehicle mod.</param>
+        /// <param name="lstVehicles">List of root vehicles to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<Tuple<VehicleMod, WeaponMount>> FindVehicleWeaponMountModAsync(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
+        {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    VehicleMod objReturnMod = null;
+                    WeaponMount objReturnMount = null;
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
+                    {
+                        objReturnMod =
+                            await objWeaponMount.Mods.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                        if (objReturnMod != null)
+                        {
+                            objReturnMount = objWeaponMount;
+                            return false;
+                        }
+
+                        return true;
+                    }, token).ConfigureAwait(false);
+                    if (objReturnMod != null)
+                        return new Tuple<VehicleMod, WeaponMount>(objReturnMod, objReturnMount);
+                }
+            }
+
+            return new Tuple<VehicleMod, WeaponMount>(null, null);
         }
 
         /// <summary>
@@ -761,6 +850,51 @@ namespace Chummer
                         {
                             return objReturn;
                         }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Locate a Weapon Accessory within the character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Weapon Accessory to find.</param>
+        /// <param name="lstVehicles">List of Vehicles to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<WeaponAccessory> FindVehicleWeaponAccessoryAsync(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
+        {
+            if (lstVehicles == null)
+                throw new ArgumentNullException(nameof(lstVehicles));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    WeaponAccessory objReturn = await objVehicle.Weapons.FindWeaponAccessoryAsync(strGuid, token).ConfigureAwait(false);
+                    if (objReturn != null)
+                    {
+                        return objReturn;
+                    }
+
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMod =>
+                    {
+                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, token).ConfigureAwait(false);
+                        return objReturn == null;
+                    }, token: token).ConfigureAwait(false);
+                    if (objReturn != null)
+                    {
+                        return objReturn;
+                    }
+
+                    await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                    {
+                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, token).ConfigureAwait(false);
+                        return objReturn == null;
+                    }, token: token).ConfigureAwait(false);
+                    if (objReturn != null)
+                    {
+                        return objReturn;
                     }
                 }
             }
@@ -809,19 +943,21 @@ namespace Chummer
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<Cyberware> FindVehicleCyberwareAsync([NotNull] this IEnumerable<Vehicle> lstVehicles,
-            [NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
+        public static async Task<Tuple<Cyberware, VehicleMod>> FindVehicleCyberwareAsync([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstVehicles == null)
                 throw new ArgumentNullException(nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
-                Cyberware objReturn = await objVehicle.FindVehicleCyberwareAsync(funcPredicate, token).ConfigureAwait(false);
+                (Cyberware objReturn, VehicleMod objReturnMod) = await objVehicle.FindVehicleCyberwareAsync(funcPredicate, token).ConfigureAwait(false);
                 if (objReturn != null)
-                    return objReturn;
+                {
+                    return new Tuple<Cyberware, VehicleMod>(objReturn, objReturnMod);
+                }
             }
 
-            return null;
+            return new Tuple<Cyberware, VehicleMod>(null, null);
         }
 
         /// <summary>
@@ -883,29 +1019,44 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstArmors">List of Armors to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<Gear> FindArmorGearAsync(this IAsyncEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
+        public static async Task<Tuple<Gear, Armor, ArmorMod>> FindArmorGearAsync(this IAsyncEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
         {
             if (lstArmors == null)
                 throw new ArgumentNullException(nameof(lstArmors));
             Gear objReturn = null;
+            Armor objReturnArmor = null;
+            ArmorMod objReturnMod = null;
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 await lstArmors.ForEachWithBreakAsync(async objArmor =>
                 {
                     objReturn = await objArmor.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
                     if (objReturn != null)
+                    {
+                        objReturnArmor = objArmor;
                         return false;
+                    }
 
                     await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
                     {
                         objReturn = await objMod.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
-                        return objReturn == null;
+                        if (objReturn == null)
+                            return true;
+
+                        objReturnMod = objMod;
+                        return false;
                     }, token).ConfigureAwait(false);
-                    return objReturn == null;
+
+                    if (objReturn == null)
+                        return true;
+
+                    objReturnArmor = objArmor;
+                    return false;
+
                 }, token).ConfigureAwait(false);
             }
 
-            return objReturn;
+            return new Tuple<Gear, Armor, ArmorMod>(objReturn, objReturnArmor, objReturnMod);
         }
 
         /// <summary>
@@ -920,6 +1071,30 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 return lstArmors.SelectMany(objArmor => objArmor.ArmorMods).FirstOrDefault(objMod => objMod.InternalId == strGuid);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Locate an Armor Mod within the character's Armors.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the ArmorMod to Find.</param>
+        /// <param name="lstArmors">List of Armors to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<ArmorMod> FindArmorModAsync(this IEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
+        {
+            if (lstArmors == null)
+                throw new ArgumentNullException(nameof(lstArmors));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                foreach (Armor objArmor in lstArmors)
+                {
+                    ArmorMod objReturn =
+                        await objArmor.ArmorMods.FirstOrDefaultAsync(objMod => objMod.InternalId == strGuid, token).ConfigureAwait(false);
+                    if (objReturn != null)
+                        return objReturn;
+                }
             }
 
             return null;
@@ -971,7 +1146,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<Gear> FindCyberwareGearAsync(this IAsyncEnumerable<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
+        public static async Task<Tuple<Gear, Cyberware>> FindCyberwareGearAsync(this IAsyncEnumerable<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
         {
             if (lstCyberware == null)
                 throw new ArgumentNullException(nameof(lstCyberware));
@@ -986,12 +1161,12 @@ namespace Chummer
 
                     if (objReturn != null)
                     {
-                        return objReturn;
+                        return new Tuple<Gear, Cyberware>(objReturn, objCyberware);
                     }
                 }
             }
 
-            return null;
+            return new Tuple<Gear, Cyberware>(null, null);
         }
 
         /// <summary>
@@ -1008,6 +1183,46 @@ namespace Chummer
                 return lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0)
                                  .SelectMany(objWeapon => objWeapon.WeaponAccessories)
                                  .FirstOrDefault(objAccessory => objAccessory.InternalId == strGuid);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Locate a WeaponAccessory within the character's Weapons.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the WeaponAccessory to find.</param>
+        /// <param name="lstWeapons">List of Weapons to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<WeaponAccessory> FindWeaponAccessoryAsync(this IEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstWeapons == null)
+                throw new ArgumentNullException(nameof(lstWeapons));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                if (lstWeapons is IAsyncEnumerable<Weapon> lstWeaponsAsync)
+                {
+                    foreach (Weapon objWeapon in await lstWeaponsAsync.DeepWhereAsync(x => x.Children,
+                                 async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) > 0, token: token).ConfigureAwait(false))
+                    {
+                        WeaponAccessory objReturn =
+                            await objWeapon.WeaponAccessories.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                        if (objReturn != null)
+                            return objReturn;
+                    }
+                }
+                else
+                {
+                    foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children,
+                                 x => x.WeaponAccessories.Count > 0))
+                    {
+                        WeaponAccessory objReturn =
+                            await objWeapon.WeaponAccessories.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                        if (objReturn != null)
+                            return objReturn;
+                    }
+                }
             }
 
             return null;
@@ -1067,7 +1282,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstWeapons">List of Weapons to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<Gear> FindWeaponGearAsync(this IAsyncEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
+        public static async Task<Tuple<Gear, WeaponAccessory>> FindWeaponGearAsync(this IAsyncEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (lstWeapons == null)
@@ -1075,6 +1290,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 Gear objReturn = null;
+                WeaponAccessory objReturnAccessory = null;
                 foreach (Weapon objWeapon in await lstWeapons.DeepWhereAsync(x => x.Children,
                              x => x.WeaponAccessories.AnyAsync(
                                  async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0, token),
@@ -1084,14 +1300,19 @@ namespace Chummer
                     {
                         objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(strGuid, token)
                             .ConfigureAwait(false);
-                        return objReturn == null;
+                        if (objReturn != null)
+                        {
+                            objReturnAccessory = objAccessory;
+                            return false;
+                        }
+                        return true;
                     }, token).ConfigureAwait(false);
                     if (objReturn != null)
-                        return objReturn;
+                        return new Tuple<Gear, WeaponAccessory>(objReturn, objReturnAccessory);
                 }
             }
 
-            return null;
+            return new Tuple<Gear, WeaponAccessory>(null, null);
         }
 
         /// <summary>
@@ -1102,6 +1323,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Enhancement FindEnhancement(this Character objCharacter, string strGuid, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
@@ -1116,6 +1338,42 @@ namespace Chummer
 
                     return objCharacter.Powers.SelectMany(objPower => objPower.Enhancements)
                                        .FirstOrDefault(objEnhancement => objEnhancement.InternalId == strGuid);
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Locate an Enhancement within the character's Enhancements.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Art to find.</param>
+        /// <param name="objCharacter">The character to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<Enhancement> FindEnhancementAsync(this Character objCharacter, string strGuid, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    Enhancement objReturn =
+                        await objCharacter.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                    if (objReturn != null)
+                        return objReturn;
+
+                    await objCharacter.Powers.ForEachWithBreakAsync(async objPower =>
+                    {
+                        objReturn = await objPower.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                        return objReturn == null;
+                    }, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 

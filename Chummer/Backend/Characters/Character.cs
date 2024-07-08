@@ -8699,8 +8699,8 @@ namespace Chummer
                                     Cyberware objCyberware = new Cyberware(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objCyberware.Load(objXmlCyberware);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objCyberware.Load(objXmlCyberware, token: token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstCyberware.Add(objCyberware);
                                     }
@@ -9808,12 +9808,18 @@ namespace Chummer
                                 foreach (XmlNode objXmlFocus in objXmlNodeList)
                                 {
                                     Focus objFocus = new Focus(this);
-                                    objFocus.Load(objXmlFocus);
                                     if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objFocus.Load(objXmlFocus);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstFoci.Add(objFocus);
+                                    }
                                     else
+                                    {
+                                        await objFocus.LoadAsync(objXmlFocus, token).ConfigureAwait(false);
                                         await _lstFoci.AddAsync(objFocus, token).ConfigureAwait(false);
+                                    }
                                 }
 
                                 //Timekeeper.Finish("load_char_foci");
@@ -13589,9 +13595,9 @@ namespace Chummer
                             return strGearReturn;
                         }
 
-                        objReturnGear
-                            = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory,
-                                token);
+                        WeaponAccessory objGearAccessory;
+                        (objReturnGear, objGearAccessory)
+                            = await Weapons.FindWeaponGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
 
                         if (objReturnGear != null)
                         {
@@ -13624,8 +13630,10 @@ namespace Chummer
                             return strGearReturn;
                         }
 
-                        objReturnGear
-                            = Armor.FindArmorGear(strImprovedSourceName, out Armor objArmor, out ArmorMod objArmorMod);
+                        Armor objArmor;
+                        ArmorMod objArmorMod;
+                        (objReturnGear, objArmor, objArmorMod)
+                            = await Armor.FindArmorGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
                         if (objReturnGear != null)
                         {
                             strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage, token)
@@ -13659,8 +13667,9 @@ namespace Chummer
                             return strGearReturn;
                         }
 
-                        objReturnGear
-                            = Cyberware.FindCyberwareGear(strImprovedSourceName, out Cyberware objGearCyberware);
+                        Cyberware objGearCyberware;
+                        (objReturnGear, objGearCyberware)
+                            = await Cyberware.FindCyberwareGearAsync(strImprovedSourceName, token).ConfigureAwait(false);
 
                         if (objReturnGear != null)
                         {
@@ -15800,6 +15809,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveVehicleGearParent(TreeNode nodDestination, TreeNode nodGearNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (nodDestination == null || nodGearNode == null)
                 return;
             // The item cannot be dropped onto itself or onto one of its children.
@@ -15874,6 +15884,106 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Move a Vehicle Gear TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="nodDestination">Destination Node.</param>
+        /// <param name="nodGearNode">Node of gear to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveVehicleGearParentAsync(TreeNode nodDestination, TreeNode nodGearNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (nodDestination == null || nodGearNode == null)
+                return;
+            // The item cannot be dropped onto itself or onto one of its children.
+            for (TreeNode objCheckNode = nodDestination;
+                objCheckNode != null && objCheckNode.Level >= nodDestination.Level;
+                objCheckNode = objCheckNode.Parent)
+            {
+                if (objCheckNode == nodGearNode)
+                    return;
+            }
+
+            if (!(nodGearNode.Tag is IHasInternalId nodeId))
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Locate the currently selected piece of Gear.
+                //TODO: Better interface for determining what the parent of a bit of gear is.
+                (Gear objGear, Vehicle objOldVehicle, WeaponAccessory objOldWeaponAccessory, Cyberware objOldCyberware) = await Vehicles.FindVehicleGearAsync(nodeId.InternalId, token: token).ConfigureAwait(false);
+
+                if (objGear == null)
+                    return;
+
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (nodDestination.Tag is Gear objDestinationGear)
+                    {
+                        // Remove the Gear from the Vehicle.
+                        if (objGear.Parent is IHasChildren<Gear> parent)
+                            await parent.Children.RemoveAsync(objGear, token).ConfigureAwait(false);
+                        else if (objOldCyberware != null)
+                            await objOldCyberware.GearChildren.RemoveAsync(objGear, token).ConfigureAwait(false);
+                        else if (objOldWeaponAccessory != null)
+                            await objOldWeaponAccessory.GearChildren.RemoveAsync(objGear, token).ConfigureAwait(false);
+                        else
+                            await objOldVehicle.GearChildren.RemoveAsync(objGear, token).ConfigureAwait(false);
+
+                        // Add the Gear to its new parent.
+                        objGear.Location = null;
+                        await objDestinationGear.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        // Determine if this is a Location.
+                        TreeNode nodVehicleNode = nodDestination;
+                        Location objLocation = null;
+                        while (nodVehicleNode.Level > 1)
+                        {
+                            if (objLocation is null && nodVehicleNode.Tag is Location loc)
+                            {
+                                objLocation = loc;
+                            }
+
+                            nodVehicleNode = nodVehicleNode.Parent;
+                        }
+
+                        // Determine if this is a Location in the destination Vehicle.
+                        if (nodDestination.Tag is Vehicle objNewVehicle)
+                        {
+                            // Remove the Gear from the Vehicle.
+                            if (objGear.Parent is IHasChildren<Gear> parent)
+                                await parent.Children.RemoveAsync(objGear, token).ConfigureAwait(false);
+                            else if (objOldCyberware != null)
+                                await objOldCyberware.GearChildren.RemoveAsync(objGear, token).ConfigureAwait(false);
+                            else if (objOldWeaponAccessory != null)
+                                await objOldWeaponAccessory.GearChildren.RemoveAsync(objGear, token).ConfigureAwait(false);
+                            else
+                                await objOldVehicle.GearChildren.RemoveAsync(objGear, token).ConfigureAwait(false);
+
+                            // Add the Gear to the Vehicle and set its Location.
+                            objGear.Parent = objNewVehicle;
+                            await objNewVehicle.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
+                            if (objLocation != null)
+                                await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -29580,7 +29690,7 @@ namespace Chummer
                         continue;
                     Armor objSourceArmor =
                         lstArmorsToConsider.Find(x => x.InternalId == objImprovement.SourceName)
-                        ?? lstArmorsToConsider.FindArmorMod(objImprovement.SourceName)?.Parent;
+                        ?? (await lstArmorsToConsider.FindArmorModAsync(objImprovement.SourceName, token).ConfigureAwait(false))?.Parent;
                     if (objSourceArmor == null)
                         continue;
                     decGeneralArmorImprovementValue -= objImprovement.Value;
@@ -47339,6 +47449,7 @@ namespace Chummer
                                             else
                                                 await objPower.SetExtraAsync(strForcedValue, token).ConfigureAwait(false);
                                             if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objPower.Create(xmlPowerData, intRating);
                                             else
                                                 await objPower.CreateAsync(xmlPowerData, intRating, token: token).ConfigureAwait(false);

@@ -935,7 +935,7 @@ namespace Chummer
         /// <summary>
         /// Type of Lifestyle to create.
         /// </summary>
-        public LifestyleType StyleType { get; set; } = LifestyleType.Advanced;
+        public LifestyleType StyleType { get; } = LifestyleType.Advanced;
 
         #endregion Properties
 

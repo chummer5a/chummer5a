@@ -72,6 +72,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Locate an object (Needle) within a list (Haystack) based on GUID match.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Needle to Find.</param>
+        /// <param name="lstHaystack">Haystack to search.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<T> FindByIdAsync<T>(this IAsyncEnumerable<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasInternalId
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<T>(token);
+            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
+            {
+                return default;
+            }
+
+            return lstHaystack.FirstOrDefaultAsync(x => x.InternalId == strGuid, token);
+        }
+
+        /// <summary>
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
         /// </summary>
         /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>

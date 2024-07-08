@@ -1493,7 +1493,7 @@ namespace Chummer
         public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
         private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
-        private static AsyncFriendlyReaderWriterLock _objClipboardLocker = new AsyncFriendlyReaderWriterLock();
+        private static readonly AsyncFriendlyReaderWriterLock _objClipboardLocker = new AsyncFriendlyReaderWriterLock();
 
         private static readonly Lazy<Regex> s_RgxInvalidUnicodeCharsExpression = new Lazy<Regex>(() => new Regex(
             @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",

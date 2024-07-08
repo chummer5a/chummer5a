@@ -2847,14 +2847,14 @@ namespace Chummer
 
                         if (blnError && blnShowError)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
                                         .ConfigureAwait(false),
                                     FileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
                                     .ConfigureAwait(false), MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
+                                MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -3249,9 +3249,9 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowScrollableMessageBox(await LanguageManager
-                                                                   .GetStringAsync("Message_Insufficient_Permissions_Warning",
-                                                                       token: token).ConfigureAwait(false));
+                            await Program.ShowScrollableMessageBoxAsync(await LanguageManager
+                                .GetStringAsync("Message_Insufficient_Permissions_Warning",
+                                    token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                         }
                     }
 

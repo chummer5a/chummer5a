@@ -712,7 +712,7 @@ namespace Chummer.Backend.Attributes
                 {
                     token.ThrowIfCancellationRequested();
                     _intBase = value;
-                    await DoBaseFixAsync(true, token);
+                    await DoBaseFixAsync(true, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -737,7 +737,7 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 Interlocked.Add(ref _intBase, value);
-                await DoBaseFixAsync(true, token);
+                await DoBaseFixAsync(true, token).ConfigureAwait(false);
             }
             finally
             {

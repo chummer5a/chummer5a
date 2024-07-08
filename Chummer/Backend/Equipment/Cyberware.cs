@@ -10089,15 +10089,15 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 // Unequip all modular children first so that we don't delete them
                 Cyberware objModularChild
-                    = Children.DeepFirstOrDefault(x => x.Children, x => !string.IsNullOrEmpty(x.PlugsIntoModularMount));
+                    = await Children.DeepFirstOrDefaultAsync(x => x.Children, async x => !string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
                 while (objModularChild != null)
                 {
                     await Children.RemoveAsync(objModularChild, token).ConfigureAwait(false);
                     await _objCharacter.Cyberware.AddAsync(objModularChild, token).ConfigureAwait(false);
                     await objModularChild.ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
                     objModularChild
-                        = Children.DeepFirstOrDefault(x => x.Children,
-                                                      x => !string.IsNullOrEmpty(x.PlugsIntoModularMount));
+                        = await Children.DeepFirstOrDefaultAsync(x => x.Children,
+                            async x => !string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
                 }
 
                 // Remove the cyberware from the actual parent
@@ -10109,8 +10109,8 @@ namespace Chummer.Backend.Equipment
                     }
                     else if (ParentVehicle != null)
                     {
-                        _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
-                                                                    out VehicleMod objMod);
+                        VehicleMod objMod =
+                            (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == InternalId, token: token).ConfigureAwait(false)).Item2;
                         await objMod.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
                     }
                     else if (await _objCharacter.Cyberware.ContainsAsync(this, token).ConfigureAwait(false))
@@ -10219,8 +10219,8 @@ namespace Chummer.Backend.Equipment
                 {
                     // Locate the Weapon Accessory that was added.
                     WeaponAccessory objWeaponAccessory
-                        = _objCharacter.Vehicles.FindVehicleWeaponAccessory(WeaponAccessoryID) ??
-                          _objCharacter.Weapons.FindWeaponAccessory(WeaponAccessoryID);
+                        = await _objCharacter.Vehicles.FindVehicleWeaponAccessoryAsync(WeaponAccessoryID, token).ConfigureAwait(false) ??
+                          await _objCharacter.Weapons.FindWeaponAccessoryAsync(WeaponAccessoryID, token).ConfigureAwait(false);
                     if (objWeaponAccessory != null)
                         await objWeaponAccessory.DeleteWeaponAccessoryAsync(token: token).ConfigureAwait(false);
                 }
@@ -11176,12 +11176,12 @@ namespace Chummer.Backend.Equipment
                     (!await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) ||
                      await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware", token: token)
                             .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware", token: token)
                             .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                     return false;
                 }
 
@@ -11281,12 +11281,12 @@ namespace Chummer.Backend.Equipment
                     (!await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false) ||
                      await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware", token: token)
                             .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware", token: token)
                             .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                     return false;
                 }
 
@@ -11307,9 +11307,8 @@ namespace Chummer.Backend.Equipment
                     objParent = Parent;
                 else if (ParentVehicle != null)
                 {
-                    _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == InternalId,
-                        out VehicleMod objMod);
-                    objParent = objMod;
+                    objParent =
+                        (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == InternalId, token: token).ConfigureAwait(false)).Item2;
                 }
 
                 // Record the cost of the Cyberware carrier with the Cyberware.
@@ -11417,11 +11416,11 @@ namespace Chummer.Backend.Equipment
 
                         if (decCost > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                 MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
+                                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                             return false;
                         }
                     }
@@ -11510,12 +11509,12 @@ namespace Chummer.Backend.Equipment
                     : await CalculatedTotalCostAsync(intRating, objGrade, token).ConfigureAwait(false) - decSaleCost;
                 if (decNewCost > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                 {
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
                             .ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
                             .ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                     return;
                 }
 
