@@ -14638,23 +14638,18 @@ namespace Chummer
 
                     string strOldLocation = await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Text, GenericToken).ConfigureAwait(false);
                     string strNewLocation = frmPickText.MyForm.SelectedValue;
-
-                    int i = -1;
-                    await CharacterObject.ImprovementGroups.ForEachWithSideEffectsWithBreakAsync(async strLocation =>
+                    await CharacterObject.Improvements.ForEachWithSideEffectsAsync(objImprovement =>
                     {
-                        ++i;
-                        if (strLocation != strOldLocation)
-                            return true;
-                        await CharacterObject.Improvements.ForEachWithSideEffectsAsync(objImprovement =>
-                        {
-                            if (objImprovement.CustomGroup == strLocation)
-                                objImprovement.CustomGroup = strNewLocation;
-                        }, GenericToken).ConfigureAwait(false);
-
-                        await CharacterObject.ImprovementGroups.SetValueAtAsync(i, strNewLocation, GenericToken)
-                                             .ConfigureAwait(false);
-                        return false;
+                        if (objImprovement.CustomGroup == strOldLocation)
+                            objImprovement.CustomGroup = strNewLocation;
                     }, GenericToken).ConfigureAwait(false);
+                    for (int i = await CharacterObject.ImprovementGroups.GetCountAsync(GenericToken) - 1; i >= 0; --i)
+                    {
+                        if (await CharacterObject.ImprovementGroups.GetValueAtAsync(i, GenericToken) != strOldLocation)
+                            continue;
+                        await CharacterObject.ImprovementGroups.SetValueAtAsync(i, strNewLocation, GenericToken);
+                        break;
+                    }
                 }
 
                 await SetDirty(true).ConfigureAwait(false);
