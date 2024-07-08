@@ -1022,6 +1022,17 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether this Mod is installed and contributing towards the Vehicle's stats.
+        /// </summary>
+        public Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _blnEquipped = value;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Notes.
         /// </summary>
         public string Notes

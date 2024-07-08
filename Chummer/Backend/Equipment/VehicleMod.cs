@@ -1136,6 +1136,29 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
+        
+        /// <summary>
+        /// Whether this Mod is installed and contributing towards the Vehicle's stats.
+        /// </summary>
+        public async Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _blnEquipped = value;
+            if (!IncludedInVehicle)
+            {
+                if (_objParent != null && (Bonus?["sensor"] != null || (WirelessOn && WirelessBonus?["sensor"] != null)))
+                {
+                    // Any time any vehicle mod is changed, update our sensory array's rating, just in case
+                    Gear objGear = await _objParent.GearChildren
+                        .FirstOrDefaultAsync(x =>
+                            x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent, token: token);
+                    if (objGear != null)
+                        await objGear.SetRatingAsync(await _objParent.GetCalculatedSensorAsync(token), token);
+                }
+                if (await _objCharacter.GetIsAIAsync(token) && await _objCharacter.GetHomeNodeAsync(token) is Vehicle objVehicle && objVehicle == _objParent)
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.PhysicalCM), token);
+            }
+        }
 
         /// <summary>
         /// Notes.
