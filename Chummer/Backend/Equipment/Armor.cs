@@ -1701,6 +1701,70 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether the Armor is equipped and should be considered for highest Armor Rating or Armor Encumbrance.
+        /// </summary>
+        public async Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            if (_blnEquipped == value)
+                return;
+            _blnEquipped = value;
+            if (value)
+            {
+                // Add the Armor's Improvements to the character.
+                await ImprovementManager.EnableImprovementsAsync(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId), token).ConfigureAwait(false);
+                // Add the Improvements from any Armor Mods in the Armor.
+                await ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
+                {
+                    if (objMod.Equipped)
+                    {
+                        await ImprovementManager.EnableImprovementsAsync(_objCharacter,
+                            _objCharacter.Improvements.Where(x =>
+                                x.ImproveSource == Improvement.ImprovementSource.ArmorMod &&
+                                x.SourceName == InternalId), token).ConfigureAwait(false);
+                        // Add the Improvements from any Gear in the Armor.
+                        await objMod.GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                        {
+                            if (objGear.Equipped)
+                            {
+                                await objGear.ChangeEquippedStatusAsync(true, true, token).ConfigureAwait(false);
+                            }
+                        }, token).ConfigureAwait(false);
+                    }
+                }, token).ConfigureAwait(false);
+                // Add the Improvements from any Gear in the Armor.
+                await GearChildren.ForEachWithSideEffectsAsync(objGear => objGear.ChangeEquippedStatusAsync(true, true, token), token).ConfigureAwait(false);
+            }
+            else
+            {
+                // Add the Armor's Improvements to the character.
+                await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                    _objCharacter.Improvements.Where(
+                        x => x.ImproveSource
+                             == Improvement.ImprovementSource.Armor
+                             && x.SourceName == InternalId), token).ConfigureAwait(false);
+                // Add the Improvements from any Armor Mods in the Armor.
+                await ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
+                {
+                    await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                        _objCharacter.Improvements.Where(
+                            x => x.ImproveSource
+                                 == Improvement.ImprovementSource.ArmorMod
+                                 && x.SourceName == InternalId), token).ConfigureAwait(false);
+                    // Add the Improvements from any Gear in the Armor.
+                    await objMod.GearChildren.ForEachWithSideEffectsAsync(
+                        objGear => objGear.ChangeEquippedStatusAsync(false, true, token), token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+                // Add the Improvements from any Gear in the Armor.
+                await GearChildren.ForEachWithSideEffectsAsync(objGear => objGear.ChangeEquippedStatusAsync(false, true, token), token).ConfigureAwait(false);
+            }
+
+            if (_objCharacter?.IsLoading == false)
+                await _objCharacter.OnMultiplePropertyChangedAsync(token, nameof(Character.ArmorEncumbrance),
+                    nameof(Character.TotalCarriedWeight),
+                    nameof(Character.TotalArmorRating)).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Whether Wireless is turned on for this armor
         /// </summary>
         public bool WirelessOn

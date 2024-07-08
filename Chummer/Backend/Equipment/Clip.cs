@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Ink;
 using System.Xml;
 
 namespace Chummer.Backend.Equipment
@@ -85,6 +86,8 @@ namespace Chummer.Backend.Equipment
 
         public Task<string> DisplayAmmoNameAsync(string strLanguage = "", CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             if (AmmoGear != null)
                 return AmmoGear.DisplayNameShortAsync(strLanguage, token);
             return Ammo > 0
@@ -115,6 +118,28 @@ namespace Chummer.Backend.Equipment
                 if (objOldGear != null)
                     objOldGear.LoadedIntoClip = null;
             }
+        }
+
+        public async Task SetAmmoGearAsync(Gear value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Gear objOldGear = Interlocked.Exchange(ref _objAmmoGear, value);
+            if (objOldGear == value)
+                return;
+            if (objOldGear != null)
+                objOldGear.PropertyChanged -= UpdateAmmoQuantity;
+            if (value != null)
+            {
+                await value.SetLoadedIntoClip(this, token).ConfigureAwait(false);
+                Ammo = Math.Min(Ammo, value.Quantity.ToInt32());
+                value.PropertyChanged += UpdateAmmoQuantity;
+            }
+            else
+            {
+                Ammo = 0;
+            }
+            if (objOldGear != null)
+                await objOldGear.SetLoadedIntoClip(null, token).ConfigureAwait(false);
         }
 
         private void UpdateAmmoQuantity(object sender, PropertyChangedEventArgs e)

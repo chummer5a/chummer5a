@@ -2917,6 +2917,16 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The type of Ammunition loaded in the Weapon.
+        /// </summary>
+        public Task SetAmmoLoaded(Gear value, CancellationToken token = default)
+        {
+            return token.IsCancellationRequested
+                ? Task.FromCanceled(token)
+                : GetClip(_intActiveAmmoSlot).SetAmmoGearAsync(value, token);
+        }
+
+        /// <summary>
         /// Active Ammo slot number.
         /// </summary>
         public int ActiveAmmoSlot
@@ -3144,7 +3154,7 @@ namespace Chummer.Backend.Equipment
                     _objVehicleMod = null;
                 }
 
-                foreach (Weapon objChild in Children)
+                foreach (Weapon objChild in Children.AsEnumerableWithSideEffects())
                     objChild.ParentVehicle = value;
             }
         }
@@ -3164,7 +3174,7 @@ namespace Chummer.Backend.Equipment
                         ParentVehicleMod = null;
                 }
 
-                foreach (Weapon objChild in Children)
+                foreach (Weapon objChild in Children.AsEnumerableWithSideEffects())
                     objChild.ParentMount = value;
             }
         }
@@ -3184,7 +3194,7 @@ namespace Chummer.Backend.Equipment
                         ParentMount = null;
                 }
 
-                foreach (Weapon objChild in Children)
+                foreach (Weapon objChild in Children.AsEnumerableWithSideEffects())
                     objChild.ParentVehicleMod = value;
             }
         }
@@ -3290,6 +3300,107 @@ namespace Chummer.Backend.Equipment
                                               y => y.Children, y => !string.IsNullOrEmpty(y.Weight)))))
                         _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                 }
+            }
+        }
+
+        public async Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            if (_blnEquipped == value)
+                return;
+            _blnEquipped = value;
+            if (ParentVehicle == null && _objCharacter?.IsLoading == false)
+            {
+                if (await WeaponAccessories
+                        .AnyAsync(
+                            async x => x.Equipped &&
+                                       await x.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0,
+                            token: token).ConfigureAwait(false))
+                {
+                    if (value)
+                    {
+                        await WeaponAccessories.ForEachWithSideEffectsAsync(objAccessory =>
+                            objAccessory.GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                            {
+                                if (objGear.Equipped)
+                                    await objGear.ChangeEquippedStatusAsync(objAccessory.Equipped, true, token)
+                                        .ConfigureAwait(false);
+                            }, token: token), token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await WeaponAccessories.ForEachWithSideEffectsAsync(objAccessory =>
+                                objAccessory.GearChildren.ForEachWithSideEffectsAsync(
+                                    objGear => objGear.ChangeEquippedStatusAsync(false, true, token), token: token),
+                            token: token).ConfigureAwait(false);
+                    }
+                }
+
+                if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
+                {
+                    if (value)
+                    {
+                        foreach (Weapon objChild in await Children.DeepWhereAsync(x => x.Children,
+                                     async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) >
+                                                0, token: token).ConfigureAwait(false))
+                        {
+                            bool blnAllParentsEquipped = objChild.Equipped;
+                            Weapon objLoopParent = objChild.Parent;
+                            while (blnAllParentsEquipped && objLoopParent != null)
+                            {
+                                blnAllParentsEquipped = objLoopParent.Equipped;
+                                objLoopParent = objLoopParent.Parent;
+                            }
+
+                            if (blnAllParentsEquipped)
+                            {
+                                await objChild.WeaponAccessories.ForEachWithSideEffectsAsync(objAccessory =>
+                                    objAccessory.GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                                    {
+                                        if (objGear.Equipped)
+                                            await objGear.ChangeEquippedStatusAsync(objAccessory.Equipped, true, token)
+                                                .ConfigureAwait(false);
+                                    }, token: token), token: token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await objChild.WeaponAccessories.ForEachWithSideEffectsAsync(objAccessory =>
+                                        objAccessory.GearChildren.ForEachWithSideEffectsAsync(
+                                            objGear => objGear.ChangeEquippedStatusAsync(false, true, token),
+                                            token: token),
+                                    token: token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Weapon objChild in await Children.DeepWhereAsync(x => x.Children,
+                                     async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) >
+                                                0, token: token).ConfigureAwait(false))
+                        {
+                            await objChild.WeaponAccessories.ForEachWithSideEffectsAsync(objAccessory =>
+                                    objAccessory.GearChildren.ForEachWithSideEffectsAsync(
+                                        objGear => objGear.ChangeEquippedStatusAsync(false, true, token), token: token),
+                                token: token).ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(Weight)
+                    || await WeaponAccessories
+                        .AnyAsync(
+                            async x => !string.IsNullOrEmpty(x.Weight) || await x.GearChildren
+                                .DeepAnyAsync(y => y.Children, y => !string.IsNullOrEmpty(y.Weight), token: token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false)
+                    || await Children.DeepAnyAsync(x => x.Children,
+                        async z => !string.IsNullOrEmpty(z.Weight)
+                                   || await WeaponAccessories.AnyAsync(
+                                           async x => !string.IsNullOrEmpty(x.Weight)
+                                                      || await x.GearChildren.DeepAnyAsync(
+                                                          y => y.Children, y => !string.IsNullOrEmpty(y.Weight),
+                                                          token: token).ConfigureAwait(false), token: token)
+                                       .ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token)
+                        .ConfigureAwait(false);
             }
         }
 
@@ -9979,7 +10090,7 @@ namespace Chummer.Backend.Equipment
                     objSelectedAmmo = objExternalSource;
                 }
 
-                AmmoLoaded = objSelectedAmmo;
+                await SetAmmoLoaded(objSelectedAmmo, token).ConfigureAwait(false);
                 if (objCurrentlyLoadedAmmo != objSelectedAmmo && objCurrentlyLoadedAmmo != null)
                 {
                     string strId = objCurrentlyLoadedAmmo.InternalId;
@@ -10038,7 +10149,7 @@ namespace Chummer.Backend.Equipment
             Gear objAmmo = clipToUnload.AmmoGear;
             if (objAmmo == null)
                 return null;
-            clipToUnload.AmmoGear = null;
+            await clipToUnload.SetAmmoGearAsync(null, token).ConfigureAwait(false);
             Gear objMergeGear = await lstGears
                                       .FirstOrDefaultAsync(
                                           x => x.InternalId != objAmmo.InternalId

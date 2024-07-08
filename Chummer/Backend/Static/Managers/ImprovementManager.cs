@@ -2971,7 +2971,13 @@ namespace Chummer
                                       ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token).ConfigureAwait(false))
                                       .Item1;
                             if (objWeapon != null)
-                                objWeapon.Equipped = true;
+                            {
+                                if (blnSync)
+                                    objWeapon.Equipped = true;
+                                else
+                                    await objWeapon.SetEquippedAsync(true, token).ConfigureAwait(false);
+                            }
+
                             break;
 
                         case Improvement.ImprovementType.Spell:
@@ -3643,7 +3649,12 @@ namespace Chummer
                                       ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token).ConfigureAwait(false))
                                       .Item1;
                             if (objWeapon != null)
-                                objWeapon.Equipped = false;
+                            {
+                                if (blnSync)
+                                    objWeapon.Equipped = false;
+                                else
+                                    await objWeapon.SetEquippedAsync(false, token).ConfigureAwait(false);
+                            }
                             break;
 
                         case Improvement.ImprovementType.Spell:

@@ -6903,21 +6903,21 @@ namespace Chummer
                 if (objSelected is Location selectedLocation)
                 {
                     // Equip all of the Armor in the Armor Bundle.
-                    await selectedLocation.Children.ForEachWithSideEffectsAsync(child =>
+                    await selectedLocation.Children.ForEachWithSideEffectsAsync(async child =>
                     {
                         if (child is Armor objArmor && objArmor.Location == selectedLocation)
                         {
-                            objArmor.Equipped = true;
+                            await objArmor.SetEquippedAsync(true, GenericToken).ConfigureAwait(false);
                         }
                     }, GenericToken).ConfigureAwait(false);
                 }
                 else if (objSelected?.ToString() == "Node_SelectedArmor")
                 {
-                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(objArmor =>
+                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(async objArmor =>
                     {
                         if (!objArmor.Equipped && objArmor.Location == null)
                         {
-                            objArmor.Equipped = true;
+                            await objArmor.SetEquippedAsync(true, GenericToken).ConfigureAwait(false);
                         }
                     }, GenericToken).ConfigureAwait(false);
                 }
@@ -6943,21 +6943,21 @@ namespace Chummer
                 if (objSelected is Location selectedLocation)
                 {
                     // Equip all of the Armor in the Armor Bundle.
-                    await selectedLocation.Children.ForEachWithSideEffectsAsync(child =>
+                    await selectedLocation.Children.ForEachWithSideEffectsAsync(async child =>
                     {
                         if (child is Armor objArmor && objArmor.Location == selectedLocation)
                         {
-                            objArmor.Equipped = false;
+                            await objArmor.SetEquippedAsync(false, GenericToken).ConfigureAwait(false);
                         }
                     }, GenericToken).ConfigureAwait(false);
                 }
                 else if (objSelected?.ToString() == "Node_SelectedArmor")
                 {
-                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(objArmor =>
+                    await CharacterObject.Armor.ForEachWithSideEffectsAsync(async objArmor =>
                     {
                         if (objArmor.Equipped && objArmor.Location == null)
                         {
-                            objArmor.Equipped = false;
+                            await objArmor.SetEquippedAsync(false, GenericToken).ConfigureAwait(false);
                         }
                     }, GenericToken).ConfigureAwait(false);
                 }
@@ -11165,15 +11165,15 @@ namespace Chummer
                 switch (objSelected)
                 {
                     case Armor objArmor:
-                        objArmor.Equipped = blnChecked;
+                        await objArmor.SetEquippedAsync(blnChecked, GenericToken).ConfigureAwait(false);
                         break;
 
                     case ArmorMod objMod:
-                        objMod.Equipped = blnChecked;
+                        await objMod.SetEquippedAsync(blnChecked, GenericToken).ConfigureAwait(false);
                         break;
 
                     case Gear objGear:
-                        objGear.Equipped = blnChecked;
+                        await objGear.SetEquippedAsync(blnChecked, GenericToken).ConfigureAwait(false);
                         if (blnChecked)
                         {
                             (_, Armor objParentArmor, ArmorMod objParentMod) = await CharacterObject.Armor.FindArmorGearAsync(objGear.InternalId, GenericToken).ConfigureAwait(false);
@@ -11221,17 +11221,18 @@ namespace Chummer
                 switch (objSelected)
                 {
                     case Weapon objWeapon:
-                        objWeapon.Equipped = blnChecked;
+                        await objWeapon.SetEquippedAsync(blnChecked, GenericToken).ConfigureAwait(false);
                         break;
 
                     case Gear objGear:
                         // Find the selected Gear.
-                        objGear.Equipped = blnChecked;
+                        await objGear.SetEquippedAsync(blnChecked, GenericToken).ConfigureAwait(false);
                         await objGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken).ConfigureAwait(false);
                         break;
 
                     case WeaponAccessory objAccessory:
-                        objAccessory.Equipped = blnChecked;
+                        await objAccessory.SetEquippedAsync(blnChecked, token: GenericToken)
+                            .ConfigureAwait(false);
                         break;
 
                     default:
@@ -11341,7 +11342,7 @@ namespace Chummer
                     return;
                 bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                                        .ConfigureAwait(false);
-                objSelectedGear.Equipped = blnChecked;
+                await objSelectedGear.SetEquippedAsync(blnChecked, GenericToken).ConfigureAwait(false);
                 await objSelectedGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken).ConfigureAwait(false);
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
@@ -12204,9 +12205,9 @@ namespace Chummer
                                        .ConfigureAwait(false) is ICanEquip
                         objEquippable))
                     return;
-                objEquippable.Equipped
-                    = await chkVehicleWeaponAccessoryInstalled.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                              .ConfigureAwait(false);
+                await objEquippable.SetEquippedAsync(await chkVehicleWeaponAccessoryInstalled
+                    .DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
+                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                 await SetDirty(true).ConfigureAwait(false);
             }

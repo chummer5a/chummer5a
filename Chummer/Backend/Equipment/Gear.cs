@@ -2552,6 +2552,17 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether the Gear is equipped.
+        /// </summary>
+        public Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _blnEquipped = value;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Whether the Gear's wireless bonus is enabled.
         /// </summary>
         public bool WirelessOn
@@ -2644,6 +2655,25 @@ namespace Chummer.Backend.Equipment
                         Equipped = true;
                         ChangeEquippedStatus(true);
                     }
+                }
+            }
+        }
+
+        public async Task SetLoadedIntoClip(Clip value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Clip objOldValue = Interlocked.Exchange(ref _objLoadedIntoClip, value);
+            if (objOldValue == value)
+                return;
+            if (objOldValue != null)
+                await objOldValue.SetAmmoGearAsync(null, token).ConfigureAwait(false);
+            if (value != null)
+            {
+                await value.SetAmmoGearAsync(this, token).ConfigureAwait(false);
+                if (objOldValue == null)
+                {
+                    await SetEquippedAsync(true, token).ConfigureAwait(false);
+                    await ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -5176,7 +5206,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            LoadedIntoClip = null;
+            await SetLoadedIntoClip(null, token).ConfigureAwait(false);
 
             // Remove any children the Gear may have.
             decimal decReturn = await Children.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token)

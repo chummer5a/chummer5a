@@ -1041,6 +1041,50 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether an Armor Mod is equipped and should be included in the Armor's totals.
+        /// </summary>
+        public async Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            if (_blnEquipped == value)
+                return;
+            _blnEquipped = value;
+            if (value)
+            {
+                if (Parent?.Equipped == true)
+                {
+                    await ImprovementManager.EnableImprovementsAsync(_objCharacter,
+                        _objCharacter.Improvements.Where(
+                            x => x.ImproveSource
+                                 == Improvement.ImprovementSource.ArmorMod
+                                 && x.SourceName == InternalId), token).ConfigureAwait(false);
+                    // Add the Improvements from any Gear in the Armor.
+                    await GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                    {
+                        if (objGear.Equipped)
+                        {
+                            await objGear.ChangeEquippedStatusAsync(true, true, token).ConfigureAwait(false);
+                        }
+                    }, token).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                await ImprovementManager.DisableImprovementsAsync(_objCharacter,
+                    _objCharacter.Improvements.Where(
+                        x => x.ImproveSource == Improvement.ImprovementSource
+                            .ArmorMod && x.SourceName == InternalId), token).ConfigureAwait(false);
+                // Add the Improvements from any Gear in the Armor.
+                await GearChildren.ForEachWithSideEffectsAsync(objGear => objGear.ChangeEquippedStatusAsync(false, true, token), token).ConfigureAwait(false);
+            }
+
+            if (Parent?.Equipped == true && _objCharacter?.IsLoading == false)
+            {
+                await _objCharacter.OnMultiplePropertyChangedAsync(token, nameof(Character.ArmorEncumbrance),
+                    nameof(Character.TotalCarriedWeight), nameof(Character.GetArmorRating)).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Whether an Armor Mod's wireless bonus is enabled
         /// </summary>
         public bool WirelessOn

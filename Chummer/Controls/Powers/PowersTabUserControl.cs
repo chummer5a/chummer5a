@@ -1023,9 +1023,9 @@ namespace Chummer.UI.Powers
                                     //Cache the parentform prior to deletion, otherwise the relationship is broken.
                                     Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm, token: MyToken)
                                         .ConfigureAwait(false);
-                                    if (p.FreeLevels > 0)
+                                    if (await p.GetFreeLevelsAsync(MyToken).ConfigureAwait(false) > 0)
                                     {
-                                        string strExtra = p.Extra;
+                                        string strExtra = await p.GetExtraAsync(MyToken).ConfigureAwait(false);
                                         string strImprovementSourceName =
                                             (await ImprovementManager
                                                 .GetCachedImprovementListForValueOfAsync(p.CharacterObject,
@@ -1034,10 +1034,10 @@ namespace Chummer.UI.Powers
                                             .Find(x => x.UniqueName == strExtra)?.SourceName;
                                         if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
                                         {
-                                            Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
+                                            Gear objGear = await p.CharacterObject.Gear.FindByIdAsync(strImprovementSourceName, MyToken).ConfigureAwait(false);
                                             if (objGear?.Bonded == true)
                                             {
-                                                objGear.Equipped = false;
+                                                await objGear.SetEquippedAsync(false, MyToken).ConfigureAwait(false);
                                                 objGear.Extra = string.Empty;
                                             }
                                         }

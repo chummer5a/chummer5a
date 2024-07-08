@@ -1249,6 +1249,38 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Whether this Accessory is installed and contributing towards the Weapon's stats.
+        /// </summary>
+        public async Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            if (_blnEquipped == value)
+                return;
+            _blnEquipped = value;
+            Weapon objParent = Parent;
+            if (objParent.Equipped && objParent.ParentVehicle == null)
+            {
+                await GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                {
+                    if (objGear.Equipped)
+                    {
+                        await objGear.ChangeEquippedStatusAsync(value, true, token).ConfigureAwait(false);
+                    }
+                }, token).ConfigureAwait(false);
+
+                if (_objCharacter?.IsLoading == false && (!string.IsNullOrEmpty(Weight)
+                                                          || await GearChildren.DeepAnyAsync(
+                                                              x => x.Children,
+                                                              x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token: token).ConfigureAwait(false)))
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
+            }
+            else
+            {
+                await GearChildren.ForEachWithSideEffectsAsync(objGear =>
+                    objGear.ChangeEquippedStatusAsync(false, token: token), token: token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
