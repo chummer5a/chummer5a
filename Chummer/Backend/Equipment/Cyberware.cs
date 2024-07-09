@@ -2326,13 +2326,13 @@ namespace Chummer.Backend.Equipment
                             = _eImprovementSource == Improvement.ImprovementSource.Bioware
                                 ? (blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? _objCharacter.LoadDataXPath("bioware.xml")
+                                    ? _objCharacter.LoadDataXPath("bioware.xml", token: token)
                                     : await _objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression(
                                     "/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
                                 : (blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? _objCharacter.LoadDataXPath("cyberware.xml")
+                                    ? _objCharacter.LoadDataXPath("cyberware.xml", token: token)
                                     : await _objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression(
                                     "/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
@@ -2650,7 +2650,7 @@ namespace Chummer.Backend.Equipment
                                         _guiID.ToString(
                                             "D", GlobalSettings.InvariantCultureInfo),
                                         Bonus, Rating,
-                                        CurrentDisplayNameShort);
+                                        CurrentDisplayNameShort, token: token);
                                 else
                                     await ImprovementManager.CreateImprovementsAsync(_objCharacter, _eImprovementSource,
                                         _guiID.ToString(
@@ -2671,7 +2671,7 @@ namespace Chummer.Backend.Equipment
                                     lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(
                                         x => x.Children,
                                         x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
-                                             x.IsModularCurrentlyEquipped).ToList();
+                                             x.IsModularCurrentlyEquipped, token).ToList();
                                 else
                                 {
                                     lstPairableCyberwares = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
@@ -2709,7 +2709,7 @@ namespace Chummer.Backend.Equipment
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ImprovementManager.CreateImprovements(
                                             _objCharacter, SourceType, InternalId + "Pair",
-                                            PairBonus, Rating, CurrentDisplayNameShort);
+                                            PairBonus, Rating, CurrentDisplayNameShort, token: token);
                                     else
                                         await ImprovementManager.CreateImprovementsAsync(
                                             _objCharacter, await GetSourceTypeAsync(token).ConfigureAwait(false), InternalId + "Pair",
@@ -11632,10 +11632,10 @@ namespace Chummer.Backend.Equipment
                     case ClipboardContentType.Gear:
                         string strCategory =
                             (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/category")?.Value;
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/category", token)?.Value;
                         string strName =
                             (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/name")
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/name", token)
                                 ?.Value;
                         IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                         try

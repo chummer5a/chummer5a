@@ -2022,14 +2022,14 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
-                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("name")?.Value ?? string.Empty;
+                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("name", token)?.Value ?? string.Empty;
                             if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
                                 return false;
                         }
 
                         if (!string.IsNullOrEmpty(AllowedWeaponCategories))
                         {
-                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category")?.Value ?? string.Empty;
+                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                             if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
                                 return false;
                         }

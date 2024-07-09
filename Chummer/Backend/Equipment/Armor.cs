@@ -3553,7 +3553,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category")?.Value ?? string.Empty;
+                string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.ArmorMod:
@@ -3562,12 +3562,12 @@ namespace Chummer.Backend.Equipment
                         if (xmlNode == null)
                             return strPasteCategory == "General";
                         XPathNavigator xmlForceModCategory =
-                            xmlNode.SelectSingleNodeAndCacheExpression("forcemodcategory");
+                            xmlNode.SelectSingleNodeAndCacheExpression("forcemodcategory", token);
                         if (xmlForceModCategory != null)
                             return xmlForceModCategory.Value == strPasteCategory;
                         if (strPasteCategory == "General")
                             return true;
-                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
+                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory", token);
                         return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
                             .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
                     }
@@ -3576,7 +3576,7 @@ namespace Chummer.Backend.Equipment
                         XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         if (xmlNode == null)
                             return false;
-                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory");
+                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory", token);
                         return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
                             .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
                     }

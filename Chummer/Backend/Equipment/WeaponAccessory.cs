@@ -2264,10 +2264,10 @@ namespace Chummer.Backend.Equipment
                     case ClipboardContentType.Gear:
                         XPathNavigator checkNode =
                             (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator(
-                                "/character/gears/gear");
+                                "/character/gears/gear", token);
                         if (checkNode == null)
                             return false;
-                        string strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("category")?.Value;
+                        string strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
                         if (!string.IsNullOrEmpty(strCheckValue))
                         {
                             XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
@@ -2278,7 +2278,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                         if (!string.IsNullOrEmpty(strCheckValue))
                         {
                             XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");

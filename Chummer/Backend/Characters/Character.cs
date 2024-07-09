@@ -16010,7 +16010,7 @@ namespace Chummer
                 objImprovement.CustomGroup = treView?.DoThreadSafeFunc(() =>
                     objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                         ? string.Empty
-                        : objNewParent.Text) ?? (objNewParent.Tag.ToString() == "Node_SelectedImprovements"
+                        : objNewParent.Text, token) ?? (objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                     ? string.Empty
                     : objNewParent.Text);
                 Improvements[Improvements.IndexOf(objImprovement)] = objImprovement;

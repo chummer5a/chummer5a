@@ -494,7 +494,7 @@ namespace Chummer
                         strPowerName = strPowerName.Substring(0, intPos - 1);
                     _strAdeptWayDiscount = (blnSync
                                                // ReSharper disable once MethodHasAsyncOverload
-                                               ? CharacterObject.LoadDataXPath("powers.xml")
+                                               ? CharacterObject.LoadDataXPath("powers.xml", token: token)
                                                : await CharacterObject.LoadDataXPathAsync("powers.xml", token: token)
                                                    .ConfigureAwait(false))
                                            .SelectSingleNode(
@@ -531,7 +531,7 @@ namespace Chummer
                     {
                         XPathNavigator objWayRequirements =
                             // ReSharper disable once MethodHasAsyncOverload
-                            blnSync ? this.GetNodeXPath() : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+                            blnSync ? this.GetNodeXPath(token: token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
                         _nodAdeptWayRequirements =
                             objWayRequirements?.SelectSingleNodeAndCacheExpression("adeptwayrequires");
                     }

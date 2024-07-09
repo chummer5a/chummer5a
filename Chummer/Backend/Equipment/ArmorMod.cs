@@ -2315,10 +2315,10 @@ namespace Chummer.Backend.Equipment
                     {
                         XPathNodeIterator xmlAddonCategoryList =
                             (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                            ?.SelectAndCacheExpression("addoncategory");
+                            ?.SelectAndCacheExpression("addoncategory", token);
                         if (!(xmlAddonCategoryList?.Count > 0))
                             return true;
-                        string strGearCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category")?.Value ?? string.Empty;
+                        string strGearCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                         return xmlAddonCategoryList.Cast<XPathNavigator>()
                             .Any(xmlCategory => xmlCategory.Value == strGearCategory);
                     }

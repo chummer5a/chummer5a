@@ -5442,7 +5442,7 @@ namespace Chummer.Backend.Equipment
                         {
                             XPathNodeIterator xmlAddonCategoryList =
                                 (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                                ?.SelectAndCacheExpression("addoncategory");
+                                ?.SelectAndCacheExpression("addoncategory", token);
                             return xmlAddonCategoryList?.Count > 0 && xmlAddonCategoryList.Cast<XPathNavigator>()
                                 .Any(xmlLoop => xmlLoop.Value == strClipboardCategory);
                         }
