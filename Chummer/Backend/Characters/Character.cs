@@ -7434,11 +7434,13 @@ namespace Chummer
                             {
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
-                                string strCharacterInnerXml = objXmlCharacter.InnerXml;
                                 bool blnRemoveImprovements = Utils.IsUnitTest;
+                                string strCharacterInnerXml = objXmlCharacter.InnerXml;
+                                int intCharacterInnerXmlLength = strCharacterInnerXml.Length;
                                 foreach (XmlNode objXmlImprovement in objXmlNodeList)
                                 {
-                                    string strImprovementSource = objXmlImprovement["improvementsource"]?.InnerText;
+                                    string strImprovementSource =
+                                        objXmlImprovement["improvementsource"]?.InnerText;
                                     switch (strImprovementSource)
                                     {
                                         // Do not load condition monitor improvements from older versions of Chummer
@@ -7447,7 +7449,8 @@ namespace Chummer
                                         // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
                                         case "EdgeUse":
                                             decimal decOldEdgeUsed = 0;
-                                            if (objXmlImprovement.TryGetDecFieldQuickly("aug", ref decOldEdgeUsed))
+                                            if (objXmlImprovement.TryGetDecFieldQuickly("aug",
+                                                    ref decOldEdgeUsed))
                                                 EdgeUsed = (-decOldEdgeUsed).StandardRound();
                                             continue;
                                         case "EssenceLoss":
@@ -7458,71 +7461,64 @@ namespace Chummer
                                             break;
                                     }
 
-                                    if ((blnRemoveImprovements || showWarnings) && objXmlImprovement["custom"]?.InnerText != bool.TrueString && !string.IsNullOrEmpty(strCharacterInnerXml))
+                                    if ((blnRemoveImprovements || showWarnings) &&
+                                        objXmlImprovement["custom"]?.InnerText != bool.TrueString &&
+                                        !string.IsNullOrEmpty(strCharacterInnerXml))
                                     {
                                         string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                                         if (!string.IsNullOrEmpty(strLoopSourceName)
                                             && strLoopSourceName.IsGuid())
                                         {
                                             // Specialized version of ContainsAny that has been optimized for this specific case because it's a bottleneck
-                                            bool ContainsAnySourceId(string strHaystack, string strId)
+                                            bool ContainsAnySourceId(string strId)
                                             {
-                                                int intHaystackLength = strHaystack.Length;
-                                                if (intHaystackLength < strId.Length + 13)
+                                                if (strCharacterInnerXml.Length < strId.Length + 13)
                                                     return false;
 
                                                 string strCommonNeedle = "id>" + strId + "</";
                                                 string strNeedle1 = "<guid>" + strId + "</guid>";
                                                 int intNeedle1Length = strNeedle1.Length;
+                                                ReadOnlySpan<char> spnNeedle1 = strNeedle1.AsSpan();
                                                 string strNeedle2 = "<metatypeid>" + strId + "</metatypeid>";
                                                 int intNeedle2Length = strNeedle2.Length;
-                                                string strNeedle3 = "<metavariantid>" + strId + "</metavariantid>";
+                                                ReadOnlySpan<char> spnNeedle2 = strNeedle2.AsSpan();
+                                                string strNeedle3 = "<metavariantid>" + strId +
+                                                                    "</metavariantid>";
                                                 int intNeedle3Length = strNeedle3.Length;
-                                                unsafe
+                                                ReadOnlySpan<char> spnNeedle3 = strNeedle3.AsSpan();
+                                                for (int intLoopIndex = strCharacterInnerXml.IndexOf(
+                                                         strCommonNeedle, 3,
+                                                         StringComparison.OrdinalIgnoreCase);
+                                                     intLoopIndex >= 3 &&
+                                                     intCharacterInnerXmlLength - intLoopIndex + 3 >
+                                                     intNeedle1Length;
+                                                     intLoopIndex = strCharacterInnerXml.IndexOf(strCommonNeedle,
+                                                         intLoopIndex + 1,
+                                                         StringComparison.OrdinalIgnoreCase))
                                                 {
-                                                    fixed (char* pchrLoop = strHaystack)
-                                                    {
-                                                        for (int intLoopIndex = strHaystack.IndexOf(strCommonNeedle, 3,
-                                                                 StringComparison.OrdinalIgnoreCase);
-                                                             intLoopIndex >= 3 && intHaystackLength - intLoopIndex + 3 >
-                                                             intNeedle1Length;
-                                                             intLoopIndex = strHaystack.IndexOf(strCommonNeedle,
-                                                                 intLoopIndex + 1, StringComparison.OrdinalIgnoreCase))
-                                                        {
-                                                            if (*(pchrLoop + intLoopIndex - 3) == '<'
-                                                                && string.Equals(
-                                                                    strHaystack.Substring(intLoopIndex - 3,
-                                                                        intNeedle1Length), strNeedle1,
-                                                                    StringComparison.OrdinalIgnoreCase))
-                                                                return true;
-                                                            if (intLoopIndex < 9 ||
-                                                                intHaystackLength - intLoopIndex + 9 <
-                                                                intNeedle2Length)
-                                                                continue;
-                                                            if (*(pchrLoop + intLoopIndex - 9) == '<'
-                                                                && string.Equals(
-                                                                    strHaystack.Substring(intLoopIndex - 9,
-                                                                        intNeedle2Length), strNeedle2,
-                                                                    StringComparison.OrdinalIgnoreCase))
-                                                                return true;
-                                                            if (intLoopIndex < 12 ||
-                                                                intHaystackLength - intLoopIndex + 12 <
-                                                                intNeedle3Length)
-                                                                continue;
-                                                            if (*(pchrLoop + intLoopIndex - 12) == '<'
-                                                                && string.Equals(
-                                                                    strHaystack.Substring(intLoopIndex - 12,
-                                                                        intNeedle3Length), strNeedle3,
-                                                                    StringComparison.OrdinalIgnoreCase))
-                                                                return true;
-                                                        }
-                                                    }
+                                                    if (strCharacterInnerXml.AsSpan(intLoopIndex - 3, intNeedle1Length)
+                                                        .Equals(spnNeedle1, StringComparison.OrdinalIgnoreCase))
+                                                        return true;
+                                                    if (intLoopIndex < 9 ||
+                                                        intCharacterInnerXmlLength - intLoopIndex + 9 <
+                                                        intNeedle2Length)
+                                                        continue;
+                                                    if (strCharacterInnerXml.AsSpan(intLoopIndex - 9, intNeedle1Length)
+                                                        .Equals(spnNeedle2, StringComparison.OrdinalIgnoreCase))
+                                                        return true;
+                                                    if (intLoopIndex < 12 ||
+                                                        intCharacterInnerXmlLength - intLoopIndex + 12 <
+                                                        intNeedle3Length)
+                                                        continue;
+                                                    if (strCharacterInnerXml.AsSpan(intLoopIndex - 12, intNeedle1Length)
+                                                        .Equals(spnNeedle3, StringComparison.OrdinalIgnoreCase))
+                                                        return true;
                                                 }
 
                                                 return false;
                                             }
 
-                                            if (!ContainsAnySourceId(strCharacterInnerXml, strLoopSourceName))
+                                            if (!ContainsAnySourceId(strLoopSourceName))
                                             {
                                                 //Utils.BreakIfDebug();
                                                 if (blnRemoveImprovements)
@@ -7537,7 +7533,8 @@ namespace Chummer
                                                                 "Message_OrphanedImprovements", token: token),
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             LanguageManager.GetString(
-                                                                "MessageTitle_OrphanedImprovements", token: token),
+                                                                "MessageTitle_OrphanedImprovements",
+                                                                token: token),
                                                             MessageBoxButtons.YesNo, MessageBoxIcon.Error) ==
                                                         DialogResult.Yes)
                                                     {
@@ -7547,12 +7544,15 @@ namespace Chummer
                                                 }
                                                 else if (await Program.ShowScrollableMessageBoxAsync(
                                                              await LanguageManager.GetStringAsync(
-                                                                     "Message_OrphanedImprovements", token: token)
+                                                                     "Message_OrphanedImprovements",
+                                                                     token: token)
                                                                  .ConfigureAwait(false),
                                                              await LanguageManager.GetStringAsync(
-                                                                     "MessageTitle_OrphanedImprovements", token: token)
+                                                                     "MessageTitle_OrphanedImprovements",
+                                                                     token: token)
                                                                  .ConfigureAwait(false),
-                                                             MessageBoxButtons.YesNo, MessageBoxIcon.Error, token: token).ConfigureAwait(false) ==
+                                                             MessageBoxButtons.YesNo, MessageBoxIcon.Error,
+                                                             token: token).ConfigureAwait(false) ==
                                                          DialogResult.Yes)
                                                 {
                                                     blnRemoveImprovements = true;
@@ -7576,7 +7576,7 @@ namespace Chummer
                                             _lstImprovements.Add(objImprovement);
                                         else
                                             await _lstImprovements.AddAsync(objImprovement, token)
-                                                                  .ConfigureAwait(false);
+                                                .ConfigureAwait(false);
 
                                         if (objImprovement.ImproveType ==
                                             Improvement.ImprovementType.SkillsoftAccess &&
@@ -7596,14 +7596,16 @@ namespace Chummer
                                                  && objImprovement.Value == objImprovement.Augmented)
                                         {
                                             // Cyberadept in these versions was an echo. It is no longer an echo, and so needs a more complicated reapplication
-                                            if (Settings.SpecialKarmaCostBasedOnShownValue)
+                                            if (blnSync
+                                                    ? Settings.SpecialKarmaCostBasedOnShownValue
+                                                    : await Settings.GetSpecialKarmaCostBasedOnShownValueAsync(token))
                                             {
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstImprovements.Remove(objImprovement);
                                                 else
                                                     await _lstImprovements.RemoveAsync(objImprovement, token)
-                                                                          .ConfigureAwait(false);
+                                                        .ConfigureAwait(false);
                                             }
                                             else
                                                 lstCyberadeptSweepGrades.Add(objImprovement);

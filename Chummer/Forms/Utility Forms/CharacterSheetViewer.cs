@@ -101,10 +101,8 @@ namespace Chummer
             {
                 if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
                     _strSelectedSheet = Path.Combine(GlobalSettings.Language, _strSelectedSheet);
-                else if (!_strSelectedSheet.Contains(GlobalSettings.Language) && _strSelectedSheet.Contains(GlobalSettings.Language.Substring(0, 2)))
-                {
+                else if (!_strSelectedSheet.Contains(GlobalSettings.Language))
                     _strSelectedSheet = _strSelectedSheet.Replace(GlobalSettings.Language.Substring(0, 2), GlobalSettings.Language);
-                }
             }
             else
             {
