@@ -2490,6 +2490,10 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <cyberwaretotalessmultiplier>200</cyberwaretotalessmultiplier>
+        <disablebioware />
+      </bonus>
       <source>HS</source>
       <page>186</page>
     </power>
