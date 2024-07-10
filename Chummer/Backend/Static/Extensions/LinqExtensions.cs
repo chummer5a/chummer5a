@@ -77,7 +77,7 @@ namespace Chummer
                 return setFirst.SetEquals(second);
             if (second is ISet<T> setSecond)
                 return setSecond.SetEquals(first);
-            if (first.GetOrderInvariantEnsembleHashCode() != second.GetOrderInvariantEnsembleHashCode())
+            if (first.GetOrderInvariantEnsembleHashCodeSmart() != second.GetOrderInvariantEnsembleHashCodeSmart())
                 return false;
             List<T> lstTemp = second.ToList();
             foreach (T item in first)

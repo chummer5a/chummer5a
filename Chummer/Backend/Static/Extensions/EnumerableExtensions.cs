@@ -88,15 +88,24 @@ namespace Chummer
         /// </summary>
         /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
-        public static int GetEnsembleHashCode<T>(this IEnumerable<T> lstItems)
+        public static int GetEnsembleHashCode<T>(this IEnumerable<T> lstItems, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstItems == null)
                 return 0;
-            // uint to prevent overflows
             unchecked
             {
-                return (int)lstItems.Aggregate<T, uint>(19, (current, objItem) => current * 31 + (uint)objItem.GetHashCode());
+                // uint to prevent overflows
+                uint result = 19;
+                foreach (T item in lstItems)
+                {
+                    token.ThrowIfCancellationRequested();
+                    result = result * 31 + (uint)item.GetHashCode();
+                }
+
+                return (int)result;
             }
         }
 
@@ -106,15 +115,54 @@ namespace Chummer
         /// </summary>
         /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
-        public static int GetOrderInvariantEnsembleHashCode<T>(this IEnumerable<T> lstItems)
+        public static int GetOrderInvariantEnsembleHashCode<T>(this IEnumerable<T> lstItems, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstItems == null)
                 return 0;
             // uint to prevent overflows
             unchecked
             {
-                return (int)(19 + lstItems.Aggregate<T, uint>(0, (current, obj) => current + (uint)obj.GetHashCode()) * 31);
+                uint result = 0;
+                foreach (T item in lstItems)
+                {
+                    token.ThrowIfCancellationRequested();
+                    result += (uint)item.GetHashCode();
+                }
+
+                return (int)(19 + result * 31);
+            }
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
+        /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static int GetOrderInvariantEnsembleHashCodeParallel<T>(this IEnumerable<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            // uint to prevent overflows
+            unchecked
+            {
+                uint result = 0;
+                Parallel.ForEach(lstItems, () => 0, (i, state, local) =>
+                    {
+                        if (token.IsCancellationRequested)
+                            state.Stop();
+                        return state.IsStopped ? 0 : i.GetHashCode();
+                    },
+                    localResult => result += (uint)localResult);
+                token.ThrowIfCancellationRequested();
+                return (int)(19 + result * 31);
             }
         }
 
