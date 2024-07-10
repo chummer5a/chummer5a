@@ -2376,7 +2376,7 @@ namespace Chummer
 
                     // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                     lstStringFromPdf.AddRange(strPageText
-                        .SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                        .SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase)
                         .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
 
                     for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)

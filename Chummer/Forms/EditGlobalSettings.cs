@@ -2671,7 +2671,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                         foreach (string strLine in strPageText.SplitNoAlloc(Environment.NewLine,
-                                                                            StringSplitOptions.RemoveEmptyEntries))
+                                     StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                         {
                             token.ThrowIfCancellationRequested();
                             if (!string.IsNullOrEmpty(strLine))

@@ -1183,10 +1183,10 @@ namespace Chummer.Backend.Equipment
                 string strWeaponAmmo = ammoString.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
                 strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
                 // Get rid of or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy", eComparison: StringComparison.OrdinalIgnoreCase)
                     .Replace(" or belt", " or 250(belt)");
 
-                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                 {
                     lstCount.Add(AmmoCapacity(strAmmo));
                 }
@@ -1249,10 +1249,10 @@ namespace Chummer.Backend.Equipment
                 string strWeaponAmmo = ammoString.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
                 strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
                 // Get rid of or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy", eComparison: StringComparison.OrdinalIgnoreCase)
                     .Replace(" or belt", " or 250(belt)");
 
-                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                 {
                     lstCount.Add(AmmoCapacity(strAmmo));
                 }
@@ -9831,11 +9831,11 @@ namespace Chummer.Backend.Equipment
                     string strWeaponAmmo = ammoString.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
                     strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
                     // Get rid of or belt, and + energy.
-                    strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                    strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy", eComparison: StringComparison.OrdinalIgnoreCase)
                                                  .Replace(" or belt", " or 250(belt)");
 
                     foreach (string strAmmo in
-                             strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                             strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
                         lstCount.Add(AmmoCapacity(strAmmo));
                     }
@@ -9903,11 +9903,11 @@ namespace Chummer.Backend.Equipment
 
                 strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
                 // Get rid of or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy", eComparison: StringComparison.OrdinalIgnoreCase)
                                              .Replace(" or belt", " or 250(belt)");
 
                 foreach (string strAmmo in
-                         strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                         strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                 {
                     lstCount.Add(AmmoCapacity(strAmmo));
                 }

@@ -595,12 +595,13 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
+            int intInputLength = strInput.Length;
             int intLoopLength;
-            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
             {
                 intLoopLength = strInput.IndexOf(chrSplit, intStart);
                 if (intLoopLength < 0)
-                    intLoopLength = strInput.Length;
+                    intLoopLength = intInputLength;
                 intLoopLength -= intStart;
                 if (intLoopLength != 0)
                     yield return strInput.Substring(intStart, intLoopLength);
@@ -615,9 +616,10 @@ namespace Chummer
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
         public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit,
-                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
@@ -627,12 +629,14 @@ namespace Chummer
                 yield break;
             }
 
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
             int intLoopLength;
-            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + strSplit.Length)
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
             {
-                intLoopLength = strInput.IndexOf(strSplit, intStart, StringComparison.Ordinal);
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
                 if (intLoopLength < 0)
-                    intLoopLength = strInput.Length;
+                    intLoopLength = intInputLength;
                 intLoopLength -= intStart;
                 if (intLoopLength != 0)
                     yield return strInput.Substring(intStart, intLoopLength);
