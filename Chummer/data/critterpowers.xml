@@ -4094,10 +4094,10 @@
       <duration />
       <rating>True</rating>
       <bonus>
-        <specificskill>
+        <specificattribute>
           <name>BOD</name>
           <val>Rating</val>
-        </specificskill>
+        </specificattribute>
       </bonus>
       <source>HS</source>
       <page>170</page>
