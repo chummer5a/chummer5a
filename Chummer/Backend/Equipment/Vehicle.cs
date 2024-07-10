@@ -5437,7 +5437,7 @@ namespace Chummer.Backend.Equipment
                     case ClipboardContentType.Gear:
                     {
                         string strClipboardCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                            .SelectSingleNodeAndCacheExpressionAsNavigator("category")?.Value ?? string.Empty;
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                         if (!string.IsNullOrEmpty(strClipboardCategory))
                         {
                             XPathNodeIterator xmlAddonCategoryList =

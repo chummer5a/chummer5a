@@ -450,7 +450,7 @@ namespace Chummer
                 {
                     if ((blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? this.GetNodeXPath()
+                            ? this.GetNodeXPath(token: token)
                             : await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
                         .TryGetField("id", Guid.TryParse, out _guiSourceID))
                     {
@@ -465,7 +465,7 @@ namespace Chummer
                             strPowerName = strPowerName.Substring(0, intPos - 1);
                         XPathNavigator xmlPower = (blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
-                                ? CharacterObject.LoadDataXPath("powers.xml")
+                                ? CharacterObject.LoadDataXPath("powers.xml", token: token)
                                 : await CharacterObject.LoadDataXPathAsync("powers.xml", token: token)
                                     .ConfigureAwait(false))
                             .SelectSingleNode(
@@ -533,7 +533,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             blnSync ? this.GetNodeXPath(token: token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false);
                         _nodAdeptWayRequirements =
-                            objWayRequirements?.SelectSingleNodeAndCacheExpression("adeptwayrequires");
+                            objWayRequirements?.SelectSingleNodeAndCacheExpression("adeptwayrequires", token);
                     }
                 }
 
@@ -543,7 +543,7 @@ namespace Chummer
                     XmlNode objXmlPower =
                         (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? CharacterObject.LoadData("powers.xml")
+                            ? CharacterObject.LoadData("powers.xml", token: token)
                             : await CharacterObject.LoadDataAsync("powers.xml", token: token).ConfigureAwait(false))
                         .SelectSingleNode(
                             "/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");

@@ -118,12 +118,12 @@ namespace ChummerHub.Client.UI
             string tip = "Milestone builds always user sinners." + Environment.NewLine + "Nightly builds always user sinners-beta.";
             if (blnSync)
             {
-                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                // ReSharper disable once MethodHasAsyncOverload
                 cbSINnerUrl.DoThreadSafe(x =>
                 {
                     x.SetToolTip(tip);
                     x.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
-                });
+                }, token);
             }
             else
             {
@@ -131,7 +131,7 @@ namespace ChummerHub.Client.UI
                 {
                     x.SetToolTip(tip);
                     x.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
-                }, token: token);
+                }, token);
             }
 
             Settings.Default.Reload();
@@ -142,13 +142,13 @@ namespace ChummerHub.Client.UI
             }
             if (blnSync)
             {
-                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                // ReSharper disable once MethodHasAsyncOverload
                 tbTempDownloadPath.DoThreadSafe(x =>
                 {
                     x.Text = Settings.Default.TempDownloadPath;
                     x.SetToolTip(
                         "Where should chummer download the temporary files from the WebService?");
-                });
+                }, token);
             }
             else
             {
@@ -157,12 +157,12 @@ namespace ChummerHub.Client.UI
                     x.Text = Settings.Default.TempDownloadPath;
                     x.SetToolTip(
                         "Where should chummer download the temporary files from the WebService?");
-                }, token: token);
+                }, token);
             }
 
             SinnersClient client = blnSync
-                ? this.DoThreadSafeFunc(() => StaticUtils.GetClient())
-                : await this.DoThreadSafeFuncAsync(() => StaticUtils.GetClient(), token: token);
+                ? this.DoThreadSafeFunc(() => StaticUtils.GetClient(), token)
+                : await this.DoThreadSafeFuncAsync(() => StaticUtils.GetClient(), token);
             if (client == null)
             {
                 return;
@@ -178,25 +178,25 @@ namespace ChummerHub.Client.UI
             Settings.Default.Save();
             if (blnSync)
             {
-                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                // ReSharper disable MethodHasAsyncOverload
                 cbSINnerUrl.DoThreadSafe(x =>
                 {
                     x.DataSource = Settings.Default.SINnerUrls;
                     x.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
                     x.Enabled = true;
-                });
+                }, token: token);
                 cbIgnoreWarnings.DoThreadSafe(
-                    x => x.Checked = Settings.Default.IgnoreWarningsOnOpening);
+                    x => x.Checked = Settings.Default.IgnoreWarningsOnOpening, token: token);
                 cbOpenChummerFromSharedLinks.DoThreadSafe(
-                    x => x.Checked = Settings.Default.OpenChummerFromSharedLinks);
+                    x => x.Checked = Settings.Default.OpenChummerFromSharedLinks, token: token);
                 rbListUserMode.DoThreadSafe(
-                    x => x.SelectedIndex = Settings.Default.UserModeRegistered.ToInt32());
+                    x => x.SelectedIndex = Settings.Default.UserModeRegistered.ToInt32(), token: token);
                 cbVisibilityIsPublic.DoThreadSafe(x =>
                 {
                     x.Checked = Settings.Default.VisibilityIsPublic;
                     x.BindingContext = new BindingContext();
-                });
-                // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                }, token: token);
+                // ReSharper restore MethodHasAsyncOverload
             }
             else
             {
@@ -251,18 +251,18 @@ namespace ChummerHub.Client.UI
 
             if (blnSync)
             {
-                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                // ReSharper disable MethodHasAsyncOverload
                 cbUploadOnSave.DoThreadSafe(x =>
                 {
                     x.Checked = UploadOnSave;
                     x.CheckedChanged += cbUploadOnSave_CheckedChanged;
-                });
-                cbSINnerUrl.DoThreadSafe(x => x.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged);
-                cbVisibilityIsPublic.DoThreadSafe(x => x.CheckedChanged += cbVisibilityIsPublic_CheckedChanged);
-                rbListUserMode.DoThreadSafe(x => x.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged);
-                cbIgnoreWarnings.DoThreadSafe(x => x.CheckedChanged += CbIgnoreWarningsOnCheckedChanged);
-                cbOpenChummerFromSharedLinks.DoThreadSafe(x => x.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged);
-                // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                }, token);
+                cbSINnerUrl.DoThreadSafe(x => x.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged, token);
+                cbVisibilityIsPublic.DoThreadSafe(x => x.CheckedChanged += cbVisibilityIsPublic_CheckedChanged, token);
+                rbListUserMode.DoThreadSafe(x => x.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged, token);
+                cbIgnoreWarnings.DoThreadSafe(x => x.CheckedChanged += CbIgnoreWarningsOnCheckedChanged, token);
+                cbOpenChummerFromSharedLinks.DoThreadSafe(x => x.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged, token);
+                // ReSharper restore MethodHasAsyncOverload
             }
             else
             {

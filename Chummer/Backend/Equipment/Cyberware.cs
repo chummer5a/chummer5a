@@ -2329,13 +2329,13 @@ namespace Chummer.Backend.Equipment
                                     ? _objCharacter.LoadDataXPath("bioware.xml", token: token)
                                     : await _objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression(
-                                    "/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]")
+                                    "/chummer/biowares/bioware[name = \"Reflex Recorder (Skill)\"]", token)
                                 : (blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? _objCharacter.LoadDataXPath("cyberware.xml", token: token)
                                     : await _objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression(
-                                    "/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]");
+                                    "/chummer/cyberwares/cyberware[name = \"Reflex Recorder (Skill)\"]", token);
                         if (xmlReflexRecorderNode == null)
                             _strName = "Reflex Recorder";
                     }
