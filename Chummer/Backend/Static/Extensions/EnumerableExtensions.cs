@@ -64,10 +64,7 @@ namespace Chummer
         public static T FindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasInternalId
         {
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
-            {
                 return default;
-            }
-
             return lstHaystack.FirstOrDefault(x => x.InternalId == strGuid);
         }
 
@@ -82,10 +79,7 @@ namespace Chummer
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<T>(token);
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
-            {
-                return default;
-            }
-
+                return Task.FromResult<T>(default);
             return lstHaystack.FirstOrDefaultAsync(x => x.InternalId == strGuid, token);
         }
 
