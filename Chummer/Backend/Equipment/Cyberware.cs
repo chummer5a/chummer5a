@@ -6957,6 +6957,7 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterReadLock())
                 {
                     return !string.IsNullOrWhiteSpace(LimbSlot)
+                           || !string.IsNullOrEmpty(MountToLimbType(PlugsIntoModularMount))
                            || (InheritAttributes && Children.Any(objChild => objChild.IsLimb));
                 }
             }
@@ -6971,8 +6972,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return !string.IsNullOrWhiteSpace(LimbSlot)
-                       || (InheritAttributes && await Children
+                return !string.IsNullOrWhiteSpace(await GetLimbSlotAsync(token).ConfigureAwait(false))
+                       || !string.IsNullOrEmpty(MountToLimbType(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
+                       || (await GetInheritAttributesAsync(token).ConfigureAwait(false) && await Children
                            .AnyAsync(objChild => objChild.GetIsLimbAsync(token), token).ConfigureAwait(false));
             }
             finally
