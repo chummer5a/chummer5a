@@ -9041,11 +9041,10 @@ namespace Chummer
                         // Look up the cost of the Quality.
                         int intBP = 0;
                         if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative
-                            || objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
+                            || objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
                         {
                             intBP = Convert.ToInt32(
-                                objXmlDeleteQuality
-                                    .SelectSingleNodeAndCacheExpression("karma", token: token)?.Value,
+                                objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("karma", token: token)?.Value,
                                 GlobalSettings.InvariantCultureInfo) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                             if (blnCompleteDelete)
                                 intBP *= await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
@@ -9086,8 +9085,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (objSelectedQuality.Type == QualityType.Positive)
                     {
-                        if (objXmlDeleteQuality
-                                .SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
+                        if (objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
                         {
                             int intKarmaCost = objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality;
 
@@ -9189,7 +9187,7 @@ namespace Chummer
                     }
 
                     // Remove any Critter Powers that are gained through the Quality (Infected).
-                    if (objXmlDeleteQuality.SelectSingleNodeAndCacheExpression("powers/power", token: token) != null)
+                    if (objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("powers/power", token: token) != null)
                     {
                         foreach (XPathNavigator objXmlPower in (await CharacterObject
                                      .LoadDataXPathAsync(
@@ -9222,9 +9220,10 @@ namespace Chummer
                     }
 
                     // Fix for legacy characters with old addqualities improvements.
-                    await RemoveAddedQualities(
-                            objXmlDeleteQuality.SelectAndCacheExpression("addqualities/addquality", token), token)
-                        .ConfigureAwait(false);
+                    if (objXmlDeleteQuality != null)
+                        await RemoveAddedQualities(
+                                objXmlDeleteQuality.SelectAndCacheExpression("addqualities/addquality", token), token)
+                            .ConfigureAwait(false);
                 }
                 finally
                 {

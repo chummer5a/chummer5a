@@ -6422,7 +6422,7 @@ namespace Chummer
                     {
                         int intBP = 0;
                         if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Negative
-                            && objXmlDeleteQuality.TryGetInt32FieldQuickly("karma", ref intBP))
+                            && objXmlDeleteQuality?.TryGetInt32FieldQuickly("karma", ref intBP) == false)
                         {
                             intBP = -intBP;
                         }
@@ -6448,55 +6448,60 @@ namespace Chummer
                             return false;
 
                         // Remove any Improvements that the Quality might have.
-                        XmlNode xmlDeleteQualityNoBonus = objXmlDeleteQuality.Clone();
-                        if (xmlDeleteQualityNoBonus["bonus"] != null)
-                            xmlDeleteQualityNoBonus["bonus"].InnerText = string.Empty;
-                        if (xmlDeleteQualityNoBonus["firstlevelbonus"] != null)
-                            xmlDeleteQualityNoBonus["firstlevelbonus"].InnerText = string.Empty;
-
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Quality objReplaceQuality = new Quality(CharacterObject);
-                        try
+                        if (objXmlDeleteQuality != null)
                         {
-                            await objReplaceQuality.CreateAsync(xmlDeleteQualityNoBonus,
-                                QualitySource.MetatypeRemovedAtChargen,
-                                lstWeapons, token: token).ConfigureAwait(false);
-                            objReplaceQuality.BP *= -1;
-                            // If a Negative Quality is being bought off, the replacement one is Positive.
-                            if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive)
-                            {
-                                objReplaceQuality.Type = QualityType.Negative;
-                                if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                                    objReplaceQuality.Extra += ',' + await LanguageManager
-                                        .GetStringAsync("String_Space", token: token)
-                                        .ConfigureAwait(false);
-                                objReplaceQuality.Extra
-                                    += await LanguageManager
-                                        .GetStringAsync("String_ExpenseRemovePositiveQuality", token: token)
-                                        .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                objReplaceQuality.Type = QualityType.Positive;
-                                if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
-                                    objReplaceQuality.Extra += ',' + await LanguageManager
-                                        .GetStringAsync("String_Space", token: token)
-                                        .ConfigureAwait(false);
-                                objReplaceQuality.Extra
-                                    += await LanguageManager
-                                        .GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token)
-                                        .ConfigureAwait(false);
-                            }
+                            XmlNode xmlDeleteQualityNoBonus = objXmlDeleteQuality.Clone();
+                            if (xmlDeleteQualityNoBonus["bonus"] != null)
+                                xmlDeleteQualityNoBonus["bonus"].InnerText = string.Empty;
+                            if (xmlDeleteQualityNoBonus["firstlevelbonus"] != null)
+                                xmlDeleteQualityNoBonus["firstlevelbonus"].InnerText = string.Empty;
 
-                            // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
-                            objReplaceQuality.AllowPrint = false;
-                            objReplaceQuality.ContributeToLimit = false;
-                            await CharacterObject.Qualities.AddAsync(objReplaceQuality, token).ConfigureAwait(false);
-                            // The replacement Quality no longer adds its weapons to the character
-                        }
-                        catch
-                        {
-                            await objReplaceQuality.DisposeAsync().ConfigureAwait(false);
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            Quality objReplaceQuality = new Quality(CharacterObject);
+                            try
+                            {
+                                await objReplaceQuality.CreateAsync(xmlDeleteQualityNoBonus,
+                                    QualitySource.MetatypeRemovedAtChargen,
+                                    lstWeapons, token: token).ConfigureAwait(false);
+                                objReplaceQuality.BP *= -1;
+                                // If a Negative Quality is being bought off, the replacement one is Positive.
+                                if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) ==
+                                    QualityType.Positive)
+                                {
+                                    objReplaceQuality.Type = QualityType.Negative;
+                                    if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
+                                        objReplaceQuality.Extra += ',' + await LanguageManager
+                                            .GetStringAsync("String_Space", token: token)
+                                            .ConfigureAwait(false);
+                                    objReplaceQuality.Extra
+                                        += await LanguageManager
+                                            .GetStringAsync("String_ExpenseRemovePositiveQuality", token: token)
+                                            .ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    objReplaceQuality.Type = QualityType.Positive;
+                                    if (!string.IsNullOrEmpty(objReplaceQuality.Extra))
+                                        objReplaceQuality.Extra += ',' + await LanguageManager
+                                            .GetStringAsync("String_Space", token: token)
+                                            .ConfigureAwait(false);
+                                    objReplaceQuality.Extra
+                                        += await LanguageManager
+                                            .GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token)
+                                            .ConfigureAwait(false);
+                                }
+
+                                // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
+                                objReplaceQuality.AllowPrint = false;
+                                objReplaceQuality.ContributeToLimit = false;
+                                await CharacterObject.Qualities.AddAsync(objReplaceQuality, token)
+                                    .ConfigureAwait(false);
+                                // The replacement Quality no longer adds its weapons to the character
+                            }
+                            catch
+                            {
+                                await objReplaceQuality.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                     }
                     else
