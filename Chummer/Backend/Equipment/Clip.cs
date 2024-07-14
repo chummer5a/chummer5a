@@ -22,7 +22,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Ink;
 using System.Xml;
 
 namespace Chummer.Backend.Equipment

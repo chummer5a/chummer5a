@@ -23237,12 +23237,12 @@ namespace Chummer
                             x.Visible = true;
                             x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
-                        blnEnabled = blnEnabled && objGear.LoadedIntoClip == null
+                        bool blnEnabled2 = blnEnabled && objGear.LoadedIntoClip == null
                                                 && await CharacterObject.Vehicles.GetCountAsync(token).ConfigureAwait(false) > 0;
                         await cmdGearMoveToVehicle.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
-                            x.Enabled = blnEnabled;
+                            x.Enabled = blnEnabled2;
                         }, token).ConfigureAwait(false);
                         string strAvail = await objGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                         await lblGearAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
