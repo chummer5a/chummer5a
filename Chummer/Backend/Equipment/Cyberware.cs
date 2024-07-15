@@ -1156,7 +1156,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         string strWeaponId = Parent?.WeaponID;
-                        if (!string.IsNullOrEmpty(strWeaponId) && strWeaponId != Guid.Empty.ToString())
+                        if (!string.IsNullOrEmpty(strWeaponId) && !strWeaponId.IsEmptyGuid())
                         {
                             Weapon objWeapon = ParentVehicle != null
                                 ? ParentVehicle.Weapons.FindById(strWeaponId)
@@ -3420,8 +3420,11 @@ namespace Chummer.Backend.Equipment
         public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
-        public static Guid EssenceHoleGUID { get; } = new Guid("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
-        public static Guid EssenceAntiHoleGUID { get; } = new Guid("961eac53-0c43-4b19-8741-2872177a3a4c");
+        public const string EssenceHoleGuidString = "b57eadaa-7c3b-4b80-8d79-cbbd922c1196";
+        public static Guid EssenceHoleGUID { get; } = new Guid(EssenceHoleGuidString);
+
+        public const string EssenceAntiHoleGuidString = "961eac53-0c43-4b19-8741-2872177a3a4c";
+        public static Guid EssenceAntiHoleGUID { get; } = new Guid(EssenceAntiHoleGuidString);
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
@@ -3482,12 +3485,16 @@ namespace Chummer.Backend.Equipment
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                     .ConfigureAwait(false);
                 int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-                if (intRating > 0 && SourceID != EssenceHoleGUID && SourceID != EssenceAntiHoleGUID)
+                if (intRating > 0)
                 {
-                    strReturn += strSpace + '('
-                                          + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
-                                              .ConfigureAwait(false) + strSpace
-                                          + intRating.ToString(objCulture) + ')';
+                    Guid guidSourceId = await GetSourceIDAsync(token).ConfigureAwait(false);
+                    if (guidSourceId != EssenceHoleGUID && guidSourceId != EssenceAntiHoleGUID)
+                    {
+                        strReturn += strSpace + '('
+                                              + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
+                                                  .ConfigureAwait(false) + strSpace
+                                              + intRating.ToString(objCulture) + ')';
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(Extra))
@@ -6823,7 +6830,8 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (await _objCharacter.GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false) && await GetPrototypeTranshumanAsync(token).ConfigureAwait(false))
                     return nameof(Character.PrototypeTranshumanEssenceUsed);
-                if (SourceID.Equals(EssenceHoleGUID) || SourceID.Equals(EssenceAntiHoleGUID))
+                Guid guidSourceId = await GetSourceIDAsync(token).ConfigureAwait(false);
+                if (guidSourceId.Equals(EssenceHoleGUID) || guidSourceId.Equals(EssenceAntiHoleGUID))
                     return nameof(Character.EssenceHole);
                 switch (SourceType)
                 {
@@ -7661,12 +7669,14 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (Parent != null && !AddToParentESS)
                     return 0;
-                if (SourceID == EssenceHoleGUID) // Essence hole
+
+                Guid guidSourceId = blnSync ? SourceID : await GetSourceIDAsync(token).ConfigureAwait(false);
+                if (guidSourceId == EssenceHoleGUID) // Essence hole
                 {
                     return intRating / 100m;
                 }
 
-                if (SourceID == EssenceAntiHoleGUID) // Essence anti-hole
+                if (guidSourceId == EssenceAntiHoleGUID) // Essence anti-hole
                 {
                     return intRating / -100m;
                 }
@@ -10117,13 +10127,18 @@ namespace Chummer.Backend.Equipment
                     }
                     else if (await _objCharacter.Cyberware.ContainsAsync(this, token).ConfigureAwait(false))
                     {
-                        if (blnIncreaseEssenceHole && _objCharacter.Created && SourceID != EssenceAntiHoleGUID
-                            && SourceID != EssenceHoleGUID)
+                        if (blnIncreaseEssenceHole && await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         {
-                            // Add essence hole.
-                            decimal decEssenceHoleToAdd = await GetCalculatedESSAsync(token).ConfigureAwait(false);
-                            await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
-                            await _objCharacter.IncreaseEssenceHoleAsync(decEssenceHoleToAdd, token: token).ConfigureAwait(false);
+                            Guid guidSourceId = await GetSourceIDAsync(token).ConfigureAwait(false);
+                            if (guidSourceId != EssenceAntiHoleGUID && guidSourceId != EssenceHoleGUID)
+                            {
+                                // Add essence hole.
+                                decimal decEssenceHoleToAdd = await GetCalculatedESSAsync(token).ConfigureAwait(false);
+                                await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
+                                await _objCharacter.IncreaseEssenceHoleAsync(decEssenceHoleToAdd, token: token).ConfigureAwait(false);
+                            }
+                            else
+                                await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
                         }
                         else
                             await _objCharacter.Cyberware.RemoveAsync(this, token).ConfigureAwait(false);
@@ -11386,7 +11401,7 @@ namespace Chummer.Backend.Equipment
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
-                Guid guiSourceID = await GetSourceIDAsync(token).ConfigureAwait(false);
+                Guid guidSourceID = await GetSourceIDAsync(token).ConfigureAwait(false);
 
                 if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {
@@ -11431,7 +11446,7 @@ namespace Chummer.Backend.Equipment
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     string strEntry = await LanguageManager.GetStringAsync(strExpenseString, token: token).ConfigureAwait(false);
                     string strName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
-                    if (guiSourceID == EssenceHoleGUID || guiSourceID == EssenceAntiHoleGUID)
+                    if (guidSourceID == EssenceHoleGUID || guidSourceID == EssenceAntiHoleGUID)
                     {
                         strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
                                    (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')';
@@ -11443,7 +11458,7 @@ namespace Chummer.Backend.Equipment
                     await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                     await _objCharacter.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
 
-                    if (guiSourceID != EssenceHoleGUID && guiSourceID != EssenceAntiHoleGUID)
+                    if (guidSourceID != EssenceHoleGUID && guidSourceID != EssenceAntiHoleGUID)
                     {
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateNuyen(
@@ -11453,11 +11468,11 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                if (guiSourceID == EssenceAntiHoleGUID)
+                if (guidSourceID == EssenceAntiHoleGUID)
                 {
                     await _objCharacter.DecreaseEssenceHoleAsync(await GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
-                else if (guiSourceID == EssenceHoleGUID)
+                else if (guidSourceID == EssenceHoleGUID)
                 {
                     await _objCharacter.IncreaseEssenceHoleAsync(await GetRatingAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
@@ -11465,7 +11480,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false) && ReferenceEquals(lstCyberwareCollection, await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)))
                     {
-                        await _objCharacter.DecreaseEssenceHoleAsync(await GetCalculatedESSAsync(token).ConfigureAwait(false), guiSourceID == EssenceAntiHoleGUID, token).ConfigureAwait(false);
+                        await _objCharacter.DecreaseEssenceHoleAsync(await GetCalculatedESSAsync(token).ConfigureAwait(false), false, token).ConfigureAwait(false);
                     }
 
                     if (lstCyberwareCollection != null)

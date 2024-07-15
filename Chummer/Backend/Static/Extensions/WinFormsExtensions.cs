@@ -2377,7 +2377,9 @@ namespace Chummer
             if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
             foreach (TreeNode objNode in treTree.Nodes)
             {
-                if (objNode?.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
+                if (objNode?.Tag is IHasInternalId node &&
+                    string.Equals(node.InternalId, strGuid, StringComparison.OrdinalIgnoreCase) ||
+                    objNode?.Tag?.ToString() == strGuid)
                     return objNode;
 
                 if (!blnDeep) continue;
@@ -2385,6 +2387,7 @@ namespace Chummer
                 if (objFound != null)
                     return objFound;
             }
+
             return null;
         }
 
@@ -2400,7 +2403,7 @@ namespace Chummer
             {
                 foreach (TreeNode objNode in treTree.Nodes)
                 {
-                    if (objNode.Tag == objTag)
+                    if (ReferenceEquals(objNode.Tag, objTag))
                         return objNode;
 
                     if (blnDeep)

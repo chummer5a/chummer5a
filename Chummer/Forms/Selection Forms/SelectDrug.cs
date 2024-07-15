@@ -1027,11 +1027,11 @@ namespace Chummer
                             continue;
                         if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceID.ToString("D"), '*' + await objWareGrade.GetCurrentDisplayNameAsync(token)));
+                            lstGrade.Add(new ListItem(objWareGrade.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo), '*' + await objWareGrade.GetCurrentDisplayNameAsync(token)));
                         }
                         else
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceID.ToString("D"), await objWareGrade.GetCurrentDisplayNameAsync(token)));
+                            lstGrade.Add(new ListItem(objWareGrade.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo), await objWareGrade.GetCurrentDisplayNameAsync(token)));
                         }*/
                     }
 

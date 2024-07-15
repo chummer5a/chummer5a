@@ -1899,7 +1899,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static readonly Guid s_GuiReflexRecorderId = new Guid("17a6ba49-c21c-461b-9830-3beae8a237fc");
+        private static Guid ReflexRecorderGUID { get; } = new Guid("17a6ba49-c21c-461b-9830-3beae8a237fc");
 
         public int DefaultModifier
         {
@@ -1911,7 +1911,7 @@ namespace Chummer.Backend.Skills
                             Improvement.ImprovementType.ReflexRecorderOptimization).Count > 0)
                     {
                         List<Cyberware> lstReflexRecorders = CharacterObject.Cyberware
-                            .Where(x => x.SourceID == s_GuiReflexRecorderId)
+                            .Where(x => x.SourceID == ReflexRecorderGUID)
                             .ToList();
                         if (lstReflexRecorders.Count > 0)
                         {
@@ -1949,7 +1949,7 @@ namespace Chummer.Backend.Skills
                     .Count > 0)
                 {
                     List<Cyberware> lstReflexRecorders = await CharacterObject.Cyberware
-                        .ToListAsync(x => x.SourceID == s_GuiReflexRecorderId, token: token).ConfigureAwait(false);
+                        .ToListAsync(async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == ReflexRecorderGUID, token: token).ConfigureAwait(false);
                     if (lstReflexRecorders.Count > 0)
                     {
                         using (new FetchSafelyFromPool<HashSet<string>>(

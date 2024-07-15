@@ -421,7 +421,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
                 string strSelectedMetatypeCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
-                string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? Guid.Empty.ToString();
+                string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? Utils.GuidEmptyString;
 
                 XmlNode objXmlMetatype
                     = _xmlMetatypeDocumentMetatypesNode.TryGetNodeByNameOrId("metatype", strSelectedMetatype);
@@ -451,14 +451,13 @@ namespace Chummer
                     }
 
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                    if (strSelectedMetatypeCategory == "Shapeshifter"
-                        && strSelectedMetavariant == Guid.Empty.ToString())
+                    if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant.IsEmptyGuid())
                         strSelectedMetavariant
                             = objXmlMetatype
                                   .SelectSingleNodeAndCacheExpressionAsNavigator(
                                       "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken)
                               ?.Value
-                              ?? Guid.Empty.ToString();
+                              ?? Utils.GuidEmptyString;
                     if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
                         strSelectedMetatype
                         || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
@@ -584,7 +583,8 @@ namespace Chummer
                 {
                     objXmlMetatype = _xmlBaseMetatypeDataNode.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                     string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
-                    if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != Guid.Empty.ToString())
+                    if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && !string.Equals(
+                            strSelectedMetavariant, Utils.GuidEmptyString, StringComparison.OrdinalIgnoreCase))
                     {
                         objXmlMetavariant = objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant);
                     }
@@ -1184,7 +1184,7 @@ namespace Chummer
                                   .ConfigureAwait(false)
                               ?? _objCharacter.MetatypeGuid.ToString(
                                   "D", GlobalSettings.InvariantCultureInfo);
-                        if (strOldSelected == Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
+                        if (strOldSelected.IsEmptyGuid())
                         {
                             XPathNavigator objOldMetatypeNode = await _objCharacter.GetNodeXPathAsync(true, token: token).ConfigureAwait(false);
                             if (objOldMetatypeNode != null)

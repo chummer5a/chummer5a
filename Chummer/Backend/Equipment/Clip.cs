@@ -197,8 +197,7 @@ namespace Chummer.Backend.Equipment
             writer.WriteStartElement("clip");
             writer.WriteElementString("count", Ammo.ToString(GlobalSettings.InvariantCultureInfo));
             writer.WriteElementString("location", AmmoLocation);
-            writer.WriteElementString("id",
-                AmmoGear?.InternalId ?? Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
+            writer.WriteElementString("id", AmmoGear?.InternalId ?? Utils.GuidEmptyString);
             writer.WriteEndElement();
         }
 
@@ -257,8 +256,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             }
             else
-                await objWriter.WriteElementStringAsync(
-                    "id", Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("id", Utils.GuidEmptyString, token: token).ConfigureAwait(false);
 
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }

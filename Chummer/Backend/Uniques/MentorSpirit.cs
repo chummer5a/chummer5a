@@ -534,7 +534,7 @@ namespace Chummer
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
 
-                if (SourceID != Guid.Empty && !string.IsNullOrEmpty(SourceIDString))
+                if (SourceID != Guid.Empty)
                 {
                     objWriter.WriteElementString("id", SourceIDString);
                 }

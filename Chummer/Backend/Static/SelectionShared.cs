@@ -2150,7 +2150,7 @@ namespace Chummer
                     }
 
                     return new Tuple<bool, string>(strNodeInnerText == objCharacter.Metatype
-                                                   || strNodeInnerText == objCharacter.MetatypeGuid.ToString("D"), strName);
+                                                   || strNodeInnerText == objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo), strName);
                 }
                 case "metatypecategory":
                 {
@@ -2231,7 +2231,7 @@ namespace Chummer
                     }
 
                     return new Tuple<bool, string>(strNodeInnerText == objCharacter.Metavariant
-                                                   || strNodeInnerText == objCharacter.MetavariantGuid.ToString("D"), strName);
+                                                   || strNodeInnerText == objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo), strName);
                 }
                 case "nuyen":
                 {

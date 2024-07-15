@@ -1486,8 +1486,8 @@ namespace Chummer
                 else if (ParentVehicle == null && ((!await _objCharacter.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false) && _eMode == Mode.Cyberware)
                                                    || (!await _objCharacter.GetAddBiowareEnabledAsync(token).ConfigureAwait(false) && _eMode == Mode.Bioware)))
                 {
-                    sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
-                             .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
+                    sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGuidString.CleanXPath())
+                             .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGuidString.CleanXPath())
                              .Append(" or mountsto)");
                 }
                 else

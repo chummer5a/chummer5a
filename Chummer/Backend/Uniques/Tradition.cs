@@ -643,7 +643,7 @@ namespace Chummer.Backend.Uniques
                     : null;
                 if (xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                 {
-                    _guiSourceID = new Guid(CustomMagicalTraditionGuid);
+                    _guiSourceID = CustomMagicalTraditionGUID;
                     xmlTraditionDataNode = this.GetNode();
                 }
 
@@ -774,7 +774,27 @@ namespace Chummer.Backend.Uniques
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _guiSourceID;
+                    return Type == TraditionType.None ? Guid.Empty : _guiSourceID;
+            }
+        }
+
+        /// <summary>
+        /// Identifier of the object within data files.
+        /// </summary>
+        public async Task<Guid> GetSourceIDAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
+                    ? Guid.Empty
+                    : _guiSourceID;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -786,9 +806,7 @@ namespace Chummer.Backend.Uniques
             get
             {
                 using (LockObject.EnterReadLock())
-                    return Type == TraditionType.None
-                        ? string.Empty
-                        : _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+                    return SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
 
@@ -802,9 +820,7 @@ namespace Chummer.Backend.Uniques
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.None
-                    ? string.Empty
-                    : _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+                return (await GetSourceIDAsync(token).ConfigureAwait(false)).ToString("D", GlobalSettings.InvariantCultureInfo);
             }
             finally
             {
@@ -932,7 +948,12 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// The GUID of the Custom entry in the Magical Tradition file
         /// </summary>
-        public const string CustomMagicalTraditionGuid = "616ba093-306c-45fc-8f41-0b98c8cccb46";
+        public const string CustomMagicalTraditionGuidString = "616ba093-306c-45fc-8f41-0b98c8cccb46";
+
+        /// <summary>
+        /// The GUID of the Custom entry in the Magical Tradition file
+        /// </summary>
+        public static Guid CustomMagicalTraditionGUID { get; } = new Guid(CustomMagicalTraditionGuidString);
 
         /// <summary>
         /// Whether a Tradition is a custom one (i.e. it has a custom name and custom spirit settings)
@@ -942,7 +963,7 @@ namespace Chummer.Backend.Uniques
             get
             {
                 using (LockObject.EnterReadLock())
-                    return string.Equals(SourceIDString, CustomMagicalTraditionGuid, StringComparison.OrdinalIgnoreCase);
+                    return SourceID.Equals(CustomMagicalTraditionGUID);
                 // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
             }
         }
@@ -957,8 +978,7 @@ namespace Chummer.Backend.Uniques
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Equals(await GetSourceIDStringAsync(token).ConfigureAwait(false),
-                    CustomMagicalTraditionGuid, StringComparison.OrdinalIgnoreCase);
+                return await GetSourceIDAsync(token).ConfigureAwait(false) == CustomMagicalTraditionGUID;
             }
             finally
             {

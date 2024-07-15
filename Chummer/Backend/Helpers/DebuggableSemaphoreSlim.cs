@@ -44,7 +44,7 @@ namespace Chummer
         private string LastHolderStackTrace { get; set; }
 #endif
         // ReSharper disable once UnusedMember.Local
-        //private readonly string _strGuid = Guid.NewGuid().ToString("D");
+        //private readonly string _strGuid = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
 
         public DebuggableSemaphoreSlim()
         {

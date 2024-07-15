@@ -3569,7 +3569,7 @@ namespace Chummer
                 {
                     objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, string.Empty,
                                      frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
-                    if (objMentor.InternalId == Guid.Empty.ToString())
+                    if (objMentor.InternalId.IsEmptyGuid())
                     {
                         throw new AbortedException();
                     }
@@ -3618,7 +3618,7 @@ namespace Chummer
                 {
                     objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, string.Empty,
                                      frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
-                    if (objMentor.InternalId == Guid.Empty.ToString())
+                    if (objMentor.InternalId.IsEmptyGuid())
                     {
                         throw new AbortedException();
                     }

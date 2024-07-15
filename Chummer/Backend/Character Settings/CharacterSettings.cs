@@ -1501,8 +1501,7 @@ namespace Chummer
                         // <id />
                         objWriter.WriteElementString(
                             "id",
-                            (blnClearSourceGuid ? Guid.Empty : _guiSourceId).ToString(
-                                "D", GlobalSettings.InvariantCultureInfo));
+                            blnClearSourceGuid ? Utils.GuidEmptyString : _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo));
                         // <name />
                         objWriter.WriteElementString("name", _strName);
 
@@ -2233,8 +2232,7 @@ namespace Chummer
                         // <id />
                         await objWriter.WriteElementStringAsync(
                             "id",
-                            (blnClearSourceGuid ? Guid.Empty : _guiSourceId).ToString(
-                                "D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            blnClearSourceGuid ? Utils.GuidEmptyString : _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         // <name />
                         await objWriter.WriteElementStringAsync("name", _strName, token: token).ConfigureAwait(false);
 

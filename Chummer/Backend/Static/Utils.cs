@@ -482,6 +482,8 @@ namespace Chummer
 
         public const int WaitEmergencyReleaseMaxTicks = 1800000 / DefaultSleepDuration; // About 30 minutes in ticks (assuming 15 ms timer frequency)
 
+        public static string GuidEmptyString { get; } = Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo);
+
         /// <summary>
         /// Can the current user context write to a given file path?
         /// </summary>

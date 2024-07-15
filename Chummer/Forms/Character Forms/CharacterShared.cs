@@ -4715,12 +4715,8 @@ namespace Chummer
                             objBiowareRoot = x.FindNode("Node_SelectedBioware", false);
                             objModularRoot = x.FindNode("Node_UnequippedModularCyberware", false);
                             objModularBioRoot = x.FindNode("Node_UnequippedModularBioware", false);
-                            objHoleNode = x.FindNode(
-                                Cyberware.EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo), false);
-                            objAntiHoleNode
-                                = x.FindNode(
-                                    Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo),
-                                    false);
+                            objHoleNode = x.FindNode(Cyberware.EssenceHoleGuidString, false);
+                            objAntiHoleNode = x.FindNode(Cyberware.EssenceAntiHoleGuidString, false);
                         }, token).ConfigureAwait(false);
                         switch (e.Action)
                         {
