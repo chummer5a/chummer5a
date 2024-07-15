@@ -4023,7 +4023,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    await ModifyKarmaAsync(1, token);
+                    await ModifyKarmaAsync(1, token).ConfigureAwait(false);
                 }
             }
             finally

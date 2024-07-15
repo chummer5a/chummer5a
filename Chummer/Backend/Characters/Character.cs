@@ -7598,7 +7598,7 @@ namespace Chummer
                                             // Cyberadept in these versions was an echo. It is no longer an echo, and so needs a more complicated reapplication
                                             if (blnSync
                                                     ? Settings.SpecialKarmaCostBasedOnShownValue
-                                                    : await Settings.GetSpecialKarmaCostBasedOnShownValueAsync(token))
+                                                    : await Settings.GetSpecialKarmaCostBasedOnShownValueAsync(token).ConfigureAwait(false))
                                             {
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
