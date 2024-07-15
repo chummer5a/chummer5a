@@ -5845,14 +5845,17 @@ namespace Chummer.Backend.Skills
         //This tree keeps track of dependencies
         private static readonly PropertyDependencyGraph<Skill> s_SkillDependencyGraph =
             new PropertyDependencyGraph<Skill>(
+                new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers),
+                    new DependencyGraphNode<string, Skill>(nameof(AttributeObject),
+                        new DependencyGraphNode<string, Skill>(nameof(Attribute)),
+                        new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements))
+                    )
+                ),
                 new DependencyGraphNode<string, Skill>(nameof(PoolToolTip),
                     new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
-                    new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers),
-                        new DependencyGraphNode<string, Skill>(nameof(AttributeObject),
-                            new DependencyGraphNode<string, Skill>(nameof(RelevantImprovements)))),
                     new DependencyGraphNode<string, Skill>(nameof(DisplayPool),
                         new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
-                        new DependencyGraphNode<string, Skill>(nameof(Attribute), x => !x.IsNativeLanguage, async (x, t) => !await x.GetIsNativeLanguageAsync(t).ConfigureAwait(false)),
+                        new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers)),
                         new DependencyGraphNode<string, Skill>(nameof(DisplayOtherAttribute), x => !x.IsNativeLanguage, async (x, t) => !await x.GetIsNativeLanguageAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute),
                                 new DependencyGraphNode<string, Skill>(nameof(Enabled)),
@@ -5889,15 +5892,13 @@ namespace Chummer.Backend.Skills
                             new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
                             new DependencyGraphNode<string, Skill>(nameof(Specializations)),
                             new DependencyGraphNode<string, Skill>(nameof(GetSpecializationBonus))
-                        ),
-                        new DependencyGraphNode<string, Skill>(nameof(Pool),
-                            new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers),
-                                new DependencyGraphNode<string, Skill>(nameof(AttributeObject))
-                            ),
-                            new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute)),
-                            new DependencyGraphNode<string, Skill>(nameof(Attribute))
                         )
                     )
+                ),
+                new DependencyGraphNode<string, Skill>(nameof(Pool),
+                    new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
+                    new DependencyGraphNode<string, Skill>(nameof(AttributeModifiers)),
+                    new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute), x => !x.IsNativeLanguage, async (x, t) => !await x.GetIsNativeLanguageAsync(t).ConfigureAwait(false))
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CanHaveSpecs),
                     new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.AllowUpgrade), x => x.IsKnowledgeSkill,
@@ -6042,15 +6043,15 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(CanHaveSpecs)),
                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating))
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(AllowDelete), x => x.IsKnowledgeSkill || x.IsExoticSkill,
+                new DependencyGraphNode<string, Skill>(nameof(AllowDelete),
                     new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill)),
                     new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
                     new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.ForcedName), x => x.IsKnowledgeSkill,
                         new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
                     ),
-                    new DependencyGraphNode<string, Skill>(nameof(FreeBase)),
-                    new DependencyGraphNode<string, Skill>(nameof(FreeKarma)),
-                    new DependencyGraphNode<string, Skill>(nameof(RatingModifiers)),
+                    new DependencyGraphNode<string, Skill>(nameof(FreeBase), x => x.IsKnowledgeSkill || x.IsExoticSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(FreeKarma), x => x.IsKnowledgeSkill || x.IsExoticSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(RatingModifiers), x => x.IsKnowledgeSkill || x.IsExoticSkill),
                     new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage), x => x.IsKnowledgeSkill,
                         new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
                     )
@@ -6060,23 +6061,23 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(IsExoticSkill)),
                     new DependencyGraphNode<string, Skill>(nameof(ExoticSkill.Specific), x => x.IsExoticSkill)
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(IsLanguage), x => x.IsKnowledgeSkill,
-                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type)),
-                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
+                new DependencyGraphNode<string, Skill>(nameof(IsLanguage),
+                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill)),
+                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type), x => x.IsKnowledgeSkill)
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(AllowNameChange), x => x.IsKnowledgeSkill,
-                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.ForcedName)),
-                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.AllowUpgrade)),
-                    new DependencyGraphNode<string, Skill>(nameof(Karma)),
-                    new DependencyGraphNode<string, Skill>(nameof(Base)),
-                    new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
-                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
+                new DependencyGraphNode<string, Skill>(nameof(AllowNameChange),
+                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill)),
+                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.ForcedName), x => x.IsKnowledgeSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.AllowUpgrade), x => x.IsKnowledgeSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(Karma), x => x.IsKnowledgeSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(Base), x => x.IsKnowledgeSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage), x => x.IsKnowledgeSkill)
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(AllowTypeChange), x => x.IsKnowledgeSkill,
-                    new DependencyGraphNode<string, Skill>(nameof(AllowNameChange)),
-                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type)),
-                    new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
-                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill))
+                new DependencyGraphNode<string, Skill>(nameof(AllowTypeChange),
+                    new DependencyGraphNode<string, Skill>(nameof(IsKnowledgeSkill)),
+                    new DependencyGraphNode<string, Skill>(nameof(AllowNameChange), x => x.IsKnowledgeSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.Type), x => x.IsKnowledgeSkill),
+                    new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage), x => x.IsKnowledgeSkill)
                 )
             );
 
