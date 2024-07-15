@@ -3950,98 +3950,80 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                for (int i = 0; i < intAmount; ++i)
                 {
-                    token.ThrowIfCancellationRequested();
-                    bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                    for (int i = 0; i < intAmount; ++i)
+                    if (blnCreated)
                     {
-                        if (blnCreated)
+                        if (!await GetCanUpgradeCareerAsync(token).ConfigureAwait(false))
+                            return;
+
+                        int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
+                        int intValue = await GetValueAsync(token).ConfigureAwait(false);
+
+                        string strUpgradeText = string.Format(GlobalSettings.CultureInfo,
+                            "{1}{0}{2}{0}{3}{0}->{0}{4}",
+                            await LanguageManager.GetStringAsync(
+                                "String_Space", token: token).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(
+                                "String_ExpenseAttribute", token: token).ConfigureAwait(false), Abbrev,
+                            intValue, intValue + 1);
+
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                        objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
+                        objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
+
+                        await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                            .ConfigureAwait(false);
+
+                        token.ThrowIfCancellationRequested();
+                        await _objCharacter.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
+
+                        // Undo burned Edge if possible first
+                        if (Abbrev == "EDG")
                         {
-                            if (!await GetCanUpgradeCareerAsync(token).ConfigureAwait(false))
-                                return;
-
-                            int intPrice = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
-                            int intValue = await GetValueAsync(token).ConfigureAwait(false);
-
-                            string strUpgradetext = string.Format(GlobalSettings.CultureInfo,
-                                "{1}{0}{2}{0}{3}{0}->{0}{4}",
-                                await LanguageManager.GetStringAsync(
-                                    "String_Space", token: token).ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync(
-                                    "String_ExpenseAttribute", token: token).ConfigureAwait(false), Abbrev,
-                                intValue, intValue + 1);
-
-                            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-                            objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                            objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
-
-                            await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                .ConfigureAwait(false);
-
-                            token.ThrowIfCancellationRequested();
-                            IAsyncDisposable objLocker3 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
+                            int intBurnedEdge = -(await ImprovementManager
+                                    .GetCachedImprovementListForValueOfAsync(
+                                        _objCharacter, Improvement.ImprovementType.Attribute, "EDG",
+                                        token: token)
+                                    .ConfigureAwait(false))
+                                .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
+                                    x => x.Minimum * x.Rating, token: token);
+                            if (intBurnedEdge > 0)
                             {
-                                token.ThrowIfCancellationRequested();
-                                await _objCharacter.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
-
-                                // Undo burned Edge if possible first
-                                if (Abbrev == "EDG")
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                        _objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token)
+                                    .ConfigureAwait(false);
+                                --intBurnedEdge;
+                                if (intBurnedEdge > 0)
                                 {
-                                    int intBurnedEdge = -(await ImprovementManager
-                                            .GetCachedImprovementListForValueOfAsync(
-                                                _objCharacter, Improvement.ImprovementType.Attribute, "EDG",
-                                                token: token)
-                                            .ConfigureAwait(false))
-                                        .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
-                                            x => x.Minimum * x.Rating, token: token);
-                                    if (intBurnedEdge > 0)
+                                    try
                                     {
-                                        await ImprovementManager.RemoveImprovementsAsync(
-                                                _objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token)
+                                        await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
+                                                Improvement.ImprovementSource.BurnedEdge,
+                                                string.Empty,
+                                                Improvement.ImprovementType.Attribute,
+                                                string.Empty, 0, 1, -intBurnedEdge, token: token)
                                             .ConfigureAwait(false);
-                                        --intBurnedEdge;
-                                        if (intBurnedEdge > 0)
-                                        {
-                                            try
-                                            {
-                                                await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
-                                                        Improvement.ImprovementSource.BurnedEdge,
-                                                        string.Empty,
-                                                        Improvement.ImprovementType.Attribute,
-                                                        string.Empty, 0, 1, -intBurnedEdge, token: token)
-                                                    .ConfigureAwait(false);
-                                            }
-                                            catch
-                                            {
-                                                await ImprovementManager
-                                                    .RollbackAsync(_objCharacter, CancellationToken.None)
-                                                    .ConfigureAwait(false);
-                                                throw;
-                                            }
-
-                                            await ImprovementManager.CommitAsync(_objCharacter, token)
-                                                .ConfigureAwait(false);
-                                        }
-
-                                        continue; // Skip increasing Karma
                                     }
+                                    catch
+                                    {
+                                        await ImprovementManager
+                                            .RollbackAsync(_objCharacter, CancellationToken.None)
+                                            .ConfigureAwait(false);
+                                        throw;
+                                    }
+
+                                    await ImprovementManager.CommitAsync(_objCharacter, token)
+                                        .ConfigureAwait(false);
                                 }
-                            }
-                            finally
-                            {
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+
+                                continue; // Skip increasing Karma
                             }
                         }
-
-                        ++Karma;
                     }
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+
+                    await ModifyKarmaAsync(1, token);
                 }
             }
             finally
@@ -4050,7 +4032,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async Task Degrade(int intAmount, CancellationToken token = default)
+        public async Task Degrade(int intAmount = 1, CancellationToken token = default)
         {
             if (intAmount <= 0)
                 return;
@@ -4058,68 +4040,50 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                for (int i = intAmount; i > 0; --i)
                 {
-                    token.ThrowIfCancellationRequested();
-                    bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                    for (int i = intAmount; i > 0; --i)
+                    if (await GetKarmaAsync(token).ConfigureAwait(false) > 0)
                     {
-                        if (await GetKarmaAsync(token).ConfigureAwait(false) > 0)
-                        {
-                            await ModifyKarmaAsync(-1, token).ConfigureAwait(false);
-                        }
-                        else if (await GetBaseAsync(token).ConfigureAwait(false) > 0)
-                        {
-                            await ModifyBaseAsync(-1, token).ConfigureAwait(false);
-                        }
-                        else if (Abbrev == "EDG" && blnCreated &&
-                                 await GetTotalMinimumAsync(token).ConfigureAwait(false) > 0)
-                        {
-                            //Edge can reduce the metatype minimum below zero.
-                            int intBurnedEdge = -(await ImprovementManager
-                                    .GetCachedImprovementListForValueOfAsync(
-                                        _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token)
-                                    .ConfigureAwait(false))
-                                .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
-                                    x => x.Minimum * x.Rating, token: token) + 1;
-                            token.ThrowIfCancellationRequested();
-                            IAsyncDisposable objLocker3 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
-                                    Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);
-                                try
-                                {
-                                    await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
-                                        Improvement.ImprovementSource.BurnedEdge,
-                                        string.Empty,
-                                        Improvement.ImprovementType.Attribute,
-                                        string.Empty, 0, 1, -intBurnedEdge,
-                                        token: token).ConfigureAwait(false);
-                                }
-                                catch
-                                {
-                                    await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None)
-                                        .ConfigureAwait(false);
-                                    throw;
-                                }
-
-                                await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
-                        else
-                            return;
+                        await ModifyKarmaAsync(-1, token).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    else if (await GetBaseAsync(token).ConfigureAwait(false) > 0)
+                    {
+                        await ModifyBaseAsync(-1, token).ConfigureAwait(false);
+                    }
+                    else if (Abbrev == "EDG" && blnCreated &&
+                             await GetTotalMinimumAsync(token).ConfigureAwait(false) > 0)
+                    {
+                        //Edge can reduce the metatype minimum below zero.
+                        int intBurnedEdge = 1 - (await ImprovementManager
+                                .GetCachedImprovementListForValueOfAsync(
+                                    _objCharacter, Improvement.ImprovementType.Attribute, "EDG", token: token)
+                                .ConfigureAwait(false))
+                            .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
+                                x => x.Minimum * x.Rating, token: token);
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);
+                        try
+                        {
+                            await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
+                                Improvement.ImprovementSource.BurnedEdge,
+                                string.Empty,
+                                Improvement.ImprovementType.Attribute,
+                                string.Empty, 0, 1, -intBurnedEdge,
+                                token: token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None)
+                                .ConfigureAwait(false);
+                            throw;
+                        }
+
+                        await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                    }
+                    else
+                        return;
                 }
             }
             finally

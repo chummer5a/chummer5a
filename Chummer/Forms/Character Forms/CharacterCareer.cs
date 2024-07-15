@@ -4196,7 +4196,7 @@ namespace Chummer
 
                     // Permanently reduce the CharacterAttribute's value.
                     await (await CharacterObject.GetAttributeAsync(frmPickAttribute.MyForm.SelectedAttribute, token: GenericToken)
-                                                .ConfigureAwait(false)).Degrade(1, GenericToken).ConfigureAwait(false);
+                                                .ConfigureAwait(false)).Degrade(token: GenericToken).ConfigureAwait(false);
                 }
 
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
@@ -12889,7 +12889,7 @@ namespace Chummer
                     case KarmaExpenseType.ImproveAttribute:
                     {
                         await (await CharacterObject.GetAttributeAsync(strUndoId, token: GenericToken)
-                                                    .ConfigureAwait(false)).Degrade(1, GenericToken)
+                                                    .ConfigureAwait(false)).Degrade(token: GenericToken)
                                                                            .ConfigureAwait(false);
                         break;
                     }

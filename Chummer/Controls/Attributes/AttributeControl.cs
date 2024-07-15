@@ -841,7 +841,7 @@ namespace Chummer.UI.Attributes
                                 MessageBoxIcon.Question, token: _objMyToken).ConfigureAwait(false) == DialogResult.No)
                             return;
 
-                        await objAttribute.Degrade(1, _objMyToken).ConfigureAwait(false);
+                        await objAttribute.Degrade(token: _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {
