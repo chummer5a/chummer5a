@@ -33,12 +33,13 @@
     <lifestyle>
       <id>00000000-0000-0000-0000-000000000000</id>
       <name>ID ERROR. Re-add life style to fix</name>
+      <hide />
       <cost>1</cost>
       <dice>1</dice>
+      <lp>0</lp>
       <multiplier>0</multiplier>
       <source>SR5</source>
       <page>1</page>
-      <hide />
     </lifestyle>
     <lifestyle>
       <id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
@@ -347,9 +348,9 @@
       <name>Armory</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>2000</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>2000</cost>
       <page>220</page>
     </quality>
     <quality>
@@ -357,9 +358,9 @@
       <name>Cleaning Service (Standard)</name>
       <category>Entertainment - Service</category>
       <lp>1</lp>
+      <cost>100</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>100</cost>
       <page>220</page>
     </quality>
     <quality>
@@ -367,9 +368,9 @@
       <name>Cleaning Service (Mage Sensitive)</name>
       <category>Entertainment - Service</category>
       <lp>1</lp>
+      <cost>200</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>200</cost>
       <page>220</page>
     </quality>
     <quality>
@@ -377,9 +378,9 @@
       <name>Cleaning Service (Pollution Sensitive)</name>
       <category>Entertainment - Service</category>
       <lp>1</lp>
+      <cost>400</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>400</cost>
       <page>220</page>
     </quality>
     <quality>
@@ -387,8 +388,8 @@
       <name>Discreet Cleaning Service</name>
       <category>Entertainment - Service</category>
       <lp>4</lp>
-      <source>RF</source>
       <cost>10000</cost>
+      <source>RF</source>
       <page>221</page>
     </quality>
     <quality>
@@ -396,8 +397,8 @@
       <name>Discreet Deliveryman</name>
       <category>Entertainment - Service</category>
       <lp>3</lp>
-      <source>RF</source>
       <cost>100</cost>
+      <source>RF</source>
       <page>221</page>
     </quality>
     <quality>
@@ -405,8 +406,8 @@
       <name>Discreet Candyman</name>
       <category>Entertainment - Service</category>
       <lp>3</lp>
-      <source>RF</source>
       <cost>1000</cost>
+      <source>RF</source>
       <page>221</page>
     </quality>
     <quality>
@@ -414,10 +415,10 @@
       <name>Cramped Garage (Airplane)</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
+      <cost>18000</cost>
       <allowed>Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>18000</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -425,10 +426,10 @@
       <name>Cramped Garage (Boat)</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
+      <cost>4500</cost>
       <allowed>High, Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>4500</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -436,10 +437,10 @@
       <name>Cramped Garage (Car (Body 4 or Less))</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>45</cost>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>45</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -447,10 +448,10 @@
       <name>Cramped Garage (Car (Body 5 or More))</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>90</cost>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>90</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -458,10 +459,10 @@
       <name>Cramped Garage (Helicopter)</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
+      <cost>9000</cost>
       <allowed>Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>9000</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -469,10 +470,10 @@
       <name>Garage (Airplane)</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
+      <cost>20000</cost>
       <allowed>Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>20000</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -480,10 +481,10 @@
       <name>Garage (Boat)</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
+      <cost>5000</cost>
       <allowed>High, Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>5000</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -491,10 +492,10 @@
       <name>Garage (Car (Body 4 or Less))</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>50</cost>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>50</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -502,21 +503,21 @@
       <name>Garage (Car (Body 5 or More))</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>100</cost>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>100</cost>
       <page>221</page>
     </quality>
     <quality>
       <id>67e41d1f-78a9-417b-88d4-94eeb58fa4ff</id>
       <name>Garage (Helicopter)</name>
       <category>Entertainment - Asset</category>
-      <allowmultiple />
       <lp>4</lp>
-      <allowed>Luxury</allowed>
-      <source>RF</source>
       <cost>10000</cost>
+      <allowed>Luxury</allowed>
+      <allowmultiple />
+      <source>RF</source>
       <page>221</page>
     </quality>
     <quality>
@@ -524,9 +525,9 @@
       <name>Greenhouse</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>500</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>500</cost>
       <page>221</page>
     </quality>
     <quality>
@@ -534,13 +535,13 @@
       <name>Grid Subscription</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
-      <allowed>Medium,High,Luxury</allowed>
-      <allowmultiple />
+      <cost>50</cost>
       <bonus>
         <selecttext />
       </bonus>
+      <allowed>Medium,High,Luxury</allowed>
+      <allowmultiple />
       <source>RF</source>
-      <cost>50</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -548,9 +549,9 @@
       <name>Gym</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>300</cost>
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>300</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -558,9 +559,9 @@
       <name>Indoor Arboretum</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>500</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>500</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -568,13 +569,13 @@
       <name>Local Bar Patron</name>
       <category>Entertainment - Outing</category>
       <lp>1</lp>
-      <allowed>Low,Medium,High,Luxury</allowed>
-      <allowmultiple />
+      <cost>25</cost>
       <bonus>
         <selecttext />
       </bonus>
+      <allowed>Low,Medium,High,Luxury</allowed>
+      <allowmultiple />
       <source>RF</source>
-      <cost>25</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -582,13 +583,13 @@
       <name>Merchandise: Goods (Specific Item) (Avail 3)</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>10000</cost>
       <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -596,13 +597,13 @@
       <name>Merchandise: Goods (Specific Item) (Avail 5)</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>10000</cost>
       <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -610,13 +611,13 @@
       <name>Merchandise: Goods (Specific Item) (Avail 7)</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
+      <cost>10000</cost>
       <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -624,13 +625,13 @@
       <name>Merchandise: Goods (Specific Item) (Avail 9)</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
+      <cost>10000</cost>
       <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -638,9 +639,9 @@
       <name>Merchandise: Pawn Shop/Thrift Store</name>
       <category>Entertainment - Service</category>
       <lp>2</lp>
+      <cost>10000</cost>
       <allowed>Commercial</allowed>
       <source>RF</source>
-      <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -648,13 +649,13 @@
       <name>Merchandise: Used Goods (Specific Item)</name>
       <category>Entertainment - Service</category>
       <lp>2</lp>
+      <cost>10000</cost>
       <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -662,65 +663,65 @@
       <name>Panic Room</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>1000</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>1000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>5e7c3001-03de-41ed-b2d2-03c3175669d4</id>
       <name>Patron of the Arts (Concerts/Events)</name>
       <category>Entertainment - Outing</category>
+      <lp>1</lp>
+      <cost>100</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>100</cost>
       <page>223</page>
     </quality>
     <quality>
       <id>903b7d38-d844-4473-8454-4e8f4875880d</id>
       <name>Patron of the Arts (Private Club)</name>
       <category>Entertainment - Outing</category>
+      <lp>1</lp>
+      <cost>200</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <lp>1</lp>
       <allowed>High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>200</cost>
       <page>223</page>
     </quality>
     <quality>
       <id>0bbec525-178b-4712-b36f-6549ea8274c2</id>
       <name>Patron of the Arts (Zoo/Museum)</name>
       <category>Entertainment - Outing</category>
+      <lp>1</lp>
+      <cost>75</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>75</cost>
       <page>223</page>
     </quality>
     <quality>
       <id>39f7afff-173b-4c14-91b6-de2c8d315cc6</id>
       <name>Patron of the Arts (Theme Parks)</name>
       <category>Entertainment - Outing</category>
+      <lp>1</lp>
+      <cost>100</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>100</cost>
       <page>223</page>
     </quality>
     <quality>
@@ -728,37 +729,37 @@
       <name>Private Room</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>20</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>20</cost>
       <page>223</page>
     </quality>
     <quality>
       <id>20c5e92c-deb7-4d88-9972-507ecccb1e50</id>
       <name>Public Transportation</name>
       <category>Entertainment - Service</category>
+      <lp>1</lp>
+      <cost>50</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>50</cost>
       <page>223</page>
     </quality>
     <quality>
       <id>35e2e527-2c63-4193-abe3-1c72063c8d6f</id>
       <name>Railway Pass</name>
       <category>Entertainment - Service</category>
+      <lp>1</lp>
+      <cost>75</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>75</cost>
       <page>222</page>
     </quality>
     <quality>
@@ -766,9 +767,9 @@
       <name>Shooting Range</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>500</cost>
       <allowed>High,Luxury</allowed>
       <source>RF</source>
-      <cost>500</cost>
       <page>223</page>
     </quality>
     <quality>
@@ -776,23 +777,23 @@
       <name>Soy Processing Unit</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>20</cost>
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>20</cost>
       <page>223</page>
     </quality>
     <quality>
       <id>2e845204-d9b3-40a9-9d24-4b5aa9673486</id>
       <name>Sports Court - Small</name>
+      <category>Entertainment - Asset</category>
+      <lp>2</lp>
+      <cost>300</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <category>Entertainment - Asset</category>
-      <lp>2</lp>
       <allowed>High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>300</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -800,9 +801,9 @@
       <name>Swimming Pool</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>100</cost>
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>100</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -810,9 +811,9 @@
       <name>Walk-In Freezer</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>1000</cost>
       <allowed>Commercial</allowed>
       <source>RF</source>
-      <cost>1000</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -820,13 +821,13 @@
       <name>Workshop/Facility</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
-      <allowed>Commercial</allowed>
-      <allowmultiple />
+      <cost>2500</cost>
       <bonus>
         <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
+      <allowed>Commercial</allowed>
+      <allowmultiple />
       <source>RF</source>
-      <cost>2500</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -834,13 +835,13 @@
       <name>Cramped Workshop/Facility</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>2250</cost>
       <bonus>
         <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <allowed>Commercial</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>2250</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -848,10 +849,10 @@
       <name>Yard</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>50</cost>
       <allowed>Low,Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>RF</source>
-      <cost>50</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -859,9 +860,9 @@
       <name>Zen Den</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>100</cost>
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>100</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -869,9 +870,9 @@
       <name>Bat Cave</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>100</cost>
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
-      <cost>100</cost>
       <page>224</page>
     </quality>
     <quality>
@@ -893,24 +894,24 @@
       <name>Corporate Owned</name>
       <category>Positive</category>
       <lp>3</lp>
+      <comfortsminimum>1</comfortsminimum>
+      <securityminimum>1</securityminimum>
+      <comforts>1</comforts>
+      <security>1</security>
       <required>
         <oneof>
           <characterquality>SINner (Corporate)</characterquality>
           <characterquality>SINner (Corporate Limited)</characterquality>
         </oneof>
       </required>
-      <security>1</security>
-      <securityMinimum>1</securityMinimum>
-      <comforts>1</comforts>
-      <comfortsMinimum>1</comfortsMinimum>
       <source>RF</source>
       <page>225</page>
     </quality>
     <quality>
       <id>ff0cb981-4459-46e7-ab75-d8c5bcb0c486</id>
       <name>Cramped</name>
-      <lp>1</lp>
       <category>Negative</category>
+      <lp>1</lp>
       <multiplier>-10</multiplier>
       <source>SR5</source>
       <page>370</page>
@@ -918,8 +919,8 @@
     <quality>
       <id>4fb84713-6171-409d-ad7c-ccbc44b891ad</id>
       <name>Extra Secure</name>
-      <lp>1</lp>
       <category>Positive</category>
+      <lp>1</lp>
       <multiplierbaseonly>20</multiplierbaseonly>
       <source>SR5</source>
       <page>370</page>
@@ -927,8 +928,8 @@
     <quality>
       <id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
       <name>Dangerous Area</name>
-      <lp>-1</lp>
       <category>Negative</category>
+      <lp>-1</lp>
       <multiplier>-20</multiplier>
       <source>SR5</source>
       <page>370</page>
@@ -983,10 +984,10 @@
       <name>One Good Thing About This Place</name>
       <category>Positive</category>
       <lp>1</lp>
-      <allowed>Traveler</allowed>
       <bonus>
         <selecttext />
       </bonus>
+      <allowed>Traveler</allowed>
       <source>RF</source>
       <page>226</page>
     </quality>
@@ -1027,12 +1028,12 @@
       <id>24c33e2d-bb97-4f82-a68d-dfa7c89a69d7</id>
       <name>Special Work Area</name>
       <category>Positive</category>
-      <allowmultiple />
+      <lp>0</lp>
+      <cost>1000</cost>
       <bonus>
         <selecttext />
       </bonus>
-      <lp>0</lp>
-      <cost>1000</cost>
+      <allowmultiple />
       <source>SR5</source>
       <page>370</page>
     </quality>
@@ -1040,9 +1041,9 @@
       <id>61e7bb21-cb25-44ff-a332-639fe9dac893</id>
       <name>Thrifty</name>
       <category>Negative</category>
-      <allowed>Traveler</allowed>
       <lp>2</lp>
       <cost>-1000</cost>
+      <allowed>Traveler</allowed>
       <source>RF</source>
       <page>226</page>
     </quality>
@@ -1050,8 +1051,8 @@
       <id>d508fc24-6cbd-488f-a5f8-5282cfb58f9a</id>
       <name>W Zone</name>
       <category>Negative</category>
-      <neighborhood>-1</neighborhood>
       <lp>-1</lp>
+      <area>-1</area>
       <source>RF</source>
       <page>226</page>
     </quality>
@@ -1177,162 +1178,164 @@
     <!-- End Region -->
     <!-- Hard Targets -->
     <quality>
+      <id>5f272787-e3f6-4cd7-949b-ce1ed786ef61</id>
       <name>Local Grid Subscription</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
-      <allowed>Medium,High,Luxury</allowed>
-      <allowmultiple />
+      <cost>50</cost>
       <bonus>
         <selecttext />
       </bonus>
+      <allowed>Medium,High,Luxury</allowed>
+      <allowmultiple />
       <source>HT</source>
-      <cost>50</cost>
       <page>140</page>
-      <id>5f272787-e3f6-4cd7-949b-ce1ed786ef61</id>
     </quality>
     <quality>
+      <id>9ad9decb-b52d-4993-9ef6-4768727c3d75</id>
       <name>Global Grid Subscription</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
-      <allowed>High,Luxury</allowed>
-      <allowmultiple />
+      <cost>250</cost>
       <bonus>
         <selecttext />
       </bonus>
+      <allowed>High,Luxury</allowed>
+      <allowmultiple />
       <source>HT</source>
-      <cost>250</cost>
       <page>140</page>
-      <id>9ad9decb-b52d-4993-9ef6-4768727c3d75</id>
     </quality>
     <quality>
+      <id>cb265e4e-b13a-487b-8c0f-b2b855138a66</id>
       <name>Subsistence Hunting/Gathering I</name>
       <category>Entertainment - Outing</category>
       <lp>1</lp>
+      <cost>15</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>HT</source>
-      <cost>15</cost>
       <page>140</page>
-      <id>cb265e4e-b13a-487b-8c0f-b2b855138a66</id>
     </quality>
     <quality>
+      <id>c0051319-9565-49f1-b59d-ee1f835cf1df</id>
       <name>Subsistence Hunting/Gathering II</name>
       <category>Entertainment - Outing</category>
       <lp>2</lp>
+      <cost>30</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>HT</source>
-      <cost>30</cost>
       <page>140</page>
-      <id>c0051319-9565-49f1-b59d-ee1f835cf1df</id>
     </quality>
     <quality>
+      <id>3aca0284-8e7f-4329-83e7-9819bf73a13e</id>
       <name>Subsistence Hunting/Gathering III</name>
       <category>Entertainment - Outing</category>
       <lp>3</lp>
+      <cost>45</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>HT</source>
-      <cost>45</cost>
       <page>140</page>
-      <id>3aca0284-8e7f-4329-83e7-9819bf73a13e</id>
     </quality>
     <quality>
+      <id>f2c146ea-302e-444b-8082-3cc47d165669</id>
       <name>Subsistence Hunting/Gathering IV</name>
       <category>Entertainment - Outing</category>
       <lp>4</lp>
+      <cost>60</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>HT</source>
-      <cost>60</cost>
       <page>140</page>
-      <id>f2c146ea-302e-444b-8082-3cc47d165669</id>
     </quality>
     <quality>
+      <id>e667f652-c908-4548-adf9-7b969d587e43</id>
       <name>Drone Maids/Manservants</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>7000</cost>
       <allowed>High,Luxury</allowed>
       <source>HT</source>
-      <cost>7000</cost>
       <page>141</page>
-      <id>e667f652-c908-4548-adf9-7b969d587e43</id>
     </quality>
     <quality>
+      <id>1b2218d6-d4a3-4978-b941-8358159e4e3b</id>
       <name>Maids/Manservants</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>15000</cost>
       <allowed>Luxury</allowed>
       <source>HT</source>
-      <cost>15000</cost>
       <page>141</page>
-      <id>1b2218d6-d4a3-4978-b941-8358159e4e3b</id>
     </quality>
     <quality>
+      <id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
       <name>Zombie Maids/Manservants</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>20000</cost>
       <allowed>High</allowed>
       <source>HT</source>
-      <cost>20000</cost>
       <page>141</page>
-      <id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
     </quality>
     <quality>
+      <id>826b324f-9dd3-4fc3-8c80-b4680587f9f6</id>
       <name>Household Gremlins I</name>
       <category>Negative</category>
       <lp>0</lp>
-      <source>HT</source>
       <cost>-300</cost>
+      <source>HT</source>
       <page>141</page>
-      <id>826b324f-9dd3-4fc3-8c80-b4680587f9f6</id>
     </quality>
     <quality>
+      <id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
       <name>Household Gremlins II</name>
       <category>Negative</category>
       <lp>0</lp>
-      <source>HT</source>
       <cost>-600</cost>
+      <source>HT</source>
       <page>141</page>
-      <id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
     </quality>
     <quality>
+      <id>093e24c5-1f87-4cb3-8a9e-1dc701081dfb</id>
       <name>Dug a Hole</name>
       <category>Positive</category>
       <lp>0</lp>
-      <source>HT</source>
       <cost>2000</cost>
+      <source>HT</source>
       <page>141</page>
-      <id>093e24c5-1f87-4cb3-8a9e-1dc701081dfb</id>
     </quality>
     <quality>
+      <id>1fa52cd4-4342-4511-91dc-6d452032d2c7</id>
       <name>Lax Security</name>
       <category>Negative</category>
       <lp>-1</lp>
-      <source>HT</source>
       <cost>0</cost>
+      <source>HT</source>
       <page>141</page>
-      <id>1fa52cd4-4342-4511-91dc-6d452032d2c7</id>
     </quality>
     <quality>
+      <id>0a41dfd4-67f7-4d8d-80e5-15db2fc64f09</id>
       <name>Limited Building Space</name>
       <category>Negative</category>
       <lp>-1</lp>
-      <source>HT</source>
       <cost>0</cost>
+      <source>HT</source>
       <page>141</page>
-      <id>0a41dfd4-67f7-4d8d-80e5-15db2fc64f09</id>
     </quality>
     <quality>
+      <id>7868fea6-f3b9-4db8-baee-60fd16f322cc</id>
       <name>Rough Neighborhood</name>
       <category>Negative</category>
       <lp>-1</lp>
-      <source>HT</source>
-      <neighborhood>-1</neighborhood>
       <cost>0</cost>
+      <area>-1</area>
+      <source>HT</source>
       <page>141</page>
-      <id>7868fea6-f3b9-4db8-baee-60fd16f322cc</id>
     </quality>
     <quality>
+      <id>23dcd584-9650-44b0-9273-896873ba6f61</id>
       <name>No Masters</name>
       <category>Negative</category>
       <lp>-1</lp>
+      <multiplier>-10</multiplier>
       <forbidden>
         <oneof>
           <characterquality>SINner (Corporate)</characterquality>
@@ -1340,9 +1343,7 @@
         </oneof>
       </forbidden>
       <source>HT</source>
-      <multiplier>-10</multiplier>
       <page>141</page>
-      <id>23dcd584-9650-44b0-9273-896873ba6f61</id>
     </quality>
     <!-- Region Shadows in Focus: Butte-->
     <quality>
@@ -1350,9 +1351,9 @@
       <name>Escape Tunnel, 100 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>200</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
-      <cost>200</cost>
       <page>20</page>
     </quality>
     <quality>
@@ -1360,9 +1361,9 @@
       <name>Escape Tunnel, 200 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+      <cost>200</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
-      <cost>200</cost>
       <page>20</page>
     </quality>
     <quality>
@@ -1370,9 +1371,9 @@
       <name>Escape Tunnel, 300 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
+      <cost>200</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
-      <cost>200</cost>
       <page>20</page>
     </quality>
     <quality>
@@ -1380,9 +1381,9 @@
       <name>Escape Tunnel, 400 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
+      <cost>200</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
-      <cost>200</cost>
       <page>20</page>
     </quality>
     <quality>
@@ -1390,9 +1391,9 @@
       <name>Escape Tunnel, 500 Meters</name>
       <category>Entertainment - Asset</category>
       <lp>5</lp>
+      <cost>200</cost>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
       <source>SFB</source>
-      <cost>200</cost>
       <page>20</page>
     </quality>
     <quality>
@@ -1400,10 +1401,10 @@
       <name>Cramped Garage (Stable)</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>180</cost>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>SFB</source>
-      <cost>180</cost>
       <page>20</page>
     </quality>
     <quality>
@@ -1411,10 +1412,10 @@
       <name>Garage (Stable)</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+      <cost>200</cost>
       <allowed>Medium,High,Luxury</allowed>
       <allowmultiple />
       <source>SFB</source>
-      <cost>200</cost>
       <page>20</page>
     </quality>
     <quality>
