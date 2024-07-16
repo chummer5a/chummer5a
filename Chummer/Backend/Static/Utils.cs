@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -482,7 +483,7 @@ namespace Chummer
 
         public const int WaitEmergencyReleaseMaxTicks = 1800000 / DefaultSleepDuration; // About 30 minutes in ticks (assuming 15 ms timer frequency)
 
-        public static string GuidEmptyString { get; } = Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public static string GuidEmptyString { get; } = Guid.Empty.ToString("D", CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Can the current user context write to a given file path?
