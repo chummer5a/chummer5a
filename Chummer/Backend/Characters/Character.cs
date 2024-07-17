@@ -10756,7 +10756,7 @@ namespace Chummer
                                     token: token).ConfigureAwait(false), token: token)
                             .ConfigureAwait(false);
                     }
-                    else if (PrimaryArm == "Left")
+                    else if (await GetPrimaryArmAsync(token).ConfigureAwait(false) == "Left")
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                 await LanguageManager.GetStringAsync(
@@ -18505,6 +18505,23 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// What is the Characters preferred hand
+        /// </summary>
+        public async Task<string> GetPrimaryArmAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strPrimaryArm;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

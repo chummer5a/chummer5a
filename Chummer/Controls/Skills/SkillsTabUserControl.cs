@@ -960,18 +960,42 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private void Control_CustomAttributeChanged(object sender, EventArgs e)
+        private async Task Control_CustomAttributeChanged(object sender, EventArgs e, CancellationToken token = default)
         {
-            bool blnVisible = false;
-            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            token.ThrowIfCancellationRequested();
+            try
             {
-                if (objSkillControl.CustomAttributeSet)
+                CancellationTokenSource objSource = null;
+                if (token != MyToken)
                 {
-                    blnVisible = true;
-                    break;
+                    objSource = CancellationTokenSource.CreateLinkedTokenSource(MyToken, token);
+                    token = objSource.Token;
+                }
+
+                try
+                {
+                    bool blnVisible = false;
+                    foreach (SkillControl objSkillControl in await _lstActiveSkills.DisplayPanel.DoThreadSafeFuncAsync(
+                                 x => x.Controls, token: token).ConfigureAwait(false))
+                    {
+                        if (await objSkillControl.GetCustomAttributeSet(token).ConfigureAwait(false))
+                        {
+                            blnVisible = true;
+                            break;
+                        }
+                    }
+
+                    await btnResetCustomDisplayAttribute.DoThreadSafeAsync(x => x.Visible = blnVisible, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    objSource?.Dispose();
                 }
             }
-            btnResetCustomDisplayAttribute.Visible = blnVisible;
+            catch (OperationCanceledException) when (!token.IsCancellationRequested)
+            {
+                //swallow this
+            }
         }
 
         private void Panel1_Resize(object sender, EventArgs e)
@@ -1240,7 +1264,7 @@ namespace Chummer.UI.Skills
                     foreach (SkillControl objSkillControl in await _lstActiveSkills.DisplayPanel
                                  .DoThreadSafeFuncAsync(x => x.Controls, token: MyToken).ConfigureAwait(false))
                     {
-                        if (objSkillControl.CustomAttributeSet)
+                        if (await objSkillControl.GetCustomAttributeSet(MyToken).ConfigureAwait(false))
                             await objSkillControl.ResetSelectAttribute(MyToken).ConfigureAwait(false);
                     }
                 }

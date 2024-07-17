@@ -3068,7 +3068,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                         }
 
-                        string strPrimaryArm = CharacterObject.PrimaryArm;
+                        string strPrimaryArm = await CharacterObject.GetPrimaryArmAsync(token).ConfigureAwait(false);
 
                         await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, token)
                             .ConfigureAwait(false);

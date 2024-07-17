@@ -583,12 +583,13 @@ namespace Chummer.UI.Skills
                         }
                     }
 
-                    string strAbbrev = _objSkill.AttributeObject.Abbrev;
+                    string strAbbrev = (await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false)).Abbrev;
                     await cboSelectAttribute.PopulateWithListItemsAsync(lstAttributeItems, token: token)
                                             .ConfigureAwait(false);
-                    await cboSelectAttribute
-                          .DoThreadSafeAsync(x => x.SelectedValue = strAbbrev, token: token)
-                          .ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strAbbrev))
+                        await cboSelectAttribute
+                            .DoThreadSafeAsync(x => x.SelectedValue = strAbbrev, token: token)
+                            .ConfigureAwait(false);
                 }
             }
             else
@@ -763,15 +764,16 @@ namespace Chummer.UI.Skills
                 {
                     if (cboSelectAttribute != null)
                     {
-                        string strAbbrev = _objSkill.AttributeObject.Abbrev;
-                        await cboSelectAttribute
+                        string strAbbrev = (await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false)).Abbrev;
+                        if (!string.IsNullOrEmpty(strAbbrev))
+                            await cboSelectAttribute
                             .DoThreadSafeAsync(x => x.SelectedValue = strAbbrev,
                                 token: token).ConfigureAwait(false);
                         await DoSelectAttributeClosed(token).ConfigureAwait(false);
                     }
                     else
                     {
-                        await SetAttributeActiveAsync(_objSkill.AttributeObject, token).ConfigureAwait(false);
+                        await SetAttributeActiveAsync(await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
 
@@ -1078,35 +1080,7 @@ namespace Chummer.UI.Skills
             await btnAttribute.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
         }
 
-        private CharacterAttrib AttributeActive
-        {
-            get => _objAttributeActive;
-            set
-            {
-                CharacterAttrib objOldAttrib = Interlocked.Exchange(ref _objAttributeActive, value);
-                if (objOldAttrib == value)
-                    return;
-                if (objOldAttrib != null)
-                {
-                    try
-                    {
-                        objOldAttrib.MultiplePropertiesChangedAsync -= Attribute_PropertyChanged;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                }
-                if (value != null)
-                    value.MultiplePropertiesChangedAsync += Attribute_PropertyChanged;
-
-                btnAttribute.Font = value == _objSkill.AttributeObject
-                    ? _fntNormal
-                    : _fntItalic;
-                RefreshPoolTooltipAndDisplay();
-                CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
+        private CharacterAttrib AttributeActive => _objAttributeActive;
 
         private async Task SetAttributeActiveAsync(CharacterAttrib value, CancellationToken token = default)
         {
@@ -1127,15 +1101,20 @@ namespace Chummer.UI.Skills
             if (value != null)
                 value.MultiplePropertiesChangedAsync += Attribute_PropertyChanged;
 
-            Font objFont = value == _objSkill.AttributeObject ? _fntNormal : _fntItalic;
+            Font objFont = ReferenceEquals(value, await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false)) ? _fntNormal : _fntItalic;
             await btnAttribute.DoThreadSafeAsync(x => x.Font = objFont, token).ConfigureAwait(false);
             await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
-            CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
+            if (CustomAttributeChanged != null)
+                await CustomAttributeChanged.Invoke(this, EventArgs.Empty, token).ConfigureAwait(false);
         }
 
-        public event EventHandler CustomAttributeChanged;
+        public event EventHandlerExtensions.SafeAsyncEventHandler CustomAttributeChanged;
 
-        public bool CustomAttributeSet => AttributeActive != _objSkill.AttributeObject;
+        public async Task<bool> GetCustomAttributeSet(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !ReferenceEquals(AttributeActive, await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false));
+        }
 
         [UsedImplicitly]
         public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
@@ -1149,18 +1128,32 @@ namespace Chummer.UI.Skills
         [UsedImplicitly]
         public async Task ResetSelectAttribute(CancellationToken token = default)
         {
-            if (!CustomAttributeSet)
-                return;
             if (cboSelectAttribute == null)
                 return;
-            await cboSelectAttribute.DoThreadSafeAsync(x =>
+            if (!await GetCustomAttributeSet(token).ConfigureAwait(false))
+                return;
+            IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                x.SelectedValue = _objSkill.AttributeObject.Abbrev;
-                x.Visible = false;
-            }, token: token).ConfigureAwait(false);
-            await SetAttributeActiveAsync(
-                await _objSkill.CharacterObject.GetAttributeAsync(
-                    await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false), token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (!await GetCustomAttributeSet(token).ConfigureAwait(false))
+                    return;
+                CharacterAttrib objOldAttribute = await _objSkill.GetAttributeObjectAsync(token).ConfigureAwait(false);
+                string strNewAttribute = await cboSelectAttribute.DoThreadSafeFuncAsync(x =>
+                {
+                    x.SelectedValue = objOldAttribute.Abbrev;
+                    x.Visible = false;
+                    return x.SelectedValue?.ToString() ?? string.Empty;
+                }, token: token).ConfigureAwait(false);
+                await SetAttributeActiveAsync(
+                    await _objSkill.CharacterObject.GetAttributeAsync(strNewAttribute, token: token)
+                        .ConfigureAwait(false), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
             string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             await btnAttribute.DoThreadSafeAsync(x =>
             {

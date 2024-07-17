@@ -109,6 +109,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async Task<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objAttribute;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         protected void RecacheAttribute()
         {
             using (LockObject.EnterUpgradeableReadLock())
@@ -4403,10 +4417,10 @@ namespace Chummer.Backend.Skills
                             .Append(strSpace).Append(att.DisplayAbbrev).Append(strSpace).Append('(')
                             .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
-                        if ((objShowOnlyCyberware.LimbSlot == "arm"
-                             || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
+                        if (!CharacterObject.Ambidextrous
+                            && (objShowOnlyCyberware.LimbSlot == "arm"
+                                || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
                             && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
-                            && !CharacterObject.Ambidextrous
                             && objShowOnlyCyberware.LimbSlotCount <= 1)
                         {
                             sbdReturn.Append(strSpace).Append('-').Append(strSpace)
@@ -4520,10 +4534,10 @@ namespace Chummer.Backend.Skills
 
                             int pool = PoolOtherAttribute(att.Abbrev, false,
                                 objCyberware.GetAttributeTotalValue(att.Abbrev));
-                            if ((objCyberware.LimbSlot != "arm"
-                                 && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
+                            if (CharacterObject.Ambidextrous
+                                || (objCyberware.LimbSlot != "arm"
+                                    && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
                                 || objCyberware.Location == CharacterObject.PrimaryArm
-                                || CharacterObject.Ambidextrous
                                 || objCyberware.LimbSlotCount > 1)
                             {
                                 sb.Append(strSpace).Append(pool.ToString(GlobalSettings.CultureInfo));
@@ -4622,10 +4636,10 @@ namespace Chummer.Backend.Skills
                                 intLoopPool += objSpecialization.SpecializationBonus;
                             }
 
-                            if ((objCyberware.LimbSlot != "arm"
-                                 && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
+                            if (CharacterObject.Ambidextrous
+                                || (objCyberware.LimbSlot != "arm"
+                                    && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
                                 || objCyberware.Location == CharacterObject.PrimaryArm
-                                || CharacterObject.Ambidextrous
                                 || objCyberware.LimbSlotCount > 1)
                             {
                                 sbdLoop.Append(strSpace).Append(intLoopPool.ToString(GlobalSettings.CultureInfo));
@@ -4756,10 +4770,10 @@ namespace Chummer.Backend.Skills
                             .Append((await objShowOnlyCyberware.GetAttributeTotalValueAsync(att.Abbrev, token)
                                     .ConfigureAwait(false))
                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
-                        if ((await objShowOnlyCyberware.GetLimbSlotAsync(token).ConfigureAwait(false) == "arm"
-                             || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
-                            && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
-                            && !blnAmbidextrous
+                        if (!blnAmbidextrous
+                            && (await objShowOnlyCyberware.GetLimbSlotAsync(token).ConfigureAwait(false) == "arm"
+                                || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
+                            && objShowOnlyCyberware.Location != await CharacterObject.GetPrimaryArmAsync(token).ConfigureAwait(false)
                             && await objShowOnlyCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) <= 1)
                         {
                             sbdReturn.Append(strSpace).Append('-').Append(strSpace)
@@ -4870,9 +4884,9 @@ namespace Chummer.Backend.Skills
                             int intPool = await PoolOtherAttributeAsync(att.Abbrev, false,
                                 await objCyberware.GetAttributeTotalValueAsync(att.Abbrev, token).ConfigureAwait(false),
                                 token).ConfigureAwait(false);
-                            if ((objCyberware.LimbSlot != "arm" && !objCyberware.Name.ContainsAny(" Arm", " Hand")) ||
-                                objCyberware.Location == CharacterObject.PrimaryArm || blnAmbidextrous ||
-                                await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) > 1)
+                            if (blnAmbidextrous || (objCyberware.LimbSlot != "arm" && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
+                                                || objCyberware.Location == await CharacterObject.GetPrimaryArmAsync(token).ConfigureAwait(false)
+                                                || await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) > 1)
                             {
                                 sb.Append(strSpace).Append(intPool.ToString(GlobalSettings.CultureInfo));
                             }
@@ -4988,9 +5002,9 @@ namespace Chummer.Backend.Skills
                                 intPool += await objSpecialization.GetSpecializationBonusAsync(token)
                                     .ConfigureAwait(false);
                             }
-                            if ((objCyberware.LimbSlot != "arm" && !objCyberware.Name.ContainsAny(" Arm", " Hand")) ||
-                                objCyberware.Location == CharacterObject.PrimaryArm || blnAmbidextrous ||
-                                await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) > 1)
+                            if (blnAmbidextrous || (objCyberware.LimbSlot != "arm" && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
+                                                || objCyberware.Location == await CharacterObject.GetPrimaryArmAsync(token).ConfigureAwait(false)
+                                                || await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false) > 1)
                             {
                                 sb.Append(strSpace).Append(intPool.ToString(GlobalSettings.CultureInfo));
                             }
@@ -5358,7 +5372,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await AttributeObject.GetTotalValueAsync(token).ConfigureAwait(false);
+                return await (await GetAttributeObjectAsync(token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -8103,11 +8117,12 @@ namespace Chummer.Backend.Skills
                 ThreadSafeObservableCollection<CharacterAttrib> objAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
                 objAttributes.CollectionChangedAsync -= OnAttributesCollectionChanged;
 
-                if (AttributeObject != null)
+                CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
+                if (objAttribute != null)
                 {
                     try
                     {
-                        AttributeObject.MultiplePropertiesChangedAsync -= OnLinkedAttributeChanged;
+                        objAttribute.MultiplePropertiesChangedAsync -= OnLinkedAttributeChanged;
                     }
                     catch (ObjectDisposedException)
                     {
