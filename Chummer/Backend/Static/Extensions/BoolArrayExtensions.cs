@@ -39,6 +39,8 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(ablnArray));
             if (intTo > ablnArray.Length)
                 intTo = ablnArray.Length;
+            if (intFrom < 0)
+                intFrom = 0;
             for (; intFrom < intTo; ++intFrom)
             {
                 if (ablnArray[intFrom] == blnValue)
