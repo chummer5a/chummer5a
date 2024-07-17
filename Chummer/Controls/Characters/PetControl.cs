@@ -417,11 +417,16 @@ namespace Chummer
         private async Task DoDataBindings(CancellationToken token = default)
         {
             string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
-            await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatype, token: token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strMetatype))
+                await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatype, token: token).ConfigureAwait(false);
             if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
             {
                 string strText = await _objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
-                await cboMetatype.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+                await cboMetatype.DoThreadSafeAsync(x =>
+                {
+                    if (x.SelectedIndex < 0)
+                        x.Text = strText;
+                }, token).ConfigureAwait(false);
             }
 
             await txtContactName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,

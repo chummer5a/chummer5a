@@ -2044,7 +2044,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strForceGrade))
                                 x.SelectedValue = strForceGrade;
-                            else if (x.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
+                            else if (x.SelectedIndex <= 0 && !string.IsNullOrEmpty(strOldSelected))
                                 x.SelectedValue = strOldSelected;
                             if (x.SelectedIndex == -1 && lstGrade.Count > 0)
                                 x.SelectedIndex = 0;
@@ -2114,7 +2114,8 @@ namespace Chummer
                 }
                 await cboCategory.DoThreadSafeAsync(x =>
                 {
-                    x.SelectedValue = strOldSelected;
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
                     if (x.SelectedIndex == -1 && lstCategory.Count > 0)
                         x.SelectedIndex = 0;
                 }, token: token).ConfigureAwait(false);

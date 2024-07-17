@@ -197,6 +197,8 @@ namespace Chummer
                         lstControl.AddRange(await cboControl.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>(), _objGenericToken).ConfigureAwait(false));
                         foreach (string strLoopId in _objMount.WeaponMountOptions.Select(x => x.SourceIDString))
                         {
+                            if (string.IsNullOrEmpty(strLoopId))
+                                continue;
                             if (lstVisibility.Exists(x => x.Value.ToString() == strLoopId))
                                 await cboVisibility.DoThreadSafeAsync(x => x.SelectedValue = strLoopId, _objGenericToken).ConfigureAwait(false);
                             else if (lstFlexibility.Exists(x => x.Value.ToString() == strLoopId))

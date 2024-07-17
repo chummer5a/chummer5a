@@ -983,16 +983,19 @@ namespace Chummer
                                         string strTraditionSourceIdString =
                                             await objTradition.GetSourceIDStringAsync(GenericToken)
                                                 .ConfigureAwait(false);
-                                        await this.DoThreadSafeAsync(() =>
+                                        await cboTradition.DoThreadSafeAsync(x =>
                                         {
-                                            if (eTraditionType == TraditionType.MAG)
-                                                cboTradition.SelectedValue = strTraditionSourceIdString;
-                                            else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                                                cboTradition.SelectedIndex = 0;
-                                            if (eTraditionType == TraditionType.RES)
-                                                cboStream.SelectedValue = strTraditionSourceIdString;
-                                            else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                                                cboStream.SelectedIndex = 0;
+                                            if (eTraditionType == TraditionType.MAG && !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                                x.SelectedValue = strTraditionSourceIdString;
+                                            if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                                x.SelectedIndex = 0;
+                                        }, GenericToken).ConfigureAwait(false);
+                                        await cboStream.DoThreadSafeAsync(x =>
+                                        {
+                                            if (eTraditionType == TraditionType.RES && !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                                x.SelectedValue = strTraditionSourceIdString;
+                                            if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                                x.SelectedIndex = 0;
                                         }, GenericToken).ConfigureAwait(false);
                                         await txtTraditionName.RegisterAsyncDataBindingWithDelayAsync(x => x.Text, (x, y) => x.Text = y,
                                             objTradition,
@@ -3071,7 +3074,8 @@ namespace Chummer
                             .ConfigureAwait(false);
                         await cboPrimaryArm.DoThreadSafeAsync(x =>
                         {
-                            x.SelectedValue = strPrimaryArm;
+                            if (!string.IsNullOrEmpty(strPrimaryArm))
+                                x.SelectedValue = strPrimaryArm;
                             if (x.SelectedIndex == -1)
                                 x.SelectedIndex = 0;
                         }, token).ConfigureAwait(false);
@@ -3978,9 +3982,9 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                                         await cboStream.DoThreadSafeAsync(x =>
                                         {
-                                            if (eTraditionType == TraditionType.RES)
+                                            if (eTraditionType == TraditionType.RES && !string.IsNullOrEmpty(strTraditionSourceIdString))
                                                 x.SelectedValue = strTraditionSourceIdString;
-                                            else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                            if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                                 x.SelectedIndex = 0;
                                         }, token).ConfigureAwait(false);
                                     }
@@ -13411,18 +13415,18 @@ namespace Chummer
                 await cboTradition.DoThreadSafeAsync(x =>
                 {
                     // Select the Magician's Tradition.
-                    if (eTraditionType == TraditionType.MAG)
+                    if (eTraditionType == TraditionType.MAG && !string.IsNullOrEmpty(strTraditionSourceIdString))
                         x.SelectedValue = strTraditionSourceIdString;
-                    else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
                         x.SelectedIndex = 0;
                 }, GenericToken).ConfigureAwait(false);
 
                 await cboStream.DoThreadSafeAsync(x =>
                 {
                     // Select the Technomancer's Stream.
-                    if (eTraditionType == TraditionType.RES)
+                    if (eTraditionType == TraditionType.RES && !string.IsNullOrEmpty(strTraditionSourceIdString))
                         x.SelectedValue = strTraditionSourceIdString;
-                    else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
                         x.SelectedIndex = 0;
                 }, GenericToken).ConfigureAwait(false);
             }
@@ -18629,8 +18633,9 @@ namespace Chummer
                     }
 
                     string strSourceIDString = await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
-                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString, GenericToken)
-                        .ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strSourceIDString))
+                        await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString, GenericToken)
+                            .ConfigureAwait(false);
                 }
                 else if (strSelectedId == Tradition.CustomMagicalTraditionGuidString)
                 {
@@ -18686,8 +18691,9 @@ namespace Chummer
                     {
                         await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         string strSourceIDString = await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
-                        await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString, GenericToken)
-                            .ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(strSourceIDString))
+                            await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString, GenericToken)
+                                .ConfigureAwait(false);
                     }
                 }
                 else if (await objTradition.CreateAsync(xmlTradition, token: GenericToken).ConfigureAwait(false))
@@ -18743,8 +18749,9 @@ namespace Chummer
                 {
                     await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                     string strSourceIDString = await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
-                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString, GenericToken)
-                        .ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strSourceIDString))
+                        await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString, GenericToken)
+                            .ConfigureAwait(false);
                 }
 
                 bool blnDrainVisible = (!await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
@@ -18813,9 +18820,10 @@ namespace Chummer
                     }
 
                     string strSourceIDString = await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
-                    await cboStream
-                        .DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString,
-                            GenericToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strSourceIDString))
+                        await cboStream
+                            .DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString,
+                                GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -20836,16 +20844,19 @@ namespace Chummer
                                 string strTraditionSourceIdString =
                                     await objTradition.GetSourceIDStringAsync(GenericToken)
                                         .ConfigureAwait(false);
-                                await this.DoThreadSafeAsync(() =>
+                                await cboTradition.DoThreadSafeAsync(x =>
                                 {
-                                    if (eTraditionType == TraditionType.MAG)
-                                        cboTradition.SelectedValue = strTraditionSourceIdString;
-                                    else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                                        cboTradition.SelectedIndex = 0;
-                                    if (eTraditionType == TraditionType.RES)
-                                        cboStream.SelectedValue = strTraditionSourceIdString;
-                                    else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                                        cboStream.SelectedIndex = 0;
+                                    if (eTraditionType == TraditionType.MAG && !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                        x.SelectedValue = strTraditionSourceIdString;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
+                                }, GenericToken).ConfigureAwait(false);
+                                await cboStream.DoThreadSafeAsync(x =>
+                                {
+                                    if (eTraditionType == TraditionType.RES && !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                        x.SelectedValue = strTraditionSourceIdString;
+                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                        x.SelectedIndex = 0;
                                 }, GenericToken).ConfigureAwait(false);
                             }
                             finally
@@ -21381,7 +21392,8 @@ namespace Chummer
                                     string strOverclocked = await objGear.GetOverclockedAsync(token).ConfigureAwait(false);
                                     await cboCyberwareOverclocker.DoThreadSafeAsync(x =>
                                     {
-                                        x.SelectedValue = strOverclocked;
+                                        if (!string.IsNullOrEmpty(strOverclocked))
+                                            x.SelectedValue = strOverclocked;
                                         if (x.SelectedIndex == -1)
                                             x.SelectedIndex = 0;
                                     }, token).ConfigureAwait(false);
@@ -22465,7 +22477,8 @@ namespace Chummer
                                     string strOverclocked = await objGear.GetOverclockedAsync(token).ConfigureAwait(false);
                                     await cboWeaponOverclocker.DoThreadSafeAsync(x =>
                                     {
-                                        x.SelectedValue = strOverclocked;
+                                        if (!string.IsNullOrEmpty(strOverclocked))
+                                            x.SelectedValue = strOverclocked;
                                         if (x.SelectedIndex == -1)
                                             x.SelectedIndex = 0;
                                     }, token).ConfigureAwait(false);
@@ -23028,7 +23041,8 @@ namespace Chummer
                                 string strOverclocked = await objHasMatrixAttributes.GetOverclockedAsync(token).ConfigureAwait(false);
                                 await cboArmorOverclocker.DoThreadSafeAsync(x =>
                                 {
-                                    x.SelectedValue = strOverclocked;
+                                    if (!string.IsNullOrEmpty(strOverclocked))
+                                        x.SelectedValue = strOverclocked;
                                     if (x.SelectedIndex == -1)
                                         x.SelectedIndex = 0;
                                 }, token).ConfigureAwait(false);
@@ -23373,7 +23387,8 @@ namespace Chummer
                                 string strOverclocked = await objGear.GetOverclockedAsync(token).ConfigureAwait(false);
                                 await cboGearOverclocker.DoThreadSafeAsync(x =>
                                 {
-                                    x.SelectedValue = strOverclocked;
+                                    if (!string.IsNullOrEmpty(strOverclocked))
+                                        x.SelectedValue = strOverclocked;
                                     if (x.SelectedIndex == -1)
                                         x.SelectedIndex = 0;
                                 }, token).ConfigureAwait(false);

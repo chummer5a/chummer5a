@@ -1112,7 +1112,8 @@ namespace Chummer
             {
                 bool blnDoPromptPdf = await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x =>
                 {
-                    x.SelectedValue = strCode;
+                    if (!string.IsNullOrEmpty(strCode))
+                        x.SelectedValue = strCode;
                     return x.SelectedIndex >= 0;
                 }, token).ConfigureAwait(false);
                 if (blnDoPromptPdf)
@@ -1240,10 +1241,12 @@ namespace Chummer
                         string strNewSelected = kvpEntry.Key;
                         await cboPDFParameters.DoThreadSafeAsync(x =>
                         {
-                            x.SelectedValue = strNewSelected;
+                            if (!string.IsNullOrEmpty(strNewSelected))
+                                x.SelectedValue = strNewSelected;
                             if (x.SelectedIndex == -1)
                             {
-                                x.SelectedValue = strSelectedPdfParams;
+                                if (!string.IsNullOrEmpty(strSelectedPdfParams))
+                                    x.SelectedValue = strSelectedPdfParams;
                                 if (x.SelectedIndex == -1)
                                     x.SelectedIndex = 0;
                             }
@@ -2261,7 +2264,8 @@ namespace Chummer
 
             return cboSheetLanguage.DoThreadSafeAsync(x =>
             {
-                x.SelectedValue = strDefaultSheetLanguage;
+                if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                    x.SelectedValue = strDefaultSheetLanguage;
                 if (x.SelectedIndex == -1)
                     x.SelectedValue = GlobalSettings.DefaultLanguage;
             }, token);

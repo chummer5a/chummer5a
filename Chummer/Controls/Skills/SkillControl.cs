@@ -378,7 +378,8 @@ namespace Chummer.UI.Skills
 
                         string strAbbrev = _objSkill.AttributeObject.Abbrev;
                         cboSelectAttribute.PopulateWithListItems(lstAttributeItems, token: _objMyToken);
-                        cboSelectAttribute.DoThreadSafe((x, y) => x.SelectedValue = strAbbrev, token: _objMyToken);
+                        if (!string.IsNullOrEmpty(strAbbrev))
+                            cboSelectAttribute.DoThreadSafe((x, y) => x.SelectedValue = strAbbrev, token: _objMyToken);
                     }
                 }
                 else

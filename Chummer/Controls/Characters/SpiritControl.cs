@@ -760,7 +760,8 @@ namespace Chummer
 
                     await cboSpiritName.PopulateWithListItemsAsync(lstCritters, token: token).ConfigureAwait(false);
                     // Set the control back to its original value.
-                    await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue, token: token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strCurrentValue))
+                        await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue, token: token).ConfigureAwait(false);
                 }
             }
         }

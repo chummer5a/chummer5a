@@ -210,19 +210,22 @@ namespace Chummer
                 await _objLifestyle.SetBoroughAsync(strBorough).ConfigureAwait(false);
                 await cboCity.DoThreadSafeAsync(x =>
                 {
-                    x.SelectedValue = strCity;
+                    if (!string.IsNullOrEmpty(strCity))
+                        x.SelectedValue = strCity;
                     if (x.SelectedIndex < 0)
                         x.SelectedText = strCity;
                 }).ConfigureAwait(false);
                 await cboDistrict.DoThreadSafeAsync(x =>
                 {
-                    x.SelectedValue = strDistrict;
+                    if (!string.IsNullOrEmpty(strDistrict))
+                        x.SelectedValue = strDistrict;
                     if (x.SelectedIndex < 0)
                         x.SelectedText = strDistrict;
                 }).ConfigureAwait(false);
                 await cboBorough.DoThreadSafeAsync(x =>
                 {
-                    x.SelectedValue = strBorough;
+                    if (!string.IsNullOrEmpty(strBorough))
+                        x.SelectedValue = strBorough;
                     if (x.SelectedIndex < 0)
                         x.SelectedText = strBorough;
                 }).ConfigureAwait(false);

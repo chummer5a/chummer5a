@@ -1729,64 +1729,96 @@ namespace Chummer
                     string strHobbiesVice = _objContact.HobbiesVice;
                     await this.DoThreadSafeAsync(x =>
                     {
-                        x.cboMetatype.SelectedValue = strMetatype;
-                        x.cboGender.SelectedValue = strGender;
-                        x.cboAge.SelectedValue = strAge;
-                        x.cboPersonalLife.SelectedValue = strPersonalLife;
-                        x.cboType.SelectedValue = strType;
-                        x.cboPreferredPayment.SelectedValue = strPreferredPayment;
-                        x.cboHobbiesVice.SelectedValue = strHobbiesVice;
+                        if (!string.IsNullOrEmpty(strMetatype))
+                            x.cboMetatype.SelectedValue = strMetatype;
+                        if (!string.IsNullOrEmpty(strGender))
+                            x.cboGender.SelectedValue = strGender;
+                        if (!string.IsNullOrEmpty(strAge))
+                            x.cboAge.SelectedValue = strAge;
+                        if (!string.IsNullOrEmpty(strPersonalLife))
+                            x.cboPersonalLife.SelectedValue = strPersonalLife;
+                        if (!string.IsNullOrEmpty(strType))
+                            x.cboType.SelectedValue = strType;
+                        if (!string.IsNullOrEmpty(strPreferredPayment))
+                            x.cboPreferredPayment.SelectedValue = strPreferredPayment;
+                        if (!string.IsNullOrEmpty(strHobbiesVice))
+                            x.cboHobbiesVice.SelectedValue = strHobbiesVice;
                     }, token: token).ConfigureAwait(false);
                     if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
                                          .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
-                        await cboMetatype.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                        await cboMetatype.DoThreadSafeAsync(x =>
+                        {
+                            if (x.SelectedIndex < 0)
+                                x.Text = strTemp;
+                        }, token: token).ConfigureAwait(false);
                     }
 
                     if (await cboGender.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false)
                         < 0)
                     {
                         string strTemp = await _objContact.GetDisplayGenderAsync(token).ConfigureAwait(false);
-                        await cboGender.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                        await cboGender.DoThreadSafeAsync(x =>
+                        {
+                            if (x.SelectedIndex < 0)
+                                x.Text = strTemp;
+                        }, token: token).ConfigureAwait(false);
                     }
 
                     if (await cboAge.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false)
                         < 0)
                     {
                         string strTemp = await _objContact.GetDisplayAgeAsync(token).ConfigureAwait(false);
-                        await cboAge.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                        await cboAge.DoThreadSafeAsync(x =>
+                        {
+                            if (x.SelectedIndex < 0)
+                                x.Text = strTemp;
+                        }, token: token).ConfigureAwait(false);
                     }
 
                     if (await cboPersonalLife.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
                                              .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayPersonalLifeAsync(token).ConfigureAwait(false);
-                        await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strTemp, token: token)
-                                             .ConfigureAwait(false);
+                        await cboPersonalLife.DoThreadSafeAsync(x =>
+                            {
+                                if (x.SelectedIndex < 0)
+                                    x.Text = strTemp;
+                            }, token: token).ConfigureAwait(false);
                     }
 
                     if (await cboType.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false)
                         < 0)
                     {
                         string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
-                        await cboType.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                        await cboType.DoThreadSafeAsync(x =>
+                        {
+                            if (x.SelectedIndex < 0)
+                                x.Text = strTemp;
+                        }, token: token).ConfigureAwait(false);
                     }
 
                     if (await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
                                                  .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
-                        await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strTemp, token: token)
-                                                 .ConfigureAwait(false);
+                        await cboPreferredPayment.DoThreadSafeAsync(x =>
+                            {
+                                if (x.SelectedIndex < 0)
+                                    x.Text = strTemp;
+                            }, token: token).ConfigureAwait(false);
                     }
 
                     if (await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
                                             .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
-                        await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strTemp, token: token)
-                                            .ConfigureAwait(false);
+                        await cboHobbiesVice.DoThreadSafeAsync(x =>
+                            {
+                                if (x.SelectedIndex < 0)
+                                    x.Text = strTemp;
+                            }, token: token).ConfigureAwait(false);
                     }
                 }
 

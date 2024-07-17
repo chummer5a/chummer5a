@@ -1077,7 +1077,8 @@ namespace Chummer
                             {
                                 if (x.SelectedValue?.ToString() == strOldSelectedValue)
                                     return true;
-                                x.SelectedValue = strOldSelectedValue;
+                                if (!string.IsNullOrEmpty(strOldSelectedValue))
+                                    x.SelectedValue = strOldSelectedValue;
                                 return false;
                             }, token).ConfigureAwait(false);
                             if (blnDoProcess)
@@ -1212,7 +1213,8 @@ namespace Chummer
                             {
                                 if (x.SelectedValue?.ToString() == strOldSelected)
                                     return true;
-                                x.SelectedValue = strOldSelected;
+                                if (!string.IsNullOrEmpty(strOldSelected))
+                                    x.SelectedValue = strOldSelected;
                                 return false;
                             }, token).ConfigureAwait(false);
                             if (blnDoProcess)

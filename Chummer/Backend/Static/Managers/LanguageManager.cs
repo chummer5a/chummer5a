@@ -2354,7 +2354,8 @@ namespace Chummer
                 cboLanguage.PopulateWithListItems(lstSheetLanguageList, token: token);
                 cboLanguage.DoThreadSafe((x, y) =>
                 {
-                    x.SelectedValue = strDefaultSheetLanguage;
+                    if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                        x.SelectedValue = strDefaultSheetLanguage;
                     if (x.SelectedIndex == -1)
                         x.SelectedValue
                             = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
@@ -2394,7 +2395,8 @@ namespace Chummer
                                      .ConfigureAwait(false);
                     await cboLanguage.DoThreadSafeAsync(x =>
                     {
-                        x.SelectedValue = strDefaultSheetLanguage;
+                        if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                            x.SelectedValue = strDefaultSheetLanguage;
                         if (x.SelectedIndex == -1)
                             x.SelectedValue
                                 = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
