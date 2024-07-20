@@ -322,15 +322,13 @@ namespace Chummer
             }
         }
 
-        private async void nudPDFOffset_ValueChanged(object sender, EventArgs e)
+        private void nudPDFOffset_ValueChanged(object sender, EventArgs e)
         {
             if (_intSkipRefresh > 0 || _intLoading > 0)
                 return;
 
-            int intOffset = await nudPDFOffset.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
-            string strTag = await lstGlobalSourcebookInfos
-                                  .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty)
-                                  .ConfigureAwait(false);
+            int intOffset = nudPDFOffset.ValueAsInt;
+            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
             if (_dicSourcebookInfos.TryGetValue(strTag, out SourcebookInfo objFoundSource) && objFoundSource != null)
             {
                 objFoundSource.Offset = intOffset;
@@ -479,10 +477,15 @@ namespace Chummer
 
         private void chkCustomDateTimeFormats_CheckedChanged(object sender, EventArgs e)
         {
-            grpDateFormat.Enabled = chkCustomDateTimeFormats.Checked;
-            grpTimeFormat.Enabled = chkCustomDateTimeFormats.Checked;
-            if (!chkCustomDateTimeFormats.Checked)
+            if (chkCustomDateTimeFormats.Checked)
             {
+                grpDateFormat.Enabled = true;
+                grpTimeFormat.Enabled = true;
+            }
+            else
+            {
+                grpDateFormat.Enabled = false;
+                grpTimeFormat.Enabled = false;
                 txtDateFormat.Text = GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern;
                 txtTimeFormat.Text = GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern;
             }
@@ -593,10 +596,10 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private async void cmdRemovePDFLocation_Click(object sender, EventArgs e)
+        private void cmdRemovePDFLocation_Click(object sender, EventArgs e)
         {
-            await UpdateSourcebookInfoPath(string.Empty).ConfigureAwait(false);
-            await txtPDFLocation.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+            UpdateSourcebookInfoPath(string.Empty);
+            txtPDFLocation.Text = string.Empty;
         }
 
         private void txtPDFLocation_TextChanged(object sender, EventArgs e)
@@ -779,21 +782,20 @@ namespace Chummer
                         MessageBoxIcon.Warning).ConfigureAwait(false) != DialogResult.Yes)
                     return;
                 _setCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
-                await PopulateCustomDataDirectoryListBox().ConfigureAwait(false);
+                PopulateCustomDataDirectoryListBox();
             }
         }
 
-        private async void cmdRemoveCustomDirectory_Click(object sender, EventArgs e)
+        private void cmdRemoveCustomDirectory_Click(object sender, EventArgs e)
         {
-            if (await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
+            if (lsbCustomDataDirectories.SelectedIndex == -1)
                 return;
-            ListItem objSelected = await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => (ListItem) x.SelectedItem)
-                                                                 .ConfigureAwait(false);
+            ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
             CustomDataDirectoryInfo objInfoToRemove = (CustomDataDirectoryInfo) objSelected.Value;
             if (!_setCustomDataDirectoryInfos.Remove(objInfoToRemove))
                 return;
             OptionsChanged(sender, e);
-            await PopulateCustomDataDirectoryListBox().ConfigureAwait(false);
+            PopulateCustomDataDirectoryListBox();
         }
 
         private async void cmdRenameCustomDataDirectory_Click(object sender, EventArgs e)
@@ -858,7 +860,7 @@ namespace Chummer
                     return;
                 _setCustomDataDirectoryInfos.Remove(objInfoToRename);
                 _setCustomDataDirectoryInfos.Add(objNewInfo);
-                await PopulateCustomDataDirectoryListBox().ConfigureAwait(false);
+                PopulateCustomDataDirectoryListBox();
             }
         }
 
@@ -868,10 +870,9 @@ namespace Chummer
             Close();
         }
 
-        private async void chkEnablePlugins_CheckedChanged(object sender, EventArgs e)
+        private void chkEnablePlugins_CheckedChanged(object sender, EventArgs e)
         {
-            await PluginsShowOrHide(await chkEnablePlugins.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
-                .ConfigureAwait(false);
+            PluginsShowOrHide(chkEnablePlugins.Checked);
             OptionsChanged(sender, e);
         }
 
@@ -981,20 +982,14 @@ namespace Chummer
             }
         }
 
-        private async void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            using (CursorWait.New(this))
             {
-                string strPlugin = (await clbPlugins.DoThreadSafeFuncAsync(x => x.Items[e.Index]).ConfigureAwait(false))
-                    ?.ToString() ?? string.Empty;
+                string strPlugin = clbPlugins.Items[e.Index]?.ToString() ?? string.Empty;
                 bool blnNewValue = e.NewValue == CheckState.Checked;
                 GlobalSettings.PluginsEnabledDic.AddOrUpdate(strPlugin, blnNewValue, (x, y) => blnNewValue);
                 OptionsChanged(sender, e);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1182,7 +1177,7 @@ namespace Chummer
                     return;
                 }
 
-                await UpdateSourcebookInfoPath(strNewFileName, token).ConfigureAwait(false);
+                await lstGlobalSourcebookInfos.DoThreadSafeAsync(() => UpdateSourcebookInfoPath(strNewFileName), token: token);
                 await txtPDFLocation.DoThreadSafeAsync(x => x.Text = strNewFileName, token).ConfigureAwait(false);
             }
             finally
@@ -1283,7 +1278,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
 
             await PopulatePdfParameters(token).ConfigureAwait(false);
-            await PopulateCustomDataDirectoryListBox(token).ConfigureAwait(false);
+            PopulateCustomDataDirectoryListBox();
             await PopulateApplicationInsightsOptions(token).ConfigureAwait(false);
             await PopulateColorModes(token).ConfigureAwait(false);
             await PopulateDpiScalingMethods(token).ConfigureAwait(false);
@@ -1341,63 +1336,59 @@ namespace Chummer
             }
         }
 
-        private async Task PopulateCustomDataDirectoryListBox(CancellationToken token = default)
+        private void PopulateCustomDataDirectoryListBox()
         {
             ListItem objOldSelected;
             Interlocked.Increment(ref _intSkipRefresh);
             try
             {
-                objOldSelected = await lsbCustomDataDirectories
-                                       .DoThreadSafeFuncAsync(
-                                           x => x.SelectedIndex != -1 ? (ListItem) x.SelectedItem : ListItem.Blank,
-                                           token).ConfigureAwait(false);
-                await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.BeginUpdate(), token).ConfigureAwait(false);
+                objOldSelected = lsbCustomDataDirectories.SelectedIndex != -1
+                    ? (ListItem)lsbCustomDataDirectories.SelectedItem
+                    : ListItem.Blank;
+                lsbCustomDataDirectories.BeginUpdate();
                 try
                 {
-                    await lsbCustomDataDirectories.DoThreadSafeAsync(x =>
+                    if (_setCustomDataDirectoryInfos.Count != lsbCustomDataDirectories.Items.Count)
                     {
-                        if (_setCustomDataDirectoryInfos.Count != x.Items.Count)
+                        lsbCustomDataDirectories.Items.Clear();
+                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
                         {
-                            x.Items.Clear();
-                            foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
-                            {
-                                ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
-                                x.Items.Add(objItem);
-                            }
+                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                            lsbCustomDataDirectories.Items.Add(objItem);
                         }
-                        else
+                    }
+                    else
+                    {
+                        HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
+                        for (int iI = lsbCustomDataDirectories.Items.Count - 1; iI >= 0; --iI)
                         {
-                            HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
-                            for (int iI = x.Items.Count - 1; iI >= 0; --iI)
-                            {
-                                ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
-                                CustomDataDirectoryInfo objExistingInfo
-                                    = (CustomDataDirectoryInfo) objExistingItem.Value;
-                                if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
-                                    x.Items.RemoveAt(iI);
-                                else
-                                    setListedInfos.Add(objExistingInfo);
-                            }
-
-                            foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos
-                                         .Where(
-                                             y => !setListedInfos.Contains(y)))
-                            {
-                                ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
-                                x.Items.Add(objItem);
-                            }
+                            ListItem objExistingItem = (ListItem)lsbCustomDataDirectories.Items[iI];
+                            CustomDataDirectoryInfo objExistingInfo
+                                = (CustomDataDirectoryInfo)objExistingItem.Value;
+                            if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
+                                lsbCustomDataDirectories.Items.RemoveAt(iI);
+                            else
+                                setListedInfos.Add(objExistingInfo);
                         }
 
-                        if (_intLoading > 0)
+                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos
+                                     .Where(
+                                         y => !setListedInfos.Contains(y)))
                         {
-                            x.DisplayMember = nameof(ListItem.Name);
-                            x.ValueMember = nameof(ListItem.Value);
+                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                            lsbCustomDataDirectories.Items.Add(objItem);
                         }
-                    }, token).ConfigureAwait(false);
+                    }
+
+                    if (_intLoading > 0)
+                    {
+                        lsbCustomDataDirectories.DisplayMember = nameof(ListItem.Name);
+                        lsbCustomDataDirectories.ValueMember = nameof(ListItem.Value);
+                    }
                 }
                 finally
                 {
-                    await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.EndUpdate(), token).ConfigureAwait(false);
+                    lsbCustomDataDirectories.EndUpdate();
                 }
             }
             finally
@@ -1405,8 +1396,7 @@ namespace Chummer
                 Interlocked.Decrement(ref _intSkipRefresh);
             }
 
-            await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.SelectedItem = objOldSelected, token)
-                                          .ConfigureAwait(false);
+            lsbCustomDataDirectories.SelectedItem = objOldSelected;
         }
 
         /// <summary>
@@ -1415,7 +1405,7 @@ namespace Chummer
         private async Task PopulateOptions(CancellationToken token = default)
         {
             await RefreshGlobalSourcebookInfosListView(token).ConfigureAwait(false);
-            await PopulateCustomDataDirectoryListBox(token).ConfigureAwait(false);
+            PopulateCustomDataDirectoryListBox();
 
             await chkAutomaticUpdate.DoThreadSafeAsync(x => x.Checked = GlobalSettings.AutomaticUpdate, token)
                                     .ConfigureAwait(false);
@@ -1517,8 +1507,9 @@ namespace Chummer
                                    .ConfigureAwait(false);
             }
 
-            await PluginsShowOrHide(await chkEnablePlugins.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                                          .ConfigureAwait(false)).ConfigureAwait(false);
+            bool blnShowHidePlugins = await chkEnablePlugins.DoThreadSafeFuncAsync(x => x.Checked, token)
+                .ConfigureAwait(false);
+            await tabOptions.DoThreadSafeAsync(() => PluginsShowOrHide(blnShowHidePlugins), token);
         }
 
         private async Task SaveGlobalOptions(CancellationToken token = default)
@@ -2300,12 +2291,9 @@ namespace Chummer
             }, token);
         }
 
-        private async Task UpdateSourcebookInfoPath(string strPath, CancellationToken token = default)
+        private void UpdateSourcebookInfoPath(string strPath)
         {
-            token.ThrowIfCancellationRequested();
-            string strTag = await lstGlobalSourcebookInfos
-                                  .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
-                            ?? string.Empty;
+            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
             if (_dicSourcebookInfos.TryGetValue(strTag, out SourcebookInfo objFoundSource) && objFoundSource != null)
             {
                 objFoundSource.Path = strPath;
@@ -2317,7 +2305,6 @@ namespace Chummer
                     Code = strTag,
                     Path = strPath
                 };
-                token.ThrowIfCancellationRequested();
                 // If the Sourcebook was not found in the options, add it.
                 _dicSourcebookInfos.AddOrUpdate(strTag, objFoundSource, (x, y) =>
                 {
@@ -2336,22 +2323,16 @@ namespace Chummer
             }
         }
 
-        private Task PluginsShowOrHide(bool show)
+        private void PluginsShowOrHide(bool show)
         {
             if (show)
             {
-                return tabOptions.DoThreadSafeAsync(x =>
-                {
-                    if (!x.TabPages.Contains(tabPlugins))
-                        x.TabPages.Add(tabPlugins);
-                });
+                if (!tabOptions.TabPages.Contains(tabPlugins))
+                    tabOptions.TabPages.Add(tabPlugins);
             }
 
-            return tabOptions.DoThreadSafeAsync(x =>
-            {
-                if (x.TabPages.Contains(tabPlugins))
-                    x.TabPages.Remove(tabPlugins);
-            });
+            if (tabOptions.TabPages.Contains(tabPlugins))
+                tabOptions.TabPages.Remove(tabPlugins);
         }
 
         #endregion Methods
