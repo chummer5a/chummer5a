@@ -1177,7 +1177,7 @@ namespace Chummer
                     return;
                 }
 
-                await lstGlobalSourcebookInfos.DoThreadSafeAsync(() => UpdateSourcebookInfoPath(strNewFileName), token: token);
+                await lstGlobalSourcebookInfos.DoThreadSafeAsync(() => UpdateSourcebookInfoPath(strNewFileName), token: token).ConfigureAwait(false);
                 await txtPDFLocation.DoThreadSafeAsync(x => x.Text = strNewFileName, token).ConfigureAwait(false);
             }
             finally
@@ -1509,7 +1509,7 @@ namespace Chummer
 
             bool blnShowHidePlugins = await chkEnablePlugins.DoThreadSafeFuncAsync(x => x.Checked, token)
                 .ConfigureAwait(false);
-            await tabOptions.DoThreadSafeAsync(() => PluginsShowOrHide(blnShowHidePlugins), token);
+            await tabOptions.DoThreadSafeAsync(() => PluginsShowOrHide(blnShowHidePlugins), token).ConfigureAwait(false);
         }
 
         private async Task SaveGlobalOptions(CancellationToken token = default)

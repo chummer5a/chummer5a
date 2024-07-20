@@ -625,16 +625,16 @@ namespace Chummer
             }
         }
 
-        private void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboLimbCount_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_intLoading > 0 || _intSkipLimbCountUpdate > 0)
                 return;
 
-            string strLimbCount = cboLimbCount.SelectedValue?.ToString();
+            string strLimbCount = await cboLimbCount.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strLimbCount))
             {
-                _objCharacterSettings.LimbCount = 6;
-                _objCharacterSettings.ExcludeLimbSlot = string.Empty;
+                await _objCharacterSettings.SetLimbCountAsync(6).ConfigureAwait(false);
+                await _objCharacterSettings.SetExcludeLimbSlotAsync(string.Empty).ConfigureAwait(false);
             }
             else
             {
@@ -643,30 +643,30 @@ namespace Chummer
                 {
                     if (int.TryParse(strLimbCount, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                      out int intLimbCount))
-                        _objCharacterSettings.LimbCount = intLimbCount;
+                        await _objCharacterSettings.SetLimbCountAsync(intLimbCount).ConfigureAwait(false);
                     else
                     {
                         Utils.BreakIfDebug();
-                        _objCharacterSettings.LimbCount = 6;
+                        await _objCharacterSettings.SetLimbCountAsync(6).ConfigureAwait(false);
                     }
 
-                    _objCharacterSettings.ExcludeLimbSlot = string.Empty;
+                    await _objCharacterSettings.SetExcludeLimbSlotAsync(string.Empty).ConfigureAwait(false);
                 }
                 else
                 {
                     if (int.TryParse(strLimbCount.Substring(0, intSeparatorIndex), NumberStyles.Any,
                                      GlobalSettings.InvariantCultureInfo, out int intLimbCount))
                     {
-                        _objCharacterSettings.LimbCount = intLimbCount;
-                        _objCharacterSettings.ExcludeLimbSlot = intSeparatorIndex + 1 < strLimbCount.Length
+                        await _objCharacterSettings.SetLimbCountAsync(intLimbCount).ConfigureAwait(false);
+                        await _objCharacterSettings.SetExcludeLimbSlotAsync(intSeparatorIndex + 1 < strLimbCount.Length
                             ? strLimbCount.Substring(intSeparatorIndex + 1)
-                            : string.Empty;
+                            : string.Empty).ConfigureAwait(false);
                     }
                     else
                     {
                         Utils.BreakIfDebug();
-                        _objCharacterSettings.LimbCount = 6;
-                        _objCharacterSettings.ExcludeLimbSlot = string.Empty;
+                        await _objCharacterSettings.SetLimbCountAsync(6).ConfigureAwait(false);
+                        await _objCharacterSettings.SetExcludeLimbSlotAsync(string.Empty).ConfigureAwait(false);
                     }
                 }
             }
@@ -1565,9 +1565,10 @@ namespace Chummer
                         }
 
                         string strLimbSlot
-                            = _objCharacterSettings.LimbCount.ToString(GlobalSettings.InvariantCultureInfo);
-                        if (!string.IsNullOrEmpty(_objCharacterSettings.ExcludeLimbSlot))
-                            strLimbSlot += '<' + _objCharacterSettings.ExcludeLimbSlot;
+                            = (await _objCharacterSettings.GetLimbCountAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                        string strExcludeLimbSlot = await _objCharacterSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(strExcludeLimbSlot))
+                            strLimbSlot += '<' + strExcludeLimbSlot;
 
                         await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount, token).ConfigureAwait(false);
                         await cboLimbCount.DoThreadSafeAsync(x =>

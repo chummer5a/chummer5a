@@ -34712,13 +34712,17 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (string.IsNullOrEmpty(strLimbSlot))
                 {
-                    return Settings.LimbCount + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.AddLimb, token: token).ConfigureAwait(false))
-                                                                  .StandardRound();
+                    return await (await GetSettingsAsync(token).ConfigureAwait(false)).GetLimbCountAsync(token).ConfigureAwait(false) + (await ImprovementManager
+                            .ValueOfAsync(this, Improvement.ImprovementType.AddLimb, token: token)
+                            .ConfigureAwait(false))
+                        .StandardRound();
                 }
 
                 int intReturn =
-                    1 + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.AddLimb, false, strLimbSlot, token: token).ConfigureAwait(false))
-                                          .StandardRound();
+                    1 + (await ImprovementManager
+                        .ValueOfAsync(this, Improvement.ImprovementType.AddLimb, false, strLimbSlot, token: token)
+                        .ConfigureAwait(false))
+                    .StandardRound();
                 if (strLimbSlot == "arm" || strLimbSlot == "leg")
                     ++intReturn;
                 return intReturn;

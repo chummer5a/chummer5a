@@ -1651,7 +1651,8 @@ namespace Chummer.Backend.Attributes
                                 return;
                             if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
-                                if ((await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).ExcludeLimbSlot
+                                if ((await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                        .GetExcludeLimbSlotAsync(token).ConfigureAwait(false))
                                     .Contains(objCyberware.LimbSlot))
                                     return;
 
@@ -3421,14 +3422,16 @@ namespace Chummer.Backend.Attributes
             if (e.PropertyNames.Contains(nameof(Character.LimbCount)))
             {
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                if (!objSettings.DontUseCyberlimbCalculation
+                if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
                     && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
                     && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                        async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                              await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
-                                                  .ConfigureAwait(false) &&
-                                              !objSettings.ExcludeLimbSlot.Contains(await objCyberware
-                                                  .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false))
+                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                      .ConfigureAwait(false) &&
+                                                  !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                      await objCyberware
+                                                          .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                        .ConfigureAwait(false))
                 {
                     lstProperties.Add(nameof(TotalValue));
                 }
@@ -3449,8 +3452,9 @@ namespace Chummer.Backend.Attributes
                         async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
                                               await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
                                                   .ConfigureAwait(false) &&
-                                              !objSettings.ExcludeLimbSlot.Contains(await objCyberware
-                                                  .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                              !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                  await objCyberware
+                                                      .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
                     .ConfigureAwait(false))
                 {
                     lstProperties.Add(nameof(TotalValue));
@@ -3467,8 +3471,9 @@ namespace Chummer.Backend.Attributes
                         async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
                                               await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
                                                   .ConfigureAwait(false) &&
-                                              !objSettings.ExcludeLimbSlot.Contains(await objCyberware
-                                                  .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                              !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                  await objCyberware
+                                                      .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
                     .ConfigureAwait(false))
                 {
                     lstProperties.Add(nameof(TotalValue));
