@@ -16051,31 +16051,43 @@ namespace Chummer
         /// </summary>
         public void ClearMagic(bool blnKeepAdeptEligible, CancellationToken token = default)
         {
-            using (LockObject.EnterUpgradeableReadLock(token))
+            using (LockObject.EnterWriteLock(token))
             {
-                if (ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpells, token: token)
+                if (ImprovementManager
+                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpells, token: token)
                         .Count > 0
                     || ImprovementManager
-                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsATT, token: token).Count > 0
+                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsATT,
+                            token: token).Count > 0
                     || ImprovementManager
-                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsSkill, token: token).Count >
+                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsSkill,
+                            token: token).Count >
                     0)
                 {
                     // Run through all of the Spells and remove their Improvements.
-                    using (LockObject.EnterWriteLock(token))
+                    if (Spells.All(x =>
+                            x.Grade == 0 && (!blnKeepAdeptEligible || x.Category != "Rituals" ||
+                                             x.Descriptors.Contains("Spell"))))
+                    {
+                        List<string> lstIds = Spells.Select(x => x.InternalId).ToList();
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
+                            lstIds, token: token);
+                        Spells.Clear();
+                    }
+                    else
                     {
                         for (int i = Spells.Count - 1; i >= 0; --i)
                         {
                             if (i < Spells.Count)
                             {
                                 Spell objToRemove = Spells[i];
-                                if (objToRemove.Grade == 0)
+                                if (objToRemove.Grade == 0 &&
+                                    (!blnKeepAdeptEligible || objToRemove.Category != "Rituals" ||
+                                     objToRemove.Descriptors.Contains("Spell")))
                                 {
-                                    if (blnKeepAdeptEligible && objToRemove.Category == "Rituals" &&
-                                        !objToRemove.Descriptors.Contains("Spell"))
-                                        continue;
                                     // Remove the Improvements created by the Spell.
-                                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
+                                    ImprovementManager.RemoveImprovements(this,
+                                        Improvement.ImprovementSource.Spell,
                                         objToRemove.InternalId, token: token);
                                     Spells.RemoveAt(i);
                                 }
@@ -16084,7 +16096,11 @@ namespace Chummer
                     }
                 }
 
-                using (LockObject.EnterWriteLock(token))
+                if (Spirits.All(x => x.EntityType == SpiritType.Spirit))
+                {
+                    Spirits.Clear();
+                }
+                else
                 {
                     for (int i = Spirits.Count - 1; i >= 0; --i)
                     {
@@ -16106,53 +16122,67 @@ namespace Chummer
         /// </summary>
         public async Task ClearMagicAsync(bool blnKeepAdeptEligible, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpells, token: token).ConfigureAwait(false))
-                        .Count > 0
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpells,
+                            token: token).ConfigureAwait(false))
+                    .Count > 0
                     || (await ImprovementManager
-                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpellsATT, token: token).ConfigureAwait(false)).Count > 0
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpellsATT,
+                            token: token).ConfigureAwait(false)).Count > 0
                     || (await ImprovementManager
-                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpellsSkill, token: token).ConfigureAwait(false)).Count >
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.FreeSpellsSkill,
+                            token: token).ConfigureAwait(false)).Count >
                     0)
                 {
+                    ThreadSafeObservableCollection<Spell> lstSpells =
+                        await GetSpellsAsync(token).ConfigureAwait(false);
                     // Run through all of the Spells and remove their Improvements.
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    if (await lstSpells
+                            .AllAsync(
+                                x => x.Grade == 0 && (!blnKeepAdeptEligible || x.Category != "Rituals" ||
+                                                      x.Descriptors.Contains("Spell")), token: token)
+                            .ConfigureAwait(false))
                     {
-                        token.ThrowIfCancellationRequested();
-                        ThreadSafeObservableCollection<Spell> lstSpells = await GetSpellsAsync(token).ConfigureAwait(false);
+                        List<string> lstIds = new List<string>();
+                        await lstSpells.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                        await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Spell,
+                            lstIds, token: token).ConfigureAwait(false);
+                        await lstSpells.ClearAsync(token).ConfigureAwait(false);
+                    }
+                    else
+                    {
                         for (int i = await lstSpells.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
                             if (i < await lstSpells.GetCountAsync(token).ConfigureAwait(false))
                             {
                                 Spell objToRemove = await lstSpells.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                if (objToRemove.Grade == 0)
+                                if (objToRemove.Grade == 0 &&
+                                    (!blnKeepAdeptEligible || objToRemove.Category != "Rituals" ||
+                                     objToRemove.Descriptors.Contains("Spell")))
                                 {
-                                    if (blnKeepAdeptEligible && objToRemove.Category == "Rituals" &&
-                                        !objToRemove.Descriptors.Contains("Spell"))
-                                        continue;
                                     // Remove the Improvements created by the Spell.
-                                    await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Spell,
+                                    await ImprovementManager.RemoveImprovementsAsync(this,
+                                        Improvement.ImprovementSource.Spell,
                                         objToRemove.InternalId, token: token).ConfigureAwait(false);
                                     await lstSpells.RemoveAtAsync(i, token).ConfigureAwait(false);
                                 }
                             }
                         }
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
 
-                IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                ThreadSafeObservableCollection<Spirit> lstSpirits =
+                    await GetSpiritsAsync(token).ConfigureAwait(false);
+                if (await lstSpirits.AllAsync(async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit, token).ConfigureAwait(false))
                 {
-                    token.ThrowIfCancellationRequested();
-                    ThreadSafeObservableCollection<Spirit> lstSpirits = await GetSpiritsAsync(token).ConfigureAwait(false);
+                    await lstSpirits.ClearAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
                     for (int i = await lstSpirits.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
                         if (i < await lstSpirits.GetCountAsync(token).ConfigureAwait(false))
@@ -16164,10 +16194,6 @@ namespace Chummer
                             }
                         }
                     }
-                }
-                finally
-                {
-                    await objLocker3.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -16181,23 +16207,39 @@ namespace Chummer
         /// </summary>
         public void ClearAdeptPowers(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                // Run through all powers and remove the ones not added by improvements or foci
-                for (int i = Powers.Count - 1; i >= 0; --i)
+                if (Powers.All(x => x.FreeLevels == 0 && x.FreePoints == 0))
                 {
-                    if (i < Powers.Count)
+                    List<string> lstIds = Powers.Select(x => x.InternalId).ToList();
+                    using (LockObject.EnterWriteLock(token))
                     {
-                        Power objToRemove = Powers[i];
-                        if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, lstIds,
+                            token: token);
+                        Powers.Clear();
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock(token))
+                    {
+                        // Run through all powers and remove the ones not added by improvements or foci
+                        for (int i = Powers.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Improvements created by the Power.
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power,
-                                objToRemove.InternalId, token: token);
-                            Powers.RemoveAt(i);
+                            if (i < Powers.Count)
+                            {
+                                Power objToRemove = Powers[i];
+                                if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
+                                {
+                                    // Remove the Improvements created by the Power.
+                                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power,
+                                        objToRemove.InternalId, token: token);
+                                    Powers.RemoveAt(i);
+                                }
+                                else
+                                    objToRemove.Rating = 0;
+                            }
                         }
-                        else
-                            objToRemove.Rating = 0;
                     }
                 }
             }
@@ -16208,26 +16250,58 @@ namespace Chummer
         /// </summary>
         public async Task ClearAdeptPowersAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 ThreadSafeBindingList<Power> lstPowers = await GetPowersAsync(token).ConfigureAwait(false);
-                // Run through all powers and remove the ones not added by improvements or foci
-                for (int i = await lstPowers.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                if (await lstPowers.AllAsync(async x => await x.GetFreeLevelsAsync(token).ConfigureAwait(false) == 0 && await x.GetFreePointsAsync(token).ConfigureAwait(false) == 0, token).ConfigureAwait(false))
                 {
-                    if (i < await lstPowers.GetCountAsync(token).ConfigureAwait(false))
+                    List<string> lstIds = new List<string>();
+                    await lstPowers.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        Power objToRemove = await lstPowers.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (await objToRemove.GetFreeLevelsAsync(token).ConfigureAwait(false) == 0 && await objToRemove.GetFreePointsAsync(token).ConfigureAwait(false) == 0)
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Power,
+                            lstIds,
+                            token: token).ConfigureAwait(false);
+                        await lstPowers.ClearAsync(token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        // Run through all powers and remove the ones not added by improvements or foci
+                        for (int i = await lstPowers.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            // Remove the Improvements created by the Power.
-                            await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.Power,
-                                objToRemove.InternalId, token: token).ConfigureAwait(false);
-                            await lstPowers.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            if (i < await lstPowers.GetCountAsync(token).ConfigureAwait(false))
+                            {
+                                Power objToRemove = await lstPowers.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (await objToRemove.GetFreeLevelsAsync(token).ConfigureAwait(false) == 0 &&
+                                    await objToRemove.GetFreePointsAsync(token).ConfigureAwait(false) == 0)
+                                {
+                                    // Remove the Improvements created by the Power.
+                                    await ImprovementManager.RemoveImprovementsAsync(this,
+                                        Improvement.ImprovementSource.Power,
+                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
+                                    await lstPowers.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                }
+                                else
+                                    await objToRemove.SetRatingAsync(0, token).ConfigureAwait(false);
+                            }
                         }
-                        else
-                            await objToRemove.SetRatingAsync(0, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -16260,14 +16334,21 @@ namespace Chummer
                     }
                 }
 
-                for (int i = Spirits.Count - 1; i >= 0; --i)
+                if (Spirits.All(x => x.EntityType == SpiritType.Sprite))
                 {
-                    if (i < Spirits.Count)
+                    Spirits.Clear();
+                }
+                else
+                {
+                    for (int i = Spirits.Count - 1; i >= 0; --i)
                     {
-                        Spirit objToRemove = Spirits[i];
-                        if (objToRemove.EntityType == SpiritType.Sprite)
+                        if (i < Spirits.Count)
                         {
-                            Spirits.RemoveAt(i);
+                            Spirit objToRemove = Spirits[i];
+                            if (objToRemove.EntityType == SpiritType.Sprite)
+                            {
+                                Spirits.RemoveAt(i);
+                            }
                         }
                     }
                 }
@@ -16285,31 +16366,51 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 ThreadSafeObservableCollection<ComplexForm> lstComplexForms = await GetComplexFormsAsync(token).ConfigureAwait(false);
                 // Run through all of the Complex Forms and remove their Improvements.
-                for (int i = await lstComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                if (await lstComplexForms.AllAsync(x => x.Grade == 0, token).ConfigureAwait(false))
                 {
-                    if (i < await lstComplexForms.GetCountAsync(token).ConfigureAwait(false))
+                    List<string> lstIds = new List<string>();
+                    await lstComplexForms.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                    await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.ComplexForm,
+                        lstIds,
+                        token: token).ConfigureAwait(false);
+                    await lstComplexForms.ClearAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
+                    for (int i = await lstComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
-                        ComplexForm objToRemove = await lstComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objToRemove.Grade == 0)
+                        if (i < await lstComplexForms.GetCountAsync(token).ConfigureAwait(false))
                         {
-                            // Remove the Improvements created by the Spell.
-                            await ImprovementManager.RemoveImprovementsAsync(this,
-                                Improvement.ImprovementSource.ComplexForm,
-                                objToRemove.InternalId, token: token).ConfigureAwait(false);
-                            await lstComplexForms.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            ComplexForm objToRemove =
+                                await lstComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objToRemove.Grade == 0)
+                            {
+                                // Remove the Improvements created by the Spell.
+                                await ImprovementManager.RemoveImprovementsAsync(this,
+                                    Improvement.ImprovementSource.ComplexForm,
+                                    objToRemove.InternalId, token: token).ConfigureAwait(false);
+                                await lstComplexForms.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
 
                 ThreadSafeObservableCollection<Spirit> lstSpirits = await GetSpiritsAsync(token).ConfigureAwait(false);
-                for (int i = await lstSpirits.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                if (await lstSpirits.AllAsync(async x => await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Sprite, token).ConfigureAwait(false))
                 {
-                    if (i < await lstSpirits.GetCountAsync(token).ConfigureAwait(false))
+                    await lstSpirits.ClearAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
+                    for (int i = await lstSpirits.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
-                        Spirit objToRemove = await lstSpirits.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objToRemove.EntityType == SpiritType.Sprite)
+                        if (i < await lstSpirits.GetCountAsync(token).ConfigureAwait(false))
                         {
-                            await lstSpirits.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            Spirit objToRemove = await lstSpirits.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objToRemove.EntityType == SpiritType.Sprite)
+                            {
+                                await lstSpirits.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -16325,20 +16426,35 @@ namespace Chummer
         /// </summary>
         public void ClearAdvancedPrograms(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                // Run through all advanced programs and remove the ones not added by improvements
-                for (int i = AIPrograms.Count - 1; i >= 0; --i)
+                if (AIPrograms.All(x => x.CanDelete))
                 {
-                    if (i < AIPrograms.Count)
+                    List<string> lstIds = AIPrograms.Select(x => x.InternalId).ToList();
+                    using (LockObject.EnterWriteLock(token))
                     {
-                        AIProgram objToRemove = AIPrograms[i];
-                        if (objToRemove.CanDelete)
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, lstIds, token: token);
+                        AIPrograms.Clear();
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock(token))
+                    {
+                        // Run through all advanced programs and remove the ones not added by improvements
+                        for (int i = AIPrograms.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Improvements created by the Program.
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram,
-                                objToRemove.InternalId, token: token);
-                            AIPrograms.RemoveAt(i);
+                            if (i < AIPrograms.Count)
+                            {
+                                AIProgram objToRemove = AIPrograms[i];
+                                if (objToRemove.CanDelete)
+                                {
+                                    // Remove the Improvements created by the Program.
+                                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram,
+                                        objToRemove.InternalId, token: token);
+                                    AIPrograms.RemoveAt(i);
+                                }
+                            }
                         }
                     }
                 }
@@ -16350,23 +16466,55 @@ namespace Chummer
         /// </summary>
         public async Task ClearAdvancedProgramsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                ThreadSafeObservableCollection<AIProgram> lstAIPrograms = await GetAIProgramsAsync(token).ConfigureAwait(false);
-                for (int i = await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                if (await AIPrograms.AllAsync(x => x.CanDelete, token: token).ConfigureAwait(false))
                 {
-                    if (i < await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false))
+                    List<string> lstIds = new List<string>();
+                    await AIPrograms.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        AIProgram objToRemove = await lstAIPrograms.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objToRemove.CanDelete)
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.AIProgram, lstIds,
+                            token: token).ConfigureAwait(false);
+                        await AIPrograms.ClearAsync(token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        ThreadSafeObservableCollection<AIProgram> lstAIPrograms =
+                            await GetAIProgramsAsync(token).ConfigureAwait(false);
+                        for (int i = await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            // Remove the Improvements created by the Program.
-                            await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.AIProgram,
-                                objToRemove.InternalId, token: token).ConfigureAwait(false);
-                            await lstAIPrograms.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            if (i < await lstAIPrograms.GetCountAsync(token).ConfigureAwait(false))
+                            {
+                                AIProgram objToRemove =
+                                    await lstAIPrograms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (objToRemove.CanDelete)
+                                {
+                                    // Remove the Improvements created by the Program.
+                                    await ImprovementManager.RemoveImprovementsAsync(this,
+                                        Improvement.ImprovementSource.AIProgram,
+                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
+                                    await lstAIPrograms.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                }
+                            }
                         }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -16520,19 +16668,35 @@ namespace Chummer
         /// </summary>
         public void ClearCritterPowers(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
-                for (int i = CritterPowers.Count - 1; i >= 0; --i)
+                if (CritterPowers.All(x => x.Grade >= 0))
                 {
-                    if (i < CritterPowers.Count)
+                    List<string> lstIds = CritterPowers.Select(x => x.InternalId).ToList();
+                    using (LockObject.EnterWriteLock(token))
                     {
-                        CritterPower objToRemove = CritterPowers[i];
-                        if (objToRemove.Grade >= 0)
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower, lstIds, token: token);
+                        CritterPowers.Clear();
+                    }
+                }
+                else
+                {
+                    using (LockObject.EnterWriteLock(token))
+                    {
+                        for (int i = CritterPowers.Count - 1; i >= 0; --i)
                         {
-                            // Remove the Improvements created by the Metamagic.
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower,
-                                objToRemove.InternalId, token: token);
-                            CritterPowers.RemoveAt(i);
+                            if (i < CritterPowers.Count)
+                            {
+                                CritterPower objToRemove = CritterPowers[i];
+                                if (objToRemove.Grade >= 0)
+                                {
+                                    // Remove the Improvements created by the Metamagic.
+                                    ImprovementManager.RemoveImprovements(this,
+                                        Improvement.ImprovementSource.CritterPower,
+                                        objToRemove.InternalId, token: token);
+                                    CritterPowers.RemoveAt(i);
+                                }
+                            }
                         }
                     }
                 }
@@ -16544,24 +16708,55 @@ namespace Chummer
         /// </summary>
         public async Task ClearCritterPowersAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                ThreadSafeObservableCollection<CritterPower> lstCritterPowers = await GetCritterPowersAsync(token).ConfigureAwait(false);
-                for (int i = await lstCritterPowers.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                ThreadSafeObservableCollection<CritterPower> lstCritterPowers =
+                    await GetCritterPowersAsync(token).ConfigureAwait(false);
+                if (await lstCritterPowers.AllAsync(x => x.Grade >= 0, token: token).ConfigureAwait(false))
                 {
-                    if (i < await lstCritterPowers.GetCountAsync(token).ConfigureAwait(false))
+                    List<string> lstIds = new List<string>();
+                    await lstCritterPowers.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        CritterPower objToRemove = await lstCritterPowers.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objToRemove.Grade >= 0)
+                        token.ThrowIfCancellationRequested();
+                        await ImprovementManager.RemoveImprovementsAsync(this, Improvement.ImprovementSource.CritterPower, lstIds,
+                            token: token).ConfigureAwait(false);
+                        await lstCritterPowers.ClearAsync(token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        for (int i = await lstCritterPowers.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            // Remove the Improvements created by the Metamagic.
-                            await ImprovementManager.RemoveImprovementsAsync(this,
-                                Improvement.ImprovementSource.CritterPower,
-                                objToRemove.InternalId, token: token).ConfigureAwait(false);
-                            await lstCritterPowers.RemoveAtAsync(i, token).ConfigureAwait(false);
+                            if (i < await lstCritterPowers.GetCountAsync(token).ConfigureAwait(false))
+                            {
+                                CritterPower objToRemove =
+                                    await lstCritterPowers.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                if (objToRemove.Grade >= 0)
+                                {
+                                    // Remove the Improvements created by the Metamagic.
+                                    await ImprovementManager.RemoveImprovementsAsync(this,
+                                        Improvement.ImprovementSource.CritterPower,
+                                        objToRemove.InternalId, token: token).ConfigureAwait(false);
+                                    await lstCritterPowers.RemoveAtAsync(i, token).ConfigureAwait(false);
+                                }
+                            }
                         }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
