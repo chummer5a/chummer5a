@@ -2186,17 +2186,17 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
+
+                    List<string> lstProperties = new List<string>(3);
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                    OnMultiplePropertiesChanged(lstProperties);
                 }
-
-                List<string> lstProperties = new List<string>(3);
-                if (blnMinChanged)
-                    lstProperties.Add(nameof(RawMetatypeMinimum));
-                if (blnMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeMaximum));
-                if (blnAugMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
-
-                OnMultiplePropertiesChanged(lstProperties);
             }
         }
 
@@ -2225,21 +2225,21 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
+
+                    List<string> lstProperties = new List<string>(3);
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                List<string> lstProperties = new List<string>(3);
-                if (blnMinChanged)
-                    lstProperties.Add(nameof(RawMetatypeMinimum));
-                if (blnMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeMaximum));
-                if (blnAugMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
-
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
             }
             finally
             {
@@ -2273,21 +2273,21 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
+
+                    List<string> lstProperties = new List<string>(5);
+                    if (blnBaseChanged)
+                        lstProperties.Add(nameof(Base));
+                    if (blnKarmaChanged)
+                        lstProperties.Add(nameof(Karma));
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                    OnMultiplePropertiesChanged(lstProperties);
                 }
-
-                List<string> lstProperties = new List<string>(5);
-                if (blnBaseChanged)
-                    lstProperties.Add(nameof(Base));
-                if (blnKarmaChanged)
-                    lstProperties.Add(nameof(Karma));
-                if (blnMinChanged)
-                    lstProperties.Add(nameof(RawMetatypeMinimum));
-                if (blnMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeMaximum));
-                if (blnAugMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
-
-                OnMultiplePropertiesChanged(lstProperties);
             }
         }
 
@@ -2322,25 +2322,25 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeMin = intMin;
                     _intMetatypeMax = intMax;
                     _intMetatypeAugMax = intAug;
+
+                    List<string> lstProperties = new List<string>(5);
+                    if (blnBaseChanged)
+                        lstProperties.Add(nameof(Base));
+                    if (blnKarmaChanged)
+                        lstProperties.Add(nameof(Karma));
+                    if (blnMinChanged)
+                        lstProperties.Add(nameof(RawMetatypeMinimum));
+                    if (blnMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeMaximum));
+                    if (blnAugMaxChanged)
+                        lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
+
+                    await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                List<string> lstProperties = new List<string>(5);
-                if (blnBaseChanged)
-                    lstProperties.Add(nameof(Base));
-                if (blnKarmaChanged)
-                    lstProperties.Add(nameof(Karma));
-                if (blnMinChanged)
-                    lstProperties.Add(nameof(RawMetatypeMinimum));
-                if (blnMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeMaximum));
-                if (blnAugMaxChanged)
-                    lstProperties.Add(nameof(RawMetatypeAugmentedMaximum));
-
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
             }
             finally
             {

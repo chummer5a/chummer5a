@@ -1697,11 +1697,10 @@ namespace Chummer.Backend.Skills
                     {
                         _lstAffectedSkills.Add(skill);
                         skill.MultiplePropertiesChangedAsync += SkillOnMultiplePropertiesChanged;
+                        if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
+                            OnPropertyChanged(nameof(SkillList));
                     }
                 }
-
-                if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
-                    OnPropertyChanged(nameof(SkillList));
             }
         }
 
@@ -1749,6 +1748,8 @@ namespace Chummer.Backend.Skills
                         token.ThrowIfCancellationRequested();
                         _lstAffectedSkills.Add(skill);
                         skill.MultiplePropertiesChangedAsync += SkillOnMultiplePropertiesChanged;
+                        if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
+                            await OnPropertyChangedAsync(nameof(SkillList), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -1759,9 +1760,6 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
-                    await OnPropertyChangedAsync(nameof(SkillList), token).ConfigureAwait(false);
             }
             finally
             {
@@ -1778,10 +1776,9 @@ namespace Chummer.Backend.Skills
                     if (!_lstAffectedSkills.Remove(skill))
                         return;
                     skill.MultiplePropertiesChangedAsync -= SkillOnMultiplePropertiesChanged;
+                    if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
+                        OnPropertyChanged(nameof(SkillList));
                 }
-
-                if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
-                    OnPropertyChanged(nameof(SkillList));
             }
         }
 
@@ -1800,14 +1797,13 @@ namespace Chummer.Backend.Skills
                     if (!_lstAffectedSkills.Remove(skill))
                         return;
                     skill.MultiplePropertiesChangedAsync -= SkillOnMultiplePropertiesChanged;
+                    if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
+                        await OnPropertyChangedAsync(nameof(SkillList), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                if (!skill.IsLoading && _objCharacter?.SkillsSection?.IsLoading != true)
-                    await OnPropertyChangedAsync(nameof(SkillList), token).ConfigureAwait(false);
             }
             finally
             {

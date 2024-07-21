@@ -200,8 +200,10 @@ namespace Chummer.Backend.Skills
                     if (_blnAllowUpgrade == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnAllowUpgrade = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -246,8 +248,8 @@ namespace Chummer.Backend.Skills
                     {
                         LoadSkillFromData(value);
                         Name = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -287,13 +289,12 @@ namespace Chummer.Backend.Skills
                     token.ThrowIfCancellationRequested();
                     await LoadSkillFromDataAsync(value, token).ConfigureAwait(false);
                     await SetNameAsync(value, token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(WritableName), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(WritableName), token).ConfigureAwait(false);
             }
             finally
             {
@@ -630,21 +631,25 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // Interlocked guarantees thread safety here without write lock
-                    string strOldType = Interlocked.Exchange(ref _strType, value);
-                    if (strOldType == value)
+                    if (_strType == value)
                         return;
-                    string strNewAttributeValue = string.Empty;
-                    bool blnSetDefaultAttribute =
-                        CharacterObject?.SkillsSection?.KnowledgeSkillCategoriesMap.TryGetValue(value, out strNewAttributeValue) ?? false;
-                    bool blnUnsetNativeLanguage = value != "Language" && strOldType == "Language";
-                    if (blnSetDefaultAttribute || blnUnsetNativeLanguage)
+                    using (LockObject.EnterWriteLock())
                     {
-                        bool blnTemp1 = false;
-                        bool blnTemp2 = false;
-                        using (LockObject.EnterWriteLock())
+                        // Interlocked guarantees thread safety here without write lock
+                        string strOldType = Interlocked.Exchange(ref _strType, value);
+                        if (strOldType == value)
+                            return;
+                        string strNewAttributeValue = string.Empty;
+                        bool blnSetDefaultAttribute =
+                            CharacterObject?.SkillsSection?.KnowledgeSkillCategoriesMap.TryGetValue(value,
+                                out strNewAttributeValue) ?? false;
+                        bool blnUnsetNativeLanguage = value != "Language" && strOldType == "Language";
+                        if (blnSetDefaultAttribute || blnUnsetNativeLanguage)
                         {
-                            if (blnSetDefaultAttribute && InterlockExchangeDefaultAttribute(strNewAttributeValue) != strNewAttributeValue)
+                            bool blnTemp1 = false;
+                            bool blnTemp2 = false;
+                            if (blnSetDefaultAttribute && InterlockExchangeDefaultAttribute(strNewAttributeValue) !=
+                                strNewAttributeValue)
                             {
                                 if (IsLoading)
                                     RecacheAttribute();
@@ -656,22 +661,23 @@ namespace Chummer.Backend.Skills
                             {
                                 blnTemp2 = true;
                             }
-                        }
 
-                        if (blnTemp1)
-                        {
-                            if (blnTemp2)
-                                this.OnMultiplePropertyChanged(nameof(Type), nameof(DefaultAttribute), nameof(IsNativeLanguage));
+                            if (blnTemp1)
+                            {
+                                if (blnTemp2)
+                                    this.OnMultiplePropertyChanged(nameof(Type), nameof(DefaultAttribute),
+                                        nameof(IsNativeLanguage));
+                                else
+                                    this.OnMultiplePropertyChanged(nameof(Type), nameof(DefaultAttribute));
+                            }
+                            else if (blnTemp2)
+                                this.OnMultiplePropertyChanged(nameof(Type), nameof(IsNativeLanguage));
                             else
-                                this.OnMultiplePropertyChanged(nameof(Type), nameof(DefaultAttribute));
+                                OnPropertyChanged();
                         }
-                        else if (blnTemp2)
-                            this.OnMultiplePropertyChanged(nameof(Type), nameof(IsNativeLanguage));
                         else
                             OnPropertyChanged();
                     }
-                    else
-                        OnPropertyChanged();
                 }
             }
         }
@@ -696,26 +702,31 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                // Interlocked guarantees thread safety here without write lock
-                string strOldType = Interlocked.Exchange(ref _strType, value);
-                if (strOldType == value)
+                if (_strType == value)
                     return;
-                string strNewAttributeValue = string.Empty;
-                SkillsSection objSkillsSection =
-                    CharacterObject != null ? await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false) : null;
-                bool blnSetDefaultAttribute =
-                    objSkillsSection != null && (await objSkillsSection.GetKnowledgeSkillCategoriesMapAsync(token)
-                        .ConfigureAwait(false))
-                    .TryGetValue(value,
-                        out strNewAttributeValue);
-                bool blnUnsetNativeLanguage = value != "Language" && strOldType == "Language";
-                if (blnSetDefaultAttribute || blnUnsetNativeLanguage)
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    bool blnTemp1 = false;
-                    bool blnTemp2 = false;
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    token.ThrowIfCancellationRequested();
+                    // Interlocked guarantees thread safety here without write lock
+                    string strOldType = Interlocked.Exchange(ref _strType, value);
+                    if (strOldType == value)
+                        return;
+                    string strNewAttributeValue = string.Empty;
+                    SkillsSection objSkillsSection =
+                        CharacterObject != null
+                            ? await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false)
+                            : null;
+                    bool blnSetDefaultAttribute =
+                        objSkillsSection != null && (await objSkillsSection.GetKnowledgeSkillCategoriesMapAsync(token)
+                            .ConfigureAwait(false))
+                        .TryGetValue(value,
+                            out strNewAttributeValue);
+                    bool blnUnsetNativeLanguage = value != "Language" && strOldType == "Language";
+                    if (blnSetDefaultAttribute || blnUnsetNativeLanguage)
                     {
+                        bool blnTemp1 = false;
+                        bool blnTemp2 = false;
                         token.ThrowIfCancellationRequested();
                         if (blnSetDefaultAttribute && InterlockExchangeDefaultAttribute(strNewAttributeValue) !=
                             strNewAttributeValue)
@@ -730,29 +741,29 @@ namespace Chummer.Backend.Skills
                         {
                             blnTemp2 = true;
                         }
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
 
-                    if (blnTemp1)
-                    {
-                        if (blnTemp2)
-                            await this.OnMultiplePropertyChangedAsync(token, nameof(Type), nameof(DefaultAttribute),
-                                nameof(IsNativeLanguage)).ConfigureAwait(false);
-                        else
-                            await this.OnMultiplePropertyChangedAsync(token, nameof(Type), nameof(DefaultAttribute))
+                        if (blnTemp1)
+                        {
+                            if (blnTemp2)
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(Type), nameof(DefaultAttribute),
+                                    nameof(IsNativeLanguage)).ConfigureAwait(false);
+                            else
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(Type), nameof(DefaultAttribute))
+                                    .ConfigureAwait(false);
+                        }
+                        else if (blnTemp2)
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(Type), nameof(IsNativeLanguage))
                                 .ConfigureAwait(false);
+                        else
+                            await OnPropertyChangedAsync(nameof(Type), token).ConfigureAwait(false);
                     }
-                    else if (blnTemp2)
-                        await this.OnMultiplePropertyChangedAsync(token, nameof(Type), nameof(IsNativeLanguage))
-                            .ConfigureAwait(false);
                     else
                         await OnPropertyChangedAsync(nameof(Type), token).ConfigureAwait(false);
                 }
-                else
-                    await OnPropertyChangedAsync(nameof(Type), token).ConfigureAwait(false);
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -779,21 +790,22 @@ namespace Chummer.Backend.Skills
                 int intNewValue = value.ToInt32();
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // Interlocked guarantees thread safety here without write lock
-                    if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
+                    if (_intIsNativeLanguage == intNewValue)
                         return;
-                    if (value)
+                    using (LockObject.EnterWriteLock())
                     {
-                        using (LockObject.EnterWriteLock())
+                        if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
+                            return;
+                        if (value)
                         {
                             Base = 0;
                             Karma = 0;
                             BuyWithKarma = false;
                             Specializations.Clear();
                         }
-                    }
 
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }

@@ -141,7 +141,7 @@ namespace Chummer
                     await chkBound.DoThreadSafeAsync(x => x.Text = strText2, _objMyToken).ConfigureAwait(false);
                     await cmdLink
                         .SetToolTipTextAsync(await LanguageManager
-                            .GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName)
+                            .GetStringAsync(!string.IsNullOrEmpty(await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false))
                                 ? "Tip_Spirit_OpenFile"
                                 : "Tip_Spirit_LinkSpirit", token: _objMyToken).ConfigureAwait(false), _objMyToken).ConfigureAwait(false);
                     string strTooltip =
@@ -164,7 +164,7 @@ namespace Chummer
                     await chkFettered.DoThreadSafeAsync(x => x.Text = strText4, _objMyToken).ConfigureAwait(false);
                     await cmdLink
                         .SetToolTipTextAsync(await LanguageManager
-                            .GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName)
+                            .GetStringAsync(!string.IsNullOrEmpty(await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false))
                                 ? "Tip_Sprite_OpenFile"
                                 : "Tip_Sprite_LinkSpirit", token: _objMyToken).ConfigureAwait(false), _objMyToken).ConfigureAwait(false);
                     string strTooltip =
@@ -341,13 +341,15 @@ namespace Chummer
                     bool blnUseRelative = false;
 
                     // Make sure the file still exists before attempting to load it.
-                    if (!File.Exists(_objSpirit.FileName))
+                    string strFileName = await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
                     {
                         bool blnError = false;
+                        string strRelativeFileName = await _objSpirit.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false);
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(_objSpirit.RelativeFileName))
+                        if (string.IsNullOrEmpty(strRelativeFileName))
                             blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(_objSpirit.RelativeFileName)))
+                        else if (!File.Exists(Path.GetFullPath(strRelativeFileName)))
                             blnError = true;
                         else
                             blnUseRelative = true;
@@ -357,7 +359,7 @@ namespace Chummer
                             await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
-                                        .ConfigureAwait(false), _objSpirit.FileName),
+                                        .ConfigureAwait(false), strFileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken).ConfigureAwait(false),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
@@ -365,8 +367,8 @@ namespace Chummer
                     }
 
                     string strFile = blnUseRelative
-                        ? Path.GetFullPath(_objSpirit.RelativeFileName)
-                        : _objSpirit.FileName;
+                        ? Path.GetFullPath(await _objSpirit.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false))
+                        : strFileName;
                     Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
                 }
             }
@@ -388,8 +390,8 @@ namespace Chummer
                             .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: _objMyToken).ConfigureAwait(false)
                     == DialogResult.Yes)
                 {
-                    _objSpirit.FileName = string.Empty;
-                    _objSpirit.RelativeFileName = string.Empty;
+                    await _objSpirit.SetFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
+                    await _objSpirit.SetRelativeFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
                     string strText = await LanguageManager.GetStringAsync(
                             await _objSpirit.GetEntityTypeAsync(_objMyToken).ConfigureAwait(false) == SpiritType.Spirit
                                 ? "Tip_Spirit_LinkSpirit"
@@ -399,9 +401,9 @@ namespace Chummer
 
                     // Set the relative path.
                     Uri uriApplication = new Uri(Utils.GetStartupPath);
-                    Uri uriFile = new Uri(_objSpirit.FileName);
+                    Uri uriFile = new Uri(await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false));
                     Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                    _objSpirit.RelativeFileName = "../" + uriRelative;
+                    await _objSpirit.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
 
                     if (ContactDetailChanged != null)
                         await ContactDetailChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
@@ -428,15 +430,16 @@ namespace Chummer
                                    await LanguageManager.GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
                 // Prompt the user to select a save file to associate with this Contact.
                 // Prompt the user to select a save file to associate with this Contact.
+                string strOldFileName = await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                 DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                 {
                     using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                     {
                         dlgOpenFile.Filter = strFilter;
-                        if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                        if (!string.IsNullOrEmpty(strOldFileName) && File.Exists(strOldFileName))
                         {
-                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
-                            dlgOpenFile.FileName = Path.GetFileName(_objSpirit.FileName);
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strOldFileName);
+                            dlgOpenFile.FileName = Path.GetFileName(strOldFileName);
                         }
 
                         DialogResult eReturn = dlgOpenFile.ShowDialog(x);
@@ -447,7 +450,7 @@ namespace Chummer
 
                 if (eResult != DialogResult.OK)
                     return;
-                _objSpirit.FileName = strFileName;
+                await _objSpirit.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
                 string strText = await LanguageManager.GetStringAsync(
                         await _objSpirit.GetEntityTypeAsync(_objMyToken).ConfigureAwait(false) == SpiritType.Spirit
                             ? "Tip_Spirit_OpenFile"
@@ -486,24 +489,38 @@ namespace Chummer
             }
         }
 
-        private void cmdLink_Click(object sender, EventArgs e)
+        private async void cmdLink_Click(object sender, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
-            if (!string.IsNullOrEmpty(_objSpirit.FileName))
+            try
             {
-                tsAttachCharacter.Visible = false;
-                tsCreateCharacter.Visible = false;
-                tsContactOpen.Visible = true;
-                tsRemoveCharacter.Visible = true;
+                if (!string.IsNullOrEmpty(await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false)))
+                {
+                    await cmsSpirit.DoThreadSafeAsync(() =>
+                    {
+                        tsAttachCharacter.Visible = false;
+                        tsCreateCharacter.Visible = false;
+                        tsContactOpen.Visible = true;
+                        tsRemoveCharacter.Visible = true;
+                    }, token: _objMyToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await cmsSpirit.DoThreadSafeAsync(() =>
+                    {
+                        tsAttachCharacter.Visible = true;
+                        tsCreateCharacter.Visible = true;
+                        tsContactOpen.Visible = false;
+                        tsRemoveCharacter.Visible = false;
+                    }, token: _objMyToken).ConfigureAwait(false);
+                }
+
+                await cmsSpirit.DoThreadSafeAsync(x => x.Show(cmdLink, cmdLink.Left - 646, cmdLink.Top), _objMyToken).ConfigureAwait(false);
             }
-            else
+            catch (OperationCanceledException)
             {
-                tsAttachCharacter.Visible = true;
-                tsCreateCharacter.Visible = true;
-                tsContactOpen.Visible = false;
-                tsRemoveCharacter.Visible = false;
+                // swallow this
             }
-            cmsSpirit.Show(cmdLink, cmdLink.Left - 646, cmdLink.Top);
         }
 
         private async void cmdNotes_Click(object sender, EventArgs e)

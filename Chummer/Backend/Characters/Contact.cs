@@ -1915,8 +1915,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnIsGroup = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -2293,8 +2293,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnFree = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -2513,8 +2513,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnBlackmail = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }

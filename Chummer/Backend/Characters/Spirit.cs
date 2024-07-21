@@ -868,15 +868,17 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (Interlocked.Exchange(ref _strName, value) == value)
+
+                    if (_strName == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
+                        if (Interlocked.Exchange(ref _strName, value) == value)
+                            return;
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
+                        OnPropertyChanged();
                     }
-
-                    OnPropertyChanged();
                 }
             }
         }
@@ -908,21 +910,22 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (Interlocked.Exchange(ref _strName, value) == value)
+                if (_strName == value)
                     return;
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _strName, value) == value)
+                        return;
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
+                    await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
             }
             finally
             {
@@ -1349,9 +1352,10 @@ namespace Chummer
                     }
 
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnBound = value;
-
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1422,13 +1426,12 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     _blnBound = value;
+                    await OnPropertyChangedAsync(nameof(Bound), token: token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(Bound), token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -1450,15 +1453,16 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
+                    if (_eEntityType == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
+                        if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
+                            return;
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
+                        OnPropertyChanged();
                     }
-
-                    OnPropertyChanged();
                 }
             }
         }
@@ -1482,6 +1486,39 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Spirit's type, either Spirit or Sprite.
+        /// </summary>
+        public async Task SetEntityTypeAsync(SpiritType value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_eEntityType == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
+                        return;
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                    await OnPropertyChangedAsync(nameof(EntityType), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Name of the save file for this Spirit/Sprite.
         /// </summary>
         public string FileName
@@ -1495,11 +1532,66 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
+                    if (_strFileName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strFileName, value) == value)
+                            return;
+                        RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Name of the save file for this Spirit/Sprite.
+        /// </summary>
+        public async Task<string> GetFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strFileName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Name of the save file for this Spirit/Sprite.
+        /// </summary>
+        public async Task SetFileNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strFileName == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _strFileName, value) == value)
                         return;
-                    RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
-                    OnPropertyChanged();
+                    await RefreshLinkedCharacterAsync(!string.IsNullOrEmpty(value), token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(FileName), token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1517,11 +1609,66 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
+                    if (_strRelativeName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strRelativeName, value) == value)
+                            return;
+                        RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Relative path to the save file.
+        /// </summary>
+        public async Task<string> GetRelativeFileNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strRelativeName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Relative path to the save file.
+        /// </summary>
+        public async Task SetRelativeFileNameAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strRelativeName == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     if (Interlocked.Exchange(ref _strRelativeName, value) == value)
                         return;
-                    RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
-                    OnPropertyChanged();
+                    await RefreshLinkedCharacterAsync(!string.IsNullOrEmpty(value), token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(FileName), token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1568,8 +1715,10 @@ namespace Chummer
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1763,9 +1912,8 @@ namespace Chummer
                             ImprovementManager.RemoveImprovements(CharacterObject,
                                 Improvement.ImprovementSource.SpiritFettering);
                         }
+                        OnPropertyChanged();
                     }
-
-                    OnPropertyChanged();
                 }
             }
         }
@@ -1951,13 +2099,12 @@ namespace Chummer
                         await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
                             Improvement.ImprovementSource.SpiritFettering, token: token).ConfigureAwait(false);
                     }
+                    await OnPropertyChangedAsync(nameof(Fettered), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                await OnPropertyChangedAsync(nameof(Fettered), token).ConfigureAwait(false);
             }
             finally
             {
@@ -1989,8 +2136,10 @@ namespace Chummer
                     if (_objColor == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _objColor = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2518,12 +2667,14 @@ namespace Chummer
                     bool blnUseRelative = false;
 
                     // Make sure the file still exists before attempting to load it.
-                    if (!File.Exists(FileName))
+                    string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
                     {
+                        string strRelativeFileName = await GetRelativeFileNameAsync(token).ConfigureAwait(false);
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(RelativeFileName))
+                        if (string.IsNullOrEmpty(strRelativeFileName))
                             blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(RelativeFileName)))
+                        else if (!File.Exists(Path.GetFullPath(strRelativeFileName)))
                             blnError = true;
                         else
                             blnUseRelative = true;
@@ -2534,7 +2685,7 @@ namespace Chummer
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
                                         .ConfigureAwait(false),
-                                    FileName),
+                                    strFileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
                                     .ConfigureAwait(false), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
@@ -2543,7 +2694,7 @@ namespace Chummer
 
                     if (!blnError)
                     {
-                        string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
+                        string strFile = blnUseRelative ? Path.GetFullPath(await GetRelativeFileNameAsync(token).ConfigureAwait(false)) : strFileName;
                         if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                             || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                         {

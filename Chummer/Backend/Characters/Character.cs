@@ -24366,8 +24366,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnGroupMember = value;
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
