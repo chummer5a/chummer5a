@@ -1428,6 +1428,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static string LanguageBookShort(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
+            if (GlobalSettings.Language == GlobalSettings.DefaultLanguage)
+                return strCode;
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlAltCode = objCharacter != null
@@ -1446,6 +1448,9 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (GlobalSettings.Language == GlobalSettings.DefaultLanguage)
+                return strCode;
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlAltCode = objCharacter != null
