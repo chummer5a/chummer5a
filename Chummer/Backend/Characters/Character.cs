@@ -7439,28 +7439,7 @@ namespace Chummer
                                 int intCharacterInnerXmlLength = strCharacterInnerXml.Length;
                                 foreach (XmlNode objXmlImprovement in objXmlNodeList)
                                 {
-                                    string strImprovementSource =
-                                        objXmlImprovement["improvementsource"]?.InnerText;
-                                    switch (strImprovementSource)
-                                    {
-                                        // Do not load condition monitor improvements from older versions of Chummer
-                                        case "ConditionMonitor":
-                                            continue;
-                                        // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
-                                        case "EdgeUse":
-                                            decimal decOldEdgeUsed = 0;
-                                            if (objXmlImprovement.TryGetDecFieldQuickly("aug",
-                                                    ref decOldEdgeUsed))
-                                                EdgeUsed = (-decOldEdgeUsed).StandardRound();
-                                            continue;
-                                        case "EssenceLoss":
-                                        case "EssenceLossChargen":
-                                            // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
-                                            if (_decEssenceAtSpecialStart == decimal.MinValue)
-                                                continue;
-                                            break;
-                                    }
-
+                                    // First check if this is an orphaned improvement
                                     if ((blnRemoveImprovements || showWarnings) &&
                                         objXmlImprovement["custom"]?.InnerText != bool.TrueString &&
                                         !string.IsNullOrEmpty(strCharacterInnerXml))
@@ -7562,6 +7541,28 @@ namespace Chummer
                                                 return false;
                                             }
                                         }
+                                    }
+
+                                    string strImprovementSource =
+                                        objXmlImprovement["improvementsource"]?.InnerText;
+                                    switch (strImprovementSource)
+                                    {
+                                        // Do not load condition monitor improvements from older versions of Chummer
+                                        case "ConditionMonitor":
+                                            continue;
+                                        // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
+                                        case "EdgeUse":
+                                            decimal decOldEdgeUsed = 0;
+                                            if (objXmlImprovement.TryGetDecFieldQuickly("aug",
+                                                    ref decOldEdgeUsed))
+                                                EdgeUsed = (-decOldEdgeUsed).StandardRound();
+                                            continue;
+                                        case "EssenceLoss":
+                                        case "EssenceLossChargen":
+                                            // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
+                                            if (_decEssenceAtSpecialStart == decimal.MinValue)
+                                                continue;
+                                            break;
                                     }
 
                                     Improvement objImprovement = new Improvement(this);
