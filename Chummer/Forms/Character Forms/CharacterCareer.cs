@@ -421,13 +421,17 @@ namespace Chummer
                                             .ConfigureAwait(false);
 
                                         // If the character has a mugshot, decode it and put it in the PictureBox.
-                                        if (CharacterObject.Mugshots.Count > 0)
+                                        int intMugshotCount =
+                                            await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                                        if (intMugshotCount > 0)
                                         {
+                                            int intMainMugshotIndex =
+                                                await CharacterObject.GetMainMugshotIndexAsync(GenericToken).ConfigureAwait(false);
                                             await nudMugshotIndex.DoThreadSafeAsync(x =>
                                             {
                                                 x.Minimum = 1;
-                                                x.Maximum = CharacterObject.Mugshots.Count;
-                                                x.Value = Math.Max(CharacterObject.MainMugshotIndex, 0) + 1;
+                                                x.Maximum = intMugshotCount;
+                                                x.Value = Math.Max(intMainMugshotIndex, 0) + 1;
                                             }, GenericToken).ConfigureAwait(false);
                                         }
                                         else
@@ -440,11 +444,10 @@ namespace Chummer
                                             }, GenericToken).ConfigureAwait(false);
                                         }
 
-                                        string strNumMugshots
-                                            = await LanguageManager.GetStringAsync("String_Of", token: GenericToken)
-                                                  .ConfigureAwait(false) +
-                                              CharacterObject.Mugshots.Count.ToString(
-                                                  GlobalSettings.CultureInfo);
+                                        string strNumMugshots =
+                                            await LanguageManager.GetStringAsync("String_Of", token: GenericToken)
+                                                .ConfigureAwait(false) +
+                                            intMugshotCount.ToString(GlobalSettings.CultureInfo);
                                         await lblNumMugshots
                                             .DoThreadSafeAsync(x => x.Text = strNumMugshots, GenericToken)
                                             .ConfigureAwait(false);
@@ -7067,13 +7070,16 @@ namespace Chummer
             {
                 if (!await AddMugshot(GenericToken).ConfigureAwait(false))
                     return;
+
+                int intMugshotCount =
+                    await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
                 string strText = await LanguageManager.GetStringAsync("String_Of", token: GenericToken).ConfigureAwait(false)
-                                 + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
+                                 + intMugshotCount.ToString(GlobalSettings.CultureInfo);
                 await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strText, GenericToken).ConfigureAwait(false);
                 await nudMugshotIndex.DoThreadSafeAsync(x =>
                 {
                     ++x.Maximum;
-                    x.Value = CharacterObject.Mugshots.Count;
+                    x.Value = intMugshotCount;
                 }, GenericToken).ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
@@ -7085,33 +7091,41 @@ namespace Chummer
 
         private async void cmdDeleteMugshot_Click(object sender, EventArgs e)
         {
-            if (CharacterObject.Mugshots.Count == 0)
-                return;
             try
             {
-                RemoveMugshot(await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                   .ConfigureAwait(false) - 1);
+                int intMugshotCount =
+                    await CharacterObject.Mugshots.GetCountAsync(GenericToken).ConfigureAwait(false);
+                if (intMugshotCount == 0)
+                    return;
+                await RemoveMugshot(await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken).ConfigureAwait(false) - 1).ConfigureAwait(false);
+                --intMugshotCount;
                 string strText = await LanguageManager.GetStringAsync("String_Of", token: GenericToken).ConfigureAwait(false)
-                                 + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
+                                 + intMugshotCount.ToString(GlobalSettings.CultureInfo);
                 await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strText, GenericToken).ConfigureAwait(false);
-                await nudMugshotIndex.DoThreadSafeAsync(x =>
+                (bool blnDoExtra, int intMugshotIndex) = await nudMugshotIndex.DoThreadSafeFuncAsync(x =>
                 {
                     --x.Maximum;
-                    if (x.Value > x.Maximum)
-                        x.Value = x.Maximum;
-                    else
+                    if (x.Value <= x.Maximum)
                     {
-                        chkIsMainMugshot.DoThreadSafe(y =>
-                        {
-                            if (x.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
-                                y.Checked = true;
-                            else if (y.Checked)
-                                y.Checked = false;
-                        }, GenericToken);
-
-                        UpdateMugshot(picMugshot, x.ValueAsInt - 1);
+                        return new Tuple<bool, int>(true, x.ValueAsInt);
                     }
+
+                    x.Value = x.Maximum;
+                    return new Tuple<bool, int>(false, x.ValueAsInt);
                 }, GenericToken).ConfigureAwait(false);
+                if (blnDoExtra)
+                {
+                    int intMainMugshotIndex = await CharacterObject.GetMainMugshotIndexAsync(GenericToken).ConfigureAwait(false);
+                    await chkIsMainMugshot.DoThreadSafeAsync(y =>
+                    {
+                        if (intMugshotIndex - 1 == intMainMugshotIndex)
+                            y.Checked = true;
+                        else if (y.Checked)
+                            y.Checked = false;
+                    }, GenericToken).ConfigureAwait(false);
+
+                    await UpdateMugshot(picMugshot, intMugshotIndex - 1).ConfigureAwait(false);
+                }
                 await SetDirty(true).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -7159,7 +7173,7 @@ namespace Chummer
                     }, GenericToken).ConfigureAwait(false);
                 }
 
-                await UpdateMugshotAsync(picMugshot, intCurrentMugshotIndex - 1, GenericToken).ConfigureAwait(false);
+                await UpdateMugshot(picMugshot, intCurrentMugshotIndex - 1, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

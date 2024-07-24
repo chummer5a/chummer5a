@@ -17371,6 +17371,31 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Index of Character's main portrait. -1 if set to none.
+        /// </summary>
+        public async Task ModifyMainMugshotIndexAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intOldValue = _intMainMugshotIndex;
+                int intNewValue = Interlocked.Add(ref _intMainMugshotIndex, value);
+                if (intNewValue < -1 || intNewValue >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
+                    intNewValue = -1;
+                if (intOldValue != intNewValue)
+                    await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
             Utils.SafelyRunSynchronously(() => SaveMugshotsCore(true, objWriter, token), token);
