@@ -683,7 +683,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
-                    if (strDirectory.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")
+                    if (strDirectory.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase) && strFileName != "packs.xml")
                         continue;
                     strPath = Path.Combine(strDirectory, strFileName);
                     if (File.Exists(strPath))
@@ -1347,7 +1347,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!Directory.Exists(strLoopPath))
                     continue;
-                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")
+                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath, StringComparison.OrdinalIgnoreCase) && strFileName != "packs.xml")
                     continue;
                 foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
                                                                         SearchOption.AllDirectories))

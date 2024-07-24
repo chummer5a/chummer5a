@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections;
+using System.Globalization;
 
 namespace SevenZip.CommandLineParser
 {
@@ -95,7 +96,7 @@ namespace SevenZip.CommandLineParser
                     if (switchLen <= maxLen || pos + switchLen > len)
                         continue;
                     if (string.Compare(objLoopForm.IDString, 0,
-                            srcString, pos, switchLen, true) == 0)
+                            srcString, pos, switchLen, true, CultureInfo.InvariantCulture) == 0)
                     {
                         matchedSwitchIndex = switchIndex;
                         maxLen = switchLen;

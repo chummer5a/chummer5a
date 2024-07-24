@@ -1073,7 +1073,7 @@ namespace Chummer
                                 continue;
                             // Test to make sure we have no sneaky writes to outside our intended directory
                             strLoopPath = Path.GetFullPath(strLoopPath);
-                            if (!strLoopPath.StartsWith(Path.GetFullPath(_strAppPath + Path.DirectorySeparatorChar)))
+                            if (!strLoopPath.StartsWith(Path.GetFullPath(_strAppPath + Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
                                 continue;
                             try
                             {

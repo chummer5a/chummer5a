@@ -16067,7 +16067,7 @@ namespace Chummer
                     // Run through all of the Spells and remove their Improvements.
                     if (Spells.All(x =>
                             x.Grade == 0 && (!blnKeepAdeptEligible || x.Category != "Rituals" ||
-                                             x.Descriptors.Contains("Spell"))))
+                                             x.Descriptors.Contains("Spell")), token))
                     {
                         List<string> lstIds = Spells.Select(x => x.InternalId).ToList();
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
@@ -16096,7 +16096,7 @@ namespace Chummer
                     }
                 }
 
-                if (Spirits.All(x => x.EntityType == SpiritType.Spirit))
+                if (Spirits.All(x => x.EntityType == SpiritType.Spirit, token))
                 {
                     Spirits.Clear();
                 }
@@ -16209,7 +16209,7 @@ namespace Chummer
         {
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (Powers.All(x => x.FreeLevels == 0 && x.FreePoints == 0))
+                if (Powers.All(x => x.FreeLevels == 0 && x.FreePoints == 0, token))
                 {
                     List<string> lstIds = Powers.Select(x => x.InternalId).ToList();
                     using (LockObject.EnterWriteLock(token))
@@ -16334,7 +16334,7 @@ namespace Chummer
                     }
                 }
 
-                if (Spirits.All(x => x.EntityType == SpiritType.Sprite))
+                if (Spirits.All(x => x.EntityType == SpiritType.Sprite, token))
                 {
                     Spirits.Clear();
                 }
@@ -16428,7 +16428,7 @@ namespace Chummer
         {
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (AIPrograms.All(x => x.CanDelete))
+                if (AIPrograms.All(x => x.CanDelete, token))
                 {
                     List<string> lstIds = AIPrograms.Select(x => x.InternalId).ToList();
                     using (LockObject.EnterWriteLock(token))
@@ -16670,7 +16670,7 @@ namespace Chummer
         {
             using (LockObject.EnterUpgradeableReadLock(token))
             {
-                if (CritterPowers.All(x => x.Grade >= 0))
+                if (CritterPowers.All(x => x.Grade >= 0, token))
                 {
                     List<string> lstIds = CritterPowers.Select(x => x.InternalId).ToList();
                     using (LockObject.EnterWriteLock(token))
