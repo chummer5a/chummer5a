@@ -5060,7 +5060,7 @@ namespace Chummer
                                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                                         }
 
-                                        if (!objCyberware.IsModularCurrentlyEquipped)
+                                        if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                             await objCyberware.ChangeModularEquipAsync(false, token: token)
                                                               .ConfigureAwait(false);
                                         else
@@ -28311,9 +28311,10 @@ namespace Chummer
                 if (IsLoading || IsRefreshing
                               || await CharacterObject.GetAmbidextrousAsync(GenericToken).ConfigureAwait(false))
                     return;
-                CharacterObject.PrimaryArm = await cboPrimaryArm
-                                                   .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
-                                                   .ConfigureAwait(false);
+                await CharacterObject
+                    .SetPrimaryArmAsync(
+                        await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -28371,7 +28372,7 @@ namespace Chummer
                                                         objModularCyberware, GenericToken).ConfigureAwait(false));
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
-                    if (!objModularCyberware.IsModularCurrentlyEquipped
+                    if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false)
                         && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                     {

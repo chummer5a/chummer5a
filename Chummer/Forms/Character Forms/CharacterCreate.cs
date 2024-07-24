@@ -10588,11 +10588,12 @@ namespace Chummer
 
                             if (objCyberware.PairBonus != null)
                             {
-                                List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware
-                                    .DeepWhere(x => x.Children,
-                                               x => objCyberware.IncludePair.Contains(x.Name)
-                                                    && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped, GenericToken)
-                                    .ToList();
+                                List<Cyberware> lstPairableCyberwares = await CharacterObject.Cyberware
+                                    .DeepWhereAsync(x => x.Children,
+                                        async x => objCyberware.IncludePair.Contains(x.Name)
+                                                   && x.Extra == objCyberware.Extra &&
+                                                   await x.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false),
+                                        GenericToken).ConfigureAwait(false);
                                 int intCyberwaresCount = lstPairableCyberwares.Count;
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                 if (!string.IsNullOrEmpty(objCyberware.Location)
@@ -24186,17 +24187,19 @@ namespace Chummer
                     = await CursorWait.NewAsync(this, true, token: GenericToken).ConfigureAwait(false);
                 try
                 {
-                    if (_objStoryBuilder == null)
+                    StoryBuilder objBuilder = new StoryBuilder(CharacterObject);
+                    if (Interlocked.CompareExchange(ref _objStoryBuilder, objBuilder, null) == null)
                     {
-                        StoryBuilder objBuilder = new StoryBuilder(CharacterObject);
                         Disposed += (o, args) => objBuilder.Dispose();
-                        _objStoryBuilder = objBuilder;
                         await btnCreateBackstory.DoThreadSafeAsync(x => x.Enabled = false, token: GenericToken)
-                                                .ConfigureAwait(false);
+                            .ConfigureAwait(false);
                     }
+                    else
+                        await objBuilder.DisposeAsync().ConfigureAwait(false);
 
-                    CharacterObject.Background
-                        = await _objStoryBuilder.GetStory(token: GenericToken).ConfigureAwait(false);
+                    await CharacterObject
+                        .SetBackgroundAsync(await _objStoryBuilder.GetStory(token: GenericToken).ConfigureAwait(false),
+                            GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -24236,9 +24239,10 @@ namespace Chummer
             {
                 if (await CharacterObject.GetAmbidextrousAsync(GenericToken).ConfigureAwait(false))
                     return;
-                CharacterObject.PrimaryArm = await cboPrimaryArm
-                                                   .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
-                                                   .ConfigureAwait(false);
+                await CharacterObject
+                    .SetPrimaryArmAsync(
+                        await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 await SetDirty(true).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -24773,7 +24777,7 @@ namespace Chummer
                                                         objModularCyberware, GenericToken).ConfigureAwait(false));
                     //Mounted cyberware should always be allowed to be dismounted.
                     //Unmounted cyberware requires that a valid mount be present.
-                    if (!objModularCyberware.IsModularCurrentlyEquipped
+                    if (!await objModularCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false)
                         && lstModularMounts.TrueForAll(
                             x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                     {

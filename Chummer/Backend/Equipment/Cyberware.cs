@@ -4230,7 +4230,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 // Cyberware always equipped if it's not a modular one
-                bool blnReturn = string.IsNullOrEmpty(PlugsIntoModularMount);
+                bool blnReturn = string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false));
                 Cyberware objCurrentParent = Parent;
                 // If top-level parent is one that has a modular mount but also does not plug into another modular mount itself, then return true, otherwise return false
                 while (objCurrentParent != null)
@@ -4239,9 +4239,9 @@ namespace Chummer.Backend.Equipment
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!string.IsNullOrEmpty(objCurrentParent.HasModularMount))
+                        if (!string.IsNullOrEmpty(await objCurrentParent.GetHasModularMountAsync(token).ConfigureAwait(false)))
                             blnReturn = true;
-                        if (!string.IsNullOrEmpty(objCurrentParent.PlugsIntoModularMount))
+                        if (!string.IsNullOrEmpty(await objCurrentParent.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
                             blnReturn = false;
                         objCurrentParent = objCurrentParent.Parent;
                     }
@@ -4483,7 +4483,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(WirelessBonus?.InnerText)
                     || !string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
                 {
-                    if (WirelessOn && ParentVehicle == null && IsModularCurrentlyEquipped
+                    if (WirelessOn && ParentVehicle == null && await GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
                         && Parent?.WirelessOn != false)
                     {
                         if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
@@ -7182,8 +7182,8 @@ namespace Chummer.Backend.Equipment
                     intAvail += await Children.SumAsync(async objChild =>
                     {
                         if (objChild.ParentID == InternalId ||
-                            !objChild.IsModularCurrentlyEquipped &&
-                            !string.IsNullOrEmpty(objChild.PlugsIntoModularMount))
+                            !await objChild.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false) &&
+                            !string.IsNullOrEmpty(await objChild.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
                             return 0;
                         AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                         if (objLoopAvailTuple.Suffix == 'F')

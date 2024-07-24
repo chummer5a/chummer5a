@@ -438,8 +438,14 @@ namespace Chummer
                                             continue;
                                         if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
                                             continue;
-                                        if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
-                                            || !objItem.IsModularCurrentlyEquipped)
+                                        if (blnSync)
+                                        {
+                                            if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
+                                                || !objItem.IsModularCurrentlyEquipped)
+                                                continue;
+                                        }
+                                        else if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
+                                                 || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                             continue;
                                         if (strNodeName == objItem.Name || strNodeId == objItem.SourceIDString)
                                             ++intCount;
@@ -475,15 +481,22 @@ namespace Chummer
                             foreach (Cyberware objItem in blnSync
                                          ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                          : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                 .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                                             .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
                                     continue;
                                 if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
                                     continue;
-                                if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
-                                    || !objItem.IsModularCurrentlyEquipped)
+                                if (blnSync)
+                                {
+                                    if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
+                                        || !objItem.IsModularCurrentlyEquipped)
+                                        continue;
+                                }
+                                else if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
+                                         || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                     continue;
+
                                 ++intCount;
                                 if (!blnShowMessage && intCount >= intLimit)
                                     return false;

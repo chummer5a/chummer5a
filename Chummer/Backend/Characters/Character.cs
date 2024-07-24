@@ -2462,7 +2462,7 @@ namespace Chummer
                             foreach (Cyberware objNewItem in e.NewItems)
                             {
                                 token.ThrowIfCancellationRequested();
-                                if (objNewItem.IsModularCurrentlyEquipped)
+                                if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
                                 IAsyncDisposable objLocker =
@@ -2474,7 +2474,7 @@ namespace Chummer
                                     {
                                         // Needed in order to properly process named sources where
                                         // the tooltip was built before the object was added to the character
-                                        foreach (Improvement objImprovement in Improvements)
+                                        await Improvements.ForEachAsync(objImprovement =>
                                         {
                                             token.ThrowIfCancellationRequested();
                                             if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
@@ -2495,11 +2495,11 @@ namespace Chummer
                                                     setChangedProperties.Add(strPropertyToUpdate);
                                                 }
                                             }
-                                        }
+                                        }, token).ConfigureAwait(false);
                                     }
 
                                     if (!blnDoCyberlimbAttributesRefresh
-                                        && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
+                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objNewItem.Parent == null
                                         && objNewItem.ParentVehicle == null
                                         && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                         && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
@@ -2523,7 +2523,7 @@ namespace Chummer
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
                                 token.ThrowIfCancellationRequested();
-                                if (objOldItem.IsModularCurrentlyEquipped)
+                                if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                 IAsyncDisposable objLocker =
@@ -2532,7 +2532,7 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     if (!blnDoCyberlimbAttributesRefresh
-                                        && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
+                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objOldItem.Parent == null
                                         && objOldItem.ParentVehicle == null
                                         && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                         && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
@@ -2563,11 +2563,11 @@ namespace Chummer
                                     foreach (Cyberware objOldItem in e.OldItems)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        if (objOldItem.IsModularCurrentlyEquipped)
+                                        if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                         if (!blnDoCyberlimbAttributesRefresh
-                                            && !Settings.DontUseCyberlimbCalculation && objOldItem.Parent == null
+                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objOldItem.Parent == null
                                             && objOldItem.ParentVehicle == null
                                             && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                             && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
@@ -2579,11 +2579,11 @@ namespace Chummer
                                     foreach (Cyberware objNewItem in e.NewItems)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        if (objNewItem.IsModularCurrentlyEquipped)
+                                        if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
                                             blnDoEncumbranceRefresh = true;
                                         dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
                                         if (!blnDoCyberlimbAttributesRefresh
-                                            && !Settings.DontUseCyberlimbCalculation && objNewItem.Parent == null
+                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objNewItem.Parent == null
                                             && objNewItem.ParentVehicle == null
                                             && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
                                             && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
@@ -8805,7 +8805,7 @@ namespace Chummer
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
                                             }
 
-                                            if (!objCyberware.IsModularCurrentlyEquipped)
+                                            if (!(blnSync ? objCyberware.IsModularCurrentlyEquipped : await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)))
                                             {
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -9009,10 +9009,9 @@ namespace Chummer
                                                                    x.Extra == objCyberware.Extra &&
                                                                    x.IsModularCurrentlyEquipped, token).ToList()
                                         : await Cyberware.DeepWhereAsync(x => x.Children,
-                                                                         x => objCyberware.IncludePair.Contains(x.Name)
-                                                                              &&
-                                                                              x.Extra == objCyberware.Extra &&
-                                                                              x.IsModularCurrentlyEquipped, token).ConfigureAwait(false);
+                                                                         async x => objCyberware.IncludePair.Contains(x.Name)
+                                                                              && x.Extra == objCyberware.Extra
+                                                                              && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                     if (!string.IsNullOrEmpty(objCyberware.Location) &&
                                         objCyberware.IncludePair.All(x => x == objCyberware.Name))
@@ -18739,6 +18738,25 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strPrimaryArm;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// What is the Characters preferred hand
+        /// </summary>
+        public async Task SetPrimaryArmAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _strPrimaryArm, value) == value)
+                    return;
+                await OnPropertyChangedAsync(nameof(PrimaryArm), token).ConfigureAwait(false);
             }
             finally
             {
