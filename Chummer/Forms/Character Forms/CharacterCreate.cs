@@ -8834,13 +8834,13 @@ namespace Chummer
                                     string strLoopHasModularMount = await objCyberwareParent.GetHasModularMountAsync(GenericToken).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setHasMounts.Add(strLoopHasModularMount);
-                                    foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
-                                                 x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken))
+                                    foreach (Cyberware objLoopCyberware in await objCyberwareParent.Children.DeepWhereAsync(
+                                                 x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
                                     {
                                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                      ',', StringSplitOptions.RemoveEmptyEntries))
                                         {
-                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                            setDisallowedMounts.Add(strLoop + await objLoopCyberware.GetLocationAsync(GenericToken).ConfigureAwait(false));
                                         }
 
                                         strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(GenericToken).ConfigureAwait(false);
