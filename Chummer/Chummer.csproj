@@ -25721,10 +25721,10 @@
     <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
     <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
     <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
-    <PackageReference Include="itext" Version="8.0.4" />
-    <PackageReference Include="itext.commons" Version="8.0.4" />
-    <PackageReference Include="itext7" Version="8.0.4" />
-    <PackageReference Include="itext7.commons" Version="8.0.4" />
+    <PackageReference Include="itext" Version="8.0.5" />
+    <PackageReference Include="itext.commons" Version="8.0.5" />
+    <PackageReference Include="itext7" Version="8.0.5" />
+    <PackageReference Include="itext7.commons" Version="8.0.5" />
     <PackageReference Include="LiveCharts" Version="0.9.7" />
     <PackageReference Include="LiveCharts.WinForms" Version="0.9.7.1" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
