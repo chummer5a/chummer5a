@@ -1617,14 +1617,17 @@ namespace Chummer.Backend.Equipment
                         Parent == null
                             ? await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)
                             : Parent.Children;
+                    string strHasModularMount = await GetHasModularMountAsync(token).ConfigureAwait(false);
+                    string strBlocksMounts = await GetBlocksMountsAsync(token).ConfigureAwait(false);
                     Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
                     Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
                     await lstCyberwareToCheck.ForEachAsync(async objCheckCyberware =>
                     {
-                        if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts))
+                        string strLoopBlocksMounts = await objCheckCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strLoopBlocksMounts))
                             return;
                         Dictionary<string, int> dicToUse;
-                        switch (objCheckCyberware.Location)
+                        switch (await objCheckCyberware.GetLocationAsync(token).ConfigureAwait(false))
                         {
                             case "Left":
                                 dicToUse = dicNumLeftMountBlockers;
@@ -1638,7 +1641,7 @@ namespace Chummer.Backend.Equipment
                                 return;
                         }
 
-                        foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
+                        foreach (string strBlockMount in strLoopBlocksMounts.SplitNoAlloc(',',
                                      StringSplitOptions.RemoveEmptyEntries))
                         {
                             if (dicToUse.TryGetValue(strBlockMount, out int intExistingLimbCount))
@@ -1662,10 +1665,10 @@ namespace Chummer.Backend.Equipment
                             blnAllowLeft = await xpnCyberware.RequirementsMetAsync(_objCharacter, Parent, strLocation: "Left", token: token).ConfigureAwait(false);
                             if (!blnAllowLeft)
                                 return;
-                            if (!string.IsNullOrEmpty(HasModularMount)
-                                && dicNumLeftMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
+                            if (!string.IsNullOrEmpty(strHasModularMount)
+                                && dicNumLeftMountBlockers.TryGetValue(strHasModularMount, out int intNumBlockers))
                             {
-                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                                string strLimbTypeOfMount = MountToLimbType(strHasModularMount);
                                 blnAllowLeft = !string.IsNullOrEmpty(strLimbTypeOfMount)
                                                && await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
                                                    .ConfigureAwait(false) / 2 >= intNumBlockers;
@@ -1673,28 +1676,29 @@ namespace Chummer.Backend.Equipment
                                     return;
                             }
 
-                            if (string.IsNullOrEmpty(BlocksMounts) || lstCyberwareToCheck.Count == 0)
+                            if (string.IsNullOrEmpty(strBlocksMounts) || lstCyberwareToCheck.Count == 0)
                                 return;
                             using (new FetchSafelyFromPool<HashSet<string>>(
                                        Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
                             {
-                                setBlocksMounts.AddRange(BlocksMounts
+                                setBlocksMounts.AddRange(strBlocksMounts
                                     .SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
                                 blnAllowLeft = !await lstCyberwareToCheck.AnyAsync(async x =>
                                 {
-                                    if (string.IsNullOrEmpty(x.HasModularMount))
+                                    string strLoopHasModularMount = await x.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                    if (string.IsNullOrEmpty(strLoopHasModularMount))
                                         return false;
-                                    if (x.Location != "Left")
+                                    if (await x.GetLocationAsync(token).ConfigureAwait(false) != "Left")
                                         return false;
-                                    if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    if (!setBlocksMounts.Contains(strLoopHasModularMount))
                                         return false;
-                                    string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                    string strLimbTypeOfMount = MountToLimbType(strLoopHasModularMount);
                                     if (string.IsNullOrEmpty(strLimbTypeOfMount))
                                         return true;
 
                                     int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
-                                    if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                    if (dicNumLeftMountBlockers.TryGetValue(strLoopHasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
                                     return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
                                         .ConfigureAwait(false) / 2 < intLimbSlotCount;
@@ -1707,10 +1711,10 @@ namespace Chummer.Backend.Equipment
                                 _objCharacter, Parent, strLocation: "Right", token: token).ConfigureAwait(false);
                             if (!blnAllowRight)
                                 return;
-                            if (!string.IsNullOrEmpty(HasModularMount)
-                                && dicNumRightMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
+                            if (!string.IsNullOrEmpty(strHasModularMount)
+                                && dicNumRightMountBlockers.TryGetValue(strHasModularMount, out int intNumBlockers))
                             {
-                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                                string strLimbTypeOfMount = MountToLimbType(strHasModularMount);
                                 blnAllowRight = !string.IsNullOrEmpty(strLimbTypeOfMount)
                                                 && await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
                                                     .ConfigureAwait(false) / 2 >= intNumBlockers;
@@ -1728,18 +1732,19 @@ namespace Chummer.Backend.Equipment
                                         ',', StringSplitOptions.RemoveEmptyEntries));
                                 blnAllowRight = !await lstCyberwareToCheck.AnyAsync(async x =>
                                 {
-                                    if (string.IsNullOrEmpty(x.HasModularMount))
+                                    string strLoopHasModularMount = await x.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                    if (string.IsNullOrEmpty(strLoopHasModularMount))
                                         return false;
-                                    if (x.Location != "Right")
+                                    if (await x.GetLocationAsync(token).ConfigureAwait(false) != "Right")
                                         return false;
-                                    if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    if (!setBlocksMounts.Contains(strLoopHasModularMount))
                                         return false;
-                                    string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                    string strLimbTypeOfMount = MountToLimbType(strLoopHasModularMount);
                                     if (string.IsNullOrEmpty(strLimbTypeOfMount))
                                         return true;
 
                                     int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
-                                    if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                    if (dicNumRightMountBlockers.TryGetValue(strLoopHasModularMount, out intNumBlockers))
                                         intLimbSlotCount += intNumBlockers;
                                     return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
                                         .ConfigureAwait(false) / 2 < intLimbSlotCount;
@@ -8982,6 +8987,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (Capacity.Contains("/["))
                 {
+                    string strHasModularMount = await GetHasModularMountAsync(token).ConfigureAwait(false);
                     // Get the Cyberware base Capacity.
                     string strBaseCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                     strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
@@ -8990,8 +8996,8 @@ namespace Chummer.Backend.Equipment
                                   - await Children.SumAsync(async objChildCyberware =>
                                   {
                                       // Children that are built into the parent
-                                      if (objChildCyberware.PlugsIntoModularMount == HasModularMount &&
-                                          !string.IsNullOrWhiteSpace(HasModularMount) ||
+                                      if (await objChildCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) == strHasModularMount &&
+                                          !string.IsNullOrWhiteSpace(strHasModularMount) ||
                                           objChildCyberware.ParentID == InternalId)
                                           return 0;
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
@@ -9025,13 +9031,14 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (!Capacity.Contains('['))
                 {
+                    string strHasModularMount = await GetHasModularMountAsync(token).ConfigureAwait(false);
                     // Get the Cyberware base Capacity.
                     decCapacity = Convert.ToDecimal(await GetCalculatedCapacityAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
                                   // Run through its Children and deduct the Capacity costs.
                                   - await Children.SumAsync(async objChildCyberware =>
                                   {
-                                      if (objChildCyberware.PlugsIntoModularMount == HasModularMount &&
-                                          !string.IsNullOrWhiteSpace(HasModularMount) ||
+                                      if (await objChildCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) == strHasModularMount &&
+                                          !string.IsNullOrWhiteSpace(strHasModularMount) ||
                                           objChildCyberware.ParentID == InternalId)
                                           return 0;
                                       string strCapacity = await objChildCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
@@ -11728,17 +11735,17 @@ namespace Chummer.Backend.Equipment
                            out HashSet<string> setHasMounts))
                 {
                     foreach (string strLoop in (await objCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(','))
-                        setDisallowedMounts.Add(strLoop + Location);
+                        setDisallowedMounts.Add(strLoop + await GetLocationAsync(token).ConfigureAwait(false));
                     string strLoopHasModularMount = await GetHasModularMountAsync(token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                         setHasMounts.Add(strLoopHasModularMount);
                     foreach (Cyberware objLoopCyberware in await Children.DeepWhereAsync(
-                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token: token).ConfigureAwait(false))
+                                 x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false))
                     {
                         foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(
                                      ','))
                         {
-                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                            setDisallowedMounts.Add(strLoop + await objLoopCyberware.GetLocationAsync(token).ConfigureAwait(false));
                         }
 
                         strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);

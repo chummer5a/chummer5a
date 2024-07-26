@@ -14773,10 +14773,14 @@ namespace Chummer
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public async Task<List<ListItem>> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware, CancellationToken token = default)
+        public async Task<List<ListItem>> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware,
+            CancellationToken token = default)
         {
             List<ListItem> lstReturn = new List<ListItem>(3)
-                {new ListItem("None", await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false))};
+            {
+                new ListItem("None",
+                    await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false))
+            };
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
@@ -14790,14 +14794,17 @@ namespace Chummer
                     async objLoopCyberware =>
                     {
                         // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                        if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                        if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
+                            await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
                             && (objLoopCyberware.Location == objModularCyberware.Location
                                 || string.IsNullOrEmpty(objModularCyberware.Location))
                             && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
                             && objLoopCyberware != objModularCyberware
                             // Make sure it's not the place where the mount is already occupied (either by us or something else)
                             && await objLoopCyberware.Children.AllAsync(
-                                    x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token)
+                                    async x => await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) !=
+                                               await objLoopCyberware.GetHasModularMountAsync(token)
+                                                   .ConfigureAwait(false), token)
                                 .ConfigureAwait(false))
                         {
                             string strName = objLoopCyberware.Parent != null
@@ -14816,14 +14823,18 @@ namespace Chummer
                             async objLoopCyberware =>
                             {
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
+                                    await objModularCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)
                                     && objLoopCyberware.Location == objModularCyberware.Location
-                                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
+                                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
+                                    objGrade.Name
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                     && await objLoopCyberware.Children.AllAsync(
-                                            x => x.PlugsIntoModularMount
-                                                 != objLoopCyberware.HasModularMount, token)
+                                            async x => await x.GetPlugsIntoModularMountAsync(token)
+                                                           .ConfigureAwait(false)
+                                                       != await objLoopCyberware.GetHasModularMountAsync(token)
+                                                           .ConfigureAwait(false), token)
                                         .ConfigureAwait(false))
                                 {
                                     string strName
@@ -14847,13 +14858,20 @@ namespace Chummer
                                 async objLoopCyberware =>
                                 {
                                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                    if (await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) ==
+                                        await objModularCyberware.GetPlugsIntoModularMountAsync(token)
+                                            .ConfigureAwait(false)
                                         && objLoopCyberware.Location == objModularCyberware.Location
-                                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name == objGrade.Name
+                                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
+                                        objGrade.Name
                                         && objLoopCyberware != objModularCyberware
                                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
                                         && await objLoopCyberware.Children.AllAsync(
-                                                x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token)
+                                                async x =>
+                                                    await x.GetPlugsIntoModularMountAsync(token)
+                                                        .ConfigureAwait(false) !=
+                                                    await objLoopCyberware.GetHasModularMountAsync(token)
+                                                        .ConfigureAwait(false), token)
                                             .ConfigureAwait(false))
                                     {
                                         string strName
@@ -14960,20 +14978,20 @@ namespace Chummer
 
                     if (await GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
                     {
-                        int intMetatypeQualitiesValue = 0;
                         // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
-                        await (await GetQualitiesAsync(token).ConfigureAwait(false)).ForEachAsync(async objQuality =>
+                        int intMetatypeQualitiesValue = await (await GetQualitiesAsync(token).ConfigureAwait(false)).SumAsync(async objQuality =>
                         {
                             if (objQuality.OriginSource == QualitySource.Metatype
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovable)
                             {
                                 XPathNavigator xmlQualityNode = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                                 if (xmlQualityNode == null)
-                                    return;
+                                    return 0;
                                 int intLoopKarma = 0;
                                 if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
-                                    intMetatypeQualitiesValue += intLoopKarma;
+                                    return intLoopKarma;
                             }
+                            return 0;
                         }, token).ConfigureAwait(false);
 
                         // Subtract extra karma cost of a metatype in priority

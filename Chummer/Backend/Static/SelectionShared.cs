@@ -1004,25 +1004,25 @@ namespace Chummer
                     }
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
+                                                           x => x.Children, async objCyberware =>
                                                                (objCyberware.Name == strNodeInnerText
                                                                 || objCyberware.SourceIDString
                                                                 == strNodeInnerText)
-                                                               && objCyberware.SourceType
+                                                               && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                                == Improvement.ImprovementSource.Bioware
                                                                && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
+                                                                   await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false)
                                                        >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, objCyberware =>
+                            x => x.Children, async objCyberware =>
                                 (objCyberware.Name == strNodeInnerText
                                  || objCyberware.SourceIDString
                                  == strNodeInnerText)
-                                && objCyberware.SourceType
+                                && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Bioware
                                 && string.IsNullOrEmpty(
-                                    objCyberware.PlugsIntoModularMount) &&
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                 strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                         >= intCount, strName);
                 }
@@ -1108,25 +1108,25 @@ namespace Chummer
                     }
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
+                                                           x => x.Children, async objCyberware =>
                                                                (objCyberware.Name == strNodeInnerText
-                                                                || objCyberware.SourceIDString
+                                                                || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                                                 == strNodeInnerText)
-                                                               && objCyberware.SourceType
+                                                               && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                                == Improvement.ImprovementSource.Cyberware
                                                                && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
+                                                                   await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false)
                                                        >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, objCyberware =>
+                            x => x.Children, async objCyberware =>
                                 (objCyberware.Name == strNodeInnerText
-                                 || objCyberware.SourceIDString
+                                 || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                  == strNodeInnerText)
-                                && objCyberware.SourceType
+                                && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Cyberware
                                 && string.IsNullOrEmpty(
-                                    objCyberware.PlugsIntoModularMount) &&
+                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                 strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                         >= intCount, strName);
                     }
@@ -1193,19 +1193,19 @@ namespace Chummer
                     }
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
+                                                           x => x.Children, async objCyberware =>
                                                                objCyberware.Category == strNodeInnerText &&
-                                                               objCyberware.SourceType
+                                                               await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                                == Improvement.ImprovementSource.Bioware
                                                                && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false) >= intCount,
+                                                                   await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false) >= intCount,
                                                        strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
+                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, async objCyberware =>
                                                        objCyberware.Category == strNodeInnerText &&
-                                                       objCyberware.SourceType
+                                                       await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                        == Improvement.ImprovementSource.Bioware
                                                        && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
+                                                           await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                                        strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                                                    >= intCount, strName);
                     }
@@ -1271,19 +1271,19 @@ namespace Chummer
                     }
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
+                                                           x => x.Children, async objCyberware =>
                                                                objCyberware.Category == strNodeInnerText &&
-                                                               objCyberware.SourceType
+                                                               await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                                == Improvement.ImprovementSource.Cyberware
                                                                && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false) >= intCount,
+                                                                   await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false) >= intCount,
                                                        strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
+                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, async objCyberware =>
                                                        objCyberware.Category == strNodeInnerText &&
-                                                       objCyberware.SourceType
+                                                       await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                        == Improvement.ImprovementSource.Cyberware
                                                        && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
+                                                           await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                                        strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                                                    >= intCount, strName);
                 }
@@ -1340,19 +1340,19 @@ namespace Chummer
                     }
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
+                                                           x => x.Children, async objCyberware =>
                                                                objCyberware.Name.Contains(strNodeInnerText) &&
-                                                               objCyberware.SourceType
+                                                               await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                                == Improvement.ImprovementSource.Bioware
                                                                && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
+                                                                   await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false)
                                                        >= intCount, strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
+                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, async objCyberware =>
                                                        objCyberware.Name.Contains(strNodeInnerText) &&
-                                                       objCyberware.SourceType
+                                                       await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                        == Improvement.ImprovementSource.Bioware
                                                        && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
+                                                           await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                                        strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                                                    >= intCount, strName);
                     }
@@ -1409,19 +1409,19 @@ namespace Chummer
                     }
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                                           x => x.Children, objCyberware =>
+                                                           x => x.Children, async objCyberware =>
                                                                objCyberware.Name.Contains(strNodeInnerText) &&
-                                                               objCyberware.SourceType
+                                                               await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                                == Improvement.ImprovementSource.Cyberware
                                                                && string.IsNullOrEmpty(
-                                                                   objCyberware.PlugsIntoModularMount), token).ConfigureAwait(false)
+                                                                   await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false)
                                                        >= intCount, strName);
-                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, objCyberware =>
+                    return new Tuple<bool, string>(await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(x => x.Children, async objCyberware =>
                                                        objCyberware.Name.Contains(strNodeInnerText) &&
-                                                       objCyberware.SourceType
+                                                       await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                                        == Improvement.ImprovementSource.Cyberware
                                                        && string.IsNullOrEmpty(
-                                                           objCyberware.PlugsIntoModularMount) &&
+                                                           await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
                                                        strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
                                                    >= intCount, strName);
                 }

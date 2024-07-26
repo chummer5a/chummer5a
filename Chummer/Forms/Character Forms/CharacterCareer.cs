@@ -3432,7 +3432,7 @@ namespace Chummer
                                                 && (await x.GetGradeAsync(token).ConfigureAwait(false)).Name != "None"
                                                 && await x.GetIsModularCurrentlyEquippedAsync(token)
                                                     .ConfigureAwait(false)
-                                                && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
+                                                && (!string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
                                                     || await x.GetCanRemoveThroughImprovementsAsync(token)
                                                         .ConfigureAwait(false));
                                      }, token)
@@ -3442,7 +3442,7 @@ namespace Chummer
                             .ConfigureAwait(false)).Suffix;
                         if (chrAvail != 'R' && chrAvail != 'F')
                             continue;
-                        if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                        if (!string.IsNullOrEmpty(await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
                         {
                             if (!await objCyberware.GetCanRemoveThroughImprovementsAsync(token)
                                     .ConfigureAwait(false))
@@ -14180,16 +14180,16 @@ namespace Chummer
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setHasMounts))
                             {
-                                foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhere(
-                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), GenericToken))
+                                foreach (Cyberware objLoopCyberware in await objMod.Cyberware.DeepWhereAsync(
+                                             x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
                                 {
-                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                    foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(GenericToken).ConfigureAwait(false)).SplitNoAlloc(
                                                  ',', StringSplitOptions.RemoveEmptyEntries))
                                     {
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                        setDisallowedMounts.Add(strLoop + await objLoopCyberware.GetLocationAsync(GenericToken).ConfigureAwait(false));
                                     }
 
-                                    string strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    string strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(GenericToken).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setHasMounts.Add(strLoopHasModularMount);
                                 }
@@ -14253,19 +14253,19 @@ namespace Chummer
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setHasMounts))
                             {
-                                string strLoopHasModularMount = objCyberwareParent.HasModularMount;
+                                string strLoopHasModularMount = await objCyberwareParent.GetHasModularMountAsync(GenericToken).ConfigureAwait(false);
                                 if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                     setHasMounts.Add(strLoopHasModularMount);
-                                foreach (Cyberware objLoopCyberware in objCyberwareParent.Children.DeepWhere(
-                                             x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), GenericToken))
+                                foreach (Cyberware objLoopCyberware in await objCyberwareParent.Children.DeepWhereAsync(
+                                             x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
                                 {
-                                    foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                    foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(GenericToken).ConfigureAwait(false)).SplitNoAlloc(
                                                  ',', StringSplitOptions.RemoveEmptyEntries))
                                     {
-                                        setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                        setDisallowedMounts.Add(strLoop + await objLoopCyberware.GetLocationAsync(GenericToken).ConfigureAwait(false));
                                     }
 
-                                    strLoopHasModularMount = objLoopCyberware.HasModularMount;
+                                    strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(GenericToken).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setHasMounts.Add(strLoopHasModularMount);
                                 }
@@ -23720,27 +23720,29 @@ namespace Chummer
                             }
                         }
 
-                        string strLoopHasModularMount = objSelectedCyberware.HasModularMount;
+                        string strLoopHasModularMount = await objSelectedCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrEmpty(strLoopHasModularMount)
                             && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                             dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
+                        string strSelectedLocation = await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
                         foreach (Cyberware objLoopCyberware in await objSelectedCyberware.Children.DeepWhereAsync(
-                                         x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount), token)
+                                         x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
                                      .ConfigureAwait(false))
                         {
+                            string strLoopLocation = await objLoopCyberware.GetLocationAsync(token).ConfigureAwait(false);
                             foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                          ',', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 string strKey = strLoop;
-                                if (objSelectedCyberware.Location != objLoopCyberware.Location)
-                                    strKey += objLoopCyberware.Location;
+                                if (strSelectedLocation != strLoopLocation)
+                                    strKey += strLoopLocation;
                                 if (!dicDisallowedMounts.ContainsKey(strKey))
                                     dicDisallowedMounts.Add(strKey, int.MaxValue);
                             }
 
-                            strLoopHasModularMount = objSelectedCyberware.Location != objLoopCyberware.Location
-                                ? objLoopCyberware.HasModularMount + objLoopCyberware.Location
-                                : objLoopCyberware.HasModularMount;
+                            strLoopHasModularMount = strSelectedLocation != strLoopLocation
+                                ? await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) + strLoopLocation
+                                : await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strLoopHasModularMount)
                                 && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                                 dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
@@ -23760,18 +23762,20 @@ namespace Chummer
                                     objLoopCyberware.BlocksMounts.SplitNoAlloc(',',
                                         StringSplitOptions.RemoveEmptyEntries));
                                 setLoopHasModularMount.Clear();
-                                if (!string.IsNullOrEmpty(objLoopCyberware.HasModularMount))
-                                    setLoopHasModularMount.Add(objLoopCyberware.HasModularMount);
+                                string strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                    setLoopHasModularMount.Add(strLoopHasModularMount);
                                 foreach (Cyberware objInnerLoopCyberware in await objLoopCyberware.Children
                                              .DeepWhereAsync(
-                                                 x => x.Children, x => string.IsNullOrEmpty(x.PlugsIntoModularMount),
+                                                 x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
                                                  token).ConfigureAwait(false))
                                 {
                                     foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                  ',', StringSplitOptions.RemoveEmptyEntries))
                                         setLoopDisallowedMounts.Add(strLoop);
-                                    if (!string.IsNullOrEmpty(objInnerLoopCyberware.HasModularMount))
-                                        setLoopHasModularMount.Add(objInnerLoopCyberware.HasModularMount);
+                                    strLoopHasModularMount = await objInnerLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                        setLoopHasModularMount.Add(strLoopHasModularMount);
                                 }
 
                                 foreach (string strLoop in setLoopDisallowedMounts)

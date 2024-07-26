@@ -1717,11 +1717,11 @@ namespace Chummer
                                                              "mountsto", token: token) == null)
                         {
                             Cyberware objParent = CyberwareParent;
-                            bool blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
+                            bool blnAnyParentIsModular = objParent != null && !string.IsNullOrEmpty(await objParent.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false));
                             while (objParent != null && !blnAnyParentIsModular)
                             {
                                 objParent = objParent.Parent;
-                                blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
+                                blnAnyParentIsModular = objParent != null && !string.IsNullOrEmpty(await objParent.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false));
                             }
 
                             if (!blnAnyParentIsModular)

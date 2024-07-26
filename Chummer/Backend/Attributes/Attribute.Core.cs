@@ -1334,9 +1334,9 @@ namespace Chummer.Backend.Attributes
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
-                        (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
-                         _objCharacter.RESEnabled && Abbrev == "RES" ||
-                         _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                        (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false) && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                         await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && Abbrev == "RES" ||
+                         await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false) && Abbrev == "DEP"))
                         return true;
                 }
 
@@ -1350,17 +1350,17 @@ namespace Chummer.Backend.Attributes
                     if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
                          objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
-                        (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
-                         _objCharacter.RESEnabled && Abbrev == "RES" ||
-                         _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                        (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false) && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                         await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && Abbrev == "RES" ||
+                         await _objCharacter.GetDEPEnabledAsync(token).ConfigureAwait(false) && Abbrev == "DEP"))
                         return true;
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                if (!await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
-                    return await _objCharacter.Cyberware
+                    return await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                         .AnyAsync(
                             async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
                                                   await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
