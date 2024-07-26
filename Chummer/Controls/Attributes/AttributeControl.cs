@@ -312,7 +312,7 @@ namespace Chummer.UI.Attributes
                     if (e.PropertyNames.Contains(nameof(CharacterAttrib.Karma)) && _intChangingKarma == 0)
                     {
                         int intKarma =
-                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                            await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetKarmaAsync(token)
                                 .ConfigureAwait(false);
                         await nudKarma.DoThreadSafeAsync(x =>
                             {
@@ -328,7 +328,7 @@ namespace Chummer.UI.Attributes
                 else if (e.PropertyNames.Contains(nameof(CharacterAttrib.Karma)) && _intChangingKarma == 0)
                 {
                     int intKarma =
-                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetBaseAsync(token)
+                        await (await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false)).GetKarmaAsync(token)
                             .ConfigureAwait(false);
                     await nudKarma.DoThreadSafeAsync(x => x.Value = intKarma, token)
                         .ConfigureAwait(false);
