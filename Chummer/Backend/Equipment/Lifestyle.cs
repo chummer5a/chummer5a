@@ -4408,9 +4408,10 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
                         return false;
-                    LifestyleQualities.AsEnumerableWithSideEffects().ForEach(x => ImprovementManager.RemoveImprovements(
-                        _objCharacter,
-                        Improvement.ImprovementSource.Quality, x.InternalId));
+                    List<string> lstIds = new List<string>(LifestyleQualities.Count);
+                    LifestyleQualities.ForEach(x => lstIds.Add(x.InternalId));
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality,
+                        lstIds);
                 }
             }
 
@@ -4436,9 +4437,9 @@ namespace Chummer.Backend.Equipment
                         && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))
                         return false;
 
-                    await LifestyleQualities.ForEachWithSideEffectsAsync(x => ImprovementManager.RemoveImprovementsAsync(_objCharacter,
-                            Improvement.ImprovementSource.Quality, x.InternalId, token), token: token)
-                        .ConfigureAwait(false);
+                    List<string> lstIds = new List<string>(await LifestyleQualities.GetCountAsync(token).ConfigureAwait(false));
+                    await LifestyleQualities.ForEachAsync(x => lstIds.Add(x.InternalId), token).ConfigureAwait(false);
+                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, lstIds, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -4499,8 +4500,7 @@ namespace Chummer.Backend.Equipment
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                foreach (LifestyleQuality objQuality in LifestyleQualities)
-                    await objQuality.DisposeAsync().ConfigureAwait(false);
+                await LifestyleQualities.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
                 LifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 await LifestyleQualities.DisposeAsync().ConfigureAwait(false);
