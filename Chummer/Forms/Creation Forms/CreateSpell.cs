@@ -38,6 +38,8 @@ namespace Chummer
 
         public CreateSpell(Character objCharacter)
         {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
             _objSpell = new Spell(objCharacter);
             InitializeComponent();
             this.UpdateLightDarkMode();

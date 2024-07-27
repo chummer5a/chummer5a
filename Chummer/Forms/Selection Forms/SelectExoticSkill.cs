@@ -38,10 +38,10 @@ namespace Chummer
 
         public SelectExoticSkill(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

@@ -51,7 +51,7 @@ namespace Chummer
         public SelectSpell(Character objCharacter)
         {
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

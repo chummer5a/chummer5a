@@ -37,20 +37,14 @@ namespace Chummer
 
         public CreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             _eSource = eSource;
+            if (_eSource == Improvement.ImprovementSource.Bioware)
+                Tag = "Title_CreateBiowareSuite";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
-
-            if (_eSource == Improvement.ImprovementSource.Cyberware)
-                _strType = "cyberware";
-            else
-            {
-                _strType = "bioware";
-                Text = LanguageManager.GetString("Title_CreateBiowareSuite");
-            }
-
+            _strType = _eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
             txtFileName.Text = "custom_" + _strType + ".xml";
         }
 

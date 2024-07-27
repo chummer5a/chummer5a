@@ -60,15 +60,12 @@ namespace Chummer
                 Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
                 Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
             };
-            InitializeComponent();
-
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-
-            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
-
+            InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
+            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstGrades = _objCharacter.GetGradesList(Improvement.ImprovementSource.Drug);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));

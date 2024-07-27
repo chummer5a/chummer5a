@@ -49,11 +49,12 @@ namespace Chummer
 
         public SelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
-            _objLifestyle = objLifestyle;
+            _objLifestyle = objLifestyle ?? new Lifestyle(objCharacter);
+            _objLifestyle.StyleType = LifestyleType.Advanced;
             // Load the Lifestyles information.
             _xmlDocument = _objCharacter.LoadData("lifestyles.xml");
             _tmrCityChangeTimer = new Timer { Interval = 1000 };

@@ -43,6 +43,7 @@ namespace Chummer
 
         public SelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             _eSource = eSource;
             if (_eSource == Improvement.ImprovementSource.Cyberware)
@@ -55,7 +56,6 @@ namespace Chummer
             }
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
             _objXmlDocument = objCharacter.LoadData(_strType + ".xml", string.Empty, true);
         }
 

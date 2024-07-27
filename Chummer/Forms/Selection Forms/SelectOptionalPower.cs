@@ -35,11 +35,11 @@ namespace Chummer
 
         public SelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            _objCharacter = objCharacter;
             _lstPowerExtraPairs = lstPowerExtraPairs.ToList();
         }
 

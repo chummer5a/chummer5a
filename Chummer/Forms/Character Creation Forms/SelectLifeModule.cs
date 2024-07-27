@@ -45,10 +45,10 @@ namespace Chummer
 
         public SelectLifeModule(Character objCharacter, int intStage)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
             _intStage = intStage;
             _xmlLifeModulesDocumentChummerNode
                 = _objCharacter.LoadDataXPath("lifemodules.xml").SelectSingleNode("/chummer");

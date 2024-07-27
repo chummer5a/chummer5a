@@ -19921,6 +19921,35 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether character creation rules should be ignored.
+        /// </summary>
+        public async Task SetIgnoreRulesAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnIgnoreRules == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnIgnoreRules = value;
+                    await OnPropertyChangedAsync(nameof(IgnoreRules), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Contact Points.
         /// </summary>
         public int ContactPoints

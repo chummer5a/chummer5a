@@ -52,12 +52,11 @@ namespace Chummer
         public SelectLifestyleQuality(Character objCharacter, Lifestyle objParentLifestyle)
         {
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objParentLifestyle = objParentLifestyle ?? throw new ArgumentNullException(nameof(objParentLifestyle));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
-            _objParentLifestyle = objParentLifestyle;
-
             // Load the Quality information.
             _objXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
         }

@@ -10900,7 +10900,7 @@ namespace Chummer
                     return;
 
                 IAsyncDisposable objLocker =
-                    await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken);
+                    await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
                 try
                 {
                     GenericToken.ThrowIfCancellationRequested();
@@ -10914,7 +10914,7 @@ namespace Chummer
                             GenericToken)
                         .ConfigureAwait(false);
 
-                    if (await objLifestyle.GetStyleTypeAsync(GenericToken) != LifestyleType.Standard)
+                    if (await objLifestyle.GetStyleTypeAsync(GenericToken).ConfigureAwait(false) != LifestyleType.Standard)
                     {
                         // Edit Advanced Lifestyle.
                         Lifestyle objLifestyleLocal = objLifestyle;
@@ -10972,7 +10972,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync();
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

@@ -55,7 +55,7 @@ namespace Chummer
         public SelectSkill(Character objCharacter, string strSource = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _strSourceName = strSource;
+            _strSourceName = strSource ?? string.Empty;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

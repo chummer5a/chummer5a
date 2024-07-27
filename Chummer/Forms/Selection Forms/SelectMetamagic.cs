@@ -46,9 +46,9 @@ namespace Chummer
 
         public SelectMetamagic(Character objCharacter, InitiationGrade objGrade)
         {
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             if (objGrade == null)
                 throw new ArgumentNullException(nameof(objGrade));
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

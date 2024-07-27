@@ -48,10 +48,10 @@ namespace Chummer
 
         public SelectArt(Character objCharacter, Mode objWindowMode)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
 
             // Load the Metamagic information.
             switch (objWindowMode)

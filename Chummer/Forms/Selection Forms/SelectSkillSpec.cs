@@ -38,7 +38,7 @@ namespace Chummer
         public SelectSpec(Skill skill)
         {
             _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
-            _objCharacter = skill.CharacterObject;
+            _objCharacter = skill.CharacterObject ?? throw new ArgumentNullException(nameof(skill.CharacterObject));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

@@ -52,8 +52,8 @@ namespace Chummer
                     Interlocked.Exchange(ref _objDrug, null)?.Dispose();
                 Utils.ListItemListPool.Return(ref _lstGrade);
             };
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objDrug = new Drug(objCharacter);
-            _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

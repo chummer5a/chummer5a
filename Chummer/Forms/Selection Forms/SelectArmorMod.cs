@@ -45,10 +45,10 @@ namespace Chummer
         public SelectArmorMod(Character objCharacter, Armor objParentNode = null)
         {
             Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             // Load the Armor information.
             _xmlBaseDataNode = _objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _objArmor = objParentNode;

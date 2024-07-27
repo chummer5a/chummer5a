@@ -57,11 +57,11 @@ namespace Chummer
                 Utils.ListItemListPool.Return(ref _lstCategory);
                 Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
+            _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _objVehicle = objVehicle ?? throw new ArgumentNullException(nameof(objVehicle));
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (_xmlBaseVehicleDataNode != null)

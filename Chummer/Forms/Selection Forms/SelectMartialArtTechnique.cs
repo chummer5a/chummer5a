@@ -43,11 +43,11 @@ namespace Chummer
         public SelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
             Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setAllowedTechniques);
+            _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            _objMartialArt = objMartialArt ?? throw new ArgumentNullException(nameof(objMartialArt));
             // Load the Martial Art information.
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
             // Populate the Martial Art Technique list.

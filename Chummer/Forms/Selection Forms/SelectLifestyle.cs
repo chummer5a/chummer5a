@@ -53,10 +53,10 @@ namespace Chummer
 
         public SelectLifestyle(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
             _objLifestyle = new Lifestyle(objCharacter);
             // Load the Lifestyles information.
             _objXmlDocument = objCharacter.LoadData("lifestyles.xml");

@@ -55,6 +55,7 @@ namespace Chummer
 
         public CreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
         {
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             _lstMods = new ThreadSafeList<VehicleMod>(1);
@@ -80,7 +81,6 @@ namespace Chummer
                 }
                 _objGenericCancellationTokenSource.Dispose();
                 _lstMods.Dispose();
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
             _objVehicle = objVehicle;
             _objMount = objWeaponMount;
