@@ -7482,14 +7482,14 @@ namespace Chummer
                                                         intCharacterInnerXmlLength - intLoopIndex + 9 <
                                                         intNeedle2Length)
                                                         continue;
-                                                    if (strCharacterInnerXml.AsSpan(intLoopIndex - 9, intNeedle1Length)
+                                                    if (strCharacterInnerXml.AsSpan(intLoopIndex - 9, intNeedle2Length)
                                                         .Equals(spnNeedle2, StringComparison.OrdinalIgnoreCase))
                                                         return true;
                                                     if (intLoopIndex < 12 ||
                                                         intCharacterInnerXmlLength - intLoopIndex + 12 <
                                                         intNeedle3Length)
                                                         continue;
-                                                    if (strCharacterInnerXml.AsSpan(intLoopIndex - 12, intNeedle1Length)
+                                                    if (strCharacterInnerXml.AsSpan(intLoopIndex - 12, intNeedle3Length)
                                                         .Equals(spnNeedle3, StringComparison.OrdinalIgnoreCase))
                                                         return true;
                                                 }
