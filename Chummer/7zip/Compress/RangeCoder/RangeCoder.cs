@@ -184,7 +184,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public void EncodeDirectBits(uint v, int numTotalBits)
+        public void EncodeDirectBits(int v, int numTotalBits)
         {
             unchecked
             {
@@ -202,7 +202,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async Task EncodeDirectBitsAsync(uint v, int numTotalBits, CancellationToken token = default)
+        public async Task EncodeDirectBitsAsync(int v, int numTotalBits, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked

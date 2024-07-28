@@ -22,8 +22,8 @@ namespace SevenZip.Compression.LZMA
 {
     internal abstract class Base
     {
-        public const uint kNumRepDistances = 4;
-        public const uint kNumStates = 12;
+        public const int kNumRepDistances = 4;
+        public const int kNumStates = 12;
 
         // static byte []kLiteralNextStates  = {0, 0, 0, 0, 1, 2, 3, 4,  5,  6,   4, 5};
         // static byte []kMatchNextStates    = {7, 7, 7, 7, 7, 7, 7, 10, 10, 10, 10, 10};
@@ -32,7 +32,7 @@ namespace SevenZip.Compression.LZMA
 
         public struct State
         {
-            public uint Index;
+            public int Index;
 
             public void Init()
             { Index = 0; }
@@ -45,13 +45,13 @@ namespace SevenZip.Compression.LZMA
             }
 
             public void UpdateMatch()
-            { Index = (uint)(Index < 7 ? 7 : 10); }
+            { Index = Index < 7 ? 7 : 10; }
 
             public void UpdateRep()
-            { Index = (uint)(Index < 7 ? 8 : 11); }
+            { Index = Index < 7 ? 8 : 11; }
 
             public void UpdateShortRep()
-            { Index = (uint)(Index < 7 ? 9 : 11); }
+            { Index = Index < 7 ? 9 : 11; }
 
             public bool IsCharState()
             { return Index < 7; }
@@ -63,48 +63,45 @@ namespace SevenZip.Compression.LZMA
         // public const uint kDistTableSizeMax = kDicLogSizeMax * 2;
 
         public const int kNumLenToPosStatesBits = 2; // it's for speed optimization
-        public const uint kNumLenToPosStates = 1 << kNumLenToPosStatesBits;
+        public const int kNumLenToPosStates = 1 << kNumLenToPosStatesBits;
 
-        public const uint kMatchMinLen = 2;
+        public const int kMatchMinLen = 2;
 
-        public static uint GetLenToPosState(uint len)
+        public static int GetLenToPosState(int len)
         {
-            unchecked
-            {
-                len -= kMatchMinLen;
-                if (len < kNumLenToPosStates)
-                    return len;
-                return kNumLenToPosStates - 1;
-            }
+            len -= kMatchMinLen;
+            if (len < kNumLenToPosStates)
+                return len;
+            return kNumLenToPosStates - 1;
         }
 
         public const int kNumAlignBits = 4;
-        public const uint kAlignTableSize = 1 << kNumAlignBits;
-        public const uint kAlignMask = kAlignTableSize - 1;
+        public const int kAlignTableSize = 1 << kNumAlignBits;
+        public const int kAlignMask = kAlignTableSize - 1;
 
-        public const uint kStartPosModelIndex = 4;
-        public const uint kEndPosModelIndex = 14;
-        public const uint kNumPosModels = kEndPosModelIndex - kStartPosModelIndex;
+        public const int kStartPosModelIndex = 4;
+        public const int kEndPosModelIndex = 14;
+        public const int kNumPosModels = kEndPosModelIndex - kStartPosModelIndex;
 
-        public const uint kNumFullDistances = 1 << ((int)kEndPosModelIndex / 2);
+        public const int kNumFullDistances = 1 << (kEndPosModelIndex / 2);
 
-        public const uint kNumLitPosStatesBitsEncodingMax = 4;
-        public const uint kNumLitContextBitsMax = 8;
+        public const int kNumLitPosStatesBitsEncodingMax = 4;
+        public const int kNumLitContextBitsMax = 8;
 
         public const int kNumPosStatesBitsMax = 4;
-        public const uint kNumPosStatesMax = 1 << kNumPosStatesBitsMax;
+        public const int kNumPosStatesMax = 1 << kNumPosStatesBitsMax;
         public const int kNumPosStatesBitsEncodingMax = 4;
-        public const uint kNumPosStatesEncodingMax = 1 << kNumPosStatesBitsEncodingMax;
+        public const int kNumPosStatesEncodingMax = 1 << kNumPosStatesBitsEncodingMax;
 
         public const int kNumLowLenBits = 3;
         public const int kNumMidLenBits = 3;
         public const int kNumHighLenBits = 8;
-        public const uint kNumLowLenSymbols = 1 << kNumLowLenBits;
-        public const uint kNumMidLenSymbols = 1 << kNumMidLenBits;
+        public const int kNumLowLenSymbols = 1 << kNumLowLenBits;
+        public const int kNumMidLenSymbols = 1 << kNumMidLenBits;
 
-        public const uint kNumLenSymbols = kNumLowLenSymbols + kNumMidLenSymbols +
+        public const int kNumLenSymbols = kNumLowLenSymbols + kNumMidLenSymbols +
                 (1 << kNumHighLenBits);
 
-        public const uint kMatchMaxLen = kMatchMinLen + kNumLenSymbols - 1;
+        public const int kMatchMaxLen = kMatchMinLen + kNumLenSymbols - 1;
     }
 }

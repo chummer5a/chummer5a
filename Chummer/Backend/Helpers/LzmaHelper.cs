@@ -115,7 +115,7 @@ namespace Chummer
                     break;
 
                 case ChummerCompressionPreset.Ultra:
-                    CompressToLzmaFile(objInStream, objOutStream, 30, 128, Encoder.EMatchFinderType.BT4, funcOnProgress);
+                    CompressToLzmaFile(objInStream, objOutStream, 27, 255, Encoder.EMatchFinderType.BT4, funcOnProgress);
                     break;
 
                 default:
@@ -126,11 +126,11 @@ namespace Chummer
 
         public static void CompressToLzmaFile(this Stream objInStream, FileStream objOutStream,
                                               int intCompressionLevel = Encoder.kDefaultDictionaryLogSize,
-                                              int numFastBytes = (int)Encoder.kNumFastBytesDefault,
+                                              int numFastBytes = Encoder.kNumFastBytesDefault,
                                               Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
                                               Action<long, long> funcOnProgress = null)
         {
-            if (intCompressionLevel < 0 || intCompressionLevel > 30)
+            if (intCompressionLevel < 0 || intCompressionLevel > 27)
                 throw new ArgumentOutOfRangeException(nameof(intCompressionLevel));
             if (numFastBytes < 5 || numFastBytes > 255)
                 throw new ArgumentOutOfRangeException(nameof(numFastBytes));
@@ -242,7 +242,7 @@ namespace Chummer
                                                    token);
 
                 case ChummerCompressionPreset.Ultra:
-                    return CompressToLzmaFileAsync(objInStream, objOutStream, 30, 128, Encoder.EMatchFinderType.BT4, funcOnProgress,
+                    return CompressToLzmaFileAsync(objInStream, objOutStream, 27, 255, Encoder.EMatchFinderType.BT4, funcOnProgress,
                         token);
 
                 default:
@@ -253,12 +253,12 @@ namespace Chummer
 
         public static async Task CompressToLzmaFileAsync(this Stream objInStream, FileStream objOutStream,
                                                    int intCompressionLevel = Encoder.kDefaultDictionaryLogSize,
-                                                   int numFastBytes = (int)Encoder.kNumFastBytesDefault,
+                                                   int numFastBytes = Encoder.kNumFastBytesDefault,
                                                    Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
                                                    Func<long, long, CancellationToken, Task> funcOnProgress = null,
                                                    CancellationToken token = default)
         {
-            if (intCompressionLevel < 0 || intCompressionLevel > 30)
+            if (intCompressionLevel < 0 || intCompressionLevel > 27)
                 throw new ArgumentOutOfRangeException(nameof(intCompressionLevel));
             if (numFastBytes < 5 || numFastBytes > 255)
                 throw new ArgumentOutOfRangeException(nameof(numFastBytes));

@@ -46,7 +46,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public void Encode(Encoder encoder, uint symbol)
+        public void Encode(Encoder encoder, int symbol)
         {
             // encoder.EncodeBit(Prob, kNumBitModelTotalBits, symbol);
             // UpdateModel(symbol);
@@ -73,7 +73,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public Task EncodeAsync(Encoder encoder, uint symbol, CancellationToken token = default)
+        public Task EncodeAsync(Encoder encoder, int symbol, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
@@ -121,11 +121,11 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public uint GetPrice(uint symbol)
+        public uint GetPrice(int symbol)
         {
             unchecked
             {
-                return ProbPrices[(((Prob - symbol) ^ -(int)symbol) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
+                return ProbPrices[(((Prob - symbol) ^ -symbol) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
             }
         }
 

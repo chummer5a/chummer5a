@@ -42,45 +42,45 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public void Encode(Encoder rangeEncoder, uint symbol)
+        public void Encode(Encoder rangeEncoder, int symbol)
         {
-            uint m = 1;
+            int m = 1;
             unchecked
             {
                 for (int bitIndex = NumBitLevels; bitIndex > 0;)
                 {
                     bitIndex--;
-                    uint bit = (symbol >> bitIndex) & 1;
+                    int bit = (symbol >> bitIndex) & 1;
                     Models[m].Encode(rangeEncoder, bit);
                     m = (m << 1) | bit;
                 }
             }
         }
 
-        public async Task EncodeAsync(Encoder rangeEncoder, uint symbol, CancellationToken token = default)
+        public async Task EncodeAsync(Encoder rangeEncoder, int symbol, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            uint m = 1;
+            int m = 1;
             unchecked
             {
                 for (int bitIndex = NumBitLevels; bitIndex > 0;)
                 {
                     bitIndex--;
-                    uint bit = (symbol >> bitIndex) & 1;
+                    int bit = (symbol >> bitIndex) & 1;
                     await Models[m].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
                     m = (m << 1) | bit;
                 }
             }
         }
 
-        public void ReverseEncode(Encoder rangeEncoder, uint symbol)
+        public void ReverseEncode(Encoder rangeEncoder, int symbol)
         {
-            uint m = 1;
+            int m = 1;
             unchecked
             {
-                for (uint i = 0; i < NumBitLevels; i++)
+                for (int i = 0; i < NumBitLevels; i++)
                 {
-                    uint bit = symbol & 1;
+                    int bit = symbol & 1;
                     Models[m].Encode(rangeEncoder, bit);
                     m = (m << 1) | bit;
                     symbol >>= 1;
@@ -88,14 +88,14 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async Task ReverseEncodeAsync(Encoder rangeEncoder, uint symbol, CancellationToken token = default)
+        public async Task ReverseEncodeAsync(Encoder rangeEncoder, int symbol, CancellationToken token = default)
         {
-            uint m = 1;
+            int m = 1;
             unchecked
             {
-                for (uint i = 0; i < NumBitLevels; i++)
+                for (int i = 0; i < NumBitLevels; i++)
                 {
-                    uint bit = symbol & 1;
+                    int bit = symbol & 1;
                     await Models[m].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
                     m = (m << 1) | bit;
                     symbol >>= 1;
@@ -103,16 +103,16 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public uint GetPrice(uint symbol)
+        public uint GetPrice(int symbol)
         {
             uint price = 0;
-            uint m = 1;
+            int m = 1;
             unchecked
             {
                 for (int bitIndex = NumBitLevels; bitIndex > 0;)
                 {
                     bitIndex--;
-                    uint bit = (symbol >> bitIndex) & 1;
+                    int bit = (symbol >> bitIndex) & 1;
                     price += Models[m].GetPrice(bit);
                     m = (m << 1) + bit;
                 }
@@ -120,15 +120,15 @@ namespace SevenZip.Compression.RangeCoder
             return price;
         }
 
-        public uint ReverseGetPrice(uint symbol)
+        public uint ReverseGetPrice(int symbol)
         {
             uint price = 0;
-            uint m = 1;
+            int m = 1;
             unchecked
             {
                 for (int i = NumBitLevels; i > 0; i--)
                 {
-                    uint bit = symbol & 1;
+                    int bit = symbol & 1;
                     symbol >>= 1;
                     price += Models[m].GetPrice(bit);
                     m = (m << 1) | bit;
@@ -137,16 +137,16 @@ namespace SevenZip.Compression.RangeCoder
             return price;
         }
 
-        public static uint ReverseGetPrice(BitEncoder[] Models, uint startIndex,
-            int NumBitLevels, uint symbol)
+        public static uint ReverseGetPrice(BitEncoder[] Models, int startIndex,
+            int NumBitLevels, int symbol)
         {
             uint price = 0;
-            uint m = 1;
+            int m = 1;
             unchecked
             {
                 for (int i = NumBitLevels; i > 0; i--)
                 {
-                    uint bit = symbol & 1;
+                    int bit = symbol & 1;
                     symbol >>= 1;
                     price += Models[startIndex + m].GetPrice(bit);
                     m = (m << 1) | bit;
@@ -156,15 +156,15 @@ namespace SevenZip.Compression.RangeCoder
             return price;
         }
 
-        public static void ReverseEncode(BitEncoder[] Models, uint startIndex,
-            Encoder rangeEncoder, int NumBitLevels, uint symbol)
+        public static void ReverseEncode(BitEncoder[] Models, int startIndex,
+            Encoder rangeEncoder, int NumBitLevels, int symbol)
         {
-            uint m = 1;
+            int m = 1;
             unchecked
             {
                 for (int i = 0; i < NumBitLevels; i++)
                 {
-                    uint bit = symbol & 1;
+                    int bit = symbol & 1;
                     Models[startIndex + m].Encode(rangeEncoder, bit);
                     m = (m << 1) | bit;
                     symbol >>= 1;
@@ -172,16 +172,16 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public static async Task ReverseEncodeAsync(BitEncoder[] Models, uint startIndex,
-                                         Encoder rangeEncoder, int NumBitLevels, uint symbol, CancellationToken token = default)
+        public static async Task ReverseEncodeAsync(BitEncoder[] Models, int startIndex,
+                                         Encoder rangeEncoder, int NumBitLevels, int symbol, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            uint m = 1;
+            int m = 1;
             unchecked
             {
                 for (int i = 0; i < NumBitLevels; i++)
                 {
-                    uint bit = symbol & 1;
+                    int bit = symbol & 1;
                     await Models[startIndex + m].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
                     m = (m << 1) | bit;
                     symbol >>= 1;

@@ -446,7 +446,7 @@ namespace SevenZip.Compression.LZMA
                                     rep1 = rep0;
                                     len = Base.kMatchMinLen + m_LenDecoder.Decode(m_RangeDecoder, posState);
                                     state.UpdateMatch();
-                                    uint posSlot = m_PosSlotDecoder[Base.GetLenToPosState(len)].Decode(m_RangeDecoder);
+                                    uint posSlot = m_PosSlotDecoder[Base.GetLenToPosState((int)len)].Decode(m_RangeDecoder);
                                     if (posSlot >= Base.kStartPosModelIndex)
                                     {
                                         int numDirectBits = (int)((posSlot >> 1) - 1);
