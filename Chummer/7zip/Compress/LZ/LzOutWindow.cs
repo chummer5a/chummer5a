@@ -165,20 +165,23 @@ namespace SevenZip.Compression.LZ
         }
 
         [CLSCompliant(false)]
-        public void CopyBlock(uint distance, uint len)
+        public unsafe void CopyBlock(uint distance, uint len)
         {
             unchecked
             {
                 uint pos = _pos - distance - 1;
                 if (pos >= _windowSize)
                     pos += _windowSize;
-                for (; len > 0; len--)
+                fixed (byte* pchrBuffer = _buffer)
                 {
-                    if (pos >= _windowSize)
-                        pos = 0;
-                    _buffer[_pos++] = _buffer[pos++];
-                    if (_pos >= _windowSize)
-                        Flush();
+                    for (; len > 0; len--)
+                    {
+                        if (pos >= _windowSize)
+                            pos = 0;
+                        _buffer[_pos++] = *(pchrBuffer + pos++);
+                        if (_pos >= _windowSize)
+                            Flush();
+                    }
                 }
             }
         }

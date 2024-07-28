@@ -43,7 +43,7 @@ namespace SevenZip.Compression.LZ
         private uint _keepSizeAfter; // how many BYTEs must be kept buffer after _pos
         public uint _streamPos; // offset (from _buffer) of first not read byte from Stream
 
-        public void MoveBlock()
+        public unsafe void MoveBlock()
         {
             unchecked
             {
@@ -55,8 +55,12 @@ namespace SevenZip.Compression.LZ
                 uint numBytes = _bufferOffset + _streamPos - offset;
 
                 // check negative offset ????
-                for (uint i = 0; i < numBytes; i++)
-                    _bufferBase[i] = _bufferBase[offset + i];
+                fixed (byte* pchrBufferBase = &_bufferBase[offset])
+                {
+                    for (uint i = 0; i < numBytes; i++)
+                        _bufferBase[i] = *(pchrBufferBase + i);
+                }
+
                 _bufferOffset -= offset;
             }
         }

@@ -17,6 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
+using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +33,7 @@ namespace SevenZip.Compression.RangeCoder
 
         public ulong Low;
         public uint Range;
-        private uint _cacheSize;
+        private int _cacheSize;
         private byte _cache;
 
         private long StartPosition;
@@ -122,12 +124,19 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     if (_cacheSize > 1)
                     {
-                        byte[] data = new byte[_cacheSize];
-                        data[0] = (byte) (_cache + shiftedLow);
-                        byte paddingValue = (byte) (0xFF + shiftedLow);
-                        for (int i = 1; i < data.Length; ++i)
-                            data[i] = paddingValue;
-                        Stream.Write(data, 0, data.Length);
+                        byte[] data = ArrayPool<byte>.Shared.Rent(_cacheSize);
+                        try
+                        {
+                            data[0] = (byte)(_cache + shiftedLow);
+                            byte paddingValue = (byte)(0xFF + shiftedLow);
+                            for (int i = 1; i < _cacheSize; ++i)
+                                data[i] = paddingValue;
+                            Stream.Write(data, 0, _cacheSize);
+                        }
+                        finally
+                        {
+                            ArrayPool<byte>.Shared.Return(data);
+                        }
                     }
                     else
                         Stream.WriteByte((byte)(_cache + shiftedLow));
@@ -150,13 +159,19 @@ namespace SevenZip.Compression.RangeCoder
                 {
                     if (_cacheSize > 1)
                     {
-                        int cacheSize = (int)_cacheSize;
-                        byte[] data = new byte[cacheSize];
-                        data[0] = (byte)(_cache + shiftedLow);
-                        byte paddingValue = (byte)(0xFF + shiftedLow);
-                        for (int i = 1; i < cacheSize; ++i)
-                            data[i] = paddingValue;
-                        await Stream.WriteAsync(data, 0, cacheSize, token).ConfigureAwait(false);
+                        byte[] data = ArrayPool<byte>.Shared.Rent(_cacheSize);
+                        try
+                        {
+                            data[0] = (byte)(_cache + shiftedLow);
+                            byte paddingValue = (byte)(0xFF + shiftedLow);
+                            for (int i = 1; i < _cacheSize; ++i)
+                                data[i] = paddingValue;
+                            await Stream.WriteAsync(data, 0, _cacheSize, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            ArrayPool<byte>.Shared.Return(data);
+                        }
                     }
                     else
                         Stream.WriteByte((byte)(_cache + shiftedLow));
@@ -273,12 +288,25 @@ namespace SevenZip.Compression.RangeCoder
 
             Code = 0;
             Range = 0xFFFFFFFF;
-            byte[] achrBuffer = new byte[5];
-            _ = Stream.Read(achrBuffer, 0, 5);
-            unchecked
+            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(5);
+            try
             {
-                for (int i = 0; i < 5; i++)
-                    Code = (Code << 8) | achrBuffer[i];
+                _ = Stream.Read(achrBuffer, 0, 5);
+                unchecked
+                {
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            for (int i = 0; i < 5; i++)
+                                Code = (Code << 8) | *(pchrBuffer + i);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
             }
         }
 
@@ -289,12 +317,25 @@ namespace SevenZip.Compression.RangeCoder
 
             Code = 0;
             Range = 0xFFFFFFFF;
-            byte[] achrBuffer = new byte[5];
-            _ = await Stream.ReadAsync(achrBuffer, 0, 5, token).ConfigureAwait(false);
-            unchecked
+            byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(5);
+            try
             {
-                for (int i = 0; i < 5; i++)
-                    Code = (Code << 8) | achrBuffer[i];
+                _ = await Stream.ReadAsync(achrBuffer, 0, 5, token).ConfigureAwait(false);
+                unchecked
+                {
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            for (int i = 0; i < 5; i++)
+                                Code = (Code << 8) | *(pchrBuffer + i);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(achrBuffer);
             }
         }
 
@@ -316,13 +357,26 @@ namespace SevenZip.Compression.RangeCoder
                 int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int) (kTopValue / Range), 8);
                 if (intNumReads <= 0)
                     return;
-                byte[] achrBuffer = new byte[intNumReads];
-                _ = Stream.Read(achrBuffer, 0, intNumReads);
-                int i = 0;
-                while (Range < kTopValue)
+                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(intNumReads);
+                try
                 {
-                    Code = (Code << 8) | achrBuffer[i++];
-                    Range <<= 8;
+                    _ = Stream.Read(achrBuffer, 0, intNumReads);
+                    int i = 0;
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            while (Range < kTopValue)
+                            {
+                                Code = (Code << 8) | *(pchrBuffer + i++);
+                                Range <<= 8;
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrBuffer);
                 }
             }
         }
@@ -335,13 +389,26 @@ namespace SevenZip.Compression.RangeCoder
                 int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int)(kTopValue / Range), 8);
                 if (intNumReads <= 0)
                     return;
-                byte[] achrBuffer = new byte[intNumReads];
-                _ = await Stream.ReadAsync(achrBuffer, 0, intNumReads, token).ConfigureAwait(false);
-                int i = 0;
-                while (Range < kTopValue)
+                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(intNumReads);
+                try
                 {
-                    Code = (Code << 8) | achrBuffer[i++];
-                    Range <<= 8;
+                    _ = await Stream.ReadAsync(achrBuffer, 0, intNumReads, token).ConfigureAwait(false);
+                    int i = 0;
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            while (Range < kTopValue)
+                            {
+                                Code = (Code << 8) | *(pchrBuffer + i++);
+                                Range <<= 8;
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrBuffer);
                 }
             }
         }

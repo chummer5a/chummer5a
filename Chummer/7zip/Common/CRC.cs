@@ -56,12 +56,15 @@ namespace SevenZip
             }
         }
 
-        public void Update(byte[] data, uint offset, uint size)
+        public unsafe void Update(byte[] data, uint offset, uint size)
         {
             unchecked
             {
-                for (uint i = 0; i < size; i++)
-                    _value = Table[(byte)_value ^ data[offset + i]] ^ (_value >> 8);
+                fixed (byte* pchrData = &data[offset])
+                {
+                    for (uint i = 0; i < size; i++)
+                        _value = Table[(byte)_value ^ *(pchrData + i)] ^ (_value >> 8);
+                }
             }
         }
 
