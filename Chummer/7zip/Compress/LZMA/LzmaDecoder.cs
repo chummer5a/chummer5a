@@ -368,14 +368,12 @@ namespace SevenZip.Compression.LZMA
                             if (m_IsMatchDecoders[(state.Index << Base.kNumPosStatesBitsMax) + posState]
                                     .Decode(m_RangeDecoder) == 0)
                             {
-                                byte b;
                                 byte prevByte = m_OutWindow.GetByte(0);
-                                if (!state.IsCharState())
-                                    b = m_LiteralDecoder.DecodeWithMatchByte(m_RangeDecoder,
-                                                                             (uint)nowPos64, prevByte,
-                                                                             m_OutWindow.GetByte(rep0));
-                                else
-                                    b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, (uint)nowPos64, prevByte);
+                                byte b = !state.IsCharState()
+                                    ? m_LiteralDecoder.DecodeWithMatchByte(m_RangeDecoder,
+                                        (uint)nowPos64, prevByte,
+                                        m_OutWindow.GetByte(rep0))
+                                    : m_LiteralDecoder.DecodeNormal(m_RangeDecoder, (uint)nowPos64, prevByte);
                                 token.ThrowIfCancellationRequested();
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation

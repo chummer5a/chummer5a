@@ -72,9 +72,7 @@ namespace SevenZip.Buffer
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
             m_Buffer[m_Pos++] = b;
-            if (m_Pos >= m_BufferSize)
-                return FlushDataAsync(token);
-            return Task.CompletedTask;
+            return m_Pos >= m_BufferSize ? FlushDataAsync(token) : Task.CompletedTask;
         }
 
         public void FlushData()
