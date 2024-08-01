@@ -2706,14 +2706,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
-        public TaggedObservableCollection<Gear> Children
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstChildren;
-            }
-        }
+        public TaggedObservableCollection<Gear> Children => _lstChildren;
 
         /// <summary>
         /// Notes.

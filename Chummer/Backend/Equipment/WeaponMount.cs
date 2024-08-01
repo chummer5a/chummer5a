@@ -768,14 +768,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstWeapons;
-            }
-        }
+        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
         /// Maximum number of weapons this mount can have.
@@ -1527,14 +1520,7 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public TaggedObservableCollection<VehicleMod> Mods
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstMods;
-            }
-        }
+        public TaggedObservableCollection<VehicleMod> Mods => _lstMods;
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).

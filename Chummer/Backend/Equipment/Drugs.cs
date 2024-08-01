@@ -421,14 +421,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Components of the Drug.
         /// </summary>
-        public ThreadSafeObservableCollection<DrugComponent> Components
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstComponents;
-            }
-        }
+        public ThreadSafeObservableCollection<DrugComponent> Components => _lstComponents;
 
         /// <summary>
         /// Name of the Drug.

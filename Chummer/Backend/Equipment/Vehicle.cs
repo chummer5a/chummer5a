@@ -1787,50 +1787,22 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<VehicleMod> Mods
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstVehicleMods;
-            }
-        }
+        public TaggedObservableCollection<VehicleMod> Mods => _lstVehicleMods;
 
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<Gear> GearChildren
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstGear;
-            }
-        }
+        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstWeapons;
-            }
-        }
+        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
         /// Weapon mounts applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<WeaponMount> WeaponMounts
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstWeaponMounts;
-            }
-        }
+        public TaggedObservableCollection<WeaponMount> WeaponMounts => _lstWeaponMounts;
 
         /// <summary>
         /// Total Availability in the program's current language.
@@ -2331,14 +2303,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public TaggedObservableCollection<Location> Locations
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstLocations;
-            }
-        }
+        public TaggedObservableCollection<Location> Locations => _lstLocations;
 
         /// <summary>
         /// Whether the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.

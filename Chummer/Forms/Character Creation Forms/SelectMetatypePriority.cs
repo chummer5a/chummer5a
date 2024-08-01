@@ -1349,13 +1349,14 @@ namespace Chummer
                 if (await _objCharacter.GetEffectiveBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
                 {
                     int intSumToTen = await SumToTen(false, token).ConfigureAwait(false);
-                    if (intSumToTen != _objCharacter.Settings.SumtoTen)
+                    int intOldSumToTen = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                        .GetSumtoTenAsync(token).ConfigureAwait(false);
+                    if (intSumToTen != intOldSumToTen)
                     {
                         await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Message_SumtoTen", token: token).ConfigureAwait(false),
-                            _objCharacter.Settings.SumtoTen.ToString(
-                                GlobalSettings.CultureInfo),
+                            intOldSumToTen.ToString(GlobalSettings.CultureInfo),
                             intSumToTen.ToString(GlobalSettings.CultureInfo)), token: token).ConfigureAwait(false);
                         return;
                     }

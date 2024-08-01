@@ -621,23 +621,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstVehicleWeapons;
-            }
-        }
+        public TaggedObservableCollection<Weapon> Weapons => _lstVehicleWeapons;
 
-        public TaggedObservableCollection<Cyberware> Cyberware
-        {
-            get
-            {
-                using (_objCharacter.LockObject.EnterReadLock())
-                    return _lstCyberware;
-            }
-        }
+        public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         public WeaponMount WeaponMountParent
         {
