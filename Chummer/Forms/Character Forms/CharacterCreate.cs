@@ -8064,8 +8064,10 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                        objLifestyle.StyleType = LifestyleType.Advanced;
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject)
+                        {
+                            StyleType = LifestyleType.Advanced
+                        };
                         try
                         {
                             using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
@@ -18455,7 +18457,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Gear objSelectedGear = null;
                 ArmorMod objSelectedMod = null;
-                Armor objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId).ConfigureAwait(false);
+                Armor objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId, token).ConfigureAwait(false);
                 if (objSelectedArmor == null)
                 {
                     (objSelectedGear, objSelectedArmor, objSelectedMod)

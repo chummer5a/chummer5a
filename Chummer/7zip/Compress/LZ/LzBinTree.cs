@@ -437,7 +437,7 @@ namespace SevenZip.Compression.LZ
                     byte right = _bufferBase[cur + len];
                     if (left == right)
                     {
-                        len = GetMatchLengthFast(lenLimit, cur, pby1, len);
+                        len = GetMatchLengthFast(lenLimit, cur, pby1, len, token);
 
                         if (maxLen < len)
                         {
@@ -644,7 +644,7 @@ namespace SevenZip.Compression.LZ
                         byte right = _bufferBase[cur + len];
                         if (left == right)
                         {
-                            len = GetMatchLengthFast(lenLimit, cur, pby1, len);
+                            len = GetMatchLengthFast(lenLimit, cur, pby1, len, token);
                             if (len == lenLimit)
                             {
                                 _son[ptr1] = _son[cyclicPos];

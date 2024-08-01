@@ -8124,18 +8124,13 @@ namespace Chummer.Backend.Equipment
                             if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                             {
                                 SkillSpecialization spec =
-                                    objSkill.GetSpecialization(CurrentDisplayNameShort) ??
-                                    objSkill.GetSpecialization(Name) ??
-                                    objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
-                                    objSkill.GetSpecialization(Category);
-
-                                if (spec == null)
-                                {
-                                    spec = objSkill.GetSpecialization(Category.EndsWith('s')
+                                    (objSkill.GetSpecialization(CurrentDisplayNameShort) ??
+                                     objSkill.GetSpecialization(Name) ??
+                                     objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
+                                     objSkill.GetSpecialization(Category)) ?? (objSkill.GetSpecialization(Category.EndsWith('s')
                                         ? Category.TrimEndOnce('s')
                                         : Category + 's') ?? (objSkill.GetSpecialization(Spec) ??
-                                                              objSkill.GetSpecialization(Spec2));
-                                }
+                                                              objSkill.GetSpecialization(Spec2)));
 
                                 if (spec != null)
                                 {
@@ -8630,25 +8625,21 @@ namespace Chummer.Backend.Equipment
                             !objSkill.IsExoticSkill)
                         {
                             SkillSpecialization spec =
-                                await objSkill
-                                    .GetSpecializationAsync(
-                                        await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token)
-                                    .ConfigureAwait(false) ??
-                                await objSkill.GetSpecializationAsync(Name, token).ConfigureAwait(false) ??
-                                await objSkill
-                                    .GetSpecializationAsync(
-                                        await DisplayCategoryAsync(GlobalSettings.Language, token)
-                                            .ConfigureAwait(false), token).ConfigureAwait(false) ??
-                                await objSkill.GetSpecializationAsync(Category, token).ConfigureAwait(false);
-
-                            if (spec == null)
-                            {
-                                spec = await objSkill.GetSpecializationAsync(Category.EndsWith('s')
-                                           ? Category.TrimEndOnce('s')
-                                           : Category + 's', token).ConfigureAwait(false) ??
-                                       (await objSkill.GetSpecializationAsync(Spec, token).ConfigureAwait(false) ??
-                                        await objSkill.GetSpecializationAsync(Spec2, token).ConfigureAwait(false));
-                            }
+                                (await objSkill
+                                     .GetSpecializationAsync(
+                                         await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token)
+                                     .ConfigureAwait(false) ??
+                                 await objSkill.GetSpecializationAsync(Name, token).ConfigureAwait(false) ??
+                                 await objSkill
+                                     .GetSpecializationAsync(
+                                         await DisplayCategoryAsync(GlobalSettings.Language, token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false) ??
+                                 await objSkill.GetSpecializationAsync(Category, token).ConfigureAwait(false)) ??
+                                (await objSkill.GetSpecializationAsync(Category.EndsWith('s')
+                                     ? Category.TrimEndOnce('s')
+                                     : Category + 's', token).ConfigureAwait(false) ??
+                                 (await objSkill.GetSpecializationAsync(Spec, token).ConfigureAwait(false) ??
+                                  await objSkill.GetSpecializationAsync(Spec2, token).ConfigureAwait(false)));
 
                             if (spec != null)
                             {
