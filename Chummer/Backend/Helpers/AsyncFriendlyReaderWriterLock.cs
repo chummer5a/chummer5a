@@ -336,7 +336,7 @@ namespace Chummer
         {
             // This method is set up to return a Task because we need to make sure to manipulate AsyncLocals before the async engine is initialized
             if (token.IsCancellationRequested)
-                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                return Task.FromCanceled<IAsyncDisposable>(token);
             if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(
                     new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
@@ -368,6 +368,10 @@ namespace Chummer
             {
                 (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter) =
                     GetHelpers(token);
+            }
+            catch (OperationCanceledException e)
+            {
+                return Task.FromCanceled<IAsyncDisposable>(e.CancellationToken);
             }
             catch (Exception e)
             {
@@ -527,7 +531,7 @@ namespace Chummer
         public Task<IAsyncDisposable> EnterUpgradeableReadLockAsync(CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
-                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                return Task.FromCanceled<IAsyncDisposable>(token);
             if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(
                     new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
@@ -559,6 +563,10 @@ namespace Chummer
             {
                 (objCurrentHelper, objNextHelper, objTopMostHeldUReader, objTopMostHeldWriter) =
                     GetHelpers(token);
+            }
+            catch (OperationCanceledException e)
+            {
+                return Task.FromCanceled<IAsyncDisposable>(e.CancellationToken);
             }
             catch (Exception e)
             {
@@ -819,7 +827,7 @@ namespace Chummer
             }
 
             if (token.IsCancellationRequested)
-                return Task.FromException<IAsyncDisposable>(new OperationCanceledException(token));
+                return Task.FromCanceled<IAsyncDisposable>(token);
 
 #if READERLOCKSTACKTRACEDEBUG
             string strReadLockStacktrace = _objIsInReadLockContainer.Value;
@@ -832,6 +840,10 @@ namespace Chummer
             try
             {
                 objCurrentHelper = GetReadLockHelper(token);
+            }
+            catch (OperationCanceledException e)
+            {
+                return Task.FromCanceled<IAsyncDisposable>(e.CancellationToken);
             }
             catch (Exception e)
             {

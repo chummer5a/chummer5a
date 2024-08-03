@@ -470,17 +470,11 @@ namespace Chummer
         {
             if (node == null || string.IsNullOrEmpty(strPath))
                 return null;
+            string strSuffix = string.IsNullOrEmpty(strExtraXPath) ? "]" : " and (" + strExtraXPath + ")]";
             string strId = guidId.ToString("D", GlobalSettings.InvariantCultureInfo);
-            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
-                                         + (string.IsNullOrEmpty(strExtraXPath)
-                                             ? "]"
-                                             : " and (" + strExtraXPath + ")]"))
+            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath() + strSuffix)
                    // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
-                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = "
-                                                    + strId.ToUpperInvariant().CleanXPath()
-                                                    + (string.IsNullOrEmpty(strExtraXPath)
-                                                        ? "]"
-                                                        : " and (" + strExtraXPath + ")]"));
+                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = " + strId.ToUpperInvariant().CleanXPath() + strSuffix);
         }
 
         /// <summary>

@@ -1662,10 +1662,10 @@ namespace Chummer
 
                         string strTemp = string.Empty;
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
-                        using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
+                        using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
                         {
                             bool blnEnglishLanguageLoaded;
-                            CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                            CancellationToken objFoundItemToken = objFoundItemSource.Token;
                             if (!string.IsNullOrEmpty(strPreferFile))
                             {
                                 if (string.Equals(strPreferFile, "lang", StringComparison.OrdinalIgnoreCase))
@@ -1717,18 +1717,17 @@ namespace Chummer
                                 {
                                     using (CancellationTokenSource objCombinedCancellationTokenSource
                                            = CancellationTokenSource.CreateLinkedTokenSource(
-                                               objCancellationToken, token))
+                                               objFoundItemToken, token))
                                     {
                                         CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                                         try
                                         {
                                             strTemp = blnSync
                                                 ? FindString(strPreferFile, objCombinedToken)
-                                                : await Task.Run(
-                                                    () => FindString(strPreferFile, objCombinedToken),
-                                                    objCombinedToken).ConfigureAwait(false);
+                                                : await FindStringAsync(strPreferFile, objCombinedToken)
+                                                    .ConfigureAwait(false);
                                         }
-                                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
                                         {
                                             //swallow this
                                         }
@@ -1739,7 +1738,7 @@ namespace Chummer
                                     strReturn = strTemp;
                             }
 
-                            if (objCancellationToken.IsCancellationRequested)
+                            if (objFoundItemToken.IsCancellationRequested)
                                 break;
 
                             // Look through loaded strings first because that's faster than trawling through the XML data
@@ -1786,25 +1785,23 @@ namespace Chummer
 
                             using (CancellationTokenSource objCombinedCancellationTokenSource
                                    = CancellationTokenSource.CreateLinkedTokenSource(
-                                       objCancellationToken, token))
+                                       objFoundItemToken, token))
                             {
                                 CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                                 try
                                 {
                                     strTemp = blnSync
                                         ? FindString(innerToken: objCombinedToken)
-                                        : await Task.Run(
-                                            () => FindString(innerToken: objCombinedToken),
-                                            objCombinedToken).ConfigureAwait(false);
+                                        : await FindStringAsync(innerToken: objCombinedToken).ConfigureAwait(false);
                                 }
-                                catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
                                 {
                                     //swallow this
                                 }
                             }
 
                             string FindString(string strPreferredFileName = "",
-                                              CancellationToken innerToken = default)
+                                CancellationToken innerToken = default)
                             {
                                 string strInnerReturn = string.Empty;
                                 foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
@@ -1815,7 +1812,7 @@ namespace Chummer
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
-                                                                  StringComparison.OrdinalIgnoreCase))
+                                                StringComparison.OrdinalIgnoreCase))
                                             : aobjPaths;
                                     Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                                     {
@@ -1886,13 +1883,138 @@ namespace Chummer
                                             return;
                                         strInnerReturn = strFound;
                                         // ReSharper disable once AccessToDisposedClosure
-                                        objCancellationTokenSource.Cancel(false);
+                                        objFoundItemSource.Cancel(false);
                                     });
                                     if (!string.IsNullOrEmpty(strInnerReturn))
                                         return strInnerReturn;
                                 }
 
                                 return strInnerReturn;
+                            }
+
+                            async Task<string> FindStringAsync(string strPreferredFileName = "",
+                                CancellationToken innerToken = default)
+                            {
+                                innerToken.ThrowIfCancellationRequested();
+                                List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
+                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                             Func<XPathNavigator, string>>> aobjPaths
+                                         in s_LstAXPathsToSearch)
+                                {
+                                    lstTasks.Clear();
+                                    IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                                        Func<XPathNavigator, string>>> lstToSearch
+                                        = !string.IsNullOrEmpty(strPreferredFileName)
+                                            ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
+                                                StringComparison.OrdinalIgnoreCase))
+                                            : aobjPaths;
+                                    int i = 0;
+                                    foreach (Tuple<string, string, Func<XPathNavigator, string>,
+                                                 Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                                    {
+                                        lstTasks.Add(Task.Run(
+                                            () => FetchAndReturnString(tupLoop.Item1, tupLoop.Item2, tupLoop.Item3,
+                                                tupLoop.Item4, innerToken), innerToken));
+                                        if (++i == Utils.MaxParallelBatchSize)
+                                        {
+                                            i = 0;
+                                            try
+                                            {
+                                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                            }
+                                            catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                                            {
+                                                // swallow this because it means it's our found item token canceling out
+                                            }
+
+                                            if (objFoundItemToken.IsCancellationRequested)
+                                            {
+                                                foreach (Task<string> tskLoop in lstTasks)
+                                                {
+                                                    if (!tskLoop.IsCanceled)
+                                                    {
+                                                        try
+                                                        {
+                                                            string strLoop = await tskLoop.ConfigureAwait(false);
+                                                            if (!string.IsNullOrEmpty(strLoop))
+                                                                return strLoop;
+                                                        }
+                                                        catch (OperationCanceledException)
+                                                        {
+                                                            // swallow this
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            lstTasks.Clear();
+                                        }
+                                    }
+
+                                    try
+                                    {
+                                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                    }
+                                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                                    {
+                                        // swallow this because it means it's our found item token canceling out
+                                    }
+
+                                    if (objFoundItemToken.IsCancellationRequested)
+                                    {
+                                        foreach (Task<string> tskLoop in lstTasks)
+                                        {
+                                            if (!tskLoop.IsCanceled)
+                                            {
+                                                try
+                                                {
+                                                    string strLoop = await tskLoop.ConfigureAwait(false);
+                                                    if (!string.IsNullOrEmpty(strLoop))
+                                                        return strLoop;
+                                                }
+                                                catch (OperationCanceledException)
+                                                {
+                                                    // swallow this
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    async Task<string> FetchAndReturnString(string strDoc, string strExpression,
+                                        Func<XPathNavigator, string> funcEnglish,
+                                        Func<XPathNavigator, string> funcTranslated,
+                                        CancellationToken innerToken2)
+                                    {
+                                        innerToken2.ThrowIfCancellationRequested();
+                                        XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
+                                            strDoc,
+                                            objCharacter != null
+                                                ? await (await objCharacter.GetSettingsAsync(innerToken2)
+                                                        .ConfigureAwait(false))
+                                                    .GetEnabledCustomDataDirectoryPathsAsync(innerToken2)
+                                                    .ConfigureAwait(false)
+                                                : null,
+                                            strIntoLanguage, token: innerToken2).ConfigureAwait(false);
+
+                                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                                     strExpression, innerToken2))
+                                        {
+                                            innerToken2.ThrowIfCancellationRequested();
+                                            if (funcEnglish(objNode) != strExtraNoQuotes)
+                                                continue;
+                                            string strTranslate = funcTranslated(objNode);
+                                            if (string.IsNullOrEmpty(strTranslate))
+                                                continue;
+                                            // ReSharper disable once AccessToDisposedClosure
+                                            objFoundItemSource.Cancel(false);
+                                            return strTranslate;
+                                        }
+
+                                        return string.Empty;
+                                    }
+                                }
+
+                                return string.Empty;
                             }
                         }
 
@@ -2105,9 +2227,9 @@ namespace Chummer
 
             string strTemp = string.Empty;
             string strExtraNoQuotes = strReturn.FastEscape('\"');
-            using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
+            using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
             {
-                CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                CancellationToken objFoundItemToken = objFoundItemSource.Token;
                 bool blnFromLanguageLoaded;
                 if (!string.IsNullOrEmpty(strPreferFile))
                 {
@@ -2153,18 +2275,16 @@ namespace Chummer
                     {
                         using (CancellationTokenSource objCombinedCancellationTokenSource
                                = CancellationTokenSource.CreateLinkedTokenSource(
-                                   objCancellationToken, token))
+                                   objFoundItemToken, token))
                         {
                             CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                             try
                             {
                                 strTemp = blnSync
-                                    ? FindString(strPreferFile, token)
-                                    : await Task.Run(
-                                        () => FindString(strPreferFile, objCombinedToken),
-                                        objCombinedToken).ConfigureAwait(false);
+                                    ? FindString(strPreferFile, objCombinedToken)
+                                    : await FindStringAsync(strPreferFile, objCombinedToken).ConfigureAwait(false);
                             }
-                            catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                            catch (OperationCanceledException) when (!token.IsCancellationRequested)
                             {
                                 //swallow this
                             }
@@ -2175,7 +2295,7 @@ namespace Chummer
                         strReturn = strTemp;
                 }
 
-                if (objCancellationToken.IsCancellationRequested)
+                if (objFoundItemToken.IsCancellationRequested)
                     return strReturn;
 
                 // Look through loaded strings first because that's faster than trawling through the XML data
@@ -2217,7 +2337,7 @@ namespace Chummer
 
                 using (CancellationTokenSource objCombinedCancellationTokenSource
                        = CancellationTokenSource.CreateLinkedTokenSource(
-                           objCancellationToken, token))
+                           objFoundItemToken, token))
                 {
                     CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                     try
@@ -2228,7 +2348,7 @@ namespace Chummer
                                 () => FindString(innerToken: objCombinedToken),
                                 objCombinedToken).ConfigureAwait(false);
                     }
-                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
                     {
                         //swallow this
                     }
@@ -2317,13 +2437,138 @@ namespace Chummer
                                 return;
                             strInnerReturn = strFound;
                             // ReSharper disable once AccessToDisposedClosure
-                            objCancellationTokenSource.Cancel(false);
+                            objFoundItemSource.Cancel(false);
                         });
                         if (!string.IsNullOrEmpty(strInnerReturn))
                             return strInnerReturn;
                     }
 
                     return strInnerReturn;
+                }
+
+                async Task<string> FindStringAsync(string strPreferredFileName = "",
+                                CancellationToken innerToken = default)
+                {
+                    innerToken.ThrowIfCancellationRequested();
+                    List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
+                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                 Func<XPathNavigator, string>>> aobjPaths
+                             in s_LstAXPathsToSearch)
+                    {
+                        lstTasks.Clear();
+                        IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                            Func<XPathNavigator, string>>> lstToSearch
+                            = !string.IsNullOrEmpty(strPreferredFileName)
+                                ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
+                                    StringComparison.OrdinalIgnoreCase))
+                                : aobjPaths;
+                        int i = 0;
+                        foreach (Tuple<string, string, Func<XPathNavigator, string>,
+                                     Func<XPathNavigator, string>> tupLoop in lstToSearch)
+                        {
+                            lstTasks.Add(Task.Run(
+                                () => FetchAndReturnString(tupLoop.Item1, tupLoop.Item2, tupLoop.Item3,
+                                    tupLoop.Item4, innerToken), innerToken));
+                            if (++i == Utils.MaxParallelBatchSize)
+                            {
+                                i = 0;
+                                try
+                                {
+                                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                                {
+                                    // swallow this because it means it's our found item token canceling out
+                                }
+
+                                if (objFoundItemToken.IsCancellationRequested)
+                                {
+                                    foreach (Task<string> tskLoop in lstTasks)
+                                    {
+                                        if (!tskLoop.IsCanceled)
+                                        {
+                                            try
+                                            {
+                                                string strLoop = await tskLoop.ConfigureAwait(false);
+                                                if (!string.IsNullOrEmpty(strLoop))
+                                                    return strLoop;
+                                            }
+                                            catch (OperationCanceledException)
+                                            {
+                                                // swallow this
+                                            }
+                                        }
+                                    }
+                                }
+
+                                lstTasks.Clear();
+                            }
+                        }
+
+                        try
+                        {
+                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                        {
+                            // swallow this because it means it's our found item token canceling out
+                        }
+
+                        if (objFoundItemToken.IsCancellationRequested)
+                        {
+                            foreach (Task<string> tskLoop in lstTasks)
+                            {
+                                if (!tskLoop.IsCanceled)
+                                {
+                                    try
+                                    {
+                                        string strLoop = await tskLoop.ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strLoop))
+                                            return strLoop;
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        // swallow this
+                                    }
+                                }
+                            }
+                        }
+
+                        async Task<string> FetchAndReturnString(string strDoc, string strExpression,
+                            Func<XPathNavigator, string> funcEnglish,
+                            Func<XPathNavigator, string> funcTranslated,
+                            CancellationToken innerToken2)
+                        {
+                            innerToken2.ThrowIfCancellationRequested();
+                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
+                                strDoc,
+                                objCharacter != null
+                                    ? await (await objCharacter.GetSettingsAsync(innerToken2)
+                                            .ConfigureAwait(false))
+                                        .GetEnabledCustomDataDirectoryPathsAsync(innerToken2)
+                                        .ConfigureAwait(false)
+                                    : null,
+                                strFromLanguage, token: innerToken2).ConfigureAwait(false);
+
+                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                         strExpression, innerToken2))
+                            {
+                                innerToken2.ThrowIfCancellationRequested();
+                                if (funcTranslated(objNode) != strExtraNoQuotes)
+                                    continue;
+                                string strTranslate = funcEnglish(objNode);
+                                if (string.IsNullOrEmpty(strTranslate))
+                                    continue;
+                                // ReSharper disable once AccessToDisposedClosure
+                                objFoundItemSource.Cancel(false);
+                                return strTranslate;
+                            }
+
+                            return string.Empty;
+                        }
+                    }
+
+                    return string.Empty;
                 }
             }
 
