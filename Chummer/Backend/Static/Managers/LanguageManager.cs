@@ -1803,11 +1803,14 @@ namespace Chummer
                             string FindString(string strPreferredFileName = "",
                                 CancellationToken innerToken = default)
                             {
+                                innerToken.ThrowIfCancellationRequested();
                                 string strInnerReturn = string.Empty;
+                                IReadOnlyList<string> lstCustomDataPaths = objCharacter?.Settings.EnabledCustomDataDirectoryPaths;
                                 foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
+                                    innerToken.ThrowIfCancellationRequested();
                                     IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
@@ -1829,7 +1832,7 @@ namespace Chummer
                                         {
                                             xmlDocument = XmlManager.LoadXPath(
                                                 objXPathPair.Item1,
-                                                objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                                lstCustomDataPaths,
                                                 strIntoLanguage, token: innerToken);
                                         }
                                         catch (OperationCanceledException)
@@ -1896,6 +1899,12 @@ namespace Chummer
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
+                                IReadOnlyList<string> lstCustomDataPaths = objCharacter != null
+                                    ? await (await objCharacter.GetSettingsAsync(innerToken)
+                                            .ConfigureAwait(false))
+                                        .GetEnabledCustomDataDirectoryPathsAsync(innerToken)
+                                        .ConfigureAwait(false)
+                                    : null;
                                 List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
                                 foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
@@ -1913,7 +1922,7 @@ namespace Chummer
                                                  Func<XPathNavigator, string>> tupLoop in lstToSearch)
                                     {
                                         lstTasks.Add(Task.Run(
-                                            () => FetchAndReturnString(tupLoop.Item1, tupLoop.Item2, tupLoop.Item3,
+                                            () => FetchAndReturnString(tupLoop.Item1, lstCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
                                                 tupLoop.Item4, innerToken), innerToken));
                                         if (++i == Utils.MaxParallelBatchSize)
                                         {
@@ -1980,7 +1989,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    async Task<string> FetchAndReturnString(string strDoc, string strExpression,
+                                    async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths, string strExpression,
                                         Func<XPathNavigator, string> funcEnglish,
                                         Func<XPathNavigator, string> funcTranslated,
                                         CancellationToken innerToken2)
@@ -1988,12 +1997,7 @@ namespace Chummer
                                         innerToken2.ThrowIfCancellationRequested();
                                         XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
                                             strDoc,
-                                            objCharacter != null
-                                                ? await (await objCharacter.GetSettingsAsync(innerToken2)
-                                                        .ConfigureAwait(false))
-                                                    .GetEnabledCustomDataDirectoryPathsAsync(innerToken2)
-                                                    .ConfigureAwait(false)
-                                                : null,
+                                            lstInnerCustomDataPaths,
                                             strIntoLanguage, token: innerToken2).ConfigureAwait(false);
 
                                         foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
@@ -2002,6 +2006,7 @@ namespace Chummer
                                             innerToken2.ThrowIfCancellationRequested();
                                             if (funcEnglish(objNode) != strExtraNoQuotes)
                                                 continue;
+                                            innerToken2.ThrowIfCancellationRequested();
                                             string strTranslate = funcTranslated(objNode);
                                             if (string.IsNullOrEmpty(strTranslate))
                                                 continue;
@@ -2356,12 +2361,15 @@ namespace Chummer
 
                 string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
                 {
+                    innerToken.ThrowIfCancellationRequested();
                     string strInnerReturn = string.Empty;
+                    IReadOnlyList<string> lstCustomDataPaths = objCharacter?.Settings.EnabledCustomDataDirectoryPaths;
                     foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                      Func<XPathNavigator, string>>>
                                  aobjPaths
                              in s_LstAXPathsToSearch)
                     {
+                        innerToken.ThrowIfCancellationRequested();
                         IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
                             Func<XPathNavigator, string>>> lstToSearch
                             = !string.IsNullOrEmpty(strPreferredFileName)
@@ -2383,7 +2391,7 @@ namespace Chummer
                             {
                                 xmlDocument = XmlManager.LoadXPath(
                                     objXPathPair.Item1,
-                                    objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                    lstCustomDataPaths,
                                     strFromLanguage, token: innerToken);
                             }
                             catch (OperationCanceledException)
@@ -2451,6 +2459,12 @@ namespace Chummer
                 {
                     innerToken.ThrowIfCancellationRequested();
                     List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
+                    IReadOnlyList<string> lstCustomDataPaths = objCharacter != null
+                        ? await (await objCharacter.GetSettingsAsync(innerToken)
+                                .ConfigureAwait(false))
+                            .GetEnabledCustomDataDirectoryPathsAsync(innerToken)
+                            .ConfigureAwait(false)
+                        : null;
                     foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                  Func<XPathNavigator, string>>> aobjPaths
                              in s_LstAXPathsToSearch)
@@ -2467,7 +2481,7 @@ namespace Chummer
                                      Func<XPathNavigator, string>> tupLoop in lstToSearch)
                         {
                             lstTasks.Add(Task.Run(
-                                () => FetchAndReturnString(tupLoop.Item1, tupLoop.Item2, tupLoop.Item3,
+                                () => FetchAndReturnString(tupLoop.Item1, lstCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
                                     tupLoop.Item4, innerToken), innerToken));
                             if (++i == Utils.MaxParallelBatchSize)
                             {
@@ -2534,21 +2548,15 @@ namespace Chummer
                             }
                         }
 
-                        async Task<string> FetchAndReturnString(string strDoc, string strExpression,
+                        async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths, string strExpression,
                             Func<XPathNavigator, string> funcEnglish,
                             Func<XPathNavigator, string> funcTranslated,
                             CancellationToken innerToken2)
                         {
                             innerToken2.ThrowIfCancellationRequested();
-                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
-                                strDoc,
-                                objCharacter != null
-                                    ? await (await objCharacter.GetSettingsAsync(innerToken2)
-                                            .ConfigureAwait(false))
-                                        .GetEnabledCustomDataDirectoryPathsAsync(innerToken2)
-                                        .ConfigureAwait(false)
-                                    : null,
-                                strFromLanguage, token: innerToken2).ConfigureAwait(false);
+                            XPathNavigator xmlDocument = await XmlManager
+                                .LoadXPathAsync(strDoc, lstInnerCustomDataPaths, strFromLanguage, token: innerToken2)
+                                .ConfigureAwait(false);
 
                             foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
                                          strExpression, innerToken2))
@@ -2556,6 +2564,7 @@ namespace Chummer
                                 innerToken2.ThrowIfCancellationRequested();
                                 if (funcTranslated(objNode) != strExtraNoQuotes)
                                     continue;
+                                innerToken2.ThrowIfCancellationRequested();
                                 string strTranslate = funcEnglish(objNode);
                                 if (string.IsNullOrEmpty(strTranslate))
                                     continue;
