@@ -429,7 +429,7 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        public void UpdateWidths(int intNameWidth, int intNudKarmaWidth, int intValueWidth, int intLimitsWidth, CancellationToken token = default)
+        public void UpdateWidths(int intNameWidth, int intNudBaseWidth, int intNudKarmaWidth, int intValueWidth, int intLimitsWidth, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             tlpMain.DoThreadSafe(x => x.SuspendLayout(), token);
@@ -448,7 +448,22 @@ namespace Chummer.UI.Attributes
                     }, token);
                 }
 
-                if (intNudKarmaWidth >= 0 && nudBase?.DoThreadSafeFunc(x => x.Visible, token) == true)
+                if (intNudBaseWidth >= 0)
+                {
+                    nudBase?.DoThreadSafe(x =>
+                    {
+                        if (x.Visible)
+                        {
+                            x.Margin = new Padding(
+                                x.Margin.Right + Math.Max(intNudBaseWidth - x.Width, 0),
+                                x.Margin.Top,
+                                x.Margin.Right,
+                                x.Margin.Bottom);
+                        }
+                    }, token);
+                }
+
+                if (intNudKarmaWidth >= 0)
                 {
                     nudKarma?.DoThreadSafe(x =>
                     {

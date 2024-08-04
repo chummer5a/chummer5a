@@ -1592,7 +1592,7 @@ namespace Chummer
                                     {
                                         await SetTooltips(GenericToken).ConfigureAwait(false);
 
-                                        await RefreshAttributes(pnlAttributes, null, lblAttributes, -1,
+                                        await RefreshAttributes(pnlAttributes, null, lblAttributes, -1, -1,
                                                 await lblAttributesAug.DoThreadSafeFuncAsync(
                                                         x => x.PreferredWidth, GenericToken)
                                                     .ConfigureAwait(false),
@@ -2228,7 +2228,7 @@ namespace Chummer
         {
             try
             {
-                await RefreshAttributes(pnlAttributes, e, lblAttributes, -1,
+                await RefreshAttributes(pnlAttributes, e, lblAttributes, -1, -1,
                                         await lblAttributesAug
                                               .DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
                                               .ConfigureAwait(false),

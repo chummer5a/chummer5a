@@ -574,7 +574,7 @@ namespace Chummer
             }, token);
         }
 
-        protected async Task RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs e = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
+        protected async Task RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs e = null, Label lblName = null, int intBaseWidth = -1, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1, CancellationToken token = default)
         {
             if (pnlAttributes == null)
                 return;
@@ -636,7 +636,7 @@ namespace Chummer
                                 if (lblName != null)
                                     lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
                                 foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                    objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth,
+                                    objControl.UpdateWidths(intNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
                                         intLimitsWidth, token);
                                 x.Controls.AddRange(aobjControls);
                             }
@@ -696,13 +696,13 @@ namespace Chummer
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
                                     x.Controls.AddRange(aobjControls);
                                     foreach (AttributeControl objControl in x.Controls)
-                                        objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
+                                        objControl.UpdateWidths(intNewNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth, token);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                        objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
+                                        objControl.UpdateWidths(intOldNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth, token);
                                     x.Controls.AddRange(aobjControls);
                                 }
@@ -820,13 +820,13 @@ namespace Chummer
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
                                     x.Controls.AddRange(aobjControls);
                                     foreach (AttributeControl objControl in x.Controls)
-                                        objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
+                                        objControl.UpdateWidths(intNewNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth, token);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                        objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
+                                        objControl.UpdateWidths(intOldNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth, token);
                                     x.Controls.AddRange(aobjControls);
                                 }

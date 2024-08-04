@@ -110,7 +110,7 @@ namespace Chummer
             this.lblINILabel = new System.Windows.Forms.Label();
             this.lblCMStunLabel = new System.Windows.Forms.Label();
             this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblKarma = new System.Windows.Forms.Label();
+            this.lblAttributesKarma = new System.Windows.Forms.Label();
             this.lblSpellDefenseIndirectDodgeLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseIndirectSoakLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseDirectSoakManaLabel = new System.Windows.Forms.Label();
@@ -1900,17 +1900,17 @@ namespace Chummer
             this.lblCMPhysicalLabel.Tag = "Label_OtherPhysicalCM";
             this.lblCMPhysicalLabel.Text = "Physical Condition Track:";
             // 
-            // lblKarma
+            // lblAttributesKarma
             // 
-            this.lblKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblKarma.AutoSize = true;
-            this.lblKarma.Location = new System.Drawing.Point(157, 39);
-            this.lblKarma.Name = "lblKarma";
-            this.lblKarma.Size = new System.Drawing.Size(37, 13);
-            this.lblKarma.TabIndex = 92;
-            this.lblKarma.Tag = "String_Karma";
-            this.lblKarma.Text = "Karma";
-            this.lblKarma.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.lblAttributesKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAttributesKarma.AutoSize = true;
+            this.lblAttributesKarma.Location = new System.Drawing.Point(157, 39);
+            this.lblAttributesKarma.Name = "lblAttributesKarma";
+            this.lblAttributesKarma.Size = new System.Drawing.Size(37, 13);
+            this.lblAttributesKarma.TabIndex = 92;
+            this.lblAttributesKarma.Tag = "String_Karma";
+            this.lblAttributesKarma.Text = "Karma";
+            this.lblAttributesKarma.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // lblSpellDefenseIndirectDodgeLabel
             // 
@@ -4661,18 +4661,16 @@ namespace Chummer
             this.tlpAlias.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpAlias.ColumnCount = 6;
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.Controls.Add(this.lblAttributesMetatype, 5, 1);
             this.tlpAlias.Controls.Add(this.lblAlias, 0, 0);
             this.tlpAlias.Controls.Add(this.lblAttributesAug, 4, 1);
             this.tlpAlias.Controls.Add(this.txtAlias, 1, 0);
-            this.tlpAlias.Controls.Add(this.lblKarma, 3, 1);
+            this.tlpAlias.Controls.Add(this.lblAttributesKarma, 3, 1);
             this.tlpAlias.Controls.Add(this.lblAttributes, 0, 1);
             this.tlpAlias.Controls.Add(this.lblAttributesBase, 2, 1);
             this.tlpAlias.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -16744,7 +16742,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSpiritHealth;
         private ElasticComboBox cboSpiritDetection;
         private System.Windows.Forms.Label lblSpiritDetection;
-        private System.Windows.Forms.Label lblKarma;
+        private System.Windows.Forms.Label lblAttributesKarma;
         private System.Windows.Forms.TabControl tabPeople;
         private System.Windows.Forms.TabPage tabContacts;
         private SplitButton cmdAddContact;

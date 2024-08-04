@@ -1540,7 +1540,10 @@ namespace Chummer
                                     {
                                         await SetTooltips(GenericToken).ConfigureAwait(false);
                                         await RefreshAttributes(pnlAttributes, null, lblAttributes,
-                                            await lblKarma.DoThreadSafeFuncAsync(x =>
+                                            await lblAttributesBase
+                                                .DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken)
+                                                .ConfigureAwait(false),
+                                            await lblAttributesKarma.DoThreadSafeFuncAsync(x =>
                                                     x.PreferredWidth, GenericToken)
                                                 .ConfigureAwait(false),
                                             await lblAttributesAug.DoThreadSafeFuncAsync(
@@ -24402,14 +24405,16 @@ namespace Chummer
             try
             {
                 await RefreshAttributes(pnlAttributes, e, lblAttributes,
-                                        await lblKarma.DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
-                                                      .ConfigureAwait(false),
-                                        await lblAttributesAug
-                                              .DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
-                                              .ConfigureAwait(false),
-                                        await lblAttributesMetatype
-                                              .DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
-                                              .ConfigureAwait(false), token).ConfigureAwait(false);
+                    await lblAttributesBase.DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
+                        .ConfigureAwait(false),
+                    await lblAttributesKarma.DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
+                        .ConfigureAwait(false),
+                    await lblAttributesAug
+                        .DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
+                        .ConfigureAwait(false),
+                    await lblAttributesMetatype
+                        .DoThreadSafeFuncAsync(x => x.PreferredWidth, token)
+                        .ConfigureAwait(false), token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
