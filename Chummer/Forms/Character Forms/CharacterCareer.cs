@@ -5787,48 +5787,56 @@ namespace Chummer
                                                             intHalfMAGRoundedUp, intHalfMAGRoundedUp,
                                                             token: GenericToken)
                                                         .ConfigureAwait(false);
+                                CharacterAttrib objInt = await CharacterObject.GetAttributeAsync("INT", token: GenericToken)
+                                    .ConfigureAwait(false);
                                 await ImprovementManager.CreateImprovementAsync(
                                                             objMerge, "INT", Improvement.ImprovementSource.Metatype,
                                                             "Possession",
                                                             Improvement.ImprovementType.ReplaceAttribute, string.Empty,
                                                             0,
                                                             1,
-                                                            CharacterObject.INT.MetatypeMinimum,
-                                                            CharacterObject.INT.MetatypeMaximum, 0,
-                                                            CharacterObject.INT.MetatypeAugmentedMaximum,
+                                                            await objInt.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                            await objInt.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                            await objInt.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
                                                             token: GenericToken)
                                                         .ConfigureAwait(false);
+                                CharacterAttrib objWil = await CharacterObject.GetAttributeAsync("WIL", token: GenericToken)
+                                    .ConfigureAwait(false);
                                 await ImprovementManager.CreateImprovementAsync(
                                                             objMerge, "WIL", Improvement.ImprovementSource.Metatype,
                                                             "Possession",
                                                             Improvement.ImprovementType.ReplaceAttribute, string.Empty,
                                                             0,
                                                             1,
-                                                            CharacterObject.WIL.MetatypeMinimum,
-                                                            CharacterObject.WIL.MetatypeMaximum, 0,
-                                                            CharacterObject.WIL.MetatypeAugmentedMaximum,
+                                                            await objWil.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                            await objWil.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                            await objWil.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
                                                             token: GenericToken)
                                                         .ConfigureAwait(false);
+                                CharacterAttrib objLog = await CharacterObject.GetAttributeAsync("LOG", token: GenericToken)
+                                    .ConfigureAwait(false);
                                 await ImprovementManager.CreateImprovementAsync(
                                                             objMerge, "LOG", Improvement.ImprovementSource.Metatype,
                                                             "Possession",
                                                             Improvement.ImprovementType.ReplaceAttribute, string.Empty,
                                                             0,
                                                             1,
-                                                            CharacterObject.LOG.MetatypeMinimum,
-                                                            CharacterObject.LOG.MetatypeMaximum, 0,
-                                                            CharacterObject.LOG.MetatypeAugmentedMaximum,
+                                                            await objLog.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                            await objLog.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                            await objLog.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
                                                             token: GenericToken)
                                                         .ConfigureAwait(false);
+                                CharacterAttrib objCha = await CharacterObject.GetAttributeAsync("CHA", token: GenericToken)
+                                    .ConfigureAwait(false);
                                 await ImprovementManager.CreateImprovementAsync(
                                                             objMerge, "CHA", Improvement.ImprovementSource.Metatype,
                                                             "Possession",
                                                             Improvement.ImprovementType.ReplaceAttribute, string.Empty,
                                                             0,
                                                             1,
-                                                            CharacterObject.CHA.MetatypeMinimum,
-                                                            CharacterObject.CHA.MetatypeMaximum, 0,
-                                                            CharacterObject.CHA.MetatypeAugmentedMaximum,
+                                                            await objCha.GetMetatypeMinimumAsync(GenericToken).ConfigureAwait(false),
+                                                            await objCha.GetMetatypeMaximumAsync(GenericToken).ConfigureAwait(false), 0,
+                                                            await objCha.GetMetatypeAugmentedMaximumAsync(GenericToken).ConfigureAwait(false),
                                                             token: GenericToken)
                                                         .ConfigureAwait(false);
                             }

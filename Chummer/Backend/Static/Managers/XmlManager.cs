@@ -1050,7 +1050,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 xmlReferenceOfReturn.Dispose();
                             else
-                                await xmlReferenceOfReturn.DisposeAsync();
+                                await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
                         }
 
                         throw;

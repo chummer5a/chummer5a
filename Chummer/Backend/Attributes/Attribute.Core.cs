@@ -574,7 +574,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
         /// </summary>
-        private async Task<int> GetMetatypeAugmentedMaximumAsync(CancellationToken token = default)
+        public async Task<int> GetMetatypeAugmentedMaximumAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
