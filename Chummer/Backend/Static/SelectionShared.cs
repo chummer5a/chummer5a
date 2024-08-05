@@ -780,14 +780,14 @@ namespace Chummer
                         int intTargetValue = xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                                    objAttribute.DisplayAbbrev, strSpace, intTargetValue);
+                                                    objAttribute?.DisplayAbbrev ?? objCharacter.TranslateExtra(strNodeName, token: token), strSpace, intTargetValue);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
-                            return new Tuple<bool, string>(objAttribute.Value >= intTargetValue, strName);
+                            return new Tuple<bool, string>((objAttribute?.Value ?? 0) >= intTargetValue, strName);
                         }
 
-                        return new Tuple<bool, string>(objAttribute.TotalValue >= intTargetValue, strName);
+                        return new Tuple<bool, string>((objAttribute?.TotalValue ?? 0) >= intTargetValue, strName);
                         // ReSharper restore MethodHasAsyncOverload
                     }
                     else
@@ -798,14 +798,24 @@ namespace Chummer
                             = xmlNode.SelectSingleNodeAndCacheExpression("total", token)?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalSettings.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine,
-                                                    await objAttribute.GetDisplayAbbrevAsync(GlobalSettings.Language, token).ConfigureAwait(false), strSpace, intTargetValue);
+                                objAttribute != null
+                                    ? await objAttribute.GetDisplayAbbrevAsync(GlobalSettings.Language, token)
+                                        .ConfigureAwait(false)
+                                    : await objCharacter.TranslateExtraAsync(strNodeName, token: token)
+                                        .ConfigureAwait(false), strSpace, intTargetValue);
 
                         if (xmlNode.SelectSingleNodeAndCacheExpression("natural", token) != null)
                         {
-                            return new Tuple<bool, string>(await objAttribute.GetValueAsync(token).ConfigureAwait(false) >= intTargetValue, strName);
+                            return new Tuple<bool, string>(
+                                (objAttribute != null
+                                    ? await objAttribute.GetValueAsync(token).ConfigureAwait(false)
+                                    : 0) >= intTargetValue, strName);
                         }
 
-                        return new Tuple<bool, string>(await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false) >= intTargetValue, strName);
+                        return new Tuple<bool, string>(
+                            (objAttribute != null
+                                ? await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false)
+                                : 0) >= intTargetValue, strName);
                     }
                 }
                 case "attributetotal":

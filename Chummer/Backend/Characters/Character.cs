@@ -6116,7 +6116,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         using (Timekeeper.StartSyncron("upload_AI_options", loadActivity))
                         {
-                            UploadObjectAsMetric.UploadObject(TelemetryClient, Settings);
+                            UploadObjectAsMetric.UploadObject(TelemetryClient, blnSync ? Settings : await GetSettingsAsync(token).ConfigureAwait(false));
                         }
 
                         XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
