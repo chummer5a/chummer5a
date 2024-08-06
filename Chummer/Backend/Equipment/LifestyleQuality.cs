@@ -211,20 +211,25 @@ namespace Chummer.Backend.Equipment
                 XmlElement xmlBonus = objXmlLifestyleQuality["bonus"];
                 if (xmlBonus != null)
                 {
-                    string strOldForced = ImprovementManager.ForcedValue;
-                    if (!string.IsNullOrEmpty(_strExtra))
-                        ImprovementManager.ForcedValue = _strExtra;
-                    if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality,
-                                                               InternalId, xmlBonus, 1, CurrentDisplayNameShort))
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    try
                     {
-                        _guiID = Guid.Empty;
-                        ImprovementManager.ForcedValue = strOldForced;
-                        return;
-                    }
+                        ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
+                        if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality,
+                                InternalId, xmlBonus, 1, CurrentDisplayNameShort))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        _strExtra = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = strOldForced;
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                            _strExtra = strSelectedValue;
+                    }
+                    finally
+                    {
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
+                    }
                 }
 
                 // Built-In Qualities appear as grey text to show that they cannot be removed.
@@ -321,20 +326,28 @@ namespace Chummer.Backend.Equipment
                 XmlElement xmlBonus = objXmlLifestyleQuality["bonus"];
                 if (xmlBonus != null)
                 {
-                    string strOldForced = ImprovementManager.ForcedValue;
-                    if (!string.IsNullOrEmpty(_strExtra))
-                        ImprovementManager.ForcedValue = _strExtra;
-                    if (!await ImprovementManager.CreateImprovementsAsync(objCharacter, Improvement.ImprovementSource.Quality,
-                            InternalId, xmlBonus, 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    try
                     {
-                        _guiID = Guid.Empty;
-                        ImprovementManager.ForcedValue = strOldForced;
-                        return;
-                    }
+                        ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
+                        if (!await ImprovementManager.CreateImprovementsAsync(objCharacter,
+                                    Improvement.ImprovementSource.Quality,
+                                    InternalId, xmlBonus, 1,
+                                    await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                                .ConfigureAwait(false))
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        _strExtra = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = strOldForced;
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                            _strExtra = strSelectedValue;
+                    }
+                    finally
+                    {
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
+                    }
                 }
 
                 // Built-In Qualities appear as grey text to show that they cannot be removed.

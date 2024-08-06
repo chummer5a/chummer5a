@@ -112,28 +112,33 @@ namespace Chummer
                     ? _objCharacter.SubmersionGrade
                     : _objCharacter.InitiateGrade;
 
-                string strOldFocedValue = ImprovementManager.ForcedValue;
-                string strOldSelectedValue = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
-                        _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, intRating,
-                        CurrentDisplayNameShort, token: token))
+                string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                try
                 {
-                    _guiID = Guid.Empty;
-                    ImprovementManager.ForcedValue = strOldFocedValue;
-                    return;
-                }
+                    ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
+                    if (!ImprovementManager.CreateImprovements(_objCharacter, objSource,
+                            _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, intRating,
+                            CurrentDisplayNameShort, token: token))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
 
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
+                    {
+                        _strName += LanguageManager.GetString("String_Space", token: token) + '(' +
+                                    strSelectedValue + ')';
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+                }
+                finally
                 {
-                    _strName += LanguageManager.GetString("String_Space", token: token) + '(' +
-                                ImprovementManager.SelectedValue + ')';
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
+                    ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                    ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                 }
-
-                ImprovementManager.ForcedValue = strOldFocedValue;
-                ImprovementManager.SelectedValue = strOldSelectedValue;
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -198,30 +203,36 @@ namespace Chummer
                     ? intSubmersionGrade
                     : await _objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false);
 
-                string strOldFocedValue = ImprovementManager.ForcedValue;
-                string strOldSelectedValue = ImprovementManager.SelectedValue;
-                ImprovementManager.ForcedValue = strForcedValue;
-                if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
-                            _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, intRating,
-                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                        .ConfigureAwait(false))
+                string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                try
                 {
-                    _guiID = Guid.Empty;
-                    ImprovementManager.ForcedValue = strOldFocedValue;
-                    return;
-                }
+                    ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
+                    if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource,
+                                _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, intRating,
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false))
+                    {
+                        _guiID = Guid.Empty;
+                        return;
+                    }
 
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
+                    {
+                        _strName +=
+                            await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
+                            '(' +
+                            strSelectedValue + ')';
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
+                }
+                finally
                 {
-                    _strName +=
-                        await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
-                        ImprovementManager.SelectedValue + ')';
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
+                    ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                    ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                 }
-
-                ImprovementManager.ForcedValue = strOldFocedValue;
-                ImprovementManager.SelectedValue = strOldSelectedValue;
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))

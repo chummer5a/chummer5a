@@ -576,7 +576,7 @@ namespace Chummer.Backend.Equipment
                 if (blnApply)
                 {
                     string strSource = _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
-                    ImprovementManager.ForcedValue = _strForcedValue;
+                    ImprovementManager.SetForcedValue(_strForcedValue, _objCharacter);
                     if (blnSync)
                     {
                         // ReSharper disable once MethodHasAsyncOverload
@@ -596,9 +596,10 @@ namespace Chummer.Backend.Equipment
                         return;
                     }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtra = strSelectedValue;
                     }
                 }
             }
@@ -1687,11 +1688,11 @@ namespace Chummer.Backend.Equipment
                         if (blnAddImprovement)
                         {
                             if (!string.IsNullOrEmpty(Extra))
-                                ImprovementManager.ForcedValue = Extra;
+                                ImprovementManager.SetForcedValue(Extra, _objCharacter);
                             if (Bonus != null && ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
                                     InternalId, Bonus, Rating, CurrentDisplayNameShort))
                             {
-                                Extra = ImprovementManager.SelectedValue;
+                                Extra = ImprovementManager.GetSelectedValue(_objCharacter);
                             }
 
                             if (WirelessOn && WirelessBonus != null)
@@ -1711,13 +1712,13 @@ namespace Chummer.Backend.Equipment
                             objStack.Gear.ForEach(objFociGear =>
                             {
                                 if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                    ImprovementManager.ForcedValue = objFociGear.Extra;
+                                    ImprovementManager.SetForcedValue(objFociGear.Extra, _objCharacter);
                                 if (objFociGear.Bonus != null && ImprovementManager.CreateImprovements(_objCharacter,
                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                         objFociGear.Bonus, objFociGear.Rating,
                                         objFociGear.CurrentDisplayNameShort))
                                 {
-                                    objFociGear.Extra = ImprovementManager.SelectedValue;
+                                    objFociGear.Extra = ImprovementManager.GetSelectedValue(_objCharacter);
                                 }
 
                                 if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
@@ -1749,11 +1750,11 @@ namespace Chummer.Backend.Equipment
                     if (blnAddImprovement)
                     {
                         if (!string.IsNullOrEmpty(Extra))
-                            ImprovementManager.ForcedValue = Extra;
+                            ImprovementManager.SetForcedValue(Extra, _objCharacter);
                         if (Bonus != null && ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
                                 InternalId, Bonus, Rating, CurrentDisplayNameShort))
                         {
-                            Extra = ImprovementManager.SelectedValue;
+                            Extra = ImprovementManager.GetSelectedValue(_objCharacter);
                         }
 
                         if (WirelessOn && WirelessBonus != null)
@@ -1773,14 +1774,14 @@ namespace Chummer.Backend.Equipment
                         objStack.Gear.ForEach(objFociGear =>
                         {
                             if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                ImprovementManager.ForcedValue = objFociGear.Extra;
+                                ImprovementManager.SetForcedValue(objFociGear.Extra, _objCharacter);
                             if (objFociGear.Bonus != null && ImprovementManager.CreateImprovements(_objCharacter,
                                     Improvement.ImprovementSource
                                                .StackedFocus, objStack.InternalId,
                                     objFociGear.Bonus, objFociGear.Rating,
                                     objFociGear.CurrentDisplayNameShort))
                             {
-                                objFociGear.Extra = ImprovementManager.SelectedValue;
+                                objFociGear.Extra = ImprovementManager.GetSelectedValue(_objCharacter);
                             }
 
                             if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
@@ -4982,10 +4983,13 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
-                                                              InternalId + "Wireless", WirelessBonus, Rating,
-                                                              CurrentDisplayNameShort)
-                        && !string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                        _strExtra = ImprovementManager.SelectedValue;
+                            InternalId + "Wireless", WirelessBonus, Rating,
+                            CurrentDisplayNameShort))
+                    {
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = strSelectedValue;
+                    }
                 }
                 else
                 {
@@ -5035,9 +5039,12 @@ namespace Chummer.Backend.Equipment
                             _objCharacter, Improvement.ImprovementSource.Gear,
                             InternalId + "Wireless", WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false),
                             await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                            token: token).ConfigureAwait(false)
-                        && !string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                        _strExtra = ImprovementManager.SelectedValue;
+                            token: token).ConfigureAwait(false))
+                    {
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = strSelectedValue;
+                    }
                 }
                 else
                 {
@@ -5377,15 +5384,16 @@ namespace Chummer.Backend.Equipment
                     {
                         if (Bonus != null)
                         {
-                            ImprovementManager.ForcedValue = Extra;
+                            ImprovementManager.SetForcedValue(Extra, _objCharacter);
                             await ImprovementManager.CreateImprovementsAsync(
                                                         _objCharacter, eSource, InternalId, Bonus, await GetRatingAsync(token).ConfigureAwait(false),
                                                         await GetCurrentDisplayNameShortAsync(token)
                                                             .ConfigureAwait(false), token: token)
                                                     .ConfigureAwait(false);
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                            if (!string.IsNullOrEmpty(strSelectedValue))
                             {
-                                Extra = ImprovementManager.SelectedValue;
+                                Extra = strSelectedValue;
                                 string strText = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                                 await treGears.DoThreadSafeAsync(x =>
                                 {
@@ -5398,21 +5406,24 @@ namespace Chummer.Backend.Equipment
 
                         if (WirelessOn && WirelessBonus != null)
                         {
-                            ImprovementManager.ForcedValue = Extra;
+                            ImprovementManager.SetForcedValue(Extra, _objCharacter);
                             if (await ImprovementManager.CreateImprovementsAsync(
                                     _objCharacter, eSource, InternalId, WirelessBonus,
                                     Rating, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                    token: token).ConfigureAwait(false)
-                                && !string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    token: token).ConfigureAwait(false))
                             {
-                                Extra = ImprovementManager.SelectedValue;
-                                string strText = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
-                                await treGears.DoThreadSafeAsync(x =>
+                                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                                if (!string.IsNullOrEmpty(strSelectedValue))
                                 {
-                                    TreeNode objGearNode = x.FindNode(InternalId);
-                                    if (objGearNode != null)
-                                        objGearNode.Text = strText;
-                                }, token: token).ConfigureAwait(false);
+                                    Extra = strSelectedValue;
+                                    string strText = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                                    await treGears.DoThreadSafeAsync(x =>
+                                    {
+                                        TreeNode objGearNode = x.FindNode(InternalId);
+                                        if (objGearNode != null)
+                                            objGearNode.Text = strText;
+                                    }, token: token).ConfigureAwait(false);
+                                }
                             }
                         }
                     }
@@ -6281,7 +6292,7 @@ namespace Chummer.Backend.Equipment
                 string strForce = string.Empty;
                 if (!string.IsNullOrEmpty(Extra))
                     strForce = Extra;
-                ImprovementManager.ForcedValue = strForce;
+                ImprovementManager.SetForcedValue(strForce, _objCharacter);
                 if (Bonus != null)
                     ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear,
                         InternalId, Bonus, Rating, CurrentDisplayNameShort);

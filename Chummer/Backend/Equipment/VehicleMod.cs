@@ -346,7 +346,7 @@ namespace Chummer.Backend.Equipment
 
             if (Bonus != null && !blnSkipSelectForms)
             {
-                ImprovementManager.ForcedValue = strForcedValue;
+                ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverload
@@ -365,9 +365,10 @@ namespace Chummer.Backend.Equipment
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
                 {
-                    _strExtra = ImprovementManager.SelectedValue;
+                    _strExtra = strSelectedValue;
                 }
             }
         }

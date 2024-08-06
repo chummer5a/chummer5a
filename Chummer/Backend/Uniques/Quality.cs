@@ -337,7 +337,7 @@ namespace Chummer
                 _nodBonus = objXmlQuality["bonus"];
                 if (_nodBonus?.ChildNodes.Count > 0)
                 {
-                    ImprovementManager.ForcedValue = strForceValue;
+                    ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                     if (blnSync)
                     {
                         // ReSharper disable once MethodHasAsyncOverload
@@ -355,9 +355,10 @@ namespace Chummer
                         return;
                     }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtra = strSelectedValue;
                     }
                 }
                 else if (!string.IsNullOrEmpty(strForceValue))
@@ -368,7 +369,7 @@ namespace Chummer
                 _nodFirstLevelBonus = objXmlQuality["firstlevelbonus"];
                 if (_nodFirstLevelBonus?.ChildNodes.Count > 0 && (blnSync ? Levels : await GetLevelsAsync(token).ConfigureAwait(false)) == 0)
                 {
-                    ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
+                    ImprovementManager.SetForcedValue(string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue, _objCharacter);
                     if (blnSync)
                     {
                         // ReSharper disable once MethodHasAsyncOverload
@@ -393,7 +394,7 @@ namespace Chummer
                 // Hacky to handle the naturalweapons node as another bonus node, but it will suffice because bonus nodes can have naturalweapon nodes
                 if (_nodNaturalWeaponsNode?.ChildNodes.Count > 0)
                 {
-                    ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
+                    ImprovementManager.SetForcedValue(string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue, _objCharacter);
                     if (blnSync)
                     {
                         // ReSharper disable once MethodHasAsyncOverload

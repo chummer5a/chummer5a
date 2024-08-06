@@ -4658,7 +4658,7 @@ namespace Chummer
                                     objQuality.Bonus = objNode["bonus"];
                                     if (objQuality.Bonus != null)
                                     {
-                                        ImprovementManager.ForcedValue = strSelected;
+                                        ImprovementManager.SetForcedValue(strSelected, CharacterObject);
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Quality,
                                             objQuality.InternalId,
@@ -4666,9 +4666,10 @@ namespace Chummer
                                             await objQuality.GetCurrentDisplayNameShortAsync(token)
                                                             .ConfigureAwait(false),
                                             token: token).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                        if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
-                                            objQuality.Extra = ImprovementManager.SelectedValue;
+                                            objQuality.Extra = strSelectedValue;
                                             string strName = await objQuality.GetCurrentDisplayNameAsync(token)
                                                                              .ConfigureAwait(false);
                                             await treQualities.DoThreadSafeAsync(x =>
@@ -4703,7 +4704,7 @@ namespace Chummer
 
                                         if (blnDoFirstLevel)
                                         {
-                                            ImprovementManager.ForcedValue = strSelected;
+                                            ImprovementManager.SetForcedValue(strSelected, CharacterObject);
                                             await ImprovementManager.CreateImprovementsAsync(
                                                                         CharacterObject,
                                                                         Improvement.ImprovementSource.Quality,
@@ -4713,9 +4714,10 @@ namespace Chummer
                                                                               .GetCurrentDisplayNameShortAsync(token)
                                                                               .ConfigureAwait(false), token: token)
                                                                     .ConfigureAwait(false);
-                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                            if (!string.IsNullOrEmpty(strSelectedValue))
                                             {
-                                                objQuality.Extra = ImprovementManager.SelectedValue;
+                                                objQuality.Extra = strSelectedValue;
                                                 string strName = await objQuality.GetCurrentDisplayNameAsync(token)
                                                     .ConfigureAwait(false);
                                                 await treQualities.DoThreadSafeAsync(x =>
@@ -4731,7 +4733,7 @@ namespace Chummer
                                     objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
                                     if (objQuality.NaturalWeaponsNode != null)
                                     {
-                                        ImprovementManager.ForcedValue = strSelected;
+                                        ImprovementManager.SetForcedValue(strSelected, CharacterObject);
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Quality,
                                             objQuality.InternalId,
@@ -4739,9 +4741,10 @@ namespace Chummer
                                             await objQuality.GetCurrentDisplayNameShortAsync(token)
                                                             .ConfigureAwait(false),
                                             token: token).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                        if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
-                                            objQuality.Extra = ImprovementManager.SelectedValue;
+                                            objQuality.Extra = strSelectedValue;
                                             string strName = await objQuality.GetCurrentDisplayNameAsync(token)
                                                                              .ConfigureAwait(false);
                                             await treQualities.DoThreadSafeAsync(x =>
@@ -4817,15 +4820,16 @@ namespace Chummer
                                 {
                                     if (objNode["bonus"] != null)
                                     {
-                                        ImprovementManager.ForcedValue = objSpell.Extra;
+                                        ImprovementManager.SetForcedValue(objSpell.Extra, CharacterObject);
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId,
                                             objNode["bonus"], 1,
                                             await objSpell.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                             token: token).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                        if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
-                                            objSpell.Extra = ImprovementManager.SelectedValue;
+                                            objSpell.Extra = strSelectedValue;
                                             string strName = await objSpell.GetCurrentDisplayNameAsync(token)
                                                                            .ConfigureAwait(false);
                                             await treSpells.DoThreadSafeAsync(x =>
@@ -4855,7 +4859,7 @@ namespace Chummer
                                     objPower.Bonus = objNode["bonus"];
                                     if (objPower.Bonus != null)
                                     {
-                                        ImprovementManager.ForcedValue = objPower.Extra;
+                                        ImprovementManager.SetForcedValue(objPower.Extra, CharacterObject);
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId,
                                             objPower.Bonus,
@@ -4881,7 +4885,7 @@ namespace Chummer
                                 {
                                     if (objNode["bonus"] != null)
                                     {
-                                        ImprovementManager.ForcedValue = objComplexForm.Extra;
+                                        ImprovementManager.SetForcedValue(objComplexForm.Extra, CharacterObject);
                                         await ImprovementManager.CreateImprovementsAsync(
                                                                     CharacterObject,
                                                                     Improvement.ImprovementSource.ComplexForm,
@@ -4890,9 +4894,10 @@ namespace Chummer
                                                                           .GetCurrentDisplayNameShortAsync(token)
                                                                           .ConfigureAwait(false), token: token)
                                                                 .ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                        if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
-                                            objComplexForm.Extra = ImprovementManager.SelectedValue;
+                                            objComplexForm.Extra = strSelectedValue;
                                             string strName = await objComplexForm.GetCurrentDisplayNameAsync(token)
                                                 .ConfigureAwait(false);
                                             await treComplexForms.DoThreadSafeAsync(x =>
@@ -4921,7 +4926,7 @@ namespace Chummer
                                 {
                                     if (objNode["bonus"] != null)
                                     {
-                                        ImprovementManager.ForcedValue = objProgram.Extra;
+                                        ImprovementManager.SetForcedValue(objProgram.Extra, CharacterObject);
                                         await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.AIProgram,
                                             objProgram.InternalId,
@@ -4929,9 +4934,10 @@ namespace Chummer
                                             await objProgram.GetCurrentDisplayNameShortAsync(token)
                                                             .ConfigureAwait(false),
                                             token: token).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                        if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
-                                            objProgram.Extra = ImprovementManager.SelectedValue;
+                                            objProgram.Extra = strSelectedValue;
                                             string strName = await objProgram.GetCurrentDisplayNameShortAsync(token)
                                                                              .ConfigureAwait(false);
                                             await treAIPrograms.DoThreadSafeAsync(x =>
@@ -4965,7 +4971,7 @@ namespace Chummer
                                         if (!int.TryParse(strSelected, out int intRating))
                                         {
                                             intRating = 1;
-                                            ImprovementManager.ForcedValue = strSelected;
+                                            ImprovementManager.SetForcedValue(strSelected, CharacterObject);
                                         }
 
                                         await ImprovementManager.CreateImprovementsAsync(
@@ -4973,9 +4979,10 @@ namespace Chummer
                                             objPower.InternalId, objPower.Bonus, intRating,
                                             await objPower.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                             token: token).ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                        if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
-                                            objPower.Extra = ImprovementManager.SelectedValue;
+                                            objPower.Extra = strSelectedValue;
                                             string strName = await objPower.GetCurrentDisplayNameAsync(token)
                                                                            .ConfigureAwait(false);
                                             await treCritterPowers.DoThreadSafeAsync(x =>
@@ -5043,7 +5050,7 @@ namespace Chummer
                                         objCyberware.PairBonus = objNode["pairbonus"];
                                         if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right"
                                             && objCyberware.Forced != "Left")
-                                            ImprovementManager.ForcedValue = objCyberware.Forced;
+                                            ImprovementManager.SetForcedValue(objCyberware.Forced, CharacterObject);
                                         if (objCyberware.Bonus != null)
                                         {
                                             await ImprovementManager.CreateImprovementsAsync(
@@ -5056,8 +5063,9 @@ namespace Chummer
                                                                               .GetCurrentDisplayNameShortAsync(token)
                                                                               .ConfigureAwait(false), token: token)
                                                                     .ConfigureAwait(false);
-                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                                            string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                            if (!string.IsNullOrEmpty(strSelectedValue))
+                                                objCyberware.Extra = strSelectedValue;
                                         }
 
                                         if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
@@ -5149,7 +5157,7 @@ namespace Chummer
                                             if (!string.IsNullOrEmpty(objCyberware.Forced)
                                                 && objCyberware.Forced != "Right"
                                                 && objCyberware.Forced != "Left")
-                                                ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                ImprovementManager.SetForcedValue(objCyberware.Forced, CharacterObject);
                                             await ImprovementManager.CreateImprovementsAsync(
                                                                         CharacterObject, objLoopCyberware.SourceType,
                                                                         objLoopCyberware.InternalId + "Pair",
@@ -5160,9 +5168,9 @@ namespace Chummer
                                                                               .GetCurrentDisplayNameShortAsync(token)
                                                                               .ConfigureAwait(false), token: token)
                                                                     .ConfigureAwait(false);
-                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
-                                                && string.IsNullOrEmpty(objCyberware.Extra))
-                                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                                            string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                            if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                                objCyberware.Extra = strSelectedValue;
                                             TreeNode objNode = await objLoopCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceHoleGUID
                                                                || await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceAntiHoleGUID
                                                 ? await treCyberware.DoThreadSafeFuncAsync(
@@ -5203,7 +5211,7 @@ namespace Chummer
                                         objArmor.Bonus = objNode["bonus"];
                                         if (objArmor.Bonus != null && objArmor.Equipped)
                                         {
-                                            ImprovementManager.ForcedValue = objArmor.Extra;
+                                            ImprovementManager.SetForcedValue(objArmor.Extra, CharacterObject);
                                             await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.Armor,
                                                 objArmor.InternalId,
@@ -5211,9 +5219,10 @@ namespace Chummer
                                                 await objArmor.GetCurrentDisplayNameShortAsync(token)
                                                               .ConfigureAwait(false),
                                                 token: token).ConfigureAwait(false);
-                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                            if (!string.IsNullOrEmpty(strSelectedValue))
                                             {
-                                                objArmor.Extra = ImprovementManager.SelectedValue;
+                                                objArmor.Extra = strSelectedValue;
                                                 string strName = await objArmor.GetCurrentDisplayNameAsync(token)
                                                                                .ConfigureAwait(false);
                                                 await treArmor.DoThreadSafeAsync(x =>
@@ -5244,7 +5253,7 @@ namespace Chummer
                                             objMod.Bonus = objChild["bonus"];
                                             if (objMod.Bonus != null && objMod.Equipped)
                                             {
-                                                ImprovementManager.ForcedValue = objMod.Extra;
+                                                ImprovementManager.SetForcedValue(objMod.Extra, CharacterObject);
                                                 await ImprovementManager.CreateImprovementsAsync(
                                                                             CharacterObject,
                                                                             Improvement.ImprovementSource.ArmorMod,
@@ -5254,9 +5263,10 @@ namespace Chummer
                                                                                 .GetCurrentDisplayNameShortAsync(token)
                                                                                 .ConfigureAwait(false), token: token)
                                                                         .ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                                if (!string.IsNullOrEmpty(strSelectedValue))
                                                 {
-                                                    objMod.Extra = ImprovementManager.SelectedValue;
+                                                    objMod.Extra = strSelectedValue;
                                                     string strName = await objMod.GetCurrentDisplayNameAsync(token)
                                                         .ConfigureAwait(false);
                                                     await treArmor.DoThreadSafeAsync(x =>
@@ -18342,7 +18352,7 @@ namespace Chummer
                                     || objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
                                 {
                                     if (!string.IsNullOrEmpty(objSelectedFocus.Extra))
-                                        ImprovementManager.ForcedValue = objSelectedFocus.Extra;
+                                        ImprovementManager.SetForcedValue(objSelectedFocus.Extra, CharacterObject);
                                     if (objSelectedFocus.Bonus != null)
                                     {
                                         if (!await ImprovementManager.CreateImprovementsAsync(
@@ -18363,7 +18373,7 @@ namespace Chummer
                                             return;
                                         }
 
-                                        objSelectedFocus.Extra = ImprovementManager.SelectedValue;
+                                        objSelectedFocus.Extra = ImprovementManager.GetSelectedValue(CharacterObject);
                                     }
 
                                     if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null
@@ -18493,7 +18503,7 @@ namespace Chummer
                                     if (objGear.Bonus == null && (!objGear.WirelessOn || objGear.WirelessBonus == null))
                                         return true;
                                     if (!string.IsNullOrEmpty(objGear.Extra))
-                                        ImprovementManager.ForcedValue = objGear.Extra;
+                                        ImprovementManager.SetForcedValue(objGear.Extra, CharacterObject);
                                     if (objGear.Bonus != null)
                                     {
                                         if (!await ImprovementManager.CreateImprovementsAsync(
@@ -18509,7 +18519,7 @@ namespace Chummer
                                             return false;
                                         }
 
-                                        objGear.Extra = ImprovementManager.SelectedValue;
+                                        objGear.Extra = ImprovementManager.GetSelectedValue(CharacterObject);
                                     }
 
                                     if (objGear.WirelessOn && objGear.WirelessBonus != null

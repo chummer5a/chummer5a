@@ -361,7 +361,7 @@ namespace Chummer.Backend.Equipment
                                 ?.Value;
                             if (!string.IsNullOrWhiteSpace(strPush))
                             {
-                                _objCharacter.PushText.Push(strPush);
+                                (await _objCharacter.GetPushTextAsync(token).ConfigureAwait(false)).Push(strPush);
                             }
 
                             await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn,

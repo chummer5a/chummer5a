@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -1748,12 +1749,13 @@ namespace Chummer
                                                     // Reverse order because we process bonus nodes from top to bottom, and this text will be saved in a FILO stack
                                                     lstToPush.Reverse();
                                                     int intNumPushed = 0;
+                                                    ConcurrentStack<string> stkPushText = await _objCharacter.GetPushTextAsync(token).ConfigureAwait(false);
                                                     try
                                                     {
                                                         foreach (string strToPush in lstToPush)
                                                         {
                                                             token.ThrowIfCancellationRequested();
-                                                            _objCharacter.PushText.Push(strToPush);
+                                                            stkPushText.Push(strToPush);
                                                             ++intNumPushed;
                                                         }
                                                     }
@@ -1761,7 +1763,7 @@ namespace Chummer
                                                     {
                                                         for (int i = 0; i < intNumPushed; ++i)
                                                         {
-                                                            if (!_objCharacter.PushText.TryPop(out _))
+                                                            if (!stkPushText.TryPop(out _))
                                                                 break;
                                                         }
 

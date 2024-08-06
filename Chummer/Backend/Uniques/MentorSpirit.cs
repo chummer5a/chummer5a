@@ -130,12 +130,11 @@ namespace Chummer
                 _nodBonus = xmlMentor["bonus"];
                 if (_nodBonus != null)
                 {
-                    string strOldForce = ImprovementManager.ForcedValue;
-                    string strOldSelected = ImprovementManager.SelectedValue;
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                     try
                     {
-                        ImprovementManager.ForcedValue = strForceValue;
-                        ImprovementManager.SelectedValue = string.Empty;
+                        ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                         if (!ImprovementManager.CreateImprovements(_objCharacter,
                                 Improvement.ImprovementSource.MentorSpirit,
                                 _guiID.ToString(
@@ -146,12 +145,12 @@ namespace Chummer
                             return;
                         }
 
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtra = ImprovementManager.GetSelectedValue(_objCharacter);
                     }
                     finally
                     {
-                        ImprovementManager.ForcedValue = strOldForce;
-                        ImprovementManager.SelectedValue = strOldSelected;
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                     }
 
                     if (string.IsNullOrWhiteSpace(_strExtra))
@@ -170,12 +169,11 @@ namespace Chummer
                         + "]/bonus");
                     if (_nodChoice1 != null)
                     {
-                        string strOldForce = ImprovementManager.ForcedValue;
-                        string strOldSelected = ImprovementManager.SelectedValue;
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                         try
                         {
-                            ImprovementManager.ForcedValue = string.Empty;
-                            ImprovementManager.SelectedValue = string.Empty;
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                             if (!ImprovementManager.CreateImprovements(_objCharacter,
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
@@ -186,12 +184,12 @@ namespace Chummer
                                 return;
                             }
 
-                            _strExtraChoice1 = ImprovementManager.SelectedValue;
+                            _strExtraChoice1 = ImprovementManager.GetSelectedValue(_objCharacter);
                         }
                         finally
                         {
-                            ImprovementManager.ForcedValue = strOldForce;
-                            ImprovementManager.SelectedValue = strOldSelected;
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice1))
@@ -214,12 +212,11 @@ namespace Chummer
                         + "]/bonus");
                     if (_nodChoice2 != null)
                     {
-                        string strOldForce = ImprovementManager.ForcedValue;
-                        string strOldSelected = ImprovementManager.SelectedValue;
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                         try
                         {
-                            ImprovementManager.ForcedValue = string.Empty;
-                            ImprovementManager.SelectedValue = string.Empty;
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                             if (!ImprovementManager.CreateImprovements(_objCharacter,
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
@@ -230,12 +227,12 @@ namespace Chummer
                                 return;
                             }
 
-                            _strExtraChoice2 = ImprovementManager.SelectedValue;
+                            _strExtraChoice2 = ImprovementManager.GetSelectedValue(_objCharacter);
                         }
                         finally
                         {
-                            ImprovementManager.ForcedValue = strOldForce;
-                            ImprovementManager.SelectedValue = strOldSelected;
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice2))
@@ -315,12 +312,11 @@ namespace Chummer
                 _nodBonus = xmlMentor["bonus"];
                 if (_nodBonus != null)
                 {
-                    string strOldForce = ImprovementManager.ForcedValue;
-                    string strOldSelected = ImprovementManager.SelectedValue;
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                     try
                     {
-                        ImprovementManager.ForcedValue = strForceValue;
-                        ImprovementManager.SelectedValue = string.Empty;
+                        ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                         if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
                                 Improvement.ImprovementSource.MentorSpirit,
                                 _guiID.ToString(
@@ -331,12 +327,12 @@ namespace Chummer
                             return;
                         }
 
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtra = ImprovementManager.GetSelectedValue(_objCharacter);
                     }
                     finally
                     {
-                        ImprovementManager.ForcedValue = strOldForce;
-                        ImprovementManager.SelectedValue = strOldSelected;
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                     }
 
                     if (string.IsNullOrWhiteSpace(_strExtra))
@@ -355,12 +351,11 @@ namespace Chummer
                         + "]/bonus");
                     if (_nodChoice1 != null)
                     {
-                        string strOldForce = ImprovementManager.ForcedValue;
-                        string strOldSelected = ImprovementManager.SelectedValue;
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                         try
                         {
-                            ImprovementManager.ForcedValue = string.Empty;
-                            ImprovementManager.SelectedValue = string.Empty;
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                             if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
@@ -371,12 +366,12 @@ namespace Chummer
                                 return;
                             }
 
-                            _strExtraChoice1 = ImprovementManager.SelectedValue;
+                            _strExtraChoice1 = ImprovementManager.GetSelectedValue(_objCharacter);
                         }
                         finally
                         {
-                            ImprovementManager.ForcedValue = strOldForce;
-                            ImprovementManager.SelectedValue = strOldSelected;
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice1))
@@ -399,12 +394,11 @@ namespace Chummer
                         + "]/bonus");
                     if (_nodChoice2 != null)
                     {
-                        string strOldForce = ImprovementManager.ForcedValue;
-                        string strOldSelected = ImprovementManager.SelectedValue;
+                        string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                        string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                         try
                         {
-                            ImprovementManager.ForcedValue = string.Empty;
-                            ImprovementManager.SelectedValue = string.Empty;
+                            ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
                             if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
                                     Improvement.ImprovementSource.MentorSpirit,
                                     _guiID.ToString(
@@ -415,12 +409,12 @@ namespace Chummer
                                 return;
                             }
 
-                            _strExtraChoice2 = ImprovementManager.SelectedValue;
+                            _strExtraChoice2 = ImprovementManager.GetSelectedValue(_objCharacter);
                         }
                         finally
                         {
-                            ImprovementManager.ForcedValue = strOldForce;
-                            ImprovementManager.SelectedValue = strOldSelected;
+                            ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                            ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice2))

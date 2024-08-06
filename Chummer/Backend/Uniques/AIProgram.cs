@@ -105,15 +105,16 @@ namespace Chummer
 
             if (objXmlProgramNode["bonus"] != null)
             {
-                ImprovementManager.ForcedValue = strExtra;
+                ImprovementManager.SetForcedValue(strExtra, _objCharacter);
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlProgramNode["bonus"], 1, CurrentDisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
                 {
-                    _strExtra = ImprovementManager.SelectedValue;
+                    _strExtra = strSelectedValue;
                 }
             }
             else
@@ -167,15 +168,16 @@ namespace Chummer
 
             if (objXmlProgramNode["bonus"] != null)
             {
-                ImprovementManager.ForcedValue = strExtra;
+                ImprovementManager.SetForcedValue(Extra, _objCharacter);
                 if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.AIProgram, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), objXmlProgramNode["bonus"], 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
                 {
-                    _strExtra = ImprovementManager.SelectedValue;
+                    _strExtra = strSelectedValue;
                 }
             }
             else

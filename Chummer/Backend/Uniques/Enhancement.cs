@@ -100,9 +100,10 @@ namespace Chummer
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
                 {
-                    _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
+                    _strName += LanguageManager.GetString("String_Space") + '(' + strSelectedValue + ')';
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }
@@ -158,11 +159,12 @@ namespace Chummer
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
                 {
                     _strName +=
                         await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' +
-                        ImprovementManager.SelectedValue + ')';
+                        strSelectedValue + ')';
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }

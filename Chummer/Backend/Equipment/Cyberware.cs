@@ -1279,7 +1279,7 @@ namespace Chummer.Backend.Equipment
                     if ((Bonus != null || PairBonus != null) && !blnSkipSelectForms)
                     {
                         if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                            ImprovementManager.ForcedValue = _strForced;
+                            ImprovementManager.SetForcedValue(_strForced, _objCharacter);
 
                         if (Bonus != null)
                         {
@@ -1303,8 +1303,9 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                            _strExtra = ImprovementManager.SelectedValue;
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = strSelectedValue;
 
                         if (PairBonus != null)
                         {
@@ -1338,9 +1339,9 @@ namespace Chummer.Backend.Equipment
                             if ((intCount & 1) == 1)
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                    ImprovementManager.ForcedValue = _strForced;
+                                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                                 else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                    ImprovementManager.ForcedValue = _strExtra;
+                                    ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                                 if (blnSync)
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -2645,7 +2646,7 @@ namespace Chummer.Backend.Equipment
                         if (Bonus != null || WirelessBonus != null || PairBonus != null || WirelessPairBonus != null)
                         {
                             if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                ImprovementManager.ForcedValue = _strForced;
+                                ImprovementManager.SetForcedValue(_strForced, _objCharacter);
 
                             if (Bonus != null)
                             {
@@ -2664,9 +2665,9 @@ namespace Chummer.Backend.Equipment
                                         await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                             }
 
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
-                                && string.IsNullOrEmpty(_strExtra))
-                                _strExtra = ImprovementManager.SelectedValue;
+                            string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                            if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                                _strExtra = strSelectedValue;
 
                             if (PairBonus != null)
                             {
@@ -2707,9 +2708,9 @@ namespace Chummer.Backend.Equipment
                                 {
                                     if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left"
                                                                           && _strForced != "Right")
-                                        ImprovementManager.ForcedValue = _strForced;
+                                        ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                                     else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                        ImprovementManager.ForcedValue = _strExtra;
+                                        ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ImprovementManager.CreateImprovements(
@@ -4312,9 +4313,9 @@ namespace Chummer.Backend.Equipment
                                                                   strSourceNameToUse, WirelessBonus, Rating,
                                                                   CurrentDisplayNameShort);
 
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
-                                && string.IsNullOrEmpty(_strExtra))
-                                _strExtra = ImprovementManager.SelectedValue;
+                            string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                            if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                                _strExtra = strSelectedValue;
                         }
 
                         if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
@@ -4518,9 +4519,9 @@ namespace Chummer.Backend.Equipment
                                         .ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false);
 
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
-                                && string.IsNullOrEmpty(_strExtra))
-                                _strExtra = ImprovementManager.SelectedValue;
+                            string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                            if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                                _strExtra = strSelectedValue;
                         }
 
                         if (!string.IsNullOrEmpty(WirelessPairBonus?.InnerText))
@@ -4771,13 +4772,15 @@ namespace Chummer.Backend.Equipment
 
                         if (Bonus != null)
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, Rating, CurrentDisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                            _strExtra = ImprovementManager.SelectedValue;
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = strSelectedValue;
 
                         if (WirelessBonus != null && WirelessOn)
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, Rating, CurrentDisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                            _strExtra = ImprovementManager.SelectedValue;
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = strSelectedValue;
                     }
                     */
 
@@ -4809,9 +4812,9 @@ namespace Chummer.Backend.Equipment
                         if ((intCount & 1) == 1)
                         {
                             if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                ImprovementManager.ForcedValue = _strForced;
+                                ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                             else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                ImprovementManager.ForcedValue = _strExtra;
+                                ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair",
                                                                   PairBonus,
                                                                   Rating, CurrentDisplayNameShort);
@@ -4858,9 +4861,9 @@ namespace Chummer.Backend.Equipment
                             if (intCount > 0 && (intCount & 1) == 0)
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                    ImprovementManager.ForcedValue = _strForced;
+                                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                                 else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                    ImprovementManager.ForcedValue = _strExtra;
+                                    ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                                 ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
                                                                       objLoopCyberware.InternalId + "Pair",
                                                                       objLoopCyberware.PairBonus,
@@ -4924,13 +4927,15 @@ namespace Chummer.Backend.Equipment
 
                         if (Bonus != null)
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, Rating, CurrentDisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                            _strExtra = ImprovementManager.SelectedValue;
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = strSelectedValue;
 
                         if (WirelessBonus != null && WirelessOn)
                             ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, Rating, CurrentDisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                            _strExtra = ImprovementManager.SelectedValue;
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                            _strExtra = strSelectedValue;
                     }
                     */
 
@@ -4967,9 +4972,9 @@ namespace Chummer.Backend.Equipment
                         if ((intCount & 1) == 1)
                         {
                             if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                ImprovementManager.ForcedValue = _strForced;
+                                ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                             else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                ImprovementManager.ForcedValue = _strExtra;
+                                ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                             await ImprovementManager.CreateImprovementsAsync(
                                 _objCharacter, SourceType, InternalId + "Pair", PairBonus,
                                 await GetRatingAsync(token).ConfigureAwait(false), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
@@ -5029,9 +5034,9 @@ namespace Chummer.Backend.Equipment
                             if (intCount > 0 && (intCount & 1) == 0)
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                    ImprovementManager.ForcedValue = _strForced;
+                                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                                 else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                    ImprovementManager.ForcedValue = _strExtra;
+                                    ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                                 await ImprovementManager.CreateImprovementsAsync(
                                     _objCharacter, objLoopCyberware.SourceType,
                                     objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus,
@@ -5341,7 +5346,7 @@ namespace Chummer.Backend.Equipment
                                                    || WirelessPairBonus?.InnerText.Contains("Rating") == true)))
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                    ImprovementManager.ForcedValue = _strForced;
+                                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
 
                                 if (Bonus != null)
                                 {
@@ -5354,9 +5359,9 @@ namespace Chummer.Backend.Equipment
                                                                           CurrentDisplayNameShort);
                                 }
 
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
-                                    && string.IsNullOrEmpty(_strExtra))
-                                    _strExtra = ImprovementManager.SelectedValue;
+                                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                                if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                                    _strExtra = strSelectedValue;
 
                                 if (PairBonus != null)
                                 {
@@ -5390,9 +5395,9 @@ namespace Chummer.Backend.Equipment
                                     {
                                         if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left"
                                                                               && _strForced != "Right")
-                                            ImprovementManager.ForcedValue = _strForced;
+                                            ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                                         else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                            ImprovementManager.ForcedValue = _strExtra;
+                                            ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                                         ImprovementManager.CreateImprovements(
                                             _objCharacter, SourceType, InternalId + "Pair",
                                             PairBonus, Rating, CurrentDisplayNameShort);
@@ -5533,7 +5538,7 @@ namespace Chummer.Backend.Equipment
                                                    || WirelessPairBonus?.InnerText.Contains("Rating") == true)))
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
-                                    ImprovementManager.ForcedValue = _strForced;
+                                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
 
                                 if (Bonus != null)
                                 {
@@ -5553,9 +5558,9 @@ namespace Chummer.Backend.Equipment
                                         token: token).ConfigureAwait(false);
                                 }
 
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
-                                    && string.IsNullOrEmpty(_strExtra))
-                                    _strExtra = ImprovementManager.SelectedValue;
+                                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                                if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                                    _strExtra = strSelectedValue;
 
                                 if (PairBonus != null)
                                 {
@@ -5593,9 +5598,9 @@ namespace Chummer.Backend.Equipment
                                     {
                                         if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left"
                                                                               && _strForced != "Right")
-                                            ImprovementManager.ForcedValue = _strForced;
+                                            ImprovementManager.SetForcedValue(_strForced, _objCharacter);
                                         else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
-                                            ImprovementManager.ForcedValue = _strExtra;
+                                            ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
                                         await ImprovementManager.CreateImprovementsAsync(
                                             _objCharacter, await GetSourceTypeAsync(token).ConfigureAwait(false),
                                             InternalId + "Pair",
@@ -9999,9 +10004,9 @@ namespace Chummer.Backend.Equipment
                         {
                             if (!string.IsNullOrEmpty(objLoopCyberware.Forced) && objLoopCyberware.Forced != "Left"
                                                                                && objLoopCyberware.Forced != "Right")
-                                ImprovementManager.ForcedValue = objLoopCyberware.Forced;
+                                ImprovementManager.SetForcedValue(objLoopCyberware.Forced, _objCharacter);
                             else if (objLoopCyberware.Bonus != null && !string.IsNullOrEmpty(objLoopCyberware.Extra))
-                                ImprovementManager.ForcedValue = objLoopCyberware.Extra;
+                                ImprovementManager.SetForcedValue(objLoopCyberware.Extra, _objCharacter);
                             ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
                                                                   objLoopCyberware.InternalId + "Pair",
                                                                   objLoopCyberware.PairBonus, objLoopCyberware.Rating,
@@ -10307,9 +10312,9 @@ namespace Chummer.Backend.Equipment
                         {
                             if (!string.IsNullOrEmpty(objLoopCyberware.Forced) && objLoopCyberware.Forced != "Left"
                                                                                && objLoopCyberware.Forced != "Right")
-                                ImprovementManager.ForcedValue = objLoopCyberware.Forced;
+                                ImprovementManager.SetForcedValue(objLoopCyberware.Forced, _objCharacter);
                             else if (objLoopCyberware.Bonus != null && !string.IsNullOrEmpty(objLoopCyberware.Extra))
-                                ImprovementManager.ForcedValue = objLoopCyberware.Extra;
+                                ImprovementManager.SetForcedValue(objLoopCyberware.Extra, _objCharacter);
                             await ImprovementManager.CreateImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
                                                                              objLoopCyberware.InternalId + "Pair",
                                                                              objLoopCyberware.PairBonus,

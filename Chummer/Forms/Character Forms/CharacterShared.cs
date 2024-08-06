@@ -6443,7 +6443,7 @@ namespace Chummer
                                                         await objStack.Gear.ForEachAsync(async objFociGear =>
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
                                                                 Improvement.ImprovementSource.StackedFocus,
@@ -6588,7 +6588,7 @@ namespace Chummer
                                                         await objStack.Gear.ForEachAsync(async objFociGear =>
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
                                                                 Improvement.ImprovementSource.StackedFocus,
@@ -6825,7 +6825,7 @@ namespace Chummer
                                                         await objStack.Gear.ForEachAsync(async objFociGear =>
                                                         {
                                                             if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                                ImprovementManager.SetForcedValue(objFociGear.Extra, CharacterObject);
                                                             await ImprovementManager.CreateImprovementsAsync(
                                                                 CharacterObject,
                                                                 Improvement.ImprovementSource.StackedFocus,

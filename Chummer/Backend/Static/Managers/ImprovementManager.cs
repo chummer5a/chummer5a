@@ -41,10 +41,12 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
 
         // String that will be used to limit the selection in Pick forms.
-        private static string _strLimitSelection = string.Empty;
-
-        private static string _strSelectedValue = string.Empty;
-        private static string _strForcedValue = string.Empty;
+        private static readonly ConcurrentDictionary<Character, string> s_dicLimitSelections = new ConcurrentDictionary<Character, string>();
+        private static readonly ConcurrentDictionary<Character, string> s_dicSelectedValues = new ConcurrentDictionary<Character, string>();
+        private static readonly ConcurrentDictionary<Character, string> s_dicForcedValues = new ConcurrentDictionary<Character, string>();
+        private static string s_strInvariantLimitSelection;
+        private static string s_strInvariantSelectedValue;
+        private static string s_strInvariantForcedValue;
 
         private static readonly ConcurrentDictionary<Character, List<Improvement>> s_DictionaryTransactions
             = new ConcurrentDictionary<Character, List<Improvement>>();
@@ -155,28 +157,67 @@ namespace Chummer
         /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specific
         /// CharacterAttribute selection for Qualities like Metagenic Improvement.
         /// </summary>
-        public static string LimitSelection
+        public static string GetLimitSelection(Character objCharacter)
         {
-            get => _strLimitSelection;
-            set => _strLimitSelection = value;
+            if (objCharacter == null)
+                return s_strInvariantLimitSelection;
+            s_dicLimitSelections.TryGetValue(objCharacter, out string strReturn);
+            return strReturn;
+        }
+        /// <summary>
+        /// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specific
+        /// CharacterAttribute selection for Qualities like Metagenic Improvement.
+        /// </summary>
+        public static void SetLimitSelection(string value, Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantLimitSelection = value;
+            else
+                s_dicLimitSelections.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
         /// <summary>
         /// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
         /// </summary>
-        public static string SelectedValue
+        public static string GetSelectedValue(Character objCharacter)
         {
-            get => _strSelectedValue;
-            set => _strSelectedValue = value;
+            if (objCharacter == null)
+                return s_strInvariantSelectedValue;
+            s_dicSelectedValues.TryGetValue(objCharacter, out string strReturn);
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The string that was entered or selected from any of the dialogue windows that were presented because of this Improvement.
+        /// </summary>
+        public static void SetSelectedValue(string value, Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantSelectedValue = value;
+            else
+                s_dicSelectedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
         /// <summary>
         /// Force any dialogue windows that open to use this string as their selected value.
         /// </summary>
-        public static string ForcedValue
+        public static string GetForcedValue(Character objCharacter)
         {
-            get => _strForcedValue;
-            set => _strForcedValue = value;
+            if (objCharacter == null)
+                return s_strInvariantForcedValue;
+            s_dicForcedValues.TryGetValue(objCharacter, out string strReturn);
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Force any dialogue windows that open to use this string as their selected value.
+        /// </summary>
+        public static void SetForcedValue(string value, Character objCharacter)
+        {
+            if (objCharacter == null)
+                s_strInvariantForcedValue = value;
+            else
+                s_dicForcedValues.AddOrUpdate(objCharacter, value, (c, s) => value);
         }
 
         public static void ClearCachedValue(Character objCharacter, Improvement.ImprovementType eImprovementType,
@@ -1524,9 +1565,10 @@ namespace Chummer
                                                                         out HashSet<string>
                                                                             setAllowedNames))
                         {
-                            if (!string.IsNullOrEmpty(ForcedValue))
+                            string strForcedValue = GetForcedValue(objCharacter);
+                            if (!string.IsNullOrEmpty(strForcedValue))
                             {
-                                setAllowedNames.Add(ForcedValue);
+                                setAllowedNames.Add(strForcedValue);
                             }
                             else if (!string.IsNullOrEmpty(strPrompt))
                             {
@@ -1725,192 +1767,206 @@ namespace Chummer
                     }
                 }
             }
-            else if (!string.IsNullOrEmpty(ForcedValue))
+            else
             {
-                (bool blnIsExotic, string strExoticName)
-                    = ExoticSkill.IsExoticSkillNameTuple(objCharacter, ForcedValue);
-                string strFilter;
-                if (blnIsExotic)
+                string strForcedValue = GetForcedValue(objCharacter);
+                if (!string.IsNullOrEmpty(strForcedValue))
                 {
-                    strFilter = "/chummer/skills/skill[name = "
-                                + strExoticName.CleanXPath() + " and exotic = 'True' and ("
-                                + objCharacter.Settings.BookXPath() + ")]";
-                }
-                else
-                {
-                    strFilter = "/chummer/skills/skill[name = "
-                                + ForcedValue.CleanXPath() + " and not(exotic = 'True') and ("
-                                + objCharacter.Settings.BookXPath() + ")]";
-                }
-
-                XPathNavigator xmlSkillNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(strFilter) ?? throw new AbortedException();
-                int intMinimumRating = 0;
-                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                    intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                int intMaximumRating = int.MaxValue;
-                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                    intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-                if (intMinimumRating != 0 || intMaximumRating != int.MaxValue)
-                {
-                    Skill objExistingSkill = objCharacter.SkillsSection.GetActiveSkill(ForcedValue);
-                    if (objExistingSkill == null)
+                    (bool blnIsExotic, string strExoticName)
+                        = ExoticSkill.IsExoticSkillNameTuple(objCharacter, strForcedValue);
+                    string strFilter;
+                    if (blnIsExotic)
                     {
-                        if (intMinimumRating > 0)
-                            throw new AbortedException();
+                        strFilter = "/chummer/skills/skill[name = "
+                                    + strExoticName.CleanXPath() + " and exotic = 'True' and ("
+                                    + objCharacter.Settings.BookXPath() + ")]";
                     }
                     else
                     {
-                        int intCurrentRating = objExistingSkill.TotalBaseRating;
-                        if (intCurrentRating > intMaximumRating || intCurrentRating < intMinimumRating)
-                            throw new AbortedException();
+                        strFilter = "/chummer/skills/skill[name = "
+                                    + strForcedValue.CleanXPath() + " and not(exotic = 'True') and ("
+                                    + objCharacter.Settings.BookXPath() + ")]";
                     }
-                }
 
-                XPathNavigator xmlSkillCategories = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories");
-                if (xmlSkillCategories != null)
-                {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
-                                         ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strCategory))
+                    XPathNavigator xmlSkillNode =
+                        objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(strFilter) ??
                         throw new AbortedException();
-                    bool blnAbort = true;
-                    foreach (XPathNavigator xmlCategory in xmlSkillCategories.Select("category"))
+                    int intMinimumRating = 0;
+                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                        intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                    int intMaximumRating = int.MaxValue;
+                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                        intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                    if (intMinimumRating != 0 || intMaximumRating != int.MaxValue)
                     {
-                        if (xmlCategory.Value == strCategory)
+                        Skill objExistingSkill = objCharacter.SkillsSection.GetActiveSkill(strForcedValue);
+                        if (objExistingSkill == null)
                         {
-                            blnAbort = false;
-                            break;
+                            if (intMinimumRating > 0)
+                                throw new AbortedException();
+                        }
+                        else
+                        {
+                            int intCurrentRating = objExistingSkill.TotalBaseRating;
+                            if (intCurrentRating > intMaximumRating || intCurrentRating < intMinimumRating)
+                                throw new AbortedException();
                         }
                     }
-                    if (blnAbort)
-                        throw new AbortedException();
-                }
 
-                string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
-                                         ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strCategory) || !strTemp
-                                                                   .SplitNoAlloc(
-                                                                       ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                   .Contains(strCategory))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
-                                           ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp
-                                                                     .SplitNoAlloc(
-                                                                         ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                     .Contains(strSkillGroup))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
-                                         ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(strCategory) && strTemp
-                                                                   .SplitNoAlloc(
-                                                                       ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                   .Contains(strCategory))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
-                                           ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp
-                                                                     .SplitNoAlloc(
-                                                                         ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                     .Contains(strSkillGroup))
-                        throw new AbortedException();
-                }
-
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
-                if (!string.IsNullOrEmpty(strTemp) && !strTemp
-                                                       .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                       .Contains(ForcedValue))
-                    throw new AbortedException();
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
-                if (!string.IsNullOrEmpty(strTemp) && strTemp
-                                                      .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                      .Contains(ForcedValue))
-                    throw new AbortedException();
-                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
-                if (!string.IsNullOrEmpty(strTemp))
-                {
-                    string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value
-                                          ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp
-                                                                    .SplitNoAlloc(
-                                                                        ',', StringSplitOptions.RemoveEmptyEntries)
-                                                                    .Contains(strAttribute))
-                        throw new AbortedException();
-                }
-
-                strSelectedSkill = ForcedValue;
-            }
-            else
-            {
-                // Display the Select Skill window and record which Skill was selected.
-                using (ThreadSafeForm<SelectSkill> frmPickSkill
-                       = ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
-                       {
-                           Description = !string.IsNullOrEmpty(strFriendlyName)
-                               ? string.Format(GlobalSettings.CultureInfo,
-                                               LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
-                                               strFriendlyName)
-                               : LanguageManager.GetString("String_Improvement_SelectSkill")
-                       }))
-                {
-                    string strMinimumRating = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating")?.Value;
-                    if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                        frmPickSkill.MyForm.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                    string strMaximumRating = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating")?.Value;
-                    if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                        frmPickSkill.MyForm.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-
-                    XmlElement xmlSkillCategories = xmlBonusNode["skillcategories"];
+                    XPathNavigator xmlSkillCategories =
+                        xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories");
                     if (xmlSkillCategories != null)
-                        frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
-                    string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.OnlyCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.OnlySkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.ExcludeCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.ExcludeSkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.LimitToSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.ExcludeSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
-                    if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.MyForm.LinkedAttribute = strTemp;
-
-                    if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
                     {
-                        throw new AbortedException();
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                                             ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strCategory))
+                            throw new AbortedException();
+                        bool blnAbort = true;
+                        foreach (XPathNavigator xmlCategory in xmlSkillCategories.Select("category"))
+                        {
+                            if (xmlCategory.Value == strCategory)
+                            {
+                                blnAbort = false;
+                                break;
+                            }
+                        }
+
+                        if (blnAbort)
+                            throw new AbortedException();
                     }
 
-                    strSelectedSkill = frmPickSkill.MyForm.SelectedSkill;
+                    string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")
+                        ?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                                             ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strCategory) || !strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strCategory))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
+                                               ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strSkillGroup))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                                             ?? string.Empty;
+                        if (!string.IsNullOrWhiteSpace(strCategory) && strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strCategory))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
+                                               ?? string.Empty;
+                        if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strSkillGroup))
+                            throw new AbortedException();
+                    }
+
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
+                    if (!string.IsNullOrEmpty(strTemp) && !strTemp
+                            .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Contains(strForcedValue))
+                        throw new AbortedException();
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
+                    if (!string.IsNullOrEmpty(strTemp) && strTemp
+                            .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Contains(strForcedValue))
+                        throw new AbortedException();
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
+                    if (!string.IsNullOrEmpty(strTemp))
+                    {
+                        string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value
+                                              ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp
+                                .SplitNoAlloc(
+                                    ',', StringSplitOptions.RemoveEmptyEntries)
+                                .Contains(strAttribute))
+                            throw new AbortedException();
+                    }
+
+                    strSelectedSkill = strForcedValue;
+                }
+                else
+                {
+                    // Display the Select Skill window and record which Skill was selected.
+                    using (ThreadSafeForm<SelectSkill> frmPickSkill
+                           = ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
+                           {
+                               Description = !string.IsNullOrEmpty(strFriendlyName)
+                                   ? string.Format(GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
+                                       strFriendlyName)
+                                   : LanguageManager.GetString("String_Improvement_SelectSkill")
+                           }))
+                    {
+                        string strMinimumRating = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating")?.Value;
+                        if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                            frmPickSkill.MyForm.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                        string strMaximumRating = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating")?.Value;
+                        if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                            frmPickSkill.MyForm.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+
+                        XmlElement xmlSkillCategories = xmlBonusNode["skillcategories"];
+                        if (xmlSkillCategories != null)
+                            frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
+                        string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.OnlyCategory = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.OnlySkillGroup = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.ExcludeCategory = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.ExcludeSkillGroup = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.LimitToSkill = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.ExcludeSkill = strTemp;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            frmPickSkill.MyForm.LinkedAttribute = strTemp;
+
+                        if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strSelectedSkill = frmPickSkill.MyForm.SelectedSkill;
+                    }
                 }
             }
 
@@ -2008,397 +2064,407 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (nodBonus == null)
+                    try
                     {
-                        _strForcedValue = string.Empty;
-                        _strLimitSelection = string.Empty;
-                        return true;
-                    }
+                        if (nodBonus == null)
+                            return true;
 
-                    _strSelectedValue = string.Empty;
+                        SetSelectedValue(string.Empty, objCharacter);
 
-                    sbdTrace.Append("_strForcedValue = ").AppendLine(_strForcedValue);
-                    sbdTrace.Append("_strLimitSelection = ").AppendLine(_strLimitSelection);
+                        string strForcedValue = GetForcedValue(objCharacter);
+                        string strLimitSelection = GetLimitSelection(objCharacter);
+                        sbdTrace.Append("strForcedValue = ").AppendLine(strForcedValue);
+                        sbdTrace.Append("strLimitSelection = ").AppendLine(strLimitSelection);
 
-                    // If no friendly name was provided, use the one from SourceName.
-                    if (string.IsNullOrEmpty(strFriendlyName))
-                        strFriendlyName = strSourceName;
+                        // If no friendly name was provided, use the one from SourceName.
+                        if (string.IsNullOrEmpty(strFriendlyName))
+                            strFriendlyName = strSourceName;
 
-                    if (nodBonus.HasChildNodes)
-                    {
-                        string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
-                        sbdTrace.AppendLine("Has Child Nodes");
-                        if (nodBonus["selecttext"] != null)
+                        if (nodBonus.HasChildNodes)
                         {
-                            sbdTrace.AppendLine("selecttext");
-
-                            try
+                            string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
+                            sbdTrace.AppendLine("Has Child Nodes");
+                            if (nodBonus["selecttext"] != null)
                             {
-                                if (!string.IsNullOrEmpty(_strForcedValue))
-                                {
-                                    LimitSelection = _strForcedValue;
-                                }
-                                else if (objCharacter?.PushText.TryPop(out string strText) == true)
-                                {
-                                    LimitSelection = strText;
-                                }
+                                sbdTrace.AppendLine("selecttext");
 
-                                sbdTrace.Append("SelectedValue = ").AppendLine(SelectedValue);
-                                sbdTrace.Append("LimitSelection = ").AppendLine(LimitSelection);
-
-                                if (!string.IsNullOrEmpty(LimitSelection))
+                                try
                                 {
-                                    _strSelectedValue = LimitSelection;
-                                }
-                                else if (nodBonus["selecttext"].Attributes.Count == 0)
-                                {
-                                    string strSelectText = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        ? LanguageManager.GetString("String_Improvement_SelectText", token: token)
-                                        : await LanguageManager
-                                                .GetStringAsync("String_Improvement_SelectText", token: token)
-                                                .ConfigureAwait(false);
-                                    using (ThreadSafeForm<SelectText> frmPickText
-                                           = blnSync
-                                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                               ? ThreadSafeForm<SelectText>.Get(() => new SelectText
-                                               {
-                                                   Description = string.Format(GlobalSettings.CultureInfo,
-                                                                               strSelectText,
-                                                                               strFriendlyName)
-                                               })
-                                               : await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
-                                               {
-                                                   Description = string.Format(GlobalSettings.CultureInfo,
-                                                                               strSelectText,
-                                                                               strFriendlyName)
-                                               }, token).ConfigureAwait(false))
+                                    if (!string.IsNullOrEmpty(strForcedValue))
                                     {
-                                        if ((blnSync
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ? frmPickText.ShowDialogSafe(objCharacter, token)
-                                                : await frmPickText.ShowDialogSafeAsync(objCharacter, token)
-                                                                   .ConfigureAwait(false))
-                                            == DialogResult.Cancel)
-                                        {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                Rollback(objCharacter, token);
-                                            else
-                                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                            ForcedValue = string.Empty;
-                                            LimitSelection = string.Empty;
-                                            return false;
-                                        }
-
-                                        _strSelectedValue = frmPickText.MyForm.SelectedValue;
+                                        strLimitSelection = strForcedValue;
                                     }
-                                }
-                                else if (objCharacter != null)
-                                {
-                                    string strXPath = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                          "selecttext/@xpath", token)?.Value
-                                                      ?? string.Empty;
-                                    if (string.IsNullOrEmpty(strXPath))
+                                    else if (objCharacter != null)
                                     {
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            Rollback(objCharacter, token);
-                                        else
-                                            await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                        ForcedValue = string.Empty;
-                                        LimitSelection = string.Empty;
-                                        return false;
+                                        ConcurrentStack<string> stkPushText = blnSync
+                                            ? objCharacter.PushText
+                                            : await objCharacter.GetPushTextAsync(token).ConfigureAwait(false);
+                                        if (stkPushText.TryPop(out string strText))
+                                        {
+                                            strLimitSelection = strText;
+                                        }
                                     }
 
-                                    string strXmlFile
-                                        = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                              "selecttext/@xml", token)?.Value
-                                          ?? string.Empty;
-                                    XPathNavigator xmlDoc
-                                        = blnSync
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            ? objCharacter.LoadDataXPath(strXmlFile, token: token)
-                                            : await objCharacter.LoadDataXPathAsync(strXmlFile, token: token)
-                                                                .ConfigureAwait(false);
-                                    using (new FetchSafelyFromPool<List<ListItem>>(
-                                               Utils.ListItemListPool, out List<ListItem> lstItems))
+                                    string strSelectedValue = GetSelectedValue(objCharacter);
+                                    sbdTrace.Append("strSelectedValue = ").AppendLine(strSelectedValue);
+                                    sbdTrace.Append("strLimitSelection = ").AppendLine(strLimitSelection);
+
+                                    if (!string.IsNullOrEmpty(strLimitSelection))
                                     {
-                                        //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
-                                        //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                   out HashSet<string> setUsedValues))
-                                        {
-                                            foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
-                                            {
-                                                // First check if we are using a list of language keys
-                                                string strKey = objNode.Name == "key" ? objNode.Value : string.Empty;
-                                                if (string.IsNullOrEmpty(strKey))
-                                                {
-                                                    string strName
-                                                        = objNode.SelectSingleNodeAndCacheExpression(
-                                                                  "name", token)?.Value
-                                                          ?? string.Empty;
-                                                    if (string.IsNullOrWhiteSpace(strName))
-                                                    {
-                                                        // Assume that if we're not looking at something that has an XML node,
-                                                        // we're looking at a direct xpath filter or something that has proper names
-                                                        // like the lifemodule storybuilder macros.
-                                                        string strValue = objNode.Value;
-                                                        if (setUsedValues.Add(strValue))
-                                                            lstItems.Add(
-                                                                new ListItem(
-                                                                    strValue,
-                                                                    blnSync
-                                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                                        ? objCharacter.TranslateExtra(
-                                                                            strValue, strPreferFile: strXmlFile,
-                                                                            token: token)
-                                                                        : await objCharacter.TranslateExtraAsync(
-                                                                            strValue, strPreferFile: strXmlFile,
-                                                                            token: token).ConfigureAwait(false)));
-                                                    }
-                                                    else if (setUsedValues.Add(strName))
-                                                    {
-                                                        lstItems.Add(
-                                                            new ListItem(
-                                                                strName,
-                                                                blnSync
-                                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                                    ? objCharacter.TranslateExtra(
-                                                                        strName, strPreferFile: strXmlFile,
-                                                                        token: token)
-                                                                    : await objCharacter.TranslateExtraAsync(
-                                                                            strName, strPreferFile: strXmlFile,
-                                                                            token: token)
-                                                                        .ConfigureAwait(false)));
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    string strValue
-                                                        = blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                strKey, GlobalSettings.DefaultLanguage, token: token)
-                                                            : await LanguageManager
-                                                                    .GetStringAsync(
-                                                                        strKey, GlobalSettings.DefaultLanguage,
-                                                                        token: token).ConfigureAwait(false);
-                                                    if (setUsedValues.Add(strValue))
-                                                    {
-                                                        lstItems.Add(
-                                                            new ListItem(
-                                                                strValue,
-                                                                blnSync
-                                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                                    ? LanguageManager.GetString(strKey, token: token)
-                                                                    : await LanguageManager
-                                                                            .GetStringAsync(strKey, token: token)
-                                                                            .ConfigureAwait(false)));
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        if (lstItems.Count == 0)
-                                        {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                Rollback(objCharacter, token);
-                                            else
-                                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                            ForcedValue = string.Empty;
-                                            LimitSelection = string.Empty;
-                                            return false;
-                                        }
-
+                                        SetSelectedValue(strLimitSelection, objCharacter);
+                                    }
+                                    else if (nodBonus["selecttext"].Attributes.Count == 0)
+                                    {
                                         string strSelectText = blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
                                             ? LanguageManager.GetString("String_Improvement_SelectText", token: token)
                                             : await LanguageManager
-                                                    .GetStringAsync("String_Improvement_SelectText", token: token)
-                                                    .ConfigureAwait(false);
-
-                                        using (ThreadSafeForm<SelectItem> frmSelect
+                                                .GetStringAsync("String_Improvement_SelectText", token: token)
+                                                .ConfigureAwait(false);
+                                        using (ThreadSafeForm<SelectText> frmPickText
                                                = blnSync
                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                   ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                                   ? ThreadSafeForm<SelectText>.Get(() => new SelectText
                                                    {
                                                        Description = string.Format(GlobalSettings.CultureInfo,
                                                            strSelectText,
                                                            strFriendlyName)
                                                    })
-                                                   : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                                                   : await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                                                    {
                                                        Description = string.Format(GlobalSettings.CultureInfo,
                                                            strSelectText,
                                                            strFriendlyName)
                                                    }, token).ConfigureAwait(false))
                                         {
-                                            if (Convert.ToBoolean(
-                                                    nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                        "selecttext/@allowedit", token)?.Value,
-                                                    GlobalSettings.InvariantCultureInfo))
-                                            {
-                                                lstItems.Insert(0, ListItem.Blank);
-                                                frmSelect.MyForm.SetDropdownItemsMode(lstItems);
-                                            }
-                                            else
-                                            {
-                                                frmSelect.MyForm.SetGeneralItemsMode(lstItems);
-                                            }
-
-                                            DialogResult eReturn = blnSync
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ? frmSelect.ShowDialogSafe(objCharacter, token)
-                                                : await frmSelect.ShowDialogSafeAsync(objCharacter, token)
-                                                                 .ConfigureAwait(false);
-                                            if (eReturn == DialogResult.Cancel)
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? frmPickText.ShowDialogSafe(objCharacter, token)
+                                                    : await frmPickText.ShowDialogSafeAsync(objCharacter, token)
+                                                        .ConfigureAwait(false))
+                                                == DialogResult.Cancel)
                                             {
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     Rollback(objCharacter, token);
                                                 else
                                                     await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                                ForcedValue = string.Empty;
-                                                LimitSelection = string.Empty;
                                                 return false;
                                             }
 
-                                            _strSelectedValue = frmSelect.MyForm.SelectedItem;
+                                            SetSelectedValue(frmPickText.MyForm.SelectedValue, objCharacter);
                                         }
                                     }
+                                    else if (objCharacter != null)
+                                    {
+                                        string strXPath = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                              "selecttext/@xpath", token)?.Value
+                                                          ?? string.Empty;
+                                        if (string.IsNullOrEmpty(strXPath))
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                Rollback(objCharacter, token);
+                                            else
+                                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                            return false;
+                                        }
+
+                                        string strXmlFile
+                                            = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                  "selecttext/@xml", token)?.Value
+                                              ?? string.Empty;
+                                        XPathNavigator xmlDoc
+                                            = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? objCharacter.LoadDataXPath(strXmlFile, token: token)
+                                                : await objCharacter.LoadDataXPathAsync(strXmlFile, token: token)
+                                                    .ConfigureAwait(false);
+                                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                                   Utils.ListItemListPool, out List<ListItem> lstItems))
+                                        {
+                                            //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
+                                            //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
+                                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                       out HashSet<string> setUsedValues))
+                                            {
+                                                foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
+                                                {
+                                                    // First check if we are using a list of language keys
+                                                    string strKey = objNode.Name == "key"
+                                                        ? objNode.Value
+                                                        : string.Empty;
+                                                    if (string.IsNullOrEmpty(strKey))
+                                                    {
+                                                        string strName
+                                                            = objNode.SelectSingleNodeAndCacheExpression(
+                                                                  "name", token)?.Value
+                                                              ?? string.Empty;
+                                                        if (string.IsNullOrWhiteSpace(strName))
+                                                        {
+                                                            // Assume that if we're not looking at something that has an XML node,
+                                                            // we're looking at a direct xpath filter or something that has proper names
+                                                            // like the lifemodule storybuilder macros.
+                                                            string strValue = objNode.Value;
+                                                            if (setUsedValues.Add(strValue))
+                                                                lstItems.Add(
+                                                                    new ListItem(
+                                                                        strValue,
+                                                                        blnSync
+                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            ? objCharacter.TranslateExtra(
+                                                                                strValue, strPreferFile: strXmlFile,
+                                                                                token: token)
+                                                                            : await objCharacter.TranslateExtraAsync(
+                                                                                strValue, strPreferFile: strXmlFile,
+                                                                                token: token).ConfigureAwait(false)));
+                                                        }
+                                                        else if (setUsedValues.Add(strName))
+                                                        {
+                                                            lstItems.Add(
+                                                                new ListItem(
+                                                                    strName,
+                                                                    blnSync
+                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        ? objCharacter.TranslateExtra(
+                                                                            strName, strPreferFile: strXmlFile,
+                                                                            token: token)
+                                                                        : await objCharacter.TranslateExtraAsync(
+                                                                                strName, strPreferFile: strXmlFile,
+                                                                                token: token)
+                                                                            .ConfigureAwait(false)));
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        string strValue
+                                                            = blnSync
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ? LanguageManager.GetString(
+                                                                    strKey, GlobalSettings.DefaultLanguage,
+                                                                    token: token)
+                                                                : await LanguageManager
+                                                                    .GetStringAsync(
+                                                                        strKey, GlobalSettings.DefaultLanguage,
+                                                                        token: token).ConfigureAwait(false);
+                                                        if (setUsedValues.Add(strValue))
+                                                        {
+                                                            lstItems.Add(
+                                                                new ListItem(
+                                                                    strValue,
+                                                                    blnSync
+                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        ? LanguageManager.GetString(strKey,
+                                                                            token: token)
+                                                                        : await LanguageManager
+                                                                            .GetStringAsync(strKey, token: token)
+                                                                            .ConfigureAwait(false)));
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            if (lstItems.Count == 0)
+                                            {
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    Rollback(objCharacter, token);
+                                                else
+                                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                return false;
+                                            }
+
+                                            string strSelectText = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? LanguageManager.GetString("String_Improvement_SelectText",
+                                                    token: token)
+                                                : await LanguageManager
+                                                    .GetStringAsync("String_Improvement_SelectText", token: token)
+                                                    .ConfigureAwait(false);
+
+                                            using (ThreadSafeForm<SelectItem> frmSelect
+                                                   = blnSync
+                                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                       ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                                       {
+                                                           Description = string.Format(GlobalSettings.CultureInfo,
+                                                               strSelectText,
+                                                               strFriendlyName)
+                                                       })
+                                                       : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                                                       {
+                                                           Description = string.Format(GlobalSettings.CultureInfo,
+                                                               strSelectText,
+                                                               strFriendlyName)
+                                                       }, token).ConfigureAwait(false))
+                                            {
+                                                if (Convert.ToBoolean(
+                                                        nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                            "selecttext/@allowedit", token)?.Value,
+                                                        GlobalSettings.InvariantCultureInfo))
+                                                {
+                                                    lstItems.Insert(0, ListItem.Blank);
+                                                    frmSelect.MyForm.SetDropdownItemsMode(lstItems);
+                                                }
+                                                else
+                                                {
+                                                    frmSelect.MyForm.SetGeneralItemsMode(lstItems);
+                                                }
+
+                                                DialogResult eReturn = blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? frmSelect.ShowDialogSafe(objCharacter, token)
+                                                    : await frmSelect.ShowDialogSafeAsync(objCharacter, token)
+                                                        .ConfigureAwait(false);
+                                                if (eReturn == DialogResult.Cancel)
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        Rollback(objCharacter, token);
+                                                    else
+                                                        await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                    return false;
+                                                }
+
+                                                SetSelectedValue(frmSelect.MyForm.SelectedItem, objCharacter);
+                                            }
+                                        }
+                                    }
+
+                                    strSelectedValue = GetSelectedValue(objCharacter);
+                                    sbdTrace.Append("SelectedValue = ").AppendLine(strSelectedValue);
+                                    sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
+
+                                    if (blnAddImprovementsToCharacter)
+                                    {
+                                        // Create the Improvement.
+                                        sbdTrace.AppendLine("Calling CreateImprovement");
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            CreateImprovement(objCharacter, strSelectedValue, objImprovementSource,
+                                                strSourceName,
+                                                Improvement.ImprovementType.Text,
+                                                strUnique, token: token);
+                                        else
+                                            await CreateImprovementAsync(objCharacter, strSelectedValue,
+                                                objImprovementSource,
+                                                strSourceName,
+                                                Improvement.ImprovementType.Text,
+                                                strUnique, token: token).ConfigureAwait(false);
+                                    }
                                 }
-
-                                sbdTrace.Append("SelectedValue = ").AppendLine(SelectedValue);
-                                sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
-
-                                if (blnAddImprovementsToCharacter)
+                                catch
                                 {
-                                    // Create the Improvement.
-                                    sbdTrace.AppendLine("Calling CreateImprovement");
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource,
-                                                          strSourceName,
-                                                          Improvement.ImprovementType.Text,
-                                                          strUnique, token: token);
+                                        Rollback(objCharacter, CancellationToken.None);
                                     else
-                                        await CreateImprovementAsync(objCharacter, _strSelectedValue,
-                                                                     objImprovementSource,
-                                                                     strSourceName,
-                                                                     Improvement.ImprovementType.Text,
-                                                                     strUnique, token: token).ConfigureAwait(false);
+                                        await RollbackAsync(objCharacter, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
                                 }
                             }
-                            catch
+
+                            // If there is no character object, don't attempt to add any Improvements.
+                            if (objCharacter == null && blnAddImprovementsToCharacter)
                             {
-                                if (blnSync)
+                                sbdTrace.AppendLine("_objCharacter = Null");
+                                return true;
+                            }
+
+                            // Check to see what bonuses the node grants.
+                            if (blnSync)
+                            {
+                                try
+                                {
+                                    foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                                    {
+                                        if (ProcessBonus(objCharacter, objImprovementSource, ref strSourceName,
+                                                intRating,
+                                                strFriendlyName,
+                                                bonusNode, strUnique, !blnAddImprovementsToCharacter))
+                                            continue;
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        Rollback(objCharacter, token);
+                                        sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
+                                        return false;
+                                    }
+                                }
+                                catch
+                                {
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    Rollback(objCharacter, CancellationToken.None);
-                                else
-                                    await RollbackAsync(objCharacter, CancellationToken.None).ConfigureAwait(false);
-                                throw;
+                                    Rollback(objCharacter, token);
+                                    throw;
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                                    {
+                                        bool blnSuccess;
+                                        (blnSuccess, strSourceName) = await ProcessBonusAsync(
+                                                objCharacter, objImprovementSource, strSourceName, intRating,
+                                                strFriendlyName,
+                                                bonusNode, strUnique, !blnAddImprovementsToCharacter, token)
+                                            .ConfigureAwait(false);
+                                        if (blnSuccess)
+                                            continue;
+                                        await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                        sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
+                                        return false;
+                                    }
+                                }
+                                catch
+                                {
+                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                    throw;
+                                }
                             }
                         }
-
                         // If there is no character object, don't attempt to add any Improvements.
-                        if (objCharacter == null && blnAddImprovementsToCharacter)
+                        else if (objCharacter == null && blnAddImprovementsToCharacter)
                         {
                             sbdTrace.AppendLine("_objCharacter = Null");
                             return true;
                         }
 
-                        // Check to see what bonuses the node grants.
-                        if (blnSync)
+                        // If we've made it this far, everything went OK, so commit the Improvements.
+
+                        if (blnAddImprovementsToCharacter)
                         {
-                            try
-                            {
-                                foreach (XmlNode bonusNode in nodBonus.ChildNodes)
-                                {
-                                    if (ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, intRating,
-                                                     strFriendlyName,
-                                                     bonusNode, strUnique, !blnAddImprovementsToCharacter))
-                                        continue;
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    Rollback(objCharacter, token);
-                                    sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
-                                    return false;
-                                }
-                            }
-                            catch
-                            {
+                            sbdTrace.AppendLine("Committing improvements.");
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                Commit(objCharacter);
+                            else
+                                await CommitAsync(objCharacter, token).ConfigureAwait(false);
+                            sbdTrace.AppendLine("Finished committing improvements");
+                        }
+                        else
+                        {
+                            sbdTrace.AppendLine(
+                                "Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
+                            if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverload
                                 Rollback(objCharacter, token);
-                                throw;
-                            }
-                        }
-                        else
-                        {
-                            try
-                            {
-                                foreach (XmlNode bonusNode in nodBonus.ChildNodes)
-                                {
-                                    bool blnSuccess;
-                                    (blnSuccess, strSourceName) = await ProcessBonusAsync(
-                                            objCharacter, objImprovementSource, strSourceName, intRating,
-                                            strFriendlyName,
-                                            bonusNode, strUnique, !blnAddImprovementsToCharacter, token)
-                                        .ConfigureAwait(false);
-                                    if (blnSuccess)
-                                        continue;
-                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                    sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
-                                    return false;
-                                }
-                            }
-                            catch
-                            {
+                            else
                                 await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                                throw;
-                            }
+                            sbdTrace.AppendLine("Returned from scheduled Rollback");
+                        }
+
+                        // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
+                        if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
+                        {
+                            SetSelectedValue(string.Empty, objCharacter);
                         }
                     }
-                    // If there is no character object, don't attempt to add any Improvements.
-                    else if (objCharacter == null && blnAddImprovementsToCharacter)
+                    finally
                     {
-                        sbdTrace.AppendLine("_objCharacter = Null");
-                        return true;
+                        // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
+                        SetForcedValue(string.Empty, objCharacter);
+                        SetLimitSelection(string.Empty, objCharacter);
                     }
-
-                    // If we've made it this far, everything went OK, so commit the Improvements.
-
-                    if (blnAddImprovementsToCharacter)
-                    {
-                        sbdTrace.AppendLine("Committing improvements.");
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            Commit(objCharacter);
-                        else
-                            await CommitAsync(objCharacter, token).ConfigureAwait(false);
-                        sbdTrace.AppendLine("Finished committing improvements");
-                    }
-                    else
-                    {
-                        sbdTrace.AppendLine("Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverload
-                            Rollback(objCharacter, token);
-                        else
-                            await RollbackAsync(objCharacter, token).ConfigureAwait(false);
-                        sbdTrace.AppendLine("Returned from scheduled Rollback");
-                    }
-
-                    // If the bonus should not bubble up SelectedValues from its improvements, reset it to empty.
-                    if (nodBonus.Attributes?["useselected"]?.InnerText == bool.FalseString)
-                    {
-                        SelectedValue = string.Empty;
-                    }
-
-                    // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-                    _strForcedValue = string.Empty;
-                    _strLimitSelection = string.Empty;
                 }
                 //catch (Exception ex)
                 //{
@@ -2435,8 +2501,8 @@ namespace Chummer
             //getting a different parameter injected
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                                                                              strSourceName, strUnique, _strForcedValue,
-                                                                              _strLimitSelection, SelectedValue,
+                                                                              strSourceName, strUnique, GetForcedValue(objCharacter),
+                                                                              GetLimitSelection(objCharacter), GetSelectedValue(objCharacter),
                                                                               strFriendlyName,
                                                                               intRating);
 
@@ -2456,9 +2522,9 @@ namespace Chummer
                 }
 
                 strSourceName = container.SourceName;
-                _strForcedValue = container.ForcedValue;
-                _strLimitSelection = container.LimitSelection;
-                _strSelectedValue = container.SelectedValue;
+                SetForcedValue(container.ForcedValue, objCharacter);
+                SetLimitSelection(container.LimitSelection, objCharacter);
+                SetSelectedValue(container.SelectedValue, objCharacter);
             }
             else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
             {
@@ -2486,8 +2552,8 @@ namespace Chummer
             //getting a different parameter injected
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                                                                              strSourceName, strUnique, _strForcedValue,
-                                                                              _strLimitSelection, SelectedValue,
+                                                                              strSourceName, strUnique, GetForcedValue(objCharacter),
+                                                                              GetLimitSelection(objCharacter), GetSelectedValue(objCharacter),
                                                                               strFriendlyName,
                                                                               intRating);
 
@@ -2515,9 +2581,9 @@ namespace Chummer
                 }
 
                 strSourceName = container.SourceName;
-                _strForcedValue = container.ForcedValue;
-                _strLimitSelection = container.LimitSelection;
-                _strSelectedValue = container.SelectedValue;
+                SetForcedValue(container.ForcedValue, objCharacter);
+                SetLimitSelection(container.LimitSelection, objCharacter);
+                SetSelectedValue(container.SelectedValue, objCharacter);
             }
             else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
             {

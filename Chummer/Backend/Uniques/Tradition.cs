@@ -204,24 +204,30 @@ namespace Chummer.Backend.Uniques
                 _nodBonus = xmlTraditionNode["bonus"];
                 if (_nodBonus != null)
                 {
-                    string strOldFocedValue = ImprovementManager.ForcedValue;
-                    string strOldSelectedValue = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = strForcedValue;
-                    if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition,
-                            InternalId, _nodBonus,
-                            strFriendlyName: CurrentDisplayNameShort))
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    try
                     {
-                        ImprovementManager.ForcedValue = strOldFocedValue;
-                        return false;
-                    }
+                        ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
+                        if (!ImprovementManager.CreateImprovements(_objCharacter,
+                                Improvement.ImprovementSource.Tradition,
+                                InternalId, _nodBonus,
+                                strFriendlyName: CurrentDisplayNameShort))
+                        {
+                            return false;
+                        }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                        {
+                            _strExtra = strSelectedValue;
+                        }
+                    }
+                    finally
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                     }
-
-                    ImprovementManager.ForcedValue = strOldFocedValue;
-                    ImprovementManager.SelectedValue = strOldSelectedValue;
                 }
 
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
@@ -271,25 +277,31 @@ namespace Chummer.Backend.Uniques
                 _nodBonus = xmlTraditionNode["bonus"];
                 if (_nodBonus != null)
                 {
-                    string strOldFocedValue = ImprovementManager.ForcedValue;
-                    string strOldSelectedValue = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = strForcedValue;
-                    if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
-                            Improvement.ImprovementSource.Tradition,
-                            InternalId, _nodBonus,
-                            strFriendlyName: await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(_objCharacter);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    try
                     {
-                        ImprovementManager.ForcedValue = strOldFocedValue;
-                        return false;
-                    }
+                        ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
+                        if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.Tradition,
+                                InternalId, _nodBonus,
+                                strFriendlyName: await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                token: token).ConfigureAwait(false))
+                        {
+                            return false;
+                        }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                        {
+                            _strExtra = strSelectedValue;
+                        }
+                    }
+                    finally
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, _objCharacter);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, _objCharacter);
                     }
-
-                    ImprovementManager.ForcedValue = strOldFocedValue;
-                    ImprovementManager.SelectedValue = strOldSelectedValue;
                 }
 
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))

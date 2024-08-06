@@ -7765,7 +7765,7 @@ namespace Chummer
                                                             objQuality.Bonus = objNode["bonus"];
                                                             if (objQuality.Bonus != null)
                                                             {
-                                                                ImprovementManager.ForcedValue = objQuality.Extra;
+                                                                ImprovementManager.SetForcedValue(objQuality.Extra, this);
                                                                 if (blnSync)
                                                                     // ReSharper disable once MethodHasAsyncOverload
                                                                     ImprovementManager.CreateImprovements(this,
@@ -7781,10 +7781,11 @@ namespace Chummer
                                                                                 .GetCurrentDisplayNameShortAsync(token)
                                                                                 .ConfigureAwait(false), token: token)
                                                                         .ConfigureAwait(false);
-                                                                if (!string.IsNullOrEmpty(
-                                                                        ImprovementManager.SelectedValue))
+                                                                string strSelectedValue =
+                                                                    ImprovementManager.GetSelectedValue(this);
+                                                                if (!string.IsNullOrEmpty(strSelectedValue))
                                                                 {
-                                                                    objQuality.Extra = ImprovementManager.SelectedValue;
+                                                                    objQuality.Extra = strSelectedValue;
                                                                 }
                                                             }
 
@@ -7807,7 +7808,7 @@ namespace Chummer
 
                                                                 if (blnDoFirstLevel)
                                                                 {
-                                                                    ImprovementManager.ForcedValue = objQuality.Extra;
+                                                                    ImprovementManager.SetForcedValue(objQuality.Extra, this);
                                                                     if (blnSync)
                                                                         // ReSharper disable once MethodHasAsyncOverload
                                                                         ImprovementManager.CreateImprovements(this,
@@ -7828,11 +7829,11 @@ namespace Chummer
                                                                                       .ConfigureAwait(false),
                                                                                   token: token)
                                                                               .ConfigureAwait(false);
-                                                                    if (!string.IsNullOrEmpty(ImprovementManager
-                                                                            .SelectedValue))
+                                                                    string strSelectedValue =
+                                                                        ImprovementManager.GetSelectedValue(this);
+                                                                    if (!string.IsNullOrEmpty(strSelectedValue))
                                                                     {
-                                                                        objQuality.Extra
-                                                                            = ImprovementManager.SelectedValue;
+                                                                        objQuality.Extra = strSelectedValue;
                                                                     }
                                                                 }
                                                             }
@@ -7846,7 +7847,7 @@ namespace Chummer
                                                         objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
                                                         if (objQuality.NaturalWeaponsNode != null)
                                                         {
-                                                            ImprovementManager.ForcedValue = objQuality.Extra;
+                                                            ImprovementManager.SetForcedValue(objQuality.Extra, this);
                                                             if (blnSync)
                                                                 // ReSharper disable once MethodHasAsyncOverload
                                                                 ImprovementManager.CreateImprovements(this,
@@ -7863,9 +7864,11 @@ namespace Chummer
                                                                               .GetCurrentDisplayNameShortAsync(token)
                                                                               .ConfigureAwait(false), token: token)
                                                                     .ConfigureAwait(false);
-                                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                            string strSelectedValue =
+                                                                ImprovementManager.GetSelectedValue(this);
+                                                            if (!string.IsNullOrEmpty(strSelectedValue))
                                                             {
-                                                                objQuality.Extra = ImprovementManager.SelectedValue;
+                                                                objQuality.Extra = strSelectedValue;
                                                             }
                                                         }
                                                     }
@@ -8753,7 +8756,7 @@ namespace Chummer
                                             if (!string.IsNullOrEmpty(objCyberware.Forced) &&
                                                 objCyberware.Forced != "Right" &&
                                                 objCyberware.Forced != "Left")
-                                                ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                ImprovementManager.SetForcedValue(objCyberware.Forced, this);
                                             if (objCyberware.Bonus != null)
                                             {
                                                 if (blnSync)
@@ -8775,8 +8778,10 @@ namespace Chummer
                                                                                     .ConfigureAwait(false),
                                                                                 token: token)
                                                                             .ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                string strSelectedValue =
+                                                    ImprovementManager.GetSelectedValue(this);
+                                                if (!string.IsNullOrEmpty(strSelectedValue))
+                                                    objCyberware.Extra = strSelectedValue;
                                             }
 
                                             if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
@@ -8800,9 +8805,10 @@ namespace Chummer
                                                                                     .ConfigureAwait(false),
                                                                                 token: token)
                                                                             .ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                string strSelectedValue = ImprovementManager.GetSelectedValue(this);
+                                                if (!string.IsNullOrEmpty(strSelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
-                                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    objCyberware.Extra = strSelectedValue;
                                             }
 
                                             if (!(blnSync ? objCyberware.IsModularCurrentlyEquipped : await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)))
@@ -8863,7 +8869,7 @@ namespace Chummer
                                                     if (!string.IsNullOrEmpty(objCyberware.Forced) &&
                                                         objCyberware.Forced != "Right" &&
                                                         objCyberware.Forced != "Left")
-                                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                        ImprovementManager.SetForcedValue(objCyberware.Forced, this);
                                                     if (objCyberware.Bonus != null)
                                                     {
                                                         ImprovementManager.CreateImprovements(this,
@@ -8871,8 +8877,10 @@ namespace Chummer
                                                             objCyberware.InternalId, objCyberware.Bonus,
                                                             objCyberware.Rating,
                                                             objCyberware.CurrentDisplayNameShort, token: token);
-                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                        string strSelectedValue =
+                                                            ImprovementManager.GetSelectedValue(this);
+                                                        if (!string.IsNullOrEmpty(strSelectedValue))
+                                                            objCyberware.Extra = strSelectedValue;
                                                     }
 
                                                     if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
@@ -8882,9 +8890,10 @@ namespace Chummer
                                                             objCyberware.InternalId, objCyberware.WirelessBonus,
                                                             objCyberware.Rating,
                                                             objCyberware.CurrentDisplayNameShort, token: token);
-                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                        string strSelectedValue = ImprovementManager.GetSelectedValue(this);
+                                                        if (!string.IsNullOrEmpty(strSelectedValue) &&
                                                             string.IsNullOrEmpty(objCyberware.Extra))
-                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                            objCyberware.Extra = strSelectedValue;
                                                     }
 
                                                     if (!objCyberware.IsModularCurrentlyEquipped)
@@ -8941,7 +8950,7 @@ namespace Chummer
                                                     if (!string.IsNullOrEmpty(objCyberware.Forced) &&
                                                         objCyberware.Forced != "Right" &&
                                                         objCyberware.Forced != "Left")
-                                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                        ImprovementManager.SetForcedValue(objCyberware.Forced, this);
                                                     if (objCyberware.Bonus != null)
                                                     {
                                                         await ImprovementManager.CreateImprovementsAsync(this,
@@ -8953,8 +8962,10 @@ namespace Chummer
                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
-                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                        string strSelectedValue =
+                                                            ImprovementManager.GetSelectedValue(this);
+                                                        if (!string.IsNullOrEmpty(strSelectedValue))
+                                                            objCyberware.Extra = strSelectedValue;
                                                     }
 
                                                     if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
@@ -8968,9 +8979,10 @@ namespace Chummer
                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
-                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                        string strSelectedValue = ImprovementManager.GetSelectedValue(this);
+                                                        if (!string.IsNullOrEmpty(strSelectedValue) &&
                                                             string.IsNullOrEmpty(objCyberware.Extra))
-                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                            objCyberware.Extra = strSelectedValue;
                                                     }
 
                                                     if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
@@ -9041,7 +9053,7 @@ namespace Chummer
                                                 if (!string.IsNullOrEmpty(objCyberware.Forced) &&
                                                     objCyberware.Forced != "Right" &&
                                                     objCyberware.Forced != "Left")
-                                                    ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                    ImprovementManager.SetForcedValue(objCyberware.Forced, this);
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.CreateImprovements(this,
@@ -9064,9 +9076,10 @@ namespace Chummer
                                                                                     .ConfigureAwait(false),
                                                                                 token: token)
                                                                             .ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                string strSelectedValue = ImprovementManager.GetSelectedValue(this);
+                                                if (!string.IsNullOrEmpty(strSelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
-                                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    objCyberware.Extra = strSelectedValue;
                                             }
 
                                             --intCyberwaresCount;
@@ -9483,7 +9496,7 @@ namespace Chummer
                                         objLivingPersonaQuality.Bonus = objNode["bonus"];
                                         if (objLivingPersonaQuality.Bonus != null)
                                         {
-                                            ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                                            ImprovementManager.SetForcedValue(objLivingPersonaQuality.Extra, this);
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ImprovementManager.CreateImprovements(this,
@@ -9500,9 +9513,11 @@ namespace Chummer
                                                         .Bonus, 1,
                                                     await objLivingPersonaQuality.GetCurrentDisplayNameShortAsync(token)
                                                         .ConfigureAwait(false), token: token).ConfigureAwait(false);
-                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            string strSelectedValue =
+                                                ImprovementManager.GetSelectedValue(this);
+                                            if (!string.IsNullOrEmpty(strSelectedValue))
                                             {
-                                                objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                                                objLivingPersonaQuality.Extra = strSelectedValue;
                                             }
                                         }
 
@@ -9525,7 +9540,7 @@ namespace Chummer
 
                                             if (blnDoFirstLevel)
                                             {
-                                                ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                                                ImprovementManager.SetForcedValue(objLivingPersonaQuality.Extra, this);
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.CreateImprovements(this,
@@ -9546,10 +9561,12 @@ namespace Chummer
                                                                                     .ConfigureAwait(false),
                                                                                 token: token)
                                                                             .ConfigureAwait(false);
-                                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                string strSelectedValue =
+                                                    ImprovementManager.GetSelectedValue(this);
+                                                if (!string.IsNullOrEmpty(strSelectedValue))
                                                 {
                                                     objLivingPersonaQuality.Extra =
-                                                        ImprovementManager.SelectedValue;
+                                                        strSelectedValue;
                                                 }
                                             }
                                         }
@@ -9564,7 +9581,7 @@ namespace Chummer
                                     objLivingPersonaQuality.NaturalWeaponsNode = objNode["naturalweapons"];
                                     if (objLivingPersonaQuality.NaturalWeaponsNode != null)
                                     {
-                                        ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                                        ImprovementManager.SetForcedValue(objLivingPersonaQuality.Extra, this);
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverload
                                             ImprovementManager.CreateImprovements(this,
@@ -9583,9 +9600,11 @@ namespace Chummer
                                                                               .GetCurrentDisplayNameShortAsync(token)
                                                                               .ConfigureAwait(false), token: token)
                                                                     .ConfigureAwait(false);
-                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        string strSelectedValue =
+                                            ImprovementManager.GetSelectedValue(this);
+                                        if (!string.IsNullOrEmpty(strSelectedValue))
                                         {
-                                            objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                                            objLivingPersonaQuality.Extra = strSelectedValue;
                                         }
                                     }
                                 }
@@ -39865,6 +39884,24 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _stkPushText.Value;
+            }
+        }
+
+        /// <summary>
+        /// Push a value that will be used instead of dialog instead in next <selecttext />
+        /// </summary>
+        public async Task<ConcurrentStack<string>> GetPushTextAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _stkPushText.Value;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

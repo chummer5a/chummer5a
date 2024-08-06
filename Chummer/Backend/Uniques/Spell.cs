@@ -103,7 +103,7 @@ namespace Chummer
 
                 objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
 
-                ImprovementManager.ForcedValue = strForcedValue;
+                ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
                 if (objXmlSpellNode["bonus"] != null)
                 {
                     if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell,
@@ -115,9 +115,10 @@ namespace Chummer
                         return;
                     }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtra = strSelectedValue;
                     }
                 }
 
@@ -191,7 +192,7 @@ namespace Chummer
 
                 objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
 
-                ImprovementManager.ForcedValue = strForcedValue;
+                ImprovementManager.SetForcedValue(strForcedValue, _objCharacter);
                 if (objXmlSpellNode["bonus"] != null)
                 {
                     if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter,
@@ -206,9 +207,10 @@ namespace Chummer
                         return;
                     }
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
                     {
-                        _strExtra = ImprovementManager.SelectedValue;
+                        _strExtra = strSelectedValue;
                     }
                 }
 

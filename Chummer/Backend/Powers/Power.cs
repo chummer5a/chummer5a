@@ -234,19 +234,24 @@ namespace Chummer
 
                 if (blnCreateImprovements && Bonus?.HasChildNodes == true)
                 {
-                    string strOldForce = ImprovementManager.ForcedValue;
-                    string strOldSelected = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = Extra;
-                    if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power,
-                                                               InternalId, Bonus, TotalRating, CurrentDisplayNameShort))
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(CharacterObject);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                    try
                     {
-                        ImprovementManager.ForcedValue = strOldForce;
-                        return false;
-                    }
+                        ImprovementManager.SetForcedValue(Extra, CharacterObject);
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power,
+                                InternalId, Bonus, TotalRating, CurrentDisplayNameShort))
+                        {
+                            return false;
+                        }
 
-                    Extra = ImprovementManager.SelectedValue;
-                    ImprovementManager.SelectedValue = strOldSelected;
-                    ImprovementManager.ForcedValue = strOldForce;
+                        Extra = ImprovementManager.GetSelectedValue(CharacterObject);
+                    }
+                    finally
+                    {
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, CharacterObject);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, CharacterObject);
+                    }
                 }
 
                 if (TotalMaximumLevels < Rating)
@@ -328,22 +333,28 @@ namespace Chummer
                 XmlNode nodBonus = await GetBonusAsync(token).ConfigureAwait(false);
                 if (blnCreateImprovements && nodBonus?.HasChildNodes == true)
                 {
-                    string strOldForce = ImprovementManager.ForcedValue;
-                    string strOldSelected = ImprovementManager.SelectedValue;
-                    ImprovementManager.ForcedValue = await GetExtraAsync(token).ConfigureAwait(false);
-                    if (!await ImprovementManager.CreateImprovementsAsync(CharacterObject,
-                                Improvement.ImprovementSource.Power,
-                                InternalId, nodBonus, await GetTotalRatingAsync(token).ConfigureAwait(false),
-                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                            .ConfigureAwait(false))
+                    string strOldForcedValue = ImprovementManager.GetForcedValue(CharacterObject);
+                    string strOldSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                    try
                     {
-                        ImprovementManager.ForcedValue = strOldForce;
-                        return false;
-                    }
+                        ImprovementManager.SetForcedValue(await GetExtraAsync(token).ConfigureAwait(false),
+                            CharacterObject);
+                        if (!await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                    Improvement.ImprovementSource.Power,
+                                    InternalId, nodBonus, await GetTotalRatingAsync(token).ConfigureAwait(false),
+                                    await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                                .ConfigureAwait(false))
+                        {
+                            return false;
+                        }
 
-                    await SetExtraAsync(ImprovementManager.SelectedValue, token).ConfigureAwait(false);
-                    ImprovementManager.SelectedValue = strOldSelected;
-                    ImprovementManager.ForcedValue = strOldForce;
+                        await SetExtraAsync(ImprovementManager.GetSelectedValue(CharacterObject), token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        ImprovementManager.SetSelectedValue(strOldSelectedValue, CharacterObject);
+                        ImprovementManager.SetForcedValue(strOldForcedValue, CharacterObject);
+                    }
                 }
 
                 int intTotalMaximumLevels = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
@@ -2758,7 +2769,7 @@ namespace Chummer
                                             InternalId);
                                         if (intTotalRating > 0)
                                         {
-                                            ImprovementManager.ForcedValue = Extra;
+                                            ImprovementManager.SetForcedValue(Extra, CharacterObject);
                                             ImprovementManager.CreateImprovements(CharacterObject,
                                                 Improvement.ImprovementSource.Power,
                                                 InternalId, Bonus, intTotalRating,
@@ -2927,7 +2938,7 @@ namespace Chummer
                                             InternalId, token).ConfigureAwait(false);
                                         if (intTotalRating > 0)
                                         {
-                                            ImprovementManager.ForcedValue = await GetExtraAsync(token).ConfigureAwait(false);
+                                            ImprovementManager.SetForcedValue(await GetExtraAsync(token).ConfigureAwait(false), CharacterObject);
                                             await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                 Improvement.ImprovementSource.Power,
                                                 InternalId, xmlBonus, intTotalRating,
