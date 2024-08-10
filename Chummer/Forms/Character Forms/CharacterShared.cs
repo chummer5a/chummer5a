@@ -11334,7 +11334,24 @@ namespace Chummer
 
             try
             {
-                await objRemovable.RemoveAsync(token: token).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                try
+                {
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await objRemovable.RemoveAsync(token: token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -11350,139 +11367,156 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
-                bool blnAddAgain;
-
-                do
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear
-                           = await ThreadSafeForm<SelectGear>.GetAsync(
-                               () => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token).ConfigureAwait(false))
+                    token.ThrowIfCancellationRequested();
+                    XmlDocument objXmlDocument =
+                        await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
+                    bool blnAddAgain;
+
+                    do
                     {
-                        if (await frmPickGear.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
-                            break;
-                        SkipUpdate = true;
-                        try
+                        using (ThreadSafeForm<SelectGear> frmPickGear
+                               = await ThreadSafeForm<SelectGear>.GetAsync(
+                                       () => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token)
+                                   .ConfigureAwait(false))
                         {
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            // Open the Gear XML file and locate the selected piece.
-                            XmlNode objXmlGear = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
-                                frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objGear = new Gear(CharacterObject);
-                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                false, token: token).ConfigureAwait(false);
-
-                            if (objGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-                            objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
-                                objGear.Cost = "0";
-
-                            if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                            if (await frmPickGear.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==
+                                DialogResult.Cancel)
+                                break;
+                            SkipUpdate = true;
+                            try
                             {
-                                decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
 
-                                // Multiply the cost if applicable.
-                                char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false))
-                                    .Suffix;
-                                switch (chrAvail)
+                                // Open the Gear XML file and locate the selected piece.
+                                XmlNode objXmlGear = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                    frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objGear = new Gear(CharacterObject);
+                                await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    false, token: token).ConfigureAwait(false);
+
+                                if (objGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                                objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
+                                    objGear.Cost = "0";
+
+                                if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                                 {
-                                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                        break;
+                                    decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
 
-                                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                        break;
-                                }
-
-                                // Check the item's Cost and make sure the character can afford it.
-                                if (!frmPickGear.MyForm.FreeCost)
-                                {
-                                    if (decCost > CharacterObject.Nuyen)
+                                    // Multiply the cost if applicable.
+                                    char chrAvail =
+                                        (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false))
+                                        .Suffix;
+                                    switch (chrAvail)
                                     {
-                                        await Program.ShowScrollableMessageBoxAsync(this,
-                                            await LanguageManager.GetStringAsync(
-                                                "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
-                                            await LanguageManager.GetStringAsync(
-                                                "MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                                        continue;
+                                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                            break;
+
+                                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                            break;
                                     }
 
-                                    // Create the Expense Log Entry.
-                                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                    objExpense.Create(decCost * -1,
-                                        await LanguageManager.GetStringAsync(
-                                            "String_ExpensePurchaseVehicleGear", token: token).ConfigureAwait(false) +
-                                        await LanguageManager.GetStringAsync("String_Space", token: token)
-                                            .ConfigureAwait(false) +
-                                        await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                        ExpenseType.Nuyen,
-                                        DateTime.Now);
-                                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                        .ConfigureAwait(false);
-                                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+                                    // Check the item's Cost and make sure the character can afford it.
+                                    if (!frmPickGear.MyForm.FreeCost)
+                                    {
+                                        if (decCost > CharacterObject.Nuyen)
+                                        {
+                                            await Program.ShowScrollableMessageBoxAsync(this,
+                                                await LanguageManager.GetStringAsync(
+                                                    "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                                await LanguageManager.GetStringAsync(
+                                                    "MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                            continue;
+                                        }
 
-                                    ExpenseUndo objUndo = new ExpenseUndo();
-                                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
-                                    objExpense.Undo = objUndo;
+                                        // Create the Expense Log Entry.
+                                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                        objExpense.Create(decCost * -1,
+                                            await LanguageManager.GetStringAsync(
+                                                    "String_ExpensePurchaseVehicleGear", token: token)
+                                                .ConfigureAwait(false) +
+                                            await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                .ConfigureAwait(false) +
+                                            await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                            ExpenseType.Nuyen,
+                                            DateTime.Now);
+                                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                            .ConfigureAwait(false);
+                                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                                        ExpenseUndo objUndo = new ExpenseUndo();
+                                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
+                                        objExpense.Undo = objUndo;
+                                    }
                                 }
-                            }
 
-                            Gear objExistingGear = null;
-                            // If this is Ammunition, see if the character already has it on them.
-                            if ((objGear.Category == "Ammunition" ||
-                                 !string.IsNullOrEmpty(objGear.AmmoForWeaponType)) && frmPickGear.MyForm.Stack)
-                            {
-                                objExistingGear =
-                                    objSelectedVehicle.GearChildren.FirstOrDefault(x =>
-                                        objGear.IsIdenticalToOtherGear(x));
-                            }
-
-                            if (objExistingGear != null)
-                            {
-                                // A match was found, so increase the quantity instead.
-                                objExistingGear.Quantity += objGear.Quantity;
-                            }
-                            else
-                            {
-                                // Add the Gear to the Vehicle.
-                                if (objLocation != null)
-                                    await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                                await objSelectedVehicle.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-                                await objGear.SetParentAsync(objSelectedVehicle, token).ConfigureAwait(false);
-
-                                foreach (Weapon objWeapon in lstWeapons)
+                                Gear objExistingGear = null;
+                                // If this is Ammunition, see if the character already has it on them.
+                                if ((objGear.Category == "Ammunition" ||
+                                     !string.IsNullOrEmpty(objGear.AmmoForWeaponType)) && frmPickGear.MyForm.Stack)
                                 {
+                                    objExistingGear =
+                                        objSelectedVehicle.GearChildren.FirstOrDefault(x =>
+                                            objGear.IsIdenticalToOtherGear(x));
+                                }
+
+                                if (objExistingGear != null)
+                                {
+                                    // A match was found, so increase the quantity instead.
+                                    objExistingGear.Quantity += objGear.Quantity;
+                                }
+                                else
+                                {
+                                    // Add the Gear to the Vehicle.
                                     if (objLocation != null)
                                         await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                                    objWeapon.ParentVehicle = objSelectedVehicle;
-                                    await objSelectedVehicle.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                    await objSelectedVehicle.GearChildren.AddAsync(objGear, token)
+                                        .ConfigureAwait(false);
+                                    await objGear.SetParentAsync(objSelectedVehicle, token).ConfigureAwait(false);
+
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                    {
+                                        if (objLocation != null)
+                                            await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                                        objWeapon.ParentVehicle = objSelectedVehicle;
+                                        await objSelectedVehicle.Weapons.AddAsync(objWeapon, token)
+                                            .ConfigureAwait(false);
+                                    }
                                 }
                             }
+                            finally
+                            {
+                                SkipUpdate = false;
+                            }
                         }
-                        finally
-                        {
-                            SkipUpdate = false;
-                        }
-                    }
 
-                    await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
-                } while (blnAddAgain);
+                        await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {
