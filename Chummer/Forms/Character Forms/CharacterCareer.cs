@@ -18079,7 +18079,7 @@ namespace Chummer
                                            .ConfigureAwait(false) is Weapon
                             objWeapon))
                         return;
-                    await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear, GenericToken)
+                    await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treVehicles, GenericToken)
                                    .ConfigureAwait(false);
 
                     await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);

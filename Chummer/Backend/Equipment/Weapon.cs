@@ -10090,18 +10090,53 @@ namespace Chummer.Backend.Equipment
                 }
 
                 await SetAmmoLoaded(objSelectedAmmo, token).ConfigureAwait(false);
-                if (objCurrentlyLoadedAmmo != objSelectedAmmo && objCurrentlyLoadedAmmo != null)
+                if (objCurrentlyLoadedAmmo != objSelectedAmmo)
                 {
-                    string strId = objCurrentlyLoadedAmmo.InternalId;
-                    string strText = await objCurrentlyLoadedAmmo.GetCurrentDisplayNameAsync(token)
-                                                                 .ConfigureAwait(false);
-                    await treGearView.DoThreadSafeAsync(x =>
+                    if (objCurrentlyLoadedAmmo != null)
                     {
-                        // Refresh the Gear tree.
-                        TreeNode objSelectedNode = x.FindNode(strId);
-                        if (objSelectedNode != null)
-                            objSelectedNode.Text = strText;
-                    }, token: token).ConfigureAwait(false);
+                        string strId = objCurrentlyLoadedAmmo.InternalId;
+                        string strText = await objCurrentlyLoadedAmmo.GetCurrentDisplayNameAsync(token)
+                            .ConfigureAwait(false);
+                        if (objSelectedAmmo != null)
+                        {
+                            string strId2 = objSelectedAmmo.InternalId;
+                            string strText2 = await objSelectedAmmo.GetCurrentDisplayNameAsync(token)
+                                .ConfigureAwait(false);
+                            await treGearView.DoThreadSafeAsync(x =>
+                            {
+                                // Refresh the Gear tree.
+                                TreeNode objSelectedNode = x.FindNode(strId);
+                                if (objSelectedNode != null)
+                                    objSelectedNode.Text = strText;
+                                objSelectedNode = x.FindNode(strId2);
+                                if (objSelectedNode != null)
+                                    objSelectedNode.Text = strText2;
+                            }, token: token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await treGearView.DoThreadSafeAsync(x =>
+                            {
+                                // Refresh the Gear tree.
+                                TreeNode objSelectedNode = x.FindNode(strId);
+                                if (objSelectedNode != null)
+                                    objSelectedNode.Text = strText;
+                            }, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        string strId = objSelectedAmmo.InternalId;
+                        string strText = await objSelectedAmmo.GetCurrentDisplayNameAsync(token)
+                            .ConfigureAwait(false);
+                        await treGearView.DoThreadSafeAsync(x =>
+                        {
+                            // Refresh the Gear tree.
+                            TreeNode objSelectedNode = x.FindNode(strId);
+                            if (objSelectedNode != null)
+                                objSelectedNode.Text = strText;
+                        }, token: token).ConfigureAwait(false);
+                    }
                 }
 
                 GetClip(_intActiveAmmoSlot).Ammo
