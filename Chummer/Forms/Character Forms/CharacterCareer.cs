@@ -6643,96 +6643,118 @@ namespace Chummer
 
         private async Task<bool> PickWeapon(object destObject, CancellationToken token = default)
         {
-            using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>
-                                                                      .GetAsync(() => new SelectWeapon(CharacterObject),
-                                                                          token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
-                // Make sure the dialogue window was not canceled.
-                if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
-                    return false;
-
-                // Open the Weapons XML file and locate the selected piece.
-                XmlDocument objXmlDocument
-                    = await CharacterObject.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
-
-                XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
-
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-                Weapon objWeapon = new Weapon(CharacterObject);
-                await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
-                objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
-
-                // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickWeapon.MyForm.FreeCost)
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
                 {
-                    decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
-                    // Apply a markup if applicable.
-                    if (frmPickWeapon.MyForm.Markup != 0)
+                    token.ThrowIfCancellationRequested();
+                    using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>
+                               .GetAsync(() => new SelectWeapon(CharacterObject),
+                                   token).ConfigureAwait(false))
                     {
-                        decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
-                    }
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==
+                            DialogResult.Cancel)
+                            return false;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
+                        // Open the Weapons XML file and locate the selected piece.
+                        XmlDocument objXmlDocument
+                            = await CharacterObject.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
 
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
+                        XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                            frmPickWeapon.MyForm.SelectedWeapon);
 
-                    if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
-                    {
-                        await Program.ShowScrollableMessageBoxAsync(
-                            this,
-                            await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
-                                .ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
-                                .ConfigureAwait(false), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                        Weapon objWeapon = new Weapon(CharacterObject);
+                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
+                        objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickWeapon.MyForm.FreeCost)
+                        {
+                            decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
+                            // Apply a markup if applicable.
+                            if (frmPickWeapon.MyForm.Markup != 0)
+                            {
+                                decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
+                            }
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false))
+                                .Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
+                                        .ConfigureAwait(false), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                return frmPickWeapon.MyForm.AddAgain;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon", token: token)
+                                    .ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                    .ConfigureAwait(false)
+                                + await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                ExpenseType.Nuyen,
+                                DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddWeapon, objWeapon.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        if (destObject is Location objLocation)
+                        {
+                            objWeapon.Location = objLocation;
+                            foreach (Weapon objExtraWeapon in lstWeapons)
+                            {
+                                objExtraWeapon.Location = objLocation;
+                            }
+                        }
+
+                        foreach (Weapon objExtraWeapon in lstWeapons)
+                        {
+                            await CharacterObject.Weapons.AddAsync(objExtraWeapon, token).ConfigureAwait(false);
+                        }
+
+                        await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
                         return frmPickWeapon.MyForm.AddAgain;
                     }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1,
-                                      await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon", token: token)
-                                                           .ConfigureAwait(false)
-                                      + await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                             .ConfigureAwait(false)
-                                      + await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                      ExpenseType.Nuyen,
-                                      DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                         .ConfigureAwait(false);
-                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddWeapon, objWeapon.InternalId);
-                    objExpense.Undo = objUndo;
                 }
-
-                if (destObject is Location objLocation)
+                finally
                 {
-                    objWeapon.Location = objLocation;
-                    foreach (Weapon objExtraWeapon in lstWeapons)
-                    {
-                        objExtraWeapon.Location = objLocation;
-                    }
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-
-                foreach (Weapon objExtraWeapon in lstWeapons)
-                {
-                    await CharacterObject.Weapons.AddAsync(objExtraWeapon, token).ConfigureAwait(false);
-                }
-
-                await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-
-                return frmPickWeapon.MyForm.AddAgain;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10781,98 +10803,121 @@ namespace Chummer
 
         private async Task<bool> PickArmor(Location objLocation = null, CancellationToken token = default)
         {
-            using (ThreadSafeForm<SelectArmor> frmPickArmor = await ThreadSafeForm<SelectArmor>
-                                                                    .GetAsync(() => new SelectArmor(CharacterObject),
-                                                                              token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
-                // Make sure the dialogue window was not canceled.
-                if (await frmPickArmor.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
-                    return false;
-
-                // Open the Armor XML file and locate the selected piece.
-                XmlDocument objXmlDocument
-                    = await CharacterObject.LoadDataAsync("armor.xml", token: token).ConfigureAwait(false);
-
-                XmlNode objXmlArmor
-                        = objXmlDocument.TryGetNodeByNameOrId("/chummer/armors/armor", frmPickArmor.MyForm.SelectedArmor);
-
-                Armor objArmor = new Armor(CharacterObject);
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-                await objArmor.CreateAsync(objXmlArmor, frmPickArmor.MyForm.Rating, lstWeapons, token: token).ConfigureAwait(false);
-                objArmor.DiscountCost = frmPickArmor.MyForm.BlackMarketDiscount;
-
-                if (objArmor.InternalId.IsEmptyGuid())
-                    return frmPickArmor.MyForm.AddAgain;
-
-                // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickArmor.MyForm.FreeCost)
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
                 {
-                    decimal decCost = await objArmor.GetTotalCostAsync(token).ConfigureAwait(false);
-                    // Apply a markup if applicable.
-                    if (frmPickArmor.MyForm.Markup != 0)
+                    token.ThrowIfCancellationRequested();
+                    using (ThreadSafeForm<SelectArmor> frmPickArmor = await ThreadSafeForm<SelectArmor>
+                               .GetAsync(() => new SelectArmor(CharacterObject),
+                                   token).ConfigureAwait(false))
                     {
-                        decCost *= 1 + frmPickArmor.MyForm.Markup / 100.0m;
-                    }
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickArmor.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==
+                            DialogResult.Cancel)
+                            return false;
 
-                    // Multiply the cost if applicable.
-                    char chrAvail = (await objArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
+                        // Open the Armor XML file and locate the selected piece.
+                        XmlDocument objXmlDocument
+                            = await CharacterObject.LoadDataAsync("armor.xml", token: token).ConfigureAwait(false);
 
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
+                        XmlNode objXmlArmor
+                            = objXmlDocument.TryGetNodeByNameOrId("/chummer/armors/armor",
+                                frmPickArmor.MyForm.SelectedArmor);
 
-                    if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
-                    {
-                        await Program.ShowScrollableMessageBoxAsync(
-                            this,
-                            await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
-                                .ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
-                                .ConfigureAwait(false), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                        // Remove the Improvements created by the Armor.
-                        await ImprovementManager
-                              .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Armor,
-                                                       objArmor.InternalId, token).ConfigureAwait(false);
+                        Armor objArmor = new Armor(CharacterObject);
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                        await objArmor.CreateAsync(objXmlArmor, frmPickArmor.MyForm.Rating, lstWeapons, token: token)
+                            .ConfigureAwait(false);
+                        objArmor.DiscountCost = frmPickArmor.MyForm.BlackMarketDiscount;
+
+                        if (objArmor.InternalId.IsEmptyGuid())
+                            return frmPickArmor.MyForm.AddAgain;
+
+                        // Check the item's Cost and make sure the character can afford it.
+                        if (!frmPickArmor.MyForm.FreeCost)
+                        {
+                            decimal decCost = await objArmor.GetTotalCostAsync(token).ConfigureAwait(false);
+                            // Apply a markup if applicable.
+                            if (frmPickArmor.MyForm.Markup != 0)
+                            {
+                                decCost *= 1 + frmPickArmor.MyForm.Markup / 100.0m;
+                            }
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false))
+                                .Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
+                                        .ConfigureAwait(false), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                // Remove the Improvements created by the Armor.
+                                await ImprovementManager
+                                    .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Armor,
+                                        objArmor.InternalId, token).ConfigureAwait(false);
+
+                                return frmPickArmor.MyForm.AddAgain;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor", token: token)
+                                    .ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                    .ConfigureAwait(false)
+                                + await objArmor.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                ExpenseType.Nuyen, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddArmor, objArmor.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        // objArmor.Location = objLocation;
+                        if (objLocation != null)
+                            await objLocation.Children.AddAsync(objArmor, token).ConfigureAwait(false);
+                        await CharacterObject.Armor.AddAsync(objArmor, token).ConfigureAwait(false);
+
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                        }
 
                         return frmPickArmor.MyForm.AddAgain;
                     }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1,
-                                      await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor", token: token)
-                                                           .ConfigureAwait(false)
-                                      + await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                             .ConfigureAwait(false)
-                                      + await objArmor.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                      ExpenseType.Nuyen, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                         .ConfigureAwait(false);
-                    await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddArmor, objArmor.InternalId);
-                    objExpense.Undo = objUndo;
                 }
-
-                // objArmor.Location = objLocation;
-                if (objLocation != null)
-                    await objLocation.Children.AddAsync(objArmor, token).ConfigureAwait(false);
-                await CharacterObject.Armor.AddAsync(objArmor, token).ConfigureAwait(false);
-
-                foreach (Weapon objWeapon in lstWeapons)
+                finally
                 {
-                    await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-
-                return frmPickArmor.MyForm.AddAgain;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16867,7 +16912,7 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    blnAddAgain = await PickGear(null, null, null, string.Empty, objWeapon, GenericToken)
+                    blnAddAgain = await PickGear(null, objAmmoForWeapon: objWeapon, token: GenericToken)
                         .ConfigureAwait(false);
                 } while (blnAddAgain);
             }
@@ -23548,421 +23593,450 @@ namespace Chummer
                                                     CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                using (ThreadSafeForm<SelectCyberware> frmPickCyberware
-                       = await ThreadSafeForm<SelectCyberware>.GetAsync(
-                               () => new SelectCyberware(CharacterObject, objSource,
-                                   objSelectedCyberware), token)
-                           .ConfigureAwait(false))
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
                 {
-                    List<Improvement> lstUsedImprovements;
-                    decimal decMultiplier = 1.0m;
-                    switch (objSource)
+                    token.ThrowIfCancellationRequested();
+                    using (ThreadSafeForm<SelectCyberware> frmPickCyberware
+                           = await ThreadSafeForm<SelectCyberware>.GetAsync(
+                                   () => new SelectCyberware(CharacterObject, objSource,
+                                       objSelectedCyberware), token)
+                               .ConfigureAwait(false))
                     {
-                        // Apply the character's Cyberware Essence cost multiplier if applicable.
-                        case Improvement.ImprovementSource.Cyberware:
+                        List<Improvement> lstUsedImprovements;
+                        decimal decMultiplier = 1.0m;
+                        switch (objSource)
                         {
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject, Improvement.ImprovementType.CyberwareEssCost,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
+                            // Apply the character's Cyberware Essence cost multiplier if applicable.
+                            case Improvement.ImprovementSource.Cyberware:
                             {
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject, Improvement.ImprovementType.CyberwareEssCost,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
-                            }
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.CyberwareTotalEssMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
 
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
+                                        token: token).ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                         CharacterObject,
-                                        Improvement.ImprovementType.CyberwareTotalEssMultiplier,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                        Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive,
+                                        token: token).ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                break;
                             }
-
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                    CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
-                                    token: token).ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
+                            // Apply the character's Bioware Essence cost multiplier if applicable.
+                            case Improvement.ImprovementSource.Bioware:
                             {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject, Improvement.ImprovementType.BiowareEssCost,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
-                            }
-
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                    CharacterObject,
-                                    Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive,
-                                    token: token).ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.BiowareTotalEssMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
-                            }
-
-                            break;
-                        }
-                        // Apply the character's Bioware Essence cost multiplier if applicable.
-                        case Improvement.ImprovementSource.Bioware:
-                        {
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject, Improvement.ImprovementType.BiowareEssCost,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.BiowareEssCostNonRetroactive,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1 - objImprovement.Value / 100;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
-                            }
-
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                         CharacterObject,
-                                        Improvement.ImprovementType.BiowareTotalEssMultiplier,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                        Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive,
+                                        token: token).ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
-                            }
-
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject,
-                                        Improvement.ImprovementType.BiowareEssCostNonRetroactive,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                // Apply the character's Basic Bioware Essence cost multiplier if applicable.
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.BasicBiowareEssCost, token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier -= 1 - objImprovement.Value / 100;
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.BasicBiowareESSMultiplier = decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
-                            }
-
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                    CharacterObject,
-                                    Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive,
-                                    token: token).ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                // Genetech Cost multiplier.
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.GenetechCostMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier *= objImprovement.Value / 100.0m;
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.GenetechCostMultiplier = decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
-                            }
-
-                            // Apply the character's Basic Bioware Essence cost multiplier if applicable.
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject,
-                                        Improvement.ImprovementType.BasicBiowareEssCost, token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
+                                // Apply the character's Genetech Essence cost multiplier if applicable.
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.GenetechEssMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
                                 {
-                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.GenetechEssMultiplier = decMultiplier;
                                 }
 
-                                frmPickCyberware.MyForm.BasicBiowareESSMultiplier = decMultiplier;
-                            }
-
-                            // Genetech Cost multiplier.
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject,
-                                        Improvement.ImprovementType.GenetechCostMultiplier,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
-                                {
-                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                                }
-
-                                frmPickCyberware.MyForm.GenetechCostMultiplier = decMultiplier;
-                            }
-
-                            // Apply the character's Genetech Essence cost multiplier if applicable.
-                            lstUsedImprovements
-                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject,
-                                        Improvement.ImprovementType.GenetechEssMultiplier,
-                                        token: token)
-                                    .ConfigureAwait(false);
-                            if (lstUsedImprovements.Count != 0)
-                            {
-                                decMultiplier = 1.0m;
-                                foreach (Improvement objImprovement in lstUsedImprovements)
-                                {
-                                    decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                                }
-
-                                frmPickCyberware.MyForm.GenetechEssMultiplier = decMultiplier;
-                            }
-
-                            break;
-                        }
-                    }
-
-                    Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>(6);
-                    Dictionary<string, int> dicHasMounts = new Dictionary<string, int>(6);
-                    if (objSelectedCyberware != null)
-                    {
-                        frmPickCyberware.MyForm.ForcedGrade =
-                            await objSelectedCyberware.GetGradeAsync(token).ConfigureAwait(false);
-                        frmPickCyberware.MyForm.LockGrade();
-                        frmPickCyberware.MyForm.Subsystems = objSelectedCyberware.AllowedSubsystems;
-                        // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
-                        if (!objSelectedCyberware.Capacity.Contains('[') ||
-                            objSelectedCyberware.Capacity.Contains("/["))
-                        {
-                            frmPickCyberware.MyForm.MaximumCapacity = await objSelectedCyberware
-                                .GetCapacityRemainingAsync(token).ConfigureAwait(false);
-
-                            // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                            if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) &&
-                                frmPickCyberware.MyForm.MaximumCapacity < 0)
-                            {
-                                await Program.ShowScrollableMessageBoxAsync(
-                                    this,
-                                    await LanguageManager.GetStringAsync("Message_CapacityReached", token: token)
-                                        .ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token)
-                                        .ConfigureAwait(false), MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                                return false;
+                                break;
                             }
                         }
 
-                        string strLoopHasModularMount = await objSelectedCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
-                        if (!string.IsNullOrEmpty(strLoopHasModularMount)
-                            && !dicHasMounts.ContainsKey(strLoopHasModularMount))
-                            dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
-                        string strSelectedLocation = await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
-                        foreach (Cyberware objLoopCyberware in await objSelectedCyberware.Children.DeepWhereAsync(
-                                         x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
-                                     .ConfigureAwait(false))
+                        Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>(6);
+                        Dictionary<string, int> dicHasMounts = new Dictionary<string, int>(6);
+                        if (objSelectedCyberware != null)
                         {
-                            string strLoopLocation = await objLoopCyberware.GetLocationAsync(token).ConfigureAwait(false);
-                            foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
-                                         ',', StringSplitOptions.RemoveEmptyEntries))
+                            frmPickCyberware.MyForm.ForcedGrade =
+                                await objSelectedCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                            frmPickCyberware.MyForm.LockGrade();
+                            frmPickCyberware.MyForm.Subsystems = objSelectedCyberware.AllowedSubsystems;
+                            // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
+                            if (!objSelectedCyberware.Capacity.Contains('[') ||
+                                objSelectedCyberware.Capacity.Contains("/["))
                             {
-                                string strKey = strLoop;
-                                if (strSelectedLocation != strLoopLocation)
-                                    strKey += strLoopLocation;
-                                if (!dicDisallowedMounts.ContainsKey(strKey))
-                                    dicDisallowedMounts.Add(strKey, int.MaxValue);
+                                frmPickCyberware.MyForm.MaximumCapacity = await objSelectedCyberware
+                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false);
+
+                                // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
+                                if (await CharacterObjectSettings.GetEnforceCapacityAsync(token)
+                                        .ConfigureAwait(false) &&
+                                    frmPickCyberware.MyForm.MaximumCapacity < 0)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_CapacityReached", token: token)
+                                            .ConfigureAwait(false),
+                                        await LanguageManager
+                                            .GetStringAsync("MessageTitle_CapacityReached", token: token)
+                                            .ConfigureAwait(false), MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                    return false;
+                                }
                             }
 
-                            strLoopHasModularMount = strSelectedLocation != strLoopLocation
-                                ? await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) + strLoopLocation
-                                : await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                            string strLoopHasModularMount = await objSelectedCyberware.GetHasModularMountAsync(token)
+                                .ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strLoopHasModularMount)
                                 && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                                 dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
-                        }
-                    }
-                    else
-                    {
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                   out HashSet<string> setLoopDisallowedMounts))
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                   out HashSet<string> setLoopHasModularMount))
-                        {
-                            await CharacterObject.Cyberware.ForEachAsync(async objLoopCyberware =>
+                            string strSelectedLocation =
+                                await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
+                            foreach (Cyberware objLoopCyberware in await objSelectedCyberware.Children.DeepWhereAsync(
+                                             x => x.Children,
+                                             async x => string.IsNullOrEmpty(await x
+                                                 .GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
+                                         .ConfigureAwait(false))
                             {
-                                setLoopDisallowedMounts.Clear();
-                                setLoopDisallowedMounts.AddRange(
-                                    objLoopCyberware.BlocksMounts.SplitNoAlloc(',',
-                                        StringSplitOptions.RemoveEmptyEntries));
-                                setLoopHasModularMount.Clear();
-                                string strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
-                                    setLoopHasModularMount.Add(strLoopHasModularMount);
-                                foreach (Cyberware objInnerLoopCyberware in await objLoopCyberware.Children
-                                             .DeepWhereAsync(
-                                                 x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
-                                                 token).ConfigureAwait(false))
+                                string strLoopLocation =
+                                    await objLoopCyberware.GetLocationAsync(token).ConfigureAwait(false);
+                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
                                 {
-                                    foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
-                                                 ',', StringSplitOptions.RemoveEmptyEntries))
-                                        setLoopDisallowedMounts.Add(strLoop);
-                                    strLoopHasModularMount = await objInnerLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                    string strKey = strLoop;
+                                    if (strSelectedLocation != strLoopLocation)
+                                        strKey += strLoopLocation;
+                                    if (!dicDisallowedMounts.ContainsKey(strKey))
+                                        dicDisallowedMounts.Add(strKey, int.MaxValue);
+                                }
+
+                                strLoopHasModularMount = strSelectedLocation != strLoopLocation
+                                    ? await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) +
+                                      strLoopLocation
+                                    : await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                    && !dicHasMounts.ContainsKey(strLoopHasModularMount))
+                                    dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
+                            }
+                        }
+                        else
+                        {
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setLoopDisallowedMounts))
+                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setLoopHasModularMount))
+                            {
+                                await CharacterObject.Cyberware.ForEachAsync(async objLoopCyberware =>
+                                {
+                                    setLoopDisallowedMounts.Clear();
+                                    setLoopDisallowedMounts.AddRange(
+                                        objLoopCyberware.BlocksMounts.SplitNoAlloc(',',
+                                            StringSplitOptions.RemoveEmptyEntries));
+                                    setLoopHasModularMount.Clear();
+                                    string strLoopHasModularMount = await objLoopCyberware
+                                        .GetHasModularMountAsync(token).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setLoopHasModularMount.Add(strLoopHasModularMount);
-                                }
+                                    foreach (Cyberware objInnerLoopCyberware in await objLoopCyberware.Children
+                                                 .DeepWhereAsync(
+                                                     x => x.Children,
+                                                     async x => string.IsNullOrEmpty(
+                                                         await x.GetPlugsIntoModularMountAsync(token)
+                                                             .ConfigureAwait(false)),
+                                                     token).ConfigureAwait(false))
+                                    {
+                                        foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                                            setLoopDisallowedMounts.Add(strLoop);
+                                        strLoopHasModularMount = await objInnerLoopCyberware
+                                            .GetHasModularMountAsync(token).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                            setLoopHasModularMount.Add(strLoopHasModularMount);
+                                    }
 
-                                foreach (string strLoop in setLoopDisallowedMounts)
-                                {
-                                    string strKey = strLoop + objLoopCyberware.Location;
-                                    if (!dicDisallowedMounts.ContainsKey(strKey))
-                                        dicDisallowedMounts.Add(strKey,
-                                            await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false));
-                                    else
-                                        dicDisallowedMounts[strKey] += await objLoopCyberware
-                                            .GetLimbSlotCountAsync(token).ConfigureAwait(false);
-                                }
+                                    foreach (string strLoop in setLoopDisallowedMounts)
+                                    {
+                                        string strKey = strLoop + objLoopCyberware.Location;
+                                        if (!dicDisallowedMounts.ContainsKey(strKey))
+                                            dicDisallowedMounts.Add(strKey,
+                                                await objLoopCyberware.GetLimbSlotCountAsync(token)
+                                                    .ConfigureAwait(false));
+                                        else
+                                            dicDisallowedMounts[strKey] += await objLoopCyberware
+                                                .GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                    }
 
-                                foreach (string strLoop in setLoopHasModularMount)
-                                {
-                                    string strKey = strLoop + objLoopCyberware.Location;
-                                    if (!dicHasMounts.ContainsKey(strKey))
-                                        dicHasMounts.Add(strKey,
-                                            await objLoopCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false));
-                                    else
-                                        dicHasMounts[strKey] += await objLoopCyberware.GetLimbSlotCountAsync(token)
-                                            .ConfigureAwait(false);
-                                }
-                            }, token).ConfigureAwait(false);
+                                    foreach (string strLoop in setLoopHasModularMount)
+                                    {
+                                        string strKey = strLoop + objLoopCyberware.Location;
+                                        if (!dicHasMounts.ContainsKey(strKey))
+                                            dicHasMounts.Add(strKey,
+                                                await objLoopCyberware.GetLimbSlotCountAsync(token)
+                                                    .ConfigureAwait(false));
+                                        else
+                                            dicHasMounts[strKey] += await objLoopCyberware.GetLimbSlotCountAsync(token)
+                                                .ConfigureAwait(false);
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
                         }
-                    }
 
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdDisallowedMounts))
-                    {
-                        foreach (KeyValuePair<string, int> kvpLoop in dicDisallowedMounts)
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdDisallowedMounts))
                         {
-                            string strKey = kvpLoop.Key;
-                            if (strKey.EndsWith("Right", StringComparison.Ordinal))
-                                continue;
-                            int intValue = kvpLoop.Value;
-                            if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                            foreach (KeyValuePair<string, int> kvpLoop in dicDisallowedMounts)
                             {
-                                strKey = strKey.TrimEndOnce("Left", true);
-                                intValue = dicDisallowedMounts.TryGetValue(strKey + "Right", out int intExistingValue)
-                                    ? 2 * Math.Min(intValue, intExistingValue)
-                                    : 0;
-                                if (dicDisallowedMounts.TryGetValue(strKey, out intExistingValue))
-                                    intValue += intExistingValue;
+                                string strKey = kvpLoop.Key;
+                                if (strKey.EndsWith("Right", StringComparison.Ordinal))
+                                    continue;
+                                int intValue = kvpLoop.Value;
+                                if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                                {
+                                    strKey = strKey.TrimEndOnce("Left", true);
+                                    intValue = dicDisallowedMounts.TryGetValue(strKey + "Right",
+                                        out int intExistingValue)
+                                        ? 2 * Math.Min(intValue, intExistingValue)
+                                        : 0;
+                                    if (dicDisallowedMounts.TryGetValue(strKey, out intExistingValue))
+                                        intValue += intExistingValue;
+                                }
+
+                                if (intValue >= await CharacterObject
+                                        .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
+                                        .ConfigureAwait(false))
+                                    sbdDisallowedMounts.Append(strKey).Append(',');
                             }
 
-                            if (intValue >= await CharacterObject
-                                    .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
-                                    .ConfigureAwait(false))
-                                sbdDisallowedMounts.Append(strKey).Append(',');
+                            // Remove trailing ","
+                            if (sbdDisallowedMounts.Length > 0)
+                                --sbdDisallowedMounts.Length;
+                            frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
                         }
 
-                        // Remove trailing ","
-                        if (sbdDisallowedMounts.Length > 0)
-                            --sbdDisallowedMounts.Length;
-                        frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
-                    }
-
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdHasMounts))
-                    {
-                        foreach (KeyValuePair<string, int> kvpLoop in dicHasMounts)
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdHasMounts))
                         {
-                            string strKey = kvpLoop.Key;
-                            if (strKey.EndsWith("Right", StringComparison.Ordinal))
-                                continue;
-                            int intValue = kvpLoop.Value;
-                            if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                            foreach (KeyValuePair<string, int> kvpLoop in dicHasMounts)
                             {
-                                strKey = strKey.TrimEndOnce("Left", true);
-                                intValue = dicHasMounts.TryGetValue(strKey + "Right", out int intExistingValue)
-                                    ? 2 * Math.Min(intValue, intExistingValue)
-                                    : 0;
-                                if (dicHasMounts.TryGetValue(strKey, out intExistingValue))
-                                    intValue += intExistingValue;
+                                string strKey = kvpLoop.Key;
+                                if (strKey.EndsWith("Right", StringComparison.Ordinal))
+                                    continue;
+                                int intValue = kvpLoop.Value;
+                                if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                                {
+                                    strKey = strKey.TrimEndOnce("Left", true);
+                                    intValue = dicHasMounts.TryGetValue(strKey + "Right", out int intExistingValue)
+                                        ? 2 * Math.Min(intValue, intExistingValue)
+                                        : 0;
+                                    if (dicHasMounts.TryGetValue(strKey, out intExistingValue))
+                                        intValue += intExistingValue;
+                                }
+
+                                if (intValue >= await CharacterObject
+                                        .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
+                                        .ConfigureAwait(false))
+                                    sbdHasMounts.Append(strKey).Append(',');
                             }
 
-                            if (intValue >= await CharacterObject
-                                    .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
-                                    .ConfigureAwait(false))
-                                sbdHasMounts.Append(strKey).Append(',');
+                            // Remove trailing ","
+                            if (sbdHasMounts.Length > 0)
+                                --sbdHasMounts.Length;
+                            frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
                         }
 
-                        // Remove trailing ","
-                        if (sbdHasMounts.Length > 0)
-                            --sbdHasMounts.Length;
-                        frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickCyberware.ShowDialogSafeAsync(this, token: token).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                            return false;
+
+                        // Open the Cyberware XML file and locate the selected piece.
+                        XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware
+                            ? (await CharacterObject.LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false))
+                            .TryGetNodeByNameOrId("/chummer/biowares/bioware",
+                                frmPickCyberware.MyForm.SelectedCyberware)
+                            : (await CharacterObject.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false))
+                            .TryGetNodeByNameOrId("/chummer/cyberwares/cyberware",
+                                frmPickCyberware.MyForm.SelectedCyberware);
+
+                        Cyberware objCyberware = new Cyberware(CharacterObject)
+                        {
+                            ESSDiscount = frmPickCyberware.MyForm.SelectedESSDiscount, Parent = objSelectedCyberware
+                        };
+                        if (!await objCyberware.Purchase(objXmlCyberware, objSource,
+                                frmPickCyberware.MyForm.SelectedGrade,
+                                frmPickCyberware.MyForm.SelectedRating, null,
+                                objSelectedCyberware?.Children ??
+                                await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false),
+                                await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false),
+                                await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false),
+                                frmPickCyberware.MyForm.Markup,
+                                frmPickCyberware.MyForm.FreeCost,
+                                frmPickCyberware.MyForm.BlackMarketDiscount,
+                                objParent: objSelectedCyberware, token: token).ConfigureAwait(false))
+                            await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+
+                        return frmPickCyberware.MyForm.AddAgain;
                     }
-
-                    // Make sure the dialogue window was not canceled.
-                    if (await frmPickCyberware.ShowDialogSafeAsync(this, token: token).ConfigureAwait(false)
-                        == DialogResult.Cancel)
-                        return false;
-
-                    // Open the Cyberware XML file and locate the selected piece.
-                    XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware
-                        ? (await CharacterObject.LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false))
-                        .TryGetNodeByNameOrId("/chummer/biowares/bioware", frmPickCyberware.MyForm.SelectedCyberware)
-                        : (await CharacterObject.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false))
-                        .TryGetNodeByNameOrId("/chummer/cyberwares/cyberware",
-                            frmPickCyberware.MyForm.SelectedCyberware);
-
-                    Cyberware objCyberware = new Cyberware(CharacterObject)
-                        { ESSDiscount = frmPickCyberware.MyForm.SelectedESSDiscount, Parent = objSelectedCyberware };
-                    if (!await objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.MyForm.SelectedGrade,
-                            frmPickCyberware.MyForm.SelectedRating, null,
-                            objSelectedCyberware?.Children ??
-                            await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false),
-                            await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false),
-                            await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false),
-                            frmPickCyberware.MyForm.Markup,
-                            frmPickCyberware.MyForm.FreeCost,
-                            frmPickCyberware.MyForm.BlackMarketDiscount,
-                            objParent: objSelectedCyberware, token: token).ConfigureAwait(false))
-                        await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
-
-                    return frmPickCyberware.MyForm.AddAgain;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -23980,28 +24054,29 @@ namespace Chummer
                                                Weapon objAmmoForWeapon = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                bool blnNullParent = false;
-                Gear objSelectedGear = null;
-                if (iParent is Gear gear)
-                {
-                    objSelectedGear = gear;
-                }
-                else
-                {
-                    blnNullParent = true;
-                }
-
-                // Open the Gear XML file and locate the selected Gear.
-                XPathNavigator xmlParent
-                    = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync(token).ConfigureAwait(false);
-
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
+                    bool blnNullParent = false;
+                    Gear objSelectedGear = null;
+                    if (iParent is Gear gear)
+                    {
+                        objSelectedGear = gear;
+                    }
+                    else
+                    {
+                        blnNullParent = true;
+                    }
+
+                    // Open the Gear XML file and locate the selected Gear.
+                    XPathNavigator xmlParent
+                        = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync(token).ConfigureAwait(false);
+
                     string strCategories = string.Empty;
 
                     if (xmlParent != null)
@@ -24272,12 +24347,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -24291,29 +24366,31 @@ namespace Chummer
                                                     CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                token.ThrowIfCancellationRequested();
-                Gear objSelectedGear = null;
-                Armor objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId, token).ConfigureAwait(false);
-                ArmorMod objSelectedMod = null;
-
-                if (objSelectedArmor == null)
-                {
-                    (objSelectedGear, objSelectedArmor, objSelectedMod)
-                        = await CharacterObject.Armor.FindArmorGearAsync(strSelectedId, token).ConfigureAwait(false);
-                    if (objSelectedGear == null)
-                        objSelectedMod = await CharacterObject.Armor.FindArmorModAsync(strSelectedId, token)
-                            .ConfigureAwait(false);
-                }
-
-                // Open the Gear XML file and locate the selected Gear.
-                object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
-
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
+                    Gear objSelectedGear = null;
+                    Armor objSelectedArmor = await CharacterObject.Armor.FindByIdAsync(strSelectedId, token)
+                        .ConfigureAwait(false);
+                    ArmorMod objSelectedMod = null;
+
+                    if (objSelectedArmor == null)
+                    {
+                        (objSelectedGear, objSelectedArmor, objSelectedMod)
+                            = await CharacterObject.Armor.FindArmorGearAsync(strSelectedId, token)
+                                .ConfigureAwait(false);
+                        if (objSelectedGear == null)
+                            objSelectedMod = await CharacterObject.Armor.FindArmorModAsync(strSelectedId, token)
+                                .ConfigureAwait(false);
+                    }
+
+                    // Open the Gear XML file and locate the selected Gear.
+                    object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
                     string strCategories = string.Empty;
 
                     if (!string.IsNullOrEmpty(strSelectedId) && objParent is IHasXmlDataNode objParentWithDataNode)
@@ -24598,12 +24675,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
