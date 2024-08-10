@@ -486,7 +486,6 @@ namespace Chummer.Backend.Equipment
                         {
                             Weapon objWeapon = new Weapon(_objCharacter)
                             {
-                                ParentVehicle = Parent,
                                 ParentMount = this
                             };
                             objWeapon.Load(xmlWeaponNode, blnCopy);

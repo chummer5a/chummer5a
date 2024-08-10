@@ -3055,8 +3055,18 @@ namespace Chummer.Backend.Equipment
             {
                 if (Interlocked.Exchange(ref _objParent, value) != value)
                 {
-                    // Includes ParentVehicle setter
-                    ParentMount = value?.ParentMount;
+                    if (value?.ParentVehicle != null)
+                    {
+                        // Includes ParentVehicle setters
+                        ParentMount = value.ParentMount;
+                        ParentVehicleMod = value.ParentVehicleMod;
+                    }
+                    else
+                    {
+                        // Includes ParentVehicle setters
+                        ParentMount = null;
+                        ParentVehicleMod = null;
+                    }
                 }
             }
         }
@@ -3155,9 +3165,15 @@ namespace Chummer.Backend.Equipment
             {
                 if (Interlocked.Exchange(ref _objWeaponMount, value) != value)
                 {
-                    ParentVehicle = value?.Parent;
                     if (value != null)
-                        ParentVehicleMod = null;
+                    {
+                        _objVehicleMod = null;
+                        ParentVehicle = value.Parent;
+                    }
+                    else if (_objVehicleMod == null)
+                    {
+                        ParentVehicle = null;
+                    }
                 }
 
                 foreach (Weapon objChild in Children.AsEnumerableWithSideEffects())
@@ -3175,9 +3191,15 @@ namespace Chummer.Backend.Equipment
             {
                 if (Interlocked.Exchange(ref _objVehicleMod, value) != value)
                 {
-                    ParentVehicle = value?.Parent;
                     if (value != null)
-                        ParentMount = null;
+                    {
+                        _objWeaponMount = null;
+                        ParentVehicle = value.Parent;
+                    }
+                    else if (_objWeaponMount == null)
+                    {
+                        ParentVehicle = null;
+                    }
                 }
 
                 foreach (Weapon objChild in Children.AsEnumerableWithSideEffects())

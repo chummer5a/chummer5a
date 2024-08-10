@@ -11318,12 +11318,11 @@ namespace Chummer
                 XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                Weapon objWeapon = new Weapon(CharacterObject)
-                {
-                    ParentVehicle = objVehicle,
-                    ParentVehicleMod = objMod,
-                    ParentMount = objMod == null ? objWeaponMount : null
-                };
+                Weapon objWeapon = new Weapon(CharacterObject);
+                if (objMod != null)
+                    objWeapon.ParentVehicleMod = objMod;
+                else
+                    objWeapon.ParentMount = objWeaponMount;
                 await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
 
                 if (!frmPickWeapon.MyForm.FreeCost)
@@ -16518,8 +16517,7 @@ namespace Chummer
                                                                  GenericToken)
                                           .ConfigureAwait(false) is Weapon objWeapon))
                         return;
-                    await objWeapon.Reload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
-
+                    await objWeapon.Reload(await CharacterObject.GetGearAsync(GenericToken).ConfigureAwait(false), treGear, GenericToken).ConfigureAwait(false);
                     await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
@@ -16544,8 +16542,7 @@ namespace Chummer
                                                                  GenericToken)
                                           .ConfigureAwait(false) is Weapon objWeapon))
                         return;
-                    await objWeapon.Unload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
-
+                    await objWeapon.Unload(await CharacterObject.GetGearAsync(GenericToken).ConfigureAwait(false), treGear, GenericToken).ConfigureAwait(false);
                     await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally

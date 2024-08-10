@@ -7566,12 +7566,11 @@ namespace Chummer
                             XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
 
                             List<Weapon> lstWeapons = new List<Weapon>(1);
-                            Weapon objWeapon = new Weapon(CharacterObject)
-                            {
-                                ParentVehicle = objVehicle,
-                                ParentVehicleMod = objMod,
-                                ParentMount = objMod == null ? objWeaponMount : null
-                            };
+                            Weapon objWeapon = new Weapon(CharacterObject);
+                            if (objMod != null)
+                                objWeapon.ParentVehicleMod = objMod;
+                            else
+                                objWeapon.ParentMount = objWeaponMount;
                             await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
                             objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
