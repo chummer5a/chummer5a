@@ -205,7 +205,6 @@ namespace Chummer
             };
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
 
-            GlobalSettings.ClipboardChangedAsync += DoRefreshPasteStatus;
             tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
@@ -216,14 +215,63 @@ namespace Chummer
             tabGearCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             panVehicleCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-
-            // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
-            objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
-            objCharacter.SettingsMultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
-            objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
+            treGear.ItemDrag += treGear_ItemDrag;
+            treGear.DragEnter += treGear_DragEnter;
+            treGear.DragDrop += treGear_DragDrop;
+            /*
+            treLifestyles.ItemDrag += treLifestyles_ItemDrag;
+            treLifestyles.DragEnter += treLifestyles_DragEnter;
+            treLifestyles.DragDrop += treLifestyles_DragDrop;
+            */
+            treArmor.ItemDrag += treArmor_ItemDrag;
+            treArmor.DragEnter += treArmor_DragEnter;
+            treArmor.DragDrop += treArmor_DragDrop;
+            treWeapons.ItemDrag += treWeapons_ItemDrag;
+            treWeapons.DragEnter += treWeapons_DragEnter;
+            treWeapons.DragDrop += treWeapons_DragDrop;
+            treVehicles.ItemDrag += treVehicles_ItemDrag;
+            treVehicles.DragEnter += treVehicles_DragEnter;
+            treVehicles.DragDrop += treVehicles_DragDrop;
+            treImprovements.ItemDrag += treImprovements_ItemDrag;
+            treImprovements.DragEnter += treImprovements_DragEnter;
+            treImprovements.DragDrop += treImprovements_DragDrop;
+            Disposed += (sender, args) =>
+            {
+                tabCharacterTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabInfo.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabLongTexts.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabPeople.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabStreetGearTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabArmorCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabCyberwareCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabGearCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                panVehicleCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabWeaponCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                tabSkillsUc.MakeDirtyWithCharacterUpdate -= MakeDirtyWithCharacterUpdate;
+                lmtControl.MakeDirty -= MakeDirty;
+                treGear.ItemDrag -= treGear_ItemDrag;
+                treGear.DragEnter -= treGear_DragEnter;
+                treGear.DragDrop -= treGear_DragDrop;
+                /*
+                treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
+                treLifestyles.DragEnter -= treLifestyles_DragEnter;
+                treLifestyles.DragDrop -= treLifestyles_DragDrop;
+                */
+                treArmor.ItemDrag -= treArmor_ItemDrag;
+                treArmor.DragEnter -= treArmor_DragEnter;
+                treArmor.DragDrop -= treArmor_DragDrop;
+                treWeapons.ItemDrag -= treWeapons_ItemDrag;
+                treWeapons.DragEnter -= treWeapons_DragEnter;
+                treWeapons.DragDrop -= treWeapons_DragDrop;
+                treVehicles.ItemDrag -= treVehicles_ItemDrag;
+                treVehicles.DragEnter -= treVehicles_DragEnter;
+                treVehicles.DragDrop -= treVehicles_DragDrop;
+                treImprovements.ItemDrag -= treImprovements_ItemDrag;
+                treImprovements.DragEnter -= treImprovements_DragEnter;
+                treImprovements.DragDrop -= treImprovements_DragDrop;
+            };
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -1012,30 +1060,6 @@ namespace Chummer
                                     using (Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2",
                                                op_load_frm_career))
                                     {
-                                        await this.DoThreadSafeAsync(() =>
-                                        {
-                                            treGear.ItemDrag += treGear_ItemDrag;
-                                            treGear.DragEnter += treGear_DragEnter;
-                                            treGear.DragDrop += treGear_DragDrop;
-                                            /*
-                                            treLifestyles.ItemDrag += treLifestyles_ItemDrag;
-                                            treLifestyles.DragEnter += treLifestyles_DragEnter;
-                                            treLifestyles.DragDrop += treLifestyles_DragDrop;
-                                            */
-                                            treArmor.ItemDrag += treArmor_ItemDrag;
-                                            treArmor.DragEnter += treArmor_DragEnter;
-                                            treArmor.DragDrop += treArmor_DragDrop;
-                                            treWeapons.ItemDrag += treWeapons_ItemDrag;
-                                            treWeapons.DragEnter += treWeapons_DragEnter;
-                                            treWeapons.DragDrop += treWeapons_DragDrop;
-                                            treVehicles.ItemDrag += treVehicles_ItemDrag;
-                                            treVehicles.DragEnter += treVehicles_DragEnter;
-                                            treVehicles.DragDrop += treVehicles_DragDrop;
-                                            treImprovements.ItemDrag += treImprovements_ItemDrag;
-                                            treImprovements.DragEnter += treImprovements_DragEnter;
-                                            treImprovements.DragDrop += treImprovements_DragDrop;
-                                        }, GenericToken).ConfigureAwait(false);
-
                                         // Merge the ToolStrips.
                                         ToolStripManager.RevertMerge("toolStrip");
                                         ToolStripManager.Merge(tsMain, "toolStrip");
@@ -1767,7 +1791,11 @@ namespace Chummer
                                             .DoThreadSafeAsync(x => x.SortCustomOrder(true), GenericToken)
                                             .ConfigureAwait(false);
 
-                                        // Set up events that would change various lists
+                                        // Set up events linked to character changes
+                                        GlobalSettings.ClipboardChangedAsync += DoRefreshPasteStatus;
+                                        CharacterObject.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
+                                        CharacterObject.SettingsMultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                                        CharacterObject.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                         CharacterObject.Spells.CollectionChangedAsync += SpellCollectionChanged;
                                         CharacterObject.ComplexForms.CollectionChangedAsync +=
                                             ComplexFormCollectionChanged;
@@ -2493,6 +2521,10 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
+                        GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
+                        CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
+                        CharacterObject.SettingsMultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -= AttributeCollectionChanged;
@@ -2545,50 +2577,7 @@ namespace Chummer
                         CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
 
-                        GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
-                        tabCharacterTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabInfo.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabLongTexts.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabPeople.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabStreetGearTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabArmorCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabCyberwareCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabGearCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        panVehicleCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        tabWeaponCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                        CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
-                        CharacterObject.SettingsMultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
-                        CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
-                        tabSkillsUc.MakeDirtyWithCharacterUpdate -= MakeDirtyWithCharacterUpdate;
-                        lmtControl.MakeDirty -= MakeDirty;
-
                         SetupCommonCollectionDatabindings(false);
-
-                        treGear.ItemDrag -= treGear_ItemDrag;
-                        treGear.DragEnter -= treGear_DragEnter;
-                        treGear.DragDrop -= treGear_DragDrop;
-
-                        /*
-                            treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
-                            treLifestyles.DragEnter -= treLifestyles_DragEnter;
-                            treLifestyles.DragDrop -= treLifestyles_DragDrop;
-                            */
-
-                        treArmor.ItemDrag -= treArmor_ItemDrag;
-                        treArmor.DragEnter -= treArmor_DragEnter;
-                        treArmor.DragDrop -= treArmor_DragDrop;
-
-                        treWeapons.ItemDrag -= treWeapons_ItemDrag;
-                        treWeapons.DragEnter -= treWeapons_DragEnter;
-                        treWeapons.DragDrop -= treWeapons_DragDrop;
-
-                        treVehicles.ItemDrag -= treVehicles_ItemDrag;
-                        treVehicles.DragEnter -= treVehicles_DragEnter;
-                        treVehicles.DragDrop -= treVehicles_DragDrop;
-
-                        treImprovements.ItemDrag -= treImprovements_ItemDrag;
-                        treImprovements.DragEnter -= treImprovements_DragEnter;
-                        treImprovements.DragDrop -= treImprovements_DragDrop;
 
                         await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
                             RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
@@ -16094,16 +16083,17 @@ namespace Chummer
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            string strSelectedWeapon = treWeapons.SelectedNode?.Tag.ToString();
-            if (string.IsNullOrEmpty(strSelectedWeapon) || treWeapons.SelectedNode.Level != 1)
+            TreeNode nodSelected = treWeapons.SelectedNode;
+            if (nodSelected == null)
                 return;
-
-            // Do not allow the root element to be moved.
-            if (strSelectedWeapon != "Node_SelectedWeapons")
-            {
-                _intDragLevel = treWeapons.SelectedNode.Level;
-                DoDragDrop(e.Item, DragDropEffects.Move);
-            }
+            string strSelectedWeapon = nodSelected.Tag?.ToString();
+            if (string.IsNullOrEmpty(strSelectedWeapon) || strSelectedWeapon == "Node_SelectedWeapons")
+                return;
+            int intDragLevel = nodSelected.Level;
+            if (intDragLevel != 1)
+                return;
+            _intDragLevel = intDragLevel;
+            DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
         private void treWeapons_DragEnter(object sender, DragEventArgs e)
@@ -16157,10 +16147,10 @@ namespace Chummer
 
         private void treArmor_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level != 1)
+            int intDragLevel = treArmor.SelectedNode?.Level ?? 0;
+            if (intDragLevel != 1)
                 return;
-
-            _intDragLevel = treArmor.SelectedNode.Level;
+            _intDragLevel = intDragLevel;
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
@@ -16651,23 +16641,27 @@ namespace Chummer
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            string strSelected = treGear.SelectedNode?.Tag.ToString();
+            TreeNode nodSelected = treGear.SelectedNode;
+            if (nodSelected == null)
+                return;
+            string strSelected = nodSelected.Tag?.ToString();
             if (string.IsNullOrEmpty(strSelected) || strSelected == "Node_SelectedGear")
                 return;
+            int intDragLevel = nodSelected.Level;
             if (e.Button == MouseButtons.Left)
             {
-                if (treGear.SelectedNode.Level > 1 || treGear.SelectedNode.Level < 0)
+                if (intDragLevel > 1 || intDragLevel < 0)
                     return;
                 DragButton = MouseButtons.Left;
             }
             else
             {
-                if (treGear.SelectedNode.Level == 0)
+                if (intDragLevel == 0)
                     return;
                 DragButton = MouseButtons.Right;
             }
 
-            _intDragLevel = treGear.SelectedNode.Level;
+            _intDragLevel = intDragLevel;
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
@@ -17972,20 +17966,21 @@ namespace Chummer
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            switch (treVehicles.SelectedNode?.Tag)
+            TreeNode nodSelected = treVehicles.SelectedNode;
+            switch (nodSelected?.Tag)
             {
                 // Determine if this is a piece of Gear or a Vehicle. If not, don't let the user drag it.
                 case Gear _:
                     DragButton = e.Button;
                     DraggingGear = true;
-                    _intDragLevel = treVehicles.SelectedNode.Level;
+                    _intDragLevel = nodSelected.Level;
                     DoDragDrop(e.Item, DragDropEffects.Move);
                     break;
 
                 case Vehicle _:
                     DragButton = e.Button;
                     DraggingGear = false;
-                    _intDragLevel = treVehicles.SelectedNode.Level;
+                    _intDragLevel = nodSelected.Level;
                     DoDragDrop(e.Item, DragDropEffects.Move);
                     break;
             }
