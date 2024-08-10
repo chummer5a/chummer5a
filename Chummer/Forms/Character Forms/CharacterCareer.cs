@@ -121,26 +121,6 @@ namespace Chummer
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             tabSkillsUc.CachedCharacter = objCharacter;
             tabPowerUc.CachedCharacter = objCharacter;
-
-            tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabPeople.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabArmorCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabCyberwareCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabGearCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            panVehicleCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-
-            // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
-            objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
-            objCharacter.SettingsMultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
-            objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-
-            tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
-            lmtControl.MakeDirty += MakeDirty;
-
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -224,6 +204,26 @@ namespace Chummer
                 Order = SortOrder.Descending
             };
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
+
+            GlobalSettings.ClipboardChangedAsync += DoRefreshPasteStatus;
+            tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabPeople.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabArmorCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabCyberwareCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabGearCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            panVehicleCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+
+            // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
+            objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
+            objCharacter.SettingsMultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
+
+            tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            lmtControl.MakeDirty += MakeDirty;
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -2544,7 +2544,18 @@ namespace Chummer
                             SustainedSpellBeforeClearCollectionChanged;
                         CharacterObject.SustainedCollection.CollectionChangedAsync -= SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChangedAsync -= ExpenseEntriesCollectionChanged;
-                        
+
+                        GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
+                        tabCharacterTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabInfo.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabLongTexts.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabPeople.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabStreetGearTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabArmorCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabCyberwareCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabGearCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        panVehicleCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
+                        tabWeaponCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
                         CharacterObject.MultiplePropertiesChangedAsync -= OnCharacterPropertyChanged;
                         CharacterObject.SettingsMultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                         CharacterObject.AttributeSection.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
@@ -11249,13 +11260,12 @@ namespace Chummer
                 // Attempt to locate the selected VehicleMod.
                 VehicleMod objMod = null;
                 WeaponMount objWeaponMount = null;
-                Vehicle objVehicle = null;
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    (objWeaponMount, objVehicle) = await CharacterObject.Vehicles.FindVehicleWeaponMountAsync(strSelectedId, GenericToken).ConfigureAwait(false);
+                    (objWeaponMount, _) = await CharacterObject.Vehicles.FindVehicleWeaponMountAsync(strSelectedId, GenericToken).ConfigureAwait(false);
                     if (objWeaponMount == null)
                     {
-                        (objMod, objVehicle, objWeaponMount) = await CharacterObject.Vehicles.FindVehicleModAsync(x => x.InternalId == strSelectedId, GenericToken).ConfigureAwait(false);
+                        (objMod, _, objWeaponMount) = await CharacterObject.Vehicles.FindVehicleModAsync(x => x.InternalId == strSelectedId, GenericToken).ConfigureAwait(false);
                         if (objMod?.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) == false
                             && !objMod.Name.Contains("Drone Arm"))
                         {
@@ -11287,7 +11297,7 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    blnAddAgain = await AddWeaponToWeaponMount(objWeaponMount, objMod, objVehicle, GenericToken)
+                    blnAddAgain = await AddWeaponToWeaponMount(objWeaponMount, objMod, GenericToken)
                         .ConfigureAwait(false);
                 } while (blnAddAgain);
             }
@@ -11297,8 +11307,7 @@ namespace Chummer
             }
         }
 
-        private async Task<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod,
-                                                             Vehicle objVehicle, CancellationToken token = default)
+        private async Task<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, CancellationToken token = default)
         {
             using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
                        () => new SelectWeapon(CharacterObject)
@@ -27143,6 +27152,14 @@ namespace Chummer
                 CopyCyberwareImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
             await objCyberware.GearChildren.ForEachWithSideEffectsAsync(x =>
                 CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
+        /// </summary>
+        private Task DoRefreshPasteStatus(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        {
+            return RefreshPasteStatus(token);
         }
 
         /// <summary>

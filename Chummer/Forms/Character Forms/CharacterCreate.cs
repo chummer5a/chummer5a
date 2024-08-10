@@ -121,22 +121,6 @@ namespace Chummer
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             tabSkillsUc.CachedCharacter = objCharacter;
             tabPowerUc.CachedCharacter = objCharacter;
-
-            GlobalSettings.ClipboardChangedAsync += RefreshPasteStatusAsync;
-            tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabPeople.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-            tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
-
-            // Add EventHandlers for the various events MAG, RES, Qualities, etc.
-            objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
-            objCharacter.SettingsMultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
-            objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
-
-            tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
-            lmtControl.MakeDirty += MakeDirty;
-
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             ContextMenuStrip[] lstCMSToTranslate =
@@ -198,6 +182,21 @@ namespace Chummer
                     }
                 }
             }
+
+            GlobalSettings.ClipboardChangedAsync += DoRefreshPasteStatus;
+            tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabLongTexts.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabPeople.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+            tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
+
+            // Add EventHandlers for the various events MAG, RES, Qualities, etc.
+            objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
+            objCharacter.SettingsMultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            objCharacter.AttributeSection.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
+
+            tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            lmtControl.MakeDirty += MakeDirty;
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -1559,7 +1558,7 @@ namespace Chummer
                                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync
                                             += AttributeCollectionChanged;
 
-                                        await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                                        await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
                                         await ProcessMugshot(GenericToken).ConfigureAwait(false);
 
                                         // Stupid hack to get the MDI icon to show up properly.
@@ -1925,7 +1924,7 @@ namespace Chummer
                             ToolStripManager.RevertMerge("toolStrip");
 
                         // Unsubscribe from events.
-                        GlobalSettings.ClipboardChangedAsync -= RefreshPasteStatusAsync;
+                        GlobalSettings.ClipboardChangedAsync -= DoRefreshPasteStatus;
                         CharacterObject.AttributeSection.Attributes.BeforeClearCollectionChangedAsync
                             -= AttributeBeforeClearCollectionChanged;
                         CharacterObject.AttributeSection.Attributes.CollectionChangedAsync -=
@@ -7505,20 +7504,17 @@ namespace Chummer
                 // Attempt to locate the selected VehicleMod.
                 WeaponMount objWeaponMount = null;
                 VehicleMod objMod = null;
-                Vehicle objVehicle = null;
                 switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                          .ConfigureAwait(false))
                 {
-                    case WeaponMount selectedMount:
-                        objWeaponMount = selectedMount;
-                        objVehicle = selectedMount.Parent;
+                    case WeaponMount objSelectedMount:
+                        objWeaponMount = objSelectedMount;
                         break;
 
-                    case VehicleMod selectedMod
-                        when selectedMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)
-                             || selectedMod.Name.Contains("Drone Arm"):
-                        objMod = selectedMod;
-                        objVehicle = selectedMod.Parent;
+                    case VehicleMod objSelectedMod
+                        when objSelectedMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)
+                             || objSelectedMod.Name.Contains("Drone Arm"):
+                        objMod = objSelectedMod;
                         break;
                 }
 
@@ -10510,7 +10506,7 @@ namespace Chummer
             try
             {
                 await RefreshSelectedCyberware(GenericToken).ConfigureAwait(false);
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10778,7 +10774,7 @@ namespace Chummer
             try
             {
                 await RefreshSelectedWeapon(GenericToken).ConfigureAwait(false);
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10840,7 +10836,7 @@ namespace Chummer
             try
             {
                 await RefreshSelectedArmor(GenericToken).ConfigureAwait(false);
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -10897,7 +10893,7 @@ namespace Chummer
             try
             {
                 await RefreshSelectedLifestyle(GenericToken).ConfigureAwait(false);
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -11105,7 +11101,7 @@ namespace Chummer
             try
             {
                 await RefreshSelectedGear(GenericToken).ConfigureAwait(false);
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -12112,7 +12108,7 @@ namespace Chummer
             try
             {
                 await RefreshSelectedDrug(GenericToken).ConfigureAwait(false);
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -12131,7 +12127,7 @@ namespace Chummer
             try
             {
                 await RefreshSelectedVehicle(GenericToken).ConfigureAwait(false);
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -13634,7 +13630,7 @@ namespace Chummer
                 return;
             try
             {
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -13648,7 +13644,7 @@ namespace Chummer
                 return;
             try
             {
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
+                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -15148,7 +15144,7 @@ namespace Chummer
                                     RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
                                     RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
                                     UpdateSkillRelatedInfo(token), RefreshNuyenDisplays(token),
-                                    CalculateBPandRefreshBPDisplays(true, token), DoRefreshPasteStatus(token))
+                                    CalculateBPandRefreshBPDisplays(true, token), RefreshPasteStatus(token))
                                 .ConfigureAwait(false);
                             await tskAutosave.ConfigureAwait(false);
                         }
@@ -23541,27 +23537,15 @@ namespace Chummer
         /// <summary>
         /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
         /// </summary>
-        private async void RefreshPasteStatus(object sender, EventArgs e)
+        private Task DoRefreshPasteStatus(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
-            try
-            {
-                await DoRefreshPasteStatus(GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
+            return RefreshPasteStatus(token);
         }
 
         /// <summary>
         /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
         /// </summary>
-        private Task RefreshPasteStatusAsync(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
-        {
-            return DoRefreshPasteStatus(token);
-        }
-
-        private async Task DoRefreshPasteStatus(CancellationToken token = default)
+        private async Task RefreshPasteStatus(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
 
