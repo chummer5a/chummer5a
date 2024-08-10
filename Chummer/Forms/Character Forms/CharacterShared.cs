@@ -154,12 +154,13 @@ namespace Chummer
                 FileSystemWatcher objNewWatcher = null;
                 if (GlobalSettings.LiveUpdateCleanCharacterFiles)
                 {
-                    string strFileName = Path.GetFileName(CharacterObject.FileName);
+                    string strCharacterFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
+                    string strFileName = Path.GetFileName(strCharacterFileName);
                     if (!string.IsNullOrEmpty(strFileName))
                     {
                         objNewWatcher = new FileSystemWatcher(
-                            Path.GetDirectoryName(CharacterObject.FileName)
-                            ?? Path.GetPathRoot(CharacterObject.FileName), strFileName);
+                            Path.GetDirectoryName(strCharacterFileName)
+                            ?? Path.GetPathRoot(strCharacterFileName), strFileName);
                         objNewWatcher.Changed += LiveUpdateFromCharacterFile;
                     }
                 }
@@ -11133,43 +11134,53 @@ namespace Chummer
                 try
                 {
                     // If the Character does not have a file name, trigger the Save As menu item instead.
-                    if (string.IsNullOrEmpty(CharacterObject.FileName))
+                    if (string.IsNullOrEmpty(await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false)))
                     {
                         return await SaveCharacterAs(blnDoCreated, token).ConfigureAwait(false);
                     }
-
-                    if (blnDoCreated)
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        // If the Created is checked, make sure the user wants to actually save this character.
-                        if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token).ConfigureAwait(false))
-                            return false;
-                        // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                        return await SaveCharacterAsCreated(token).ConfigureAwait(false);
-                    }
-
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
-                    {
-                        await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
-                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token).ConfigureAwait(false);
-                        if (_objCharacterFileWatcher != null)
-                            _objCharacterFileWatcher.Changed -= LiveUpdateFromCharacterFile;
-                        try
+                        token.ThrowIfCancellationRequested();
+                        if (blnDoCreated)
                         {
-                            if (!await CharacterObject.SaveAsync(token: token).ConfigureAwait(false))
+                            // If the Created is checked, make sure the user wants to actually save this character.
+                            if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token).ConfigureAwait(false))
                                 return false;
+                            // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
+                            return await SaveCharacterAsCreated(token).ConfigureAwait(false);
                         }
-                        finally
+
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                         {
-                            if (_objCharacterFileWatcher != null)
-                                _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                            await frmLoadingBar.MyForm.PerformStepAsync(await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false),
+                                LoadingBar.ProgressBarTextPatterns.Saving, token).ConfigureAwait(false);
+                            FileSystemWatcher objFileWatcher = _objCharacterFileWatcher;
+                            if (objFileWatcher != null)
+                                objFileWatcher.Changed -= LiveUpdateFromCharacterFile;
+                            try
+                            {
+                                if (!await CharacterObject.SaveAsync(token: token).ConfigureAwait(false))
+                                    return false;
+                            }
+                            finally
+                            {
+                                if (objFileWatcher != null)
+                                    objFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                            }
+
+                            await GlobalSettings.MostRecentlyUsedCharacters
+                                .InsertAsync(0, await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            await SetDirty(false, token).ConfigureAwait(false);
                         }
 
-                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName, token).ConfigureAwait(false);
-                        await SetDirty(false, token).ConfigureAwait(false);
+                        return true;
                     }
-
-                    return true;
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
@@ -11204,45 +11215,58 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    // If the Created is checked, make sure the user wants to actually save this character.
-                    if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token).ConfigureAwait(false))
-                    {
-                        return false;
-                    }
-
-                    string strOldFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
-                    string strShowFileName = Path.GetFileName(strOldFileName);
-                    if (string.IsNullOrEmpty(strShowFileName))
-                    {
-                        strShowFileName = (await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false)).CleanForFileName();
-                    }
-
-                    dlgSaveFile.FileName = strShowFileName;
-                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token).ConfigureAwait(false)
-                        != DialogResult.OK)
-                        return false;
-
-                    string strFileName = dlgSaveFile.FileName;
-                    if (!string.IsNullOrEmpty(strFileName)
-                        && !strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                        && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                    {
-                        strFileName += strShowFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)
-                            ? ".chum5lz"
-                            : ".chum5";
-                    }
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        await CharacterObject.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
-                        bool blnReturn = await SaveCharacter(false, blnDoCreated, token).ConfigureAwait(false);
-                        if (!blnReturn)
-                            await CharacterObject.SetFileNameAsync(strOldFileName, token).ConfigureAwait(false);
-                        return blnReturn;
+                        token.ThrowIfCancellationRequested();
+                        // If the Created is checked, make sure the user wants to actually save this character.
+                        if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token).ConfigureAwait(false))
+                        {
+                            return false;
+                        }
+
+                        string strOldFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
+                        string strShowFileName = Path.GetFileName(strOldFileName);
+                        if (string.IsNullOrEmpty(strShowFileName))
+                        {
+                            strShowFileName = (await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false))
+                                .CleanForFileName();
+                        }
+
+                        dlgSaveFile.FileName = strShowFileName;
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token)
+                                .ConfigureAwait(false)
+                            != DialogResult.OK)
+                            return false;
+
+                        string strFileName = dlgSaveFile.FileName;
+                        if (!string.IsNullOrEmpty(strFileName)
+                            && !strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        {
+                            strFileName += strShowFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)
+                                ? ".chum5lz"
+                                : ".chum5";
+                        }
+
+                        try
+                        {
+                            await CharacterObject.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
+                            bool blnReturn = await SaveCharacter(false, blnDoCreated, token).ConfigureAwait(false);
+                            if (!blnReturn)
+                                await CharacterObject.SetFileNameAsync(strOldFileName, token).ConfigureAwait(false);
+                            return blnReturn;
+                        }
+                        catch
+                        {
+                            await CharacterObject.SetFileNameAsync(strOldFileName, CancellationToken.None)
+                                .ConfigureAwait(false);
+                            throw;
+                        }
                     }
-                    catch
+                    finally
                     {
-                        await CharacterObject.SetFileNameAsync(strOldFileName, CancellationToken.None).ConfigureAwait(false);
-                        throw;
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally

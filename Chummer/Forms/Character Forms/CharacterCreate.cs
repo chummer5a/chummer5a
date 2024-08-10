@@ -14973,7 +14973,7 @@ namespace Chummer
                 while (IsDirty || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
                     await Utils.SafeSleepAsync(GenericToken).ConfigureAwait(false);
 
-                string strCharacterFile = CharacterObject.FileName;
+                string strCharacterFile = await CharacterObject.GetFileNameAsync(GenericToken).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strCharacterFile) || !File.Exists(strCharacterFile))
                     return;
 
@@ -14982,91 +14982,105 @@ namespace Chummer
                     = await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false);
                 try
                 {
-                    CursorWait objCursorWait
-                        = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
                     try
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
-                                   Path.GetFileName(strCharacterFile),
-                                   Character.NumLoadingSections + 1, GenericToken).ConfigureAwait(false))
+                        GenericToken.ThrowIfCancellationRequested();
+                        CursorWait objCursorWait
+                            = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            SkipUpdate = true;
-                            try
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
+                                       .CreateAndShowProgressBarAsync(
+                                           Path.GetFileName(strCharacterFile),
+                                           Character.NumLoadingSections + 1, GenericToken).ConfigureAwait(false))
                             {
-                                await CharacterObject
-                                      .LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
-                                      .ConfigureAwait(false);
-                                await frmLoadingBar.MyForm.PerformStepAsync(
-                                    await LanguageManager.GetStringAsync("String_UI", token: GenericToken)
-                                                         .ConfigureAwait(false),
-                                    token: GenericToken).ConfigureAwait(false);
-
-                                Tradition objTradition = await CharacterObject.GetMagicTraditionAsync(GenericToken).ConfigureAwait(false);
-                                TraditionType eTraditionType = await objTradition.GetTypeAsync(GenericToken)
-                                    .ConfigureAwait(false);
-                                string strTraditionSourceIdString =
-                                    await objTradition.GetSourceIDStringAsync(GenericToken)
+                                SkipUpdate = true;
+                                try
+                                {
+                                    await CharacterObject
+                                        .LoadAsync(frmLoadingForm: frmLoadingBar.MyForm, token: GenericToken)
                                         .ConfigureAwait(false);
-                                await cboTradition.DoThreadSafeAsync(x =>
+                                    await frmLoadingBar.MyForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_UI", token: GenericToken)
+                                            .ConfigureAwait(false),
+                                        token: GenericToken).ConfigureAwait(false);
+
+                                    Tradition objTradition = await CharacterObject.GetMagicTraditionAsync(GenericToken)
+                                        .ConfigureAwait(false);
+                                    TraditionType eTraditionType = await objTradition.GetTypeAsync(GenericToken)
+                                        .ConfigureAwait(false);
+                                    string strTraditionSourceIdString =
+                                        await objTradition.GetSourceIDStringAsync(GenericToken)
+                                            .ConfigureAwait(false);
+                                    await cboTradition.DoThreadSafeAsync(x =>
+                                    {
+                                        if (eTraditionType == TraditionType.MAG &&
+                                            !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                            x.SelectedValue = strTraditionSourceIdString;
+                                        if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                            x.SelectedIndex = 0;
+                                    }, GenericToken).ConfigureAwait(false);
+                                    await cboStream.DoThreadSafeAsync(x =>
+                                    {
+                                        if (eTraditionType == TraditionType.RES &&
+                                            !string.IsNullOrEmpty(strTraditionSourceIdString))
+                                            x.SelectedValue = strTraditionSourceIdString;
+                                        if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                            x.SelectedIndex = 0;
+                                    }, GenericToken).ConfigureAwait(false);
+                                }
+                                finally
                                 {
-                                    if (eTraditionType == TraditionType.MAG && !string.IsNullOrEmpty(strTraditionSourceIdString))
-                                        x.SelectedValue = strTraditionSourceIdString;
-                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                        x.SelectedIndex = 0;
-                                }, GenericToken).ConfigureAwait(false);
-                                await cboStream.DoThreadSafeAsync(x =>
-                                {
-                                    if (eTraditionType == TraditionType.RES && !string.IsNullOrEmpty(strTraditionSourceIdString))
-                                        x.SelectedValue = strTraditionSourceIdString;
-                                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                        x.SelectedIndex = 0;
-                                }, GenericToken).ConfigureAwait(false);
+                                    SkipUpdate = false;
+                                }
                             }
-                            finally
-                            {
-                                SkipUpdate = false;
-                            }
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
+
+                        // Immediately call character update because we know it's necessary
+                        try
+                        {
+                            await RequestAndProcessCharacterUpdate(GenericToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return;
+                        }
+
+                        IsDirty = false;
+
+                        ConcurrentBag<string> lstInternalIdsNeedingReapplyImprovements
+                            = await CharacterObject.TakeInternalIdsNeedingReapplyImprovementsAsync(GenericToken)
+                                .ConfigureAwait(false);
+                        if (lstInternalIdsNeedingReapplyImprovements?.Count > 0 && !Utils.IsUnitTest
+                            && await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager
+                                    .GetStringAsync(
+                                        "Message_ImprovementLoadError",
+                                        token: GenericToken)
+                                    .ConfigureAwait(false),
+                                await LanguageManager
+                                    .GetStringAsync(
+                                        "MessageTitle_ImprovementLoadError",
+                                        token: GenericToken)
+                                    .ConfigureAwait(false),
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Exclamation, token: GenericToken).ConfigureAwait(false)
+                            == DialogResult.Yes)
+                        {
+                            await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
+                                GenericToken).ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
-
-                    // Immediately call character update because we know it's necessary
-                    try
-                    {
-                        await RequestAndProcessCharacterUpdate(GenericToken).ConfigureAwait(false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        return;
-                    }
-
-                    IsDirty = false;
-
-                    ConcurrentBag<string> lstInternalIdsNeedingReapplyImprovements
-                        = await CharacterObject.TakeInternalIdsNeedingReapplyImprovementsAsync(GenericToken)
-                                               .ConfigureAwait(false);
-                    if (lstInternalIdsNeedingReapplyImprovements?.Count > 0 && !Utils.IsUnitTest
-                                                                            && await Program.ShowScrollableMessageBoxAsync(
-                                                                                this,
-                                                                                await LanguageManager
-                                                                                    .GetStringAsync(
-                                                                                        "Message_ImprovementLoadError",
-                                                                                        token: GenericToken)
-                                                                                    .ConfigureAwait(false),
-                                                                                await LanguageManager
-                                                                                    .GetStringAsync(
-                                                                                        "MessageTitle_ImprovementLoadError",
-                                                                                        token: GenericToken)
-                                                                                    .ConfigureAwait(false),
-                                                                                MessageBoxButtons.YesNo,
-                                                                                MessageBoxIcon.Exclamation, token: GenericToken).ConfigureAwait(false)
-                                                                            == DialogResult.Yes)
-                    {
-                        await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
-                                                    GenericToken).ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
