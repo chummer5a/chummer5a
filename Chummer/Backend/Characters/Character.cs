@@ -44218,18 +44218,21 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(IsAI),
                         new DependencyGraphNode<string, Character>(nameof(DEPEnabled))
                     ),
-                    new DependencyGraphNode<string, Character>(nameof(SpellDefenseIndirectDodgeToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(CurrentCounterspellingDice)),
-                        new DependencyGraphNode<string, Character>(nameof(SpellDefenseIndirectDodge),
-                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating))
+                    new DependencyGraphNode<string, Character>(nameof(DisplayDodge),
+                        new DependencyGraphNode<string, Character>(nameof(Dodge),
+                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating),
+                                new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
+                                new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                            )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DodgeToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(Dodge),
-                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating),
-                            new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
-                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
-                            )
+                        new DependencyGraphNode<string, Character>(nameof(DisplayDodge))
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(SpellDefenseIndirectDodgeToolTip),
+                        new DependencyGraphNode<string, Character>(nameof(CurrentCounterspellingDice)),
+                        new DependencyGraphNode<string, Character>(nameof(SpellDefenseIndirectDodge),
+                            new DependencyGraphNode<string, Character>(nameof(Dodge))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplaySpellDefenseIndirectDodge),
