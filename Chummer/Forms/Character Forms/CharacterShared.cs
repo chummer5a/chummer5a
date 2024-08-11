@@ -10316,41 +10316,70 @@ namespace Chummer
                             "Message_File_Cannot_Be_Read_Accessed",
                             token: token)
                         .ConfigureAwait(false);
+                    string strFormatErrorString = await LanguageManager
+                        .GetStringAsync("Message_File_Incorrect_Format", token: token).ConfigureAwait(false);
 
                     // Prompt the user to select an image to associate with this character.
+                    Bitmap bmpMugshot = null;
                     bool blnMakeLoop = true;
-                    while (blnMakeLoop)
+                    try
                     {
-                        token.ThrowIfCancellationRequested();
-                        blnMakeLoop = false;
-                        DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+                        while (blnMakeLoop)
                         {
-                            using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                            token.ThrowIfCancellationRequested();
+                            blnMakeLoop = false;
+                            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                             {
-                                dlgOpenFile.InitialDirectory = strInitialDirectory;
-                                dlgOpenFile.Filter = strFilter;
-                                DialogResult eReturn = dlgOpenFile.ShowDialog(x);
-                                strFileName = dlgOpenFile.FileName;
-                                return eReturn;
+                                using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                                {
+                                    dlgOpenFile.InitialDirectory = strInitialDirectory;
+                                    dlgOpenFile.Filter = strFilter;
+                                    DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                                    strFileName = dlgOpenFile.FileName;
+                                    return eReturn;
+                                }
+                            }, token: token).ConfigureAwait(false);
+                            if (eResult != DialogResult.OK)
+                                return false;
+                            token.ThrowIfCancellationRequested();
+                            if (!File.Exists(strFileName))
+                            {
+                                await Program
+                                    .ShowScrollableMessageBoxAsync(string.Format(strErrorString, strFileName),
+                                        icon: MessageBoxIcon.Error,
+                                        token: token)
+                                    .ConfigureAwait(false);
+                                blnMakeLoop = true;
                             }
-                        }, token: token).ConfigureAwait(false);
-                        if (eResult != DialogResult.OK)
-                            return false;
-                        token.ThrowIfCancellationRequested();
-                        if (!File.Exists(strFileName))
-                        {
-                            await Program
-                                .ShowScrollableMessageBoxAsync(string.Format(strErrorString, strFileName), token: token)
-                                .ConfigureAwait(false);
-                            blnMakeLoop = true;
+                            else
+                            {
+                                try
+                                {
+                                    bmpMugshot = new Bitmap(strFileName, true);
+                                }
+                                catch
+                                {
+                                    try
+                                    {
+                                        bmpMugshot = new Bitmap(strFileName, false);
+                                    }
+                                    catch
+                                    {
+                                        bmpMugshot = null;
+                                        await Program
+                                            .ShowScrollableMessageBoxAsync(string.Format(strFormatErrorString, strFileName),
+                                                icon: MessageBoxIcon.Error,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                        blnMakeLoop = true;
+                                    }
+                                }
+                            }
                         }
-                    }
 
-                    // Convert the image to a string using Base64.
-                    GlobalSettings.RecentImageFolder = Path.GetDirectoryName(strFileName);
+                        // Convert the image to a string using Base64.
+                        GlobalSettings.RecentImageFolder = Path.GetDirectoryName(strFileName);
 
-                    using (Bitmap bmpMugshot = new Bitmap(strFileName, true))
-                    {
                         if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                         {
                             await CharacterObject.Mugshots.AddAsync(
@@ -10363,6 +10392,10 @@ namespace Chummer
                                     bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb), token)
                                 .ConfigureAwait(false);
                         }
+                    }
+                    finally
+                    {
+                        bmpMugshot?.Dispose();
                     }
 
                     if (await CharacterObject.GetMainMugshotIndexAsync(token).ConfigureAwait(false) == -1)

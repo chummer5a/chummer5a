@@ -63,6 +63,10 @@
       <text>Chummer5 cannot access the following file:\n{0}\n\nPlease make sure that the file exists and that Chummer5 has permission to read from the location.</text>
     </string>
     <string>
+      <key>Message_File_Incorrect_Format</key>
+      <text>Chummer5 encountered an error when attempting to process the following file:\n{0}\n\nPlease make sure that the file is of the correct format for what the program requires.</text>
+    </string>
+    <string>
       <key>Message_Files_Cannot_Be_Removed</key>
       <text>Chummer5 could not remove the below files during update as they were inaccessible:</text>
     </string>
