@@ -242,7 +242,7 @@ namespace Chummer
                         try
                         {
                             await objWeapon.CreateAsync(xmlWeapon, null, true, false, true, token: token).ConfigureAwait(false);
-                            objWeapon.Parent = ParentWeapon;
+                            await objWeapon.SetParentAsync(ParentWeapon, token).ConfigureAwait(false);
                             Weapon objOldWeapon = Interlocked.Exchange(ref _objSelectedWeapon, objWeapon);
                             if (objOldWeapon != null)
                                 await objOldWeapon.DisposeAsync().ConfigureAwait(false);
@@ -535,7 +535,7 @@ namespace Chummer
                         try
                         {
                             await objWeapon.CreateAsync(objXmlWeapon, null, true, false, true, token: token).ConfigureAwait(false);
-                            objWeapon.Parent = ParentWeapon;
+                            await objWeapon.SetParentAsync(ParentWeapon, token).ConfigureAwait(false);
                             if (objWeapon.RangeType == "Ranged")
                                 blnAnyRanged = true;
                             else

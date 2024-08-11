@@ -2632,8 +2632,9 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
                         {
-                            if (objCyberware.Parent != null)
-                                await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
+                            Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                            if (objParent != null)
+                                await objParent.Children.RemoveAsync(objCyberware, token)
                                     .ConfigureAwait(false);
                             await CharacterObject.Cyberware.AddAsync(objCyberware, token)
                                 .ConfigureAwait(false);
@@ -2671,8 +2672,9 @@ namespace Chummer
                         {
                             await objCyberware.ChangeModularEquipAsync(false, token: token)
                                 .ConfigureAwait(false);
-                            if (objCyberware.Parent != null)
-                                await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
+                            Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                            if (objParent != null)
+                                await objParent.Children.RemoveAsync(objCyberware, token)
                                     .ConfigureAwait(false);
                             await CharacterObject.Cyberware.AddAsync(objCyberware, token)
                                 .ConfigureAwait(false);
@@ -2708,8 +2710,9 @@ namespace Chummer
                             continue;
                         if (!string.IsNullOrEmpty(await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
                         {
-                            if (objCyberware.Parent != null)
-                                await objCyberware.Parent.Children.RemoveAsync(objCyberware, token)
+                            Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                            if (objParent != null)
+                                await objParent.Children.RemoveAsync(objCyberware, token)
                                     .ConfigureAwait(false);
                             await CharacterObject.Cyberware.AddAsync(objCyberware, token)
                                 .ConfigureAwait(false);
@@ -7581,9 +7584,9 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Weapon objWeapon = new Weapon(CharacterObject);
                             if (objMod != null)
-                                objWeapon.ParentVehicleMod = objMod;
+                                await objWeapon.SetParentVehicleModAsync(objMod, GenericToken).ConfigureAwait(false);
                             else
-                                objWeapon.ParentMount = objWeaponMount;
+                                await objWeapon.SetParentMountAsync(objWeaponMount, GenericToken).ConfigureAwait(false);
                             await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
                             objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
@@ -7755,10 +7758,8 @@ namespace Chummer
                                 "/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
 
                         List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Weapon objWeapon = new Weapon(CharacterObject)
-                        {
-                            ParentVehicle = objSelectedWeapon.ParentVehicle
-                        };
+                        Weapon objWeapon = new Weapon(CharacterObject);
+                        await objWeapon.SetParentAsync(objSelectedWeapon).ConfigureAwait(false);
                         await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
                         objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
@@ -7767,7 +7768,6 @@ namespace Chummer
                             objWeapon.Cost = "0";
                         }
 
-                        objWeapon.Parent = objSelectedWeapon;
                         await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
                         if (!objSelectedWeapon.AllowAccessory)
                             objWeapon.AllowAccessory = false;
@@ -8304,10 +8304,8 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(CharacterObject);
                         await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
                         objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
-                        objWeapon.Parent = objSelectedWeapon;
+                        await objWeapon.SetParentAsync(objSelectedWeapon, GenericToken).ConfigureAwait(false);
                         objWeapon.AllowAccessory = objSelectedWeapon.AllowAccessory;
-                        if (!objSelectedWeapon.AllowAccessory)
-                            objWeapon.AllowAccessory = false;
 
                         if (frmPickWeapon.MyForm.FreeCost)
                         {
@@ -15396,9 +15394,10 @@ namespace Chummer
                                                                    .ConfigureAwait(false);
                             await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = strCategory, token)
                                                       .ConfigureAwait(false);
+                            bool blnNoParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false) == null;
                             // Cyberware Grade is not available for Genetech items.
                             // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
-                            await cboCyberwareGrade.DoThreadSafeAsync(x => x.Enabled = objCyberware.Parent == null
+                            await cboCyberwareGrade.DoThreadSafeAsync(x => x.Enabled = blnNoParent
                                                                           && !objCyberware.Suite
                                                                           && string.IsNullOrWhiteSpace(
                                                                               objCyberware.ForceGrade), token)
@@ -15439,23 +15438,19 @@ namespace Chummer
                                                           .ConfigureAwait(false);
                             await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
-                            if (objCyberware.Parent == null || objCyberware.AddToParentESS)
+                            if (blnNoParent || await objCyberware.GetAddToParentESSAsync(token).ConfigureAwait(false))
                             {
                                 decimal decCalculatedEss
                                     = await objCyberware.GetCalculatedESSAsync(token).ConfigureAwait(false);
-                                if (objCyberware.Parent == null)
-                                    await lblCyberwareEssence
-                                          .DoThreadSafeAsync(
-                                              x => x.Text = decCalculatedEss.ToString(
+                                await lblCyberwareEssence
+                                    .DoThreadSafeAsync(
+                                        x => x.Text = blnNoParent
+                                            ? decCalculatedEss.ToString(
+                                                strESSFormat, GlobalSettings.CultureInfo)
+                                            : '+'
+                                              + decCalculatedEss.ToString(
                                                   strESSFormat, GlobalSettings.CultureInfo), token)
-                                          .ConfigureAwait(false);
-                                else
-                                    await lblCyberwareEssence
-                                          .DoThreadSafeAsync(
-                                              x => x.Text = '+'
-                                                            + decCalculatedEss.ToString(
-                                                                strESSFormat, GlobalSettings.CultureInfo), token)
-                                          .ConfigureAwait(false);
+                                    .ConfigureAwait(false);
                             }
                             else
                                 await lblCyberwareEssence
@@ -15515,19 +15510,21 @@ namespace Chummer
                             {
                                 await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
+                                string strAgi = (await objCyberware.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false))
+                                    .ToString(GlobalSettings.CultureInfo);
                                 await lblCyberlimbAGI.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objCyberware.GetAttributeTotalValue("AGI")
-                                                         .ToString(GlobalSettings.CultureInfo);
+                                    x.Text = strAgi;
                                 }, token).ConfigureAwait(false);
                                 await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
+                                string strStr = (await objCyberware.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false))
+                                    .ToString(GlobalSettings.CultureInfo);
                                 await lblCyberlimbSTR.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objCyberware.GetAttributeTotalValue("STR")
-                                                         .ToString(GlobalSettings.CultureInfo);
+                                    x.Text = strStr;
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -15543,7 +15540,7 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
                                 bool blnEnabled = CharacterObject.GenerateBlackMarketMappings(
                                                                      (await CharacterObject
@@ -15557,12 +15554,13 @@ namespace Chummer
                                                                            .SelectSingleNodeAndCacheExpression(
                                                                                "/chummer", token: token), token)
                                                                  .Contains(objCyberware.Category);
+                                bool blnChecked = !string.IsNullOrEmpty(objCyberware.ParentID)
+                                    ? (await objCyberware.GetParentAsync(token).ConfigureAwait(false))?.DiscountCost == true
+                                    : objCyberware.DiscountCost;
                                 await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
                                     x.Enabled = blnEnabled;
-                                    x.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
-                                        ? objCyberware.Parent?.DiscountCost == true
-                                        : objCyberware.DiscountCost;
+                                    x.Checked = blnChecked;
                                 }, token).ConfigureAwait(false);
                             }
                             else
@@ -15575,12 +15573,14 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            bool blnPTVisible = await CharacterObject.GetIsPrototypeTranshumanAsync(token).ConfigureAwait(false);
+                            bool blnCanBePT = blnPTVisible && blnNoParent && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) == Improvement.ImprovementSource.Bioware;
+                            bool blnIsPT = blnPTVisible && await objCyberware.GetPrototypeTranshumanAsync(token).ConfigureAwait(false);
                             await chkPrototypeTranshuman.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = CharacterObject.IsPrototypeTranshuman;
-                                x.Enabled = objCyberware.Parent == null
-                                            && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
-                                x.Checked = objCyberware.PrototypeTranshuman && CharacterObject.IsPrototypeTranshuman;
+                                x.Visible = blnPTVisible;
+                                x.Enabled = blnCanBePT;
+                                x.Checked = blnIsPT;
                             }, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbCyberwareMatrix
@@ -18305,14 +18305,14 @@ namespace Chummer
                         }
                         else
                         {
-                            objCyberware.DiscountCost = frmPickCyberware.MyForm.BlackMarketDiscount;
+                            await objCyberware.SetDiscountCostAsync(frmPickCyberware.MyForm.BlackMarketDiscount, token).ConfigureAwait(false);
                             await objCyberware
                                 .SetPrototypeTranshumanAsync(frmPickCyberware.MyForm.PrototypeTranshuman, token)
                                 .ConfigureAwait(false);
 
                             // Apply the ESS discount if applicable.
-                            if (CharacterObjectSettings.AllowCyberwareESSDiscounts)
-                                objCyberware.ESSDiscount = frmPickCyberware.MyForm.SelectedESSDiscount;
+                            if (await CharacterObjectSettings.GetAllowCyberwareESSDiscountsAsync(token).ConfigureAwait(false))
+                                await objCyberware.SetESSDiscountAsync(frmPickCyberware.MyForm.SelectedESSDiscount, token).ConfigureAwait(false);
 
                             if (frmPickCyberware.MyForm.FreeCost)
                                 objCyberware.Cost = "0";
@@ -18322,8 +18322,8 @@ namespace Chummer
                             else
                                 await CharacterObject.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
 
-                            await CharacterObject.Weapons.AddRangeAsync(lstWeapons).ConfigureAwait(false);
-                            await CharacterObject.Vehicles.AddRangeAsync(lstVehicles).ConfigureAwait(false);
+                            await CharacterObject.Weapons.AddRangeAsync(lstWeapons, token).ConfigureAwait(false);
+                            await CharacterObject.Vehicles.AddRangeAsync(lstVehicles, token).ConfigureAwait(false);
                         }
 
                         return frmPickCyberware.MyForm.AddAgain;
@@ -23055,7 +23055,7 @@ namespace Chummer
                                                              .ConfigureAwait(false));
                             if (objXmlWeaponNode == null)
                                 continue;
-                            objWeapon.ParentVehicle = objVehicle;
+                            await objWeapon.SetParentVehicleAsync(objVehicle, token).ConfigureAwait(false);
                             await objWeapon.CreateAsync(objXmlWeaponNode, lstSubWeapons, blnCreateChildren, token: token).ConfigureAwait(false);
 
                             // Find the first Weapon Mount in the Vehicle.
@@ -25022,7 +25022,7 @@ namespace Chummer
                         }
                     }
 
-                    Cyberware objOldParent = objModularCyberware.Parent;
+                    Cyberware objOldParent = await objModularCyberware.GetParentAsync(GenericToken).ConfigureAwait(false);
                     if (objOldParent != null)
                         await objModularCyberware.ChangeModularEquipAsync(false, token: GenericToken)
                             .ConfigureAwait(false);
@@ -25174,7 +25174,7 @@ namespace Chummer
                     VehicleMod objOldParentVehicleMod = (await CharacterObject.Vehicles
                         .FindVehicleCyberwareAsync(x => x.InternalId == objModularCyberware.InternalId, GenericToken)
                         .ConfigureAwait(false)).Item2;
-                    Cyberware objOldParent = objModularCyberware.Parent;
+                    Cyberware objOldParent = await objModularCyberware.GetParentAsync(GenericToken).ConfigureAwait(false);
                     if (objOldParent != null)
                         await objModularCyberware.ChangeModularEquipAsync(false, token: GenericToken)
                             .ConfigureAwait(false);

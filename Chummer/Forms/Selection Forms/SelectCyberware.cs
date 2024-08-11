@@ -573,7 +573,7 @@ namespace Chummer
                                 {
                                     Cyberware objLoop = CyberwareParent;
                                     while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
-                                        objLoop = objLoop.Parent;
+                                        objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
                                     if (objLoop != null)
                                     {
                                         dicVehicleValues = new Dictionary<string, int>(2)
@@ -1684,7 +1684,7 @@ namespace Chummer
                                 {
                                     Cyberware objLoop = CyberwareParent;
                                     while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
-                                        objLoop = objLoop.Parent;
+                                        objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
                                     if (objLoop != null)
                                     {
                                         dicVehicleValues = new Dictionary<string, int>(2)
@@ -1723,7 +1723,7 @@ namespace Chummer
                             bool blnAnyParentIsModular = objParent != null && !string.IsNullOrEmpty(await objParent.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false));
                             while (objParent != null && !blnAnyParentIsModular)
                             {
-                                objParent = objParent.Parent;
+                                objParent = await objParent.GetParentAsync(token).ConfigureAwait(false);
                                 blnAnyParentIsModular = objParent != null && !string.IsNullOrEmpty(await objParent.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false));
                             }
 
@@ -1890,7 +1890,9 @@ namespace Chummer
                             decCapacity = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                     }
 
-                    Cyberware objGrandparent = (_objParentObject as Cyberware)?.Parent;
+                    Cyberware objGrandparent = _objParentObject is Cyberware objCyberwareParent
+                        ? await objCyberwareParent.GetParentAsync(token).ConfigureAwait(false)
+                        : null;
                     decimal decMaximumCapacityUsed = blnAddToParentCapacity
                         ? objGrandparent != null
                             ? await objGrandparent.GetCapacityRemainingAsync(token).ConfigureAwait(false)

@@ -1575,43 +1575,44 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            List<Quality> lstImprovementSourcesToProcess = new List<Quality>(Qualities.Count);
-
-            switch (e.Action)
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                case NotifyCollectionChangedAction.Replace:
-                    lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<Quality>());
-                    break;
+                token.ThrowIfCancellationRequested();
+                ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
+                List<Quality> lstImprovementSourcesToProcess = new List<Quality>(await lstQualities.GetCountAsync(token).ConfigureAwait(false));
 
-                case NotifyCollectionChangedAction.Move:
-                    return;
-
-                case NotifyCollectionChangedAction.Reset:
-                    lstImprovementSourcesToProcess.AddRange(Qualities);
-                    break;
-            }
-
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
-                       Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
-            {
-                try
+                switch (e.Action)
                 {
-                    token.ThrowIfCancellationRequested();
-                    HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                    strTemp.Add(nameof(Qualities));
-                    dicChangedProperties.Add(this, strTemp);
-                    IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    case NotifyCollectionChangedAction.Add:
+                    case NotifyCollectionChangedAction.Replace:
+                        lstImprovementSourcesToProcess.AddRange(e.NewItems.OfType<Quality>());
+                        break;
+
+                    case NotifyCollectionChangedAction.Move:
+                        return;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        lstImprovementSourcesToProcess.AddRange(lstQualities);
+                        break;
+                }
+
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                           Utils.DictionaryForMultiplePropertyChangedPool,
+                           out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
+                {
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (Power objPower in Powers)
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(Qualities));
+                        dicChangedProperties.Add(this, strTemp);
+                        await Powers.ForEachAsync(objPower =>
                         {
                             HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
                             strInnerTemp.Add(nameof(Power.AdeptWayDiscountEnabled));
                             dicChangedProperties.Add(objPower, strInnerTemp);
-                        }
+                        }, token).ConfigureAwait(false);
 
                         if (lstImprovementSourcesToProcess.Count > 0)
                         {
@@ -1619,13 +1620,13 @@ namespace Chummer
                             {
                                 // Needed in order to properly process named sources where
                                 // the tooltip was built before the object was added to the character
-                                foreach (Improvement objImprovement in Improvements)
+                                await Improvements.ForEachAsync(objImprovement =>
                                 {
                                     if (objImprovement.SourceName != objNewItem.InternalId
                                         || !objImprovement.Enabled)
-                                        continue;
+                                        return;
                                     foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                              string strPropertyToUpdate) in
+                                                 string strPropertyToUpdate) in
                                              objImprovement.GetRelevantPropertyChangers())
                                     {
                                         if (!dicChangedProperties.TryGetValue(objItemToUpdate,
@@ -1637,30 +1638,31 @@ namespace Chummer
 
                                         setChangedProperties.Add(strPropertyToUpdate);
                                     }
-                                }
+                                }, token).ConfigureAwait(false);
                             }
+                        }
+
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
+                                 dicChangedProperties)
+                        {
+                            await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-
-                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
-                             dicChangedProperties)
-                    {
-                        await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
-                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
-                    {
-                        HashSet<string> setLoop = lstToReturn[i];
-                        Utils.StringHashSetPool.Return(ref setLoop);
+                        List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1668,57 +1670,58 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            List<MartialArt> lstImprovementSourcesToProcess = new List<MartialArt>(MartialArts.Count);
-
-            switch (e.Action)
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                case NotifyCollectionChangedAction.Replace:
-                    lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<MartialArt>());
-                    break;
+                token.ThrowIfCancellationRequested();
+                ThreadSafeObservableCollection<MartialArt> lstMartialArts = await GetMartialArtsAsync(token).ConfigureAwait(false);
+                List<MartialArt> lstImprovementSourcesToProcess = new List<MartialArt>(await lstMartialArts.GetCountAsync(token).ConfigureAwait(false));
 
-                case NotifyCollectionChangedAction.Move:
-                    return;
-
-                case NotifyCollectionChangedAction.Reset:
-                    lstImprovementSourcesToProcess.AddRange(MartialArts);
-                    break;
-            }
-
-            if (lstImprovementSourcesToProcess.Count == 0)
-            {
-                await OnPropertyChangedAsync(nameof(MartialArts), token).ConfigureAwait(false);
-                return;
-            }
-
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
-                       Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
-            {
-                try
+                switch (e.Action)
                 {
-                    token.ThrowIfCancellationRequested();
-                    HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                    strTemp.Add(nameof(MartialArts));
-                    dicChangedProperties.Add(this, strTemp);
-                    IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    case NotifyCollectionChangedAction.Add:
+                    case NotifyCollectionChangedAction.Replace:
+                        lstImprovementSourcesToProcess.AddRange(e.NewItems.OfType<MartialArt>());
+                        break;
+
+                    case NotifyCollectionChangedAction.Move:
+                        return;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        lstImprovementSourcesToProcess.AddRange(lstMartialArts);
+                        break;
+                }
+
+                if (lstImprovementSourcesToProcess.Count == 0)
+                {
+                    await OnPropertyChangedAsync(nameof(MartialArts), token).ConfigureAwait(false);
+                    return;
+                }
+
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                           Utils.DictionaryForMultiplePropertyChangedPool,
+                           out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
+                {
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(MartialArts));
+                        dicChangedProperties.Add(this, strTemp);
                         foreach (MartialArt objNewItem in lstImprovementSourcesToProcess)
                         {
                             // Needed in order to properly process named sources where
                             // the tooltip was built before the object was added to the character
-                            foreach (Improvement objImprovement in Improvements)
+                            await Improvements.ForEachAsync(objImprovement =>
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                    continue;
+                                    return;
                                 foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                          string strPropertyToUpdate) in
+                                             string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
                                     if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                                          out HashSet<string> setChangedProperties))
+                                            out HashSet<string> setChangedProperties))
                                     {
                                         setChangedProperties = Utils.StringHashSetPool.Get();
                                         dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
@@ -1726,29 +1729,30 @@ namespace Chummer
 
                                     setChangedProperties.Add(strPropertyToUpdate);
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
+                        }
+
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
+                                 dicChangedProperties)
+                        {
+                            await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-
-                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
-                             dicChangedProperties)
-                    {
-                        await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
-                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
-                    {
-                        HashSet<string> setLoop = lstToReturn[i];
-                        Utils.StringHashSetPool.Return(ref setLoop);
+                        List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1756,57 +1760,58 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            List<Metamagic> lstImprovementSourcesToProcess = new List<Metamagic>(Metamagics.Count);
-
-            switch (e.Action)
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                case NotifyCollectionChangedAction.Replace:
-                    lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<Metamagic>());
-                    break;
+                token.ThrowIfCancellationRequested();
+                ThreadSafeObservableCollection<Metamagic> lstMetamagics = await GetMetamagicsAsync(token).ConfigureAwait(false);
+                List<Metamagic> lstImprovementSourcesToProcess = new List<Metamagic>(await lstMetamagics.GetCountAsync(token).ConfigureAwait(false));
 
-                case NotifyCollectionChangedAction.Move:
-                    return;
-
-                case NotifyCollectionChangedAction.Reset:
-                    lstImprovementSourcesToProcess.AddRange(Metamagics);
-                    break;
-            }
-
-            if (lstImprovementSourcesToProcess.Count == 0)
-            {
-                await OnPropertyChangedAsync(nameof(Metamagics), token).ConfigureAwait(false);
-                return;
-            }
-
-            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
-                       Utils.DictionaryForMultiplePropertyChangedPool,
-                       out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
-            {
-                try
+                switch (e.Action)
                 {
-                    token.ThrowIfCancellationRequested();
-                    HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                    strTemp.Add(nameof(Metamagics));
-                    dicChangedProperties.Add(this, strTemp);
-                    IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    case NotifyCollectionChangedAction.Add:
+                    case NotifyCollectionChangedAction.Replace:
+                        lstImprovementSourcesToProcess.AddRange(e.NewItems.OfType<Metamagic>());
+                        break;
+
+                    case NotifyCollectionChangedAction.Move:
+                        return;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        lstImprovementSourcesToProcess.AddRange(lstMetamagics);
+                        break;
+                }
+
+                if (lstImprovementSourcesToProcess.Count == 0)
+                {
+                    await OnPropertyChangedAsync(nameof(Metamagics), token).ConfigureAwait(false);
+                    return;
+                }
+
+                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
+                           Utils.DictionaryForMultiplePropertyChangedPool,
+                           out Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>> dicChangedProperties))
+                {
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                        strTemp.Add(nameof(Metamagics));
+                        dicChangedProperties.Add(this, strTemp);
                         foreach (Metamagic objNewItem in lstImprovementSourcesToProcess)
                         {
                             // Needed in order to properly process named sources where
                             // the tooltip was built before the object was added to the character
-                            foreach (Improvement objImprovement in Improvements)
+                            await Improvements.ForEachAsync(objImprovement =>
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                    continue;
+                                    return;
                                 foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                          string strPropertyToUpdate) in
+                                             string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
                                     if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                                          out HashSet<string> setChangedProperties))
+                                            out HashSet<string> setChangedProperties))
                                     {
                                         setChangedProperties = Utils.StringHashSetPool.Get();
                                         dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
@@ -1814,29 +1819,30 @@ namespace Chummer
 
                                     setChangedProperties.Add(strPropertyToUpdate);
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
+                        }
+
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
+                                 dicChangedProperties)
+                        {
+                            await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token)
+                                .ConfigureAwait(false);
                         }
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-
-                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
-                             dicChangedProperties)
-                    {
-                        await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
-                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
-                    {
-                        HashSet<string> setLoop = lstToReturn[i];
-                        Utils.StringHashSetPool.Return(ref setLoop);
+                        List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1922,141 +1928,136 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    switch (e.Action)
+                    IAsyncDisposable objLocker =
+                        await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        case NotifyCollectionChangedAction.Add:
-                            foreach (Gear objNewItem in e.NewItems)
-                            {
-                                if (objNewItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                }
-
-                                if (IsLoading)
-                                    continue;
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in Improvements)
-                                    {
-                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                            == objNewItem.InternalId
-                                            &&
-                                            objImprovement.Enabled)
-                                        {
-                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                         string strPropertyToUpdate) in
-                                                     objImprovement.GetRelevantPropertyChangers())
-                                            {
-                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                        out HashSet<string> setChangedProperties))
-                                                {
-                                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                }
-
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            }
-                                        }
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Remove:
-                            foreach (Gear objOldItem in e.OldItems)
-                            {
-                                if (objOldItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                    break;
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Replace:
-                            foreach (Gear objOldItem in e.OldItems)
-                            {
-                                if (objOldItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                    break;
-                                }
-                            }
-
-                            foreach (Gear objNewItem in e.NewItems)
-                            {
-                                if (objNewItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                }
-
-                                if (IsLoading)
-                                    continue;
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in Improvements)
-                                    {
-                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                            == objNewItem.InternalId
-                                            &&
-                                            objImprovement.Enabled)
-                                        {
-                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                         string strPropertyToUpdate) in
-                                                     objImprovement.GetRelevantPropertyChangers())
-                                            {
-                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                        out HashSet<string> setChangedProperties))
-                                                {
-                                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                }
-
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            }
-                                        }
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Reset:
-                            blnDoEncumbranceRefresh = true;
-                            break;
-                    }
-
-                    if (blnDoEncumbranceRefresh)
-                    {
-                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                        token.ThrowIfCancellationRequested();
+                        switch (e.Action)
                         {
-                            setChangedProperties = Utils.StringHashSetPool.Get();
-                            dicChangedProperties.Add(this, setChangedProperties);
-                        }
-                        setChangedProperties.Add(nameof(TotalCarriedWeight));
-                    }
+                            case NotifyCollectionChangedAction.Add:
+                                foreach (Gear objNewItem in e.NewItems)
+                                {
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                    }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                                    if (IsLoading)
+                                        continue;
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    await Improvements.ForEachAsync(objImprovement =>
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Remove:
+                                foreach (Gear objOldItem in e.OldItems)
+                                {
+                                    if (objOldItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                        break;
+                                    }
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Replace:
+                                foreach (Gear objOldItem in e.OldItems)
+                                {
+                                    if (objOldItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                        break;
+                                    }
+                                }
+
+                                foreach (Gear objNewItem in e.NewItems)
+                                {
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                    }
+
+                                    if (IsLoading)
+                                        continue;
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    await Improvements.ForEachAsync(objImprovement =>
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Reset:
+                                blnDoEncumbranceRefresh = true;
+                                break;
+                        }
+
+                        if (blnDoEncumbranceRefresh)
+                        {
+                            if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(this, setChangedProperties);
+                            }
+
+                            setChangedProperties.Add(nameof(TotalCarriedWeight));
+                        }
+
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
+                                 dicChangedProperties)
+                        {
+                            await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
                     {
-                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2084,150 +2085,143 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                            foreach (Weapon objNewItem in e.NewItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objNewItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                }
-
-                                if (IsLoading)
-                                    continue;
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in Improvements)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                            == objNewItem.InternalId
-                                            &&
-                                            objImprovement.Enabled)
-                                        {
-                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                         string strPropertyToUpdate) in
-                                                     objImprovement.GetRelevantPropertyChangers())
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                        out HashSet<string> setChangedProperties))
-                                                {
-                                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                }
-
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            }
-                                        }
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Remove:
-                            foreach (Weapon objOldItem in e.OldItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objOldItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                    break;
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Replace:
-                            foreach (Weapon objOldItem in e.OldItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objOldItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                    break;
-                                }
-                            }
-
-                            foreach (Weapon objNewItem in e.NewItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objNewItem.Equipped)
-                                {
-                                    blnDoEncumbranceRefresh = true;
-                                }
-
-                                if (IsLoading)
-                                    continue;
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in Improvements)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                            == objNewItem.InternalId
-                                            &&
-                                            objImprovement.Enabled)
-                                        {
-                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                         string strPropertyToUpdate) in
-                                                     objImprovement.GetRelevantPropertyChangers())
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                        out HashSet<string> setChangedProperties))
-                                                {
-                                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                }
-
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            }
-                                        }
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Reset:
-                            blnDoEncumbranceRefresh = true;
-                            break;
-                    }
-
-                    if (blnDoEncumbranceRefresh)
-                    {
-                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
-                        {
-                            setChangedProperties = Utils.StringHashSetPool.Get();
-                            dicChangedProperties.Add(this, setChangedProperties);
-                        }
-                        setChangedProperties.Add(nameof(TotalCarriedWeight));
-                    }
-
-                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    IAsyncDisposable objLocker =
+                        await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
-                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        switch (e.Action)
+                        {
+                            case NotifyCollectionChangedAction.Add:
+                                foreach (Weapon objNewItem in e.NewItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                    }
+
+                                    if (IsLoading)
+                                        continue;
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    await Improvements.ForEachAsync(objImprovement =>
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Remove:
+                                foreach (Weapon objOldItem in e.OldItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objOldItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                        break;
+                                    }
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Replace:
+                                foreach (Weapon objOldItem in e.OldItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objOldItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                        break;
+                                    }
+                                }
+
+                                foreach (Weapon objNewItem in e.NewItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                    }
+
+                                    if (IsLoading)
+                                        continue;
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    await Improvements.ForEachAsync(objImprovement =>
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Reset:
+                                blnDoEncumbranceRefresh = true;
+                                break;
+                        }
+
+                        if (blnDoEncumbranceRefresh)
+                        {
+                            if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(this, setChangedProperties);
+                            }
+
+                            setChangedProperties.Add(nameof(TotalCarriedWeight));
+                        }
+
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
+                                 dicChangedProperties)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2256,174 +2250,168 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                            foreach (Armor objNewItem in e.NewItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objNewItem.Equipped)
-                                {
-                                    blnDoEquippedArmorRefresh = true;
-                                    if (objNewItem.Encumbrance)
-                                        blnDoArmorEncumbranceRefresh = true;
-                                }
-
-                                if (IsLoading)
-                                    continue;
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in Improvements)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                            == objNewItem.InternalId
-                                            &&
-                                            objImprovement.Enabled)
-                                        {
-                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                         string strPropertyToUpdate) in
-                                                     objImprovement.GetRelevantPropertyChangers())
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                        out HashSet<string> setChangedProperties))
-                                                {
-                                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                }
-
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            }
-                                        }
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Remove:
-                            foreach (Armor objOldItem in e.OldItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objOldItem.Equipped)
-                                {
-                                    blnDoEquippedArmorRefresh = true;
-                                    if (objOldItem.Encumbrance)
-                                    {
-                                        blnDoArmorEncumbranceRefresh = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Replace:
-                            foreach (Armor objOldItem in e.OldItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objOldItem.Equipped)
-                                {
-                                    blnDoEquippedArmorRefresh = true;
-                                    if (objOldItem.Encumbrance)
-                                    {
-                                        blnDoArmorEncumbranceRefresh = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            foreach (Armor objNewItem in e.NewItems)
-                            {
-                                token.ThrowIfCancellationRequested();
-                                if (objNewItem.Equipped)
-                                {
-                                    blnDoEquippedArmorRefresh = true;
-                                    if (objNewItem.Encumbrance)
-                                        blnDoArmorEncumbranceRefresh = true;
-                                }
-
-                                if (IsLoading)
-                                    continue;
-                                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    // Needed in order to properly process named sources where
-                                    // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in Improvements)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
-                                            == objNewItem.InternalId
-                                            &&
-                                            objImprovement.Enabled)
-                                        {
-                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                         string strPropertyToUpdate) in
-                                                     objImprovement.GetRelevantPropertyChangers())
-                                            {
-                                                token.ThrowIfCancellationRequested();
-                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                        out HashSet<string> setChangedProperties))
-                                                {
-                                                    setChangedProperties = Utils.StringHashSetPool.Get();
-                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                                }
-
-                                                setChangedProperties.Add(strPropertyToUpdate);
-                                            }
-                                        }
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            break;
-
-                        case NotifyCollectionChangedAction.Reset:
-                            blnDoEquippedArmorRefresh = true;
-                            blnDoArmorEncumbranceRefresh = true;
-                            break;
-                    }
-
-                    if (blnDoEquippedArmorRefresh)
-                    {
-                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
-                        {
-                            setChangedProperties = Utils.StringHashSetPool.Get();
-                            dicChangedProperties.Add(this, setChangedProperties);
-                        }
-                        setChangedProperties.Add(nameof(GetArmorRating));
-                        setChangedProperties.Add(nameof(TotalCarriedWeight));
-                    }
-
-                    if (blnDoArmorEncumbranceRefresh)
-                    {
-                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
-                        {
-                            setChangedProperties = Utils.StringHashSetPool.Get();
-                            dicChangedProperties.Add(this, setChangedProperties);
-                        }
-                        setChangedProperties.Add(nameof(ArmorEncumbrance));
-                    }
-
-                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    IAsyncDisposable objLocker =
+                        await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
                         token.ThrowIfCancellationRequested();
-                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        switch (e.Action)
+                        {
+                            case NotifyCollectionChangedAction.Add:
+                                foreach (Armor objNewItem in e.NewItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEquippedArmorRefresh = true;
+                                        if (objNewItem.Encumbrance)
+                                            blnDoArmorEncumbranceRefresh = true;
+                                    }
+
+                                    if (IsLoading)
+                                        continue;
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    await Improvements.ForEachAsync(objImprovement =>
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Remove:
+                                foreach (Armor objOldItem in e.OldItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objOldItem.Equipped)
+                                    {
+                                        blnDoEquippedArmorRefresh = true;
+                                        if (objOldItem.Encumbrance)
+                                        {
+                                            blnDoArmorEncumbranceRefresh = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Replace:
+                                foreach (Armor objOldItem in e.OldItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objOldItem.Equipped)
+                                    {
+                                        blnDoEquippedArmorRefresh = true;
+                                        if (objOldItem.Encumbrance)
+                                        {
+                                            blnDoArmorEncumbranceRefresh = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                foreach (Armor objNewItem in e.NewItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEquippedArmorRefresh = true;
+                                        if (objNewItem.Encumbrance)
+                                            blnDoArmorEncumbranceRefresh = true;
+                                    }
+
+                                    if (IsLoading)
+                                        continue;
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    await Improvements.ForEachAsync(objImprovement =>
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless")
+                                            == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                break;
+
+                            case NotifyCollectionChangedAction.Reset:
+                                blnDoEquippedArmorRefresh = true;
+                                blnDoArmorEncumbranceRefresh = true;
+                                break;
+                        }
+
+                        if (blnDoEquippedArmorRefresh)
+                        {
+                            if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(this, setChangedProperties);
+                            }
+
+                            setChangedProperties.Add(nameof(GetArmorRating));
+                            setChangedProperties.Add(nameof(TotalCarriedWeight));
+                        }
+
+                        if (blnDoArmorEncumbranceRefresh)
+                        {
+                            if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(this, setChangedProperties);
+                            }
+
+                            setChangedProperties.Add(nameof(ArmorEncumbrance));
+                        }
+
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
+                                 dicChangedProperties)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
@@ -2452,24 +2440,26 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    switch (e.Action)
+                    IAsyncDisposable objLocker =
+                        await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        case NotifyCollectionChangedAction.Add:
+                        token.ThrowIfCancellationRequested();
+                        switch (e.Action)
                         {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(RedlinerBonus));
-                            dicChangedProperties.Add(this, strTemp);
-                            foreach (Cyberware objNewItem in e.NewItems)
+                            case NotifyCollectionChangedAction.Add:
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                    blnDoEncumbranceRefresh = true;
-                                dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                                IAsyncDisposable objLocker =
-                                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
+                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                                strTemp.Add(nameof(RedlinerBonus));
+                                dicChangedProperties.Add(this, strTemp);
+                                foreach (Cyberware objNewItem in e.NewItems)
                                 {
                                     token.ThrowIfCancellationRequested();
+                                    if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token)
+                                            .ConfigureAwait(false))
+                                        blnDoEncumbranceRefresh = true;
+
+                                    dicChangedProperties[this].Add(await objNewItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                     if (!IsLoading)
                                     {
                                         // Needed in order to properly process named sources where
@@ -2499,78 +2489,67 @@ namespace Chummer
                                     }
 
                                     if (!blnDoCyberlimbAttributesRefresh
-                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objNewItem.Parent == null
-                                        && objNewItem.ParentVehicle == null
+                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                            .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
+                                        && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                         && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                        && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                        && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                            await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
                                 }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
 
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(RedlinerBonus));
-                            dicChangedProperties.Add(this, strTemp);
-                            foreach (Cyberware objOldItem in e.OldItems)
+                                break;
+                            }
+                            case NotifyCollectionChangedAction.Remove:
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                    blnDoEncumbranceRefresh = true;
-                                dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                                IAsyncDisposable objLocker =
-                                    await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                                try
+                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                                strTemp.Add(nameof(RedlinerBonus));
+                                dicChangedProperties.Add(this, strTemp);
+                                foreach (Cyberware objOldItem in e.OldItems)
                                 {
                                     token.ThrowIfCancellationRequested();
+                                    if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token)
+                                            .ConfigureAwait(false))
+                                        blnDoEncumbranceRefresh = true;
+                                    dicChangedProperties[this].Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                     if (!blnDoCyberlimbAttributesRefresh
-                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objOldItem.Parent == null
-                                        && objOldItem.ParentVehicle == null
+                                        && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                            .ConfigureAwait(false) && await objOldItem.GetParentAsync(token).ConfigureAwait(false) == null
+                                        && await objOldItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                         && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                        && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                                        && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                            await objOldItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                     {
                                         blnDoCyberlimbAttributesRefresh = true;
                                     }
                                 }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
 
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(RedlinerBonus));
-                            dicChangedProperties.Add(this, strTemp);
-                            IAsyncDisposable objLocker =
-                                await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                            try
+                                break;
+                            }
+                            case NotifyCollectionChangedAction.Replace:
                             {
-                                token.ThrowIfCancellationRequested();
+                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
+                                strTemp.Add(nameof(RedlinerBonus));
+                                dicChangedProperties.Add(this, strTemp);
                                 if (!Settings.DontUseCyberlimbCalculation)
                                 {
                                     foreach (Cyberware objOldItem in e.OldItems)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                        if (await objOldItem.GetIsModularCurrentlyEquippedAsync(token)
+                                                .ConfigureAwait(false))
                                             blnDoEncumbranceRefresh = true;
-                                        dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
+                                        dicChangedProperties[this]
+                                            .Add(await objOldItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                         if (!blnDoCyberlimbAttributesRefresh
-                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objOldItem.Parent == null
-                                            && objOldItem.ParentVehicle == null
+                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                                .ConfigureAwait(false) && await objOldItem.GetParentAsync(token).ConfigureAwait(false) == null
+                                            && await objOldItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                             && await objOldItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                            && !Settings.ExcludeLimbSlot.Contains(objOldItem.LimbSlot))
+                                            && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                await objOldItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }
@@ -2579,82 +2558,70 @@ namespace Chummer
                                     foreach (Cyberware objNewItem in e.NewItems)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                        if (await objNewItem.GetIsModularCurrentlyEquippedAsync(token)
+                                                .ConfigureAwait(false))
                                             blnDoEncumbranceRefresh = true;
-                                        dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
+                                        dicChangedProperties[this]
+                                            .Add(await objNewItem.GetEssencePropertyNameAsync(token).ConfigureAwait(false));
                                         if (!blnDoCyberlimbAttributesRefresh
-                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) && objNewItem.Parent == null
-                                            && objNewItem.ParentVehicle == null
+                                            && !await Settings.GetDontUseCyberlimbCalculationAsync(token)
+                                                .ConfigureAwait(false) && await objNewItem.GetParentAsync(token).ConfigureAwait(false) == null
+                                            && await objNewItem.GetParentVehicleAsync(token).ConfigureAwait(false) == null
                                             && await objNewItem.GetIsLimbAsync(token).ConfigureAwait(false)
-                                            && !Settings.ExcludeLimbSlot.Contains(objNewItem.LimbSlot))
+                                            && !(await Settings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                await objNewItem.GetLimbSlotAsync(token).ConfigureAwait(false)))
                                         {
                                             blnDoCyberlimbAttributesRefresh = true;
                                         }
                                     }
                                 }
-                            }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
 
-                            break;
+                                break;
+                            }
+                            case NotifyCollectionChangedAction.Reset:
+                            {
+                                blnDoEncumbranceRefresh = true;
+                                blnDoCyberlimbAttributesRefresh =
+                                    !await Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false);
+
+                                if (!dicChangedProperties.TryGetValue(this,
+                                        out HashSet<string> setChangedProperties))
+                                {
+                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(this, setChangedProperties);
+                                }
+
+                                setChangedProperties.Add(nameof(RedlinerBonus));
+                                setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
+                                setChangedProperties.Add(nameof(BiowareEssence));
+                                setChangedProperties.Add(nameof(CyberwareEssence));
+                                setChangedProperties.Add(nameof(EssenceHole));
+                                break;
+                            }
                         }
-                        case NotifyCollectionChangedAction.Reset:
-                        {
-                            blnDoEncumbranceRefresh = true;
-                            IAsyncDisposable objLocker =
-                                await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                            try
-                            {
-                                token.ThrowIfCancellationRequested();
-                                blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
-                            }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
 
-                            if (!dicChangedProperties.TryGetValue(this,
-                                    out HashSet<string> setChangedProperties))
+                        if (blnDoEncumbranceRefresh)
+                        {
+                            if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
                             {
                                 setChangedProperties = Utils.StringHashSetPool.Get();
                                 dicChangedProperties.Add(this, setChangedProperties);
                             }
 
-                            setChangedProperties.Add(nameof(RedlinerBonus));
-                            setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
-                            setChangedProperties.Add(nameof(BiowareEssence));
-                            setChangedProperties.Add(nameof(CyberwareEssence));
-                            setChangedProperties.Add(nameof(EssenceHole));
-                            break;
+                            setChangedProperties.Add(nameof(TotalCarriedWeight));
                         }
-                    }
 
-                    if (blnDoEncumbranceRefresh)
-                    {
-                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                        if (blnDoCyberlimbAttributesRefresh)
                         {
-                            setChangedProperties = Utils.StringHashSetPool.Get();
-                            dicChangedProperties.Add(this, setChangedProperties);
-                        }
-                        setChangedProperties.Add(nameof(TotalCarriedWeight));
-                    }
-
-                    if (blnDoCyberlimbAttributesRefresh)
-                    {
-                        IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                        try
-                        {
-                            token.ThrowIfCancellationRequested();
                             foreach (string strAbbrev in Backend.Equipment.Cyberware.CyberlimbAttributeAbbrevs)
                             {
                                 token.ThrowIfCancellationRequested();
-                                CharacterAttrib objAttribute = await GetAttributeAsync(strAbbrev, token: token).ConfigureAwait(false);
+                                CharacterAttrib objAttribute =
+                                    await GetAttributeAsync(strAbbrev, token: token).ConfigureAwait(false);
                                 if (objAttribute == null)
                                     continue;
                                 if (!dicChangedProperties.TryGetValue(objAttribute,
-                                                                      out HashSet<string> setChangedProperties))
+                                        out HashSet<string> setChangedProperties))
                                 {
                                     setChangedProperties = Utils.StringHashSetPool.Get();
                                     dicChangedProperties.Add(objAttribute, setChangedProperties);
@@ -2663,16 +2630,18 @@ namespace Chummer
                                 setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
                             }
                         }
-                        finally
+
+                        foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in
+                                 dicChangedProperties)
                         {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token)
+                                .ConfigureAwait(false);
                         }
                     }
-
-                    foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    finally
                     {
-                        token.ThrowIfCancellationRequested();
-                        await kvpToProcess.Key.OnMultiplePropertiesChangedAsync(kvpToProcess.Value.ToList(), token).ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
@@ -13504,8 +13473,9 @@ namespace Chummer
                         {
                             strWareReturn = await objCyberware.DisplayNameShortAsync(strLanguage, token)
                                 .ConfigureAwait(false);
-                            if (objCyberware.Parent != null)
-                                strWareReturn += strSpace + '(' + await objCyberware.Parent
+                            Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                            if (objParent != null)
+                                strWareReturn += strSpace + '(' + await objParent
                                                      .DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false)
                                                  + ')';
                             if (blnWireless)
@@ -13533,9 +13503,10 @@ namespace Chummer
                                           + strSpace + await objVehicleMod
                                               .DisplayNameShortAsync(strLanguage, token: token)
                                               .ConfigureAwait(false);
-                                    if (objCyberware.Parent != null)
+                                    Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                                    if (objParent != null)
                                         strWareReturn += ',' + strSpace
-                                                             + await objCyberware.Parent
+                                                             + await objParent
                                                                  .DisplayNameShortAsync(strLanguage, token)
                                                                  .ConfigureAwait(false);
                                     strWareReturn += ')';
@@ -13572,9 +13543,10 @@ namespace Chummer
                                               + strSpace + await objVehicleMod
                                                   .DisplayNameShortAsync(strLanguage, token)
                                                   .ConfigureAwait(false);
-                                        if (objCyberware.Parent != null)
+                                        Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
+                                        if (objParent != null)
                                             strWareReturn += ',' + strSpace
-                                                                 + await objCyberware.Parent
+                                                                 + await objParent
                                                                      .DisplayNameShortAsync(strLanguage, token)
                                                                      .ConfigureAwait(false);
                                         strWareReturn += ')';
@@ -14826,8 +14798,9 @@ namespace Chummer
                                                    .ConfigureAwait(false), token)
                                 .ConfigureAwait(false))
                         {
-                            string strName = objLoopCyberware.Parent != null
-                                ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                            Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
+                            string strName = objLoopParent != null
+                                ? await objLoopParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
                                 : await objLoopCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                         }
@@ -14856,10 +14829,11 @@ namespace Chummer
                                                            .ConfigureAwait(false), token)
                                         .ConfigureAwait(false))
                                 {
+                                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
                                     string strName
                                         = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                          + strSpace + (objLoopCyberware.Parent != null
-                                              ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                          + strSpace + (objLoopParent != null
+                                              ? await objLoopParent.GetCurrentDisplayNameAsync(token)
                                                   .ConfigureAwait(false)
                                               : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
                                                   .ConfigureAwait(false));
@@ -14893,11 +14867,12 @@ namespace Chummer
                                                         .ConfigureAwait(false), token)
                                             .ConfigureAwait(false))
                                     {
+                                        Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
                                         string strName
                                             = await objLoopVehicle.GetCurrentDisplayNameAsync(token)
                                                   .ConfigureAwait(false)
-                                              + strSpace + (objLoopCyberware.Parent != null
-                                                  ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                              + strSpace + (objLoopParent != null
+                                                  ? await objLoopParent.GetCurrentDisplayNameAsync(token)
                                                       .ConfigureAwait(false)
                                                   : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
                                                       .ConfigureAwait(false));
@@ -16662,11 +16637,11 @@ namespace Chummer
                                             && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false);
                                  }, token: token).ConfigureAwait(false))
                     {
-                        if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                        if (!string.IsNullOrEmpty(await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
                         {
                             if (await objCyberware.GetCanRemoveThroughImprovementsAsync(token).ConfigureAwait(false))
                             {
-                                var objParent = objCyberware.Parent;
+                                Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                                 if (objParent != null)
                                     await objParent.Children.RemoveAsync(objCyberware, token).ConfigureAwait(false);
                                 await Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
@@ -16678,7 +16653,7 @@ namespace Chummer
                             await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(this);
                             string strEntry = await LanguageManager.GetStringAsync(
-                                objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
+                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) == Improvement.ImprovementSource.Cyberware
                                     ? "String_ExpenseSoldCyberware"
                                     : "String_ExpenseSoldBioware", token: token).ConfigureAwait(false);
                             objExpense.Create(0,
@@ -37632,12 +37607,12 @@ namespace Chummer
                                      .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
-                            if (objCyberware.DiscountCost)
+                            if (await objCyberware.GetDiscountCostAsync(token).ConfigureAwait(false))
                             {
-                                objCyberware.DiscountCost
-                                    = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                await objCyberware.SetDiscountCostAsync(
+                                    (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
                                         ? setBiowareBlackMarketMaps
-                                        : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                                        : setCyberwareBlackMarketMaps).Contains(objCyberware.Category), token).ConfigureAwait(false);
                             }
 
                             foreach (Gear objGear in await objCyberware.GearChildren
@@ -37677,12 +37652,12 @@ namespace Chummer
                                              x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    if (objCyberware.DiscountCost)
+                                    if (await objCyberware.GetDiscountCostAsync(token).ConfigureAwait(false))
                                     {
-                                        objCyberware.DiscountCost
-                                            = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                        await objCyberware.SetDiscountCostAsync(
+                                            (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
                                                 ? setBiowareBlackMarketMaps
-                                                : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                                                : setCyberwareBlackMarketMaps).Contains(objCyberware.Category), token).ConfigureAwait(false);
                                     }
 
                                     foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(

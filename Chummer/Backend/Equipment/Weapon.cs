@@ -942,10 +942,7 @@ namespace Chummer.Backend.Equipment
 
                 if (objXmlSubWeapon != null)
                 {
-                    Weapon objSubWeapon = new Weapon(_objCharacter)
-                    {
-                        ParentVehicle = ParentVehicle
-                    };
+                    Weapon objSubWeapon = new Weapon(_objCharacter);
                     int intAddWeaponRating = 0;
                     string strRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
                     if (!string.IsNullOrEmpty(strRating))
@@ -982,7 +979,12 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Weapon objLoopWeapon in lstWeapons)
-                objLoopWeapon.ParentVehicle = ParentVehicle;
+            {
+                if (blnSync)
+                    objLoopWeapon.ParentVehicle = ParentVehicle;
+                else
+                    await objLoopWeapon.SetParentVehicleAsync(ParentVehicle, token).ConfigureAwait(false);
+            }
         }
 
         private SourceString _objCachedSourceDetail;
@@ -3071,6 +3073,25 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task SetParentAsync(Weapon value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objParent, value) != value)
+            {
+                if (value?.ParentVehicle != null)
+                {
+                    // Includes ParentVehicle setters
+                    await SetParentMountAsync(value.ParentMount, token).ConfigureAwait(false);
+                    await SetParentVehicleModAsync(value.ParentVehicleMod, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    // Includes ParentVehicle setters
+                    await SetParentVehicleAsync(null, token).ConfigureAwait(false);
+                }
+            }
+        }
+
         /// <summary>
         /// ID of the object that added this weapon (if any).
         /// </summary>
@@ -3156,6 +3177,35 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Vehicle to which the weapon is mounted (if none, returns null)
+        /// </summary>
+        public async Task SetParentVehicleAsync(Vehicle value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objMountedVehicle, value) != value)
+            {
+                await WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
+                {
+                    await objAccessory.GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                    {
+                        if (value != null)
+                            await objGear.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
+                        else if (Equipped && objGear.Equipped)
+                            await objGear.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+            }
+
+            if (value == null)
+            {
+                _objWeaponMount = null;
+                _objVehicleMod = null;
+            }
+
+            await Children.ForEachWithSideEffectsAsync(x => x.SetParentVehicleAsync(value, token), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// WeaponMount to which the weapon is mounted (if none, returns null)
         /// </summary>
         public WeaponMount ParentMount
@@ -3182,6 +3232,28 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// WeaponMount to which the weapon is mounted (if none, returns null)
+        /// </summary>
+        public async Task SetParentMountAsync(WeaponMount value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objWeaponMount, value) != value)
+            {
+                if (value != null)
+                {
+                    _objVehicleMod = null;
+                    await SetParentVehicleAsync(value.Parent, token).ConfigureAwait(false);
+                }
+                else if (_objVehicleMod == null)
+                {
+                    await SetParentVehicleAsync(null, token).ConfigureAwait(false);
+                }
+            }
+
+            await Children.ForEachWithSideEffectsAsync(x => x.SetParentMountAsync(value, token), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// VehicleMod to which the weapon is mounted (if none, returns null)
         /// </summary>
         public VehicleMod ParentVehicleMod
@@ -3205,6 +3277,28 @@ namespace Chummer.Backend.Equipment
                 foreach (Weapon objChild in Children.AsEnumerableWithSideEffects())
                     objChild.ParentVehicleMod = value;
             }
+        }
+
+        /// <summary>
+        /// VehicleMod to which the weapon is mounted (if none, returns null)
+        /// </summary>
+        public async Task SetParentVehicleModAsync(VehicleMod value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objVehicleMod, value) != value)
+            {
+                if (value != null)
+                {
+                    _objWeaponMount = null;
+                    await SetParentVehicleAsync(value.Parent, token).ConfigureAwait(false);
+                }
+                else if (_objWeaponMount == null)
+                {
+                    await SetParentVehicleAsync(null, token).ConfigureAwait(false);
+                }
+            }
+
+            await Children.ForEachWithSideEffectsAsync(x => x.SetParentVehicleModAsync(value, token), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5708,7 +5802,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     if (intSTR != 0 || intAGI != 0)
                                         break;
-                                    objAttributeSource = objAttributeSource.Parent;
+                                    objAttributeSource = blnSync ? objAttributeSource.Parent : await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                                     if (objAttributeSource == null) continue;
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     intSTR = blnSync
@@ -5754,7 +5848,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
-                                objAttributeSource = objAttributeSource.Parent;
+                                objAttributeSource = blnSync ? objAttributeSource.Parent : await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                                 if (objAttributeSource == null)
                                     continue;
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -7370,7 +7464,7 @@ namespace Chummer.Backend.Equipment
                                && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
                                    .ConfigureAwait(false) == 0)
                         {
-                            objAttributeSource = objAttributeSource.Parent;
+                            objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                         }
 
                         if (objAttributeSource != null)
@@ -7415,8 +7509,8 @@ namespace Chummer.Backend.Equipment
                                    && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token)
                                        .ConfigureAwait(false) == 0)
                             {
-                                objAttributeSource = objAttributeSource.Parent;
-                            }
+                                objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
+                                }
 
                             if (objAttributeSource != null)
                                 intDicePool = await objSkill.PoolOtherAttributeAsync(
@@ -8629,7 +8723,7 @@ namespace Chummer.Backend.Equipment
                                    await objSkill.GetAttributeAsync(token).ConfigureAwait(false), token)
                                .ConfigureAwait(false) == 0)
                     {
-                        objAttributeSource = objAttributeSource.Parent;
+                        objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                     }
 
                     strReturn = await objSkill.CompileDicepoolTooltipAsync(string.Empty,
@@ -8692,7 +8786,7 @@ namespace Chummer.Backend.Equipment
                                            await objSkill.GetAttributeAsync(token).ConfigureAwait(false), token)
                                        .ConfigureAwait(false) == 0)
                             {
-                                objAttributeSource = objAttributeSource.Parent;
+                                objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                             }
                         }
 
@@ -11857,7 +11951,7 @@ namespace Chummer.Backend.Equipment
                                 int intAGIBase = await objAttributeSource.GetAttributeBaseValueAsync("AGI", token).ConfigureAwait(false);
                                 while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
                                 {
-                                    objAttributeSource = objAttributeSource.Parent;
+                                    objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                                     if (objAttributeSource == null)
                                         continue;
                                     intSTR = await objAttributeSource.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);
@@ -11905,7 +11999,7 @@ namespace Chummer.Backend.Equipment
                             int intAGIBase = await objAttributeSource.GetAttributeBaseValueAsync("AGI", token).ConfigureAwait(false);
                             while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
                             {
-                                objAttributeSource = objAttributeSource.Parent;
+                                objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
                                 if (objAttributeSource == null)
                                     continue;
                                 intSTR = await objAttributeSource.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false);

@@ -108,14 +108,15 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            void SetModWeaponMountParent(object sender, NotifyCollectionChangedEventArgs args)
+            async Task SetModWeaponMountParent(object sender, NotifyCollectionChangedEventArgs args, CancellationToken token = default)
             {
+                token.ThrowIfCancellationRequested();
                 switch (args.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                         foreach (VehicleMod objNewMod in args.NewItems)
                         {
-                            objNewMod.WeaponMountParent = this;
+                            await objNewMod.SetWeaponMountParentAsync(this, token).ConfigureAwait(false);
                         }
                         break;
 
@@ -124,7 +125,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objOldMod.WeaponMountParent != this)
                                 continue;
-                            objOldMod.Parent = null;
+                            await objOldMod.SetParentAsync(null, token).ConfigureAwait(false);
                         }
                         break;
 
@@ -133,18 +134,18 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objOldMod.WeaponMountParent != this)
                                 continue;
-                            objOldMod.Parent = null;
+                            await objOldMod.SetParentAsync(null, token).ConfigureAwait(false);
                         }
                         foreach (VehicleMod objNewMod in args.NewItems)
                         {
-                            objNewMod.WeaponMountParent = this;
+                            await objNewMod.SetWeaponMountParentAsync(this, token).ConfigureAwait(false);
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         foreach (VehicleMod objMod in Mods)
                         {
-                            objMod.WeaponMountParent = this;
+                            await objMod.SetWeaponMountParentAsync(this, token).ConfigureAwait(false);
                         }
                         break;
                 }

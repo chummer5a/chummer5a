@@ -97,48 +97,50 @@ namespace Chummer.Backend.Equipment
             _lstCyberware.AddTaggedCollectionChanged(this, ChildrenCyberwareOnCollectionChanged);
         }
 
-        private void ChildrenCyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ChildrenCyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Cyberware objNewItem in e.NewItems)
-                        objNewItem.ParentVehicle = Parent;
+                        await objNewItem.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Cyberware objOldItem in e.OldItems)
-                        objOldItem.ParentVehicle = null;
+                        await objOldItem.SetParentVehicleAsync(null, token).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Cyberware objOldItem in e.OldItems)
-                        objOldItem.ParentVehicle = null;
+                        await objOldItem.SetParentVehicleAsync(null, token).ConfigureAwait(false);
                     foreach (Cyberware objNewItem in e.NewItems)
-                        objNewItem.ParentVehicle = Parent;
+                        await objNewItem.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
                     break;
             }
         }
 
-        private void ChildrenWeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task ChildrenWeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Weapon objNewItem in e.NewItems)
-                        objNewItem.ParentVehicle = Parent;
+                        await objNewItem.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Weapon objOldItem in e.OldItems)
-                        objOldItem.ParentVehicle = null;
+                        await objOldItem.SetParentVehicleAsync(null, token).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Weapon objOldItem in e.OldItems)
-                        objOldItem.ParentVehicle = null;
+                        await objOldItem.SetParentVehicleAsync(null, token).ConfigureAwait(false);
                     foreach (Weapon objNewItem in e.NewItems)
-                        objNewItem.ParentVehicle = Parent;
+                        await objNewItem.SetParentVehicleAsync(Parent, token).ConfigureAwait(false);
                     break;
             }
         }
@@ -181,7 +183,9 @@ namespace Chummer.Backend.Equipment
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
+            if (objParent == null)
+                throw new ArgumentNullException(nameof(objParent));
+            await SetParentAsync(objParent, token).ConfigureAwait(false);
             if (objXmlMod == null) Utils.BreakIfDebug();
             if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -637,6 +641,16 @@ namespace Chummer.Backend.Equipment
                 if (objNewParent != null)
                     Parent = objNewParent;
             }
+        }
+
+        public Task SetWeaponMountParentAsync(WeaponMount value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (Interlocked.Exchange(ref _objWeaponMountParent, value) == value)
+                return Task.CompletedTask;
+            Vehicle objNewParent = value?.Parent;
+            return objNewParent != null ? SetParentAsync(objNewParent, token) : Task.CompletedTask;
         }
 
         /// <summary>
@@ -1224,6 +1238,19 @@ namespace Chummer.Backend.Equipment
                 foreach (Cyberware objCyberware in Cyberware)
                     objCyberware.ParentVehicle = value;
             }
+        }
+
+        /// <summary>
+        /// Vehicle that the Mod is attached to.
+        /// </summary>
+        public async Task SetParentAsync(Vehicle value, CancellationToken token = default)
+        {
+            if (Interlocked.Exchange(ref _objParent, value) == value)
+                return;
+            if (WeaponMountParent?.Parent != value)
+                await SetWeaponMountParentAsync(null, token).ConfigureAwait(false);
+            await Weapons.ForEachWithSideEffectsAsync(x => x.SetParentVehicleAsync(value, token), token).ConfigureAwait(false);
+            await Cyberware.ForEachWithSideEffectsAsync(x => x.SetParentVehicleAsync(value, token), token).ConfigureAwait(false);
         }
 
         /// <summary>

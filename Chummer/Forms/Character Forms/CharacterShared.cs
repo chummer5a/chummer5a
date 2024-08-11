@@ -11522,7 +11522,7 @@ namespace Chummer
                                     {
                                         if (objLocation != null)
                                             await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                                        objWeapon.ParentVehicle = objSelectedVehicle;
+                                        await objWeapon.SetParentVehicleAsync(objSelectedVehicle, token).ConfigureAwait(false);
                                         await objSelectedVehicle.Weapons.AddAsync(objWeapon, token)
                                             .ConfigureAwait(false);
                                     }

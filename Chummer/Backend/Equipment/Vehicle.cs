@@ -671,12 +671,17 @@ namespace Chummer.Backend.Equipment
 
                             foreach (Weapon objWeapon in lstWeapons)
                             {
-                                objWeapon.ParentVehicle = this;
                                 if (blnSync)
+                                {
+                                    objWeapon.ParentVehicle = this;
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     Weapons.Add(objWeapon);
+                                }
                                 else
+                                {
+                                    await objWeapon.SetParentVehicleAsync(this, token).ConfigureAwait(false);
                                     await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                }
                             }
                         }
                     }
@@ -701,14 +706,20 @@ namespace Chummer.Backend.Equipment
 
                         List<Weapon> lstSubWeapons = new List<Weapon>(1);
                         XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strWeaponName);
-                        objWeapon.ParentVehicle = this;
                         if (blnSync)
+                        {
+                            objWeapon.ParentVehicle = this;
                             // ReSharper disable once MethodHasAsyncOverload
                             objWeapon.Create(objXmlWeaponNode, lstSubWeapons, blnCreateChildren,
                                 !blnSkipSelectForms && blnCreateImprovements, blnSkipCost, token: token);
+                        }
                         else
+                        {
+                            await objWeapon.SetParentVehicleAsync(this, token).ConfigureAwait(false);
                             await objWeapon.CreateAsync(objXmlWeaponNode, lstSubWeapons, blnCreateChildren,
                                 !blnSkipSelectForms && blnCreateImprovements, blnSkipCost, token: token).ConfigureAwait(false);
+                        }
+
                         objWeapon.ParentID = InternalId;
                         objWeapon.Cost = "0";
 

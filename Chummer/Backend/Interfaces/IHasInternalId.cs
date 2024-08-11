@@ -297,7 +297,7 @@ namespace Chummer
                                 TreeNode objNode = nodParent.Nodes[i];
                                 if (objNode.Tag is Cyberware objNodeCyberware
                                     && !ReferenceEquals(objNodeCyberware.Parent, objParent)
-                                    && !ReferenceEquals(objNodeCyberware.ParentVehicle, objParent)
+                                    && !ReferenceEquals(objNodeCyberware.ParentVehicle, objParentAsVehicleMod?.Parent)
                                     && objParentAsVehicleMod?.Cyberware.Contains(objNodeCyberware) != true)
                                 {
                                     objNode.Remove();
