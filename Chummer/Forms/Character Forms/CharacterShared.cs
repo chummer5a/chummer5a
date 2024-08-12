@@ -11166,24 +11166,37 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    // If the Character does not have a file name, trigger the Save As menu item instead.
-                    if (string.IsNullOrEmpty(await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false)))
+                    if (blnDoCreated)
                     {
-                        return await SaveCharacterAs(blnDoCreated, token).ConfigureAwait(false);
-                    }
-                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (blnDoCreated)
+                        IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                        try
                         {
+                            token.ThrowIfCancellationRequested();
+                            // If the Character does not have a file name, trigger the Save As menu item instead.
+                            if (string.IsNullOrEmpty(await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false)))
+                            {
+                                return await SaveCharacterAs(true, token).ConfigureAwait(false);
+                            }
                             // If the Created is checked, make sure the user wants to actually save this character.
                             if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token).ConfigureAwait(false))
                                 return false;
                             // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
                             return await SaveCharacterAsCreated(token).ConfigureAwait(false);
                         }
-
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    // If the Character does not have a file name, trigger the Save As menu item instead.
+                    else if (string.IsNullOrEmpty(await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false)))
+                    {
+                        return await SaveCharacterAs(false, token).ConfigureAwait(false);
+                    }
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                         {
