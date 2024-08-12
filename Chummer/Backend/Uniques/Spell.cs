@@ -502,7 +502,7 @@ namespace Chummer
                         .WriteElementStringAsync("barehandedadept",
                             BarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo), token)
                         .ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture), token)
+                    await objWriter.WriteElementStringAsync("dicepool", (await GetDicePoolAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
@@ -1939,31 +1939,98 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Skill used by this spell
+        /// </summary>
+        public async Task<Skill> GetSkillAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                XPathNavigator objCategoryNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false))
+                    .SelectSingleNode(
+                        "/chummer/categories/category[. = "
+                        + Category.CleanXPath() + ']');
+                if (objCategoryNode == null)
+                    return null;
+                string strSkillKey = string.Empty;
+                objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
+                strSkillKey =
+                    (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, token: token).ConfigureAwait(false))
+                        .FirstOrDefault()?.Target ?? strSkillKey;
+                if (Alchemical)
+                {
+                    objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
+                }
+                else if (BarehandedAdept)
+                {
+                    objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
+                }
+
+                return string.IsNullOrEmpty(strSkillKey)
+                    ? null
+                    : await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync(strSkillKey, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// The Dice Pool size for the Active Skill required to cast the Spell.
         /// </summary>
         public int DicePool
         {
             get
             {
-                int intReturn = 0;
                 using (LockObject.EnterReadLock())
                 {
                     Skill objSkill = Skill;
-                    if (objSkill != null)
-                    {
-                        intReturn = BarehandedAdept ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
-                        // Add any Specialization bonus if applicable.
-                        intReturn += objSkill.GetSpecializationBonus(Category);
-                    }
+                    int intReturn = objSkill != null
+                        ? (BarehandedAdept
+                            ? objSkill.PoolOtherAttribute("MAG")
+                            : objSkill.Pool) + objSkill.GetSpecializationBonus(Category)
+                        : 0;
 
                     // Include any Improvements to the Spell's dicepool.
                     intReturn += RelevantImprovements(x =>
                                                           x.ImproveType == Improvement.ImprovementType.SpellCategory
                                                           || x.ImproveType == Improvement.ImprovementType.SpellDicePool)
                                  .Sum(x => x.Value).StandardRound();
+                    return intReturn;
                 }
+            }
+        }
 
+        /// <summary>
+        /// The Dice Pool size for the Active Skill required to cast the Spell.
+        /// </summary>
+        public async Task<int> GetDicePoolAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                int intReturn = objSkill != null
+                    ? (BarehandedAdept
+                        ? await objSkill.PoolOtherAttributeAsync("MAG", token: token).ConfigureAwait(false)
+                        : await objSkill.GetPoolAsync(token).ConfigureAwait(false)) + await objSkill.GetSpecializationBonusAsync(Category, token).ConfigureAwait(false)
+                    : 0;
+
+                // Include any Improvements to the Spell's dicepool.
+                intReturn += (await RelevantImprovementsAsync(x =>
+                        x.ImproveType == Improvement.ImprovementType.SpellCategory
+                        || x.ImproveType == Improvement.ImprovementType.SpellDicePool, token: token).ConfigureAwait(false))
+                    .Sum(x => x.Value).StandardRound();
                 return intReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2012,6 +2079,64 @@ namespace Chummer
 
                     return sbdReturn.ToString();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tooltip information for the Dice Pool.
+        /// </summary>
+        public async Task<string> GetDicePoolTooltipAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdReturn))
+                {
+                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
+                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                    CharacterAttrib objAttrib
+                        = await _objCharacter.GetAttributeAsync(
+                            BarehandedAdept ? "MAG" :
+                            objSkill != null ? await objSkill.GetAttributeAsync(token).ConfigureAwait(false) : "MAG", token: token).ConfigureAwait(false);
+                    if (objAttrib != null)
+                    {
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                            objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
+                    }
+
+                    if (objSkill != null)
+                    {
+                        int intPool = BarehandedAdept
+                            ? await objSkill.PoolOtherAttributeAsync("MAG", token: token).ConfigureAwait(false)
+                            : await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                        if (objAttrib != null)
+                            intPool -= await objAttrib.GetTotalValueAsync(token).ConfigureAwait(false);
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.Append(await objSkill.FormattedDicePoolAsync(intPool, Category, token).ConfigureAwait(false));
+                    }
+
+                    // Include any Improvements to the Spell Category or Spell Name.
+                    foreach (Improvement objImprovement in await RelevantImprovementsAsync(
+                                 x => x.ImproveType == Improvement.ImprovementType.SpellCategory
+                                      || x.ImproveType == Improvement.ImprovementType.SpellDicePool, token: token).ConfigureAwait(false))
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                            await _objCharacter.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), objImprovement.Value);
+                    }
+
+                    return sbdReturn.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2134,12 +2259,12 @@ namespace Chummer
                                         yield return bestFocus;
                                         if (blnExitAfterFirst) yield break;
                                     }
-
-                                    break;
                                 }
-
-                                yield return objImprovement;
-                                if (blnExitAfterFirst) yield break;
+                                else
+                                {
+                                    yield return objImprovement;
+                                    if (blnExitAfterFirst) yield break;
+                                }
                             }
 
                             break;
@@ -2189,12 +2314,148 @@ namespace Chummer
                         case Improvement.ImprovementType.DrainValue:
                         {
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName)
-                                || objImprovement.ImprovedName == Name) yield return objImprovement;
-                            if (blnExitAfterFirst) yield break;
+                                || objImprovement.ImprovedName == Name)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst) yield break;
+                            }
                         }
                             break;
                     }
                 }
+            }
+        }
+
+        private async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                List<Improvement> lstReturn = new List<Improvement>();
+                await _objCharacter.Improvements.ForEachWithBreakAsync(async objImprovement =>
+                {
+                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
+                        return true;
+
+                    switch (objImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.SpellDicePool:
+                            if (objImprovement.ImprovedName == Name
+                                || objImprovement.ImprovedName == SourceID.ToString())
+                            {
+                                lstReturn.Add(objImprovement);
+                                if (blnExitAfterFirst)
+                                    return false;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.ReplaceSkillSpell:
+                            if (objImprovement.ImprovedName == Name
+                                || objImprovement.ImprovedName == SourceID.ToString()
+                                || string.IsNullOrEmpty(objImprovement.ImprovedName))
+                            {
+                                lstReturn.Add(objImprovement);
+                                if (blnExitAfterFirst)
+                                    return false;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpellCategory:
+                            if (objImprovement.ImprovedName == Category)
+                            {
+                                // SR5 318: Regardless of the number of bonded foci you have,
+                                // only one focus may add its Force to a dicepool for any given test.
+                                // We need to do some checking to make sure this is the most powerful focus before we add it in
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Gear)
+                                {
+                                    //TODO: THIS IS NOT SAFE. While we can mostly assume that Gear that add to SpellCategory are Foci, it's not reliable.
+                                    // we are returning either the original improvement, null or a newly instantiated improvement
+                                    Improvement bestFocus = await CompareFocusPowerAsync(objImprovement, token).ConfigureAwait(false);
+                                    if (bestFocus != null)
+                                    {
+                                        lstReturn.Add(bestFocus);
+                                        if (blnExitAfterFirst)
+                                            return false;
+                                    }
+                                }
+                                else
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpellCategoryDamage:
+                        case Improvement.ImprovementType.SpellCategoryDrain:
+                            if (objImprovement.ImprovedName == Category)
+                            {
+                                lstReturn.Add(objImprovement);
+                                if (blnExitAfterFirst)
+                                    return false;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpellDescriptorDrain:
+                        case Improvement.ImprovementType.SpellDescriptorDamage:
+                            if (HashDescriptors.Count > 0)
+                            {
+                                bool blnAllow = false;
+                                foreach (string strDescriptor in objImprovement.ImprovedName.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    if (strDescriptor.StartsWith("NOT", StringComparison.Ordinal))
+                                    {
+                                        if (HashDescriptors.Contains(
+                                                strDescriptor.TrimStartOnce("NOT(").TrimEndOnce(')')))
+                                        {
+                                            blnAllow = false;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        blnAllow = HashDescriptors.Contains(strDescriptor);
+                                    }
+                                }
+
+                                if (blnAllow)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.DrainValue:
+                        {
+                            if (string.IsNullOrEmpty(objImprovement.ImprovedName)
+                                || objImprovement.ImprovedName == Name)
+                            {
+                                lstReturn.Add(objImprovement);
+                                if (blnExitAfterFirst)
+                                    return false;
+                            }
+                        }
+                            break;
+                    }
+
+                    return true;
+                }, token: token).ConfigureAwait(false);
+                return lstReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2207,7 +2468,7 @@ namespace Chummer
             {
                 List<Focus> list
                     = _objCharacter.Foci.FindAll(
-                        x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded);
+                        x => x.GearObject != null && x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded);
                 if (list.Count > 0)
                 {
                     // get any bonded foci that add to the base magic stat and return the highest rated one's rating
@@ -2232,6 +2493,51 @@ namespace Chummer
                 }
 
                 return objImprovement;
+            }
+        }
+
+        /// <summary>
+        /// Method to check we are only applying the highest focus to the spell dicepool
+        /// </summary>
+        private async Task<Improvement> CompareFocusPowerAsync(Improvement objImprovement, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                List<Focus> list
+                    = await _objCharacter.Foci.FindAllAsync(
+                        x => x.GearObject != null && x.GearObject.Bonus.InnerText == "MAGRating" &&
+                             x.GearObject.Bonded, token).ConfigureAwait(false);
+                if (list.Count > 0)
+                {
+                    // get any bonded foci that add to the base magic stat and return the highest rated one's rating
+                    int powerFocusRating = list.Max(x => x.Rating);
+
+                    // If our focus is higher, add in a partial bonus
+                    if (powerFocusRating > 0)
+                    {
+                        // This is hackz -- because we don't want to lose the original improvement's value
+                        // we instantiate a fake version of the improvement that isn't saved to represent the diff
+                        if (powerFocusRating < objImprovement.Value)
+                            return new Improvement(_objCharacter)
+                            {
+                                Value = objImprovement.Value - powerFocusRating,
+                                SourceName = objImprovement.SourceName,
+                                ImprovedName = objImprovement.ImprovedName,
+                                ImproveSource = objImprovement.ImproveSource,
+                                ImproveType = objImprovement.ImproveType
+                            };
+                        return null;
+                    }
+                }
+
+                return objImprovement;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -13309,12 +13309,12 @@ namespace Chummer
                                 continue;
                             Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, GenericToken)
                                                                   .ConfigureAwait(false);
-                            if (objFocus.InternalId != strUndoId)
+                            if (objFocus == null || objFocus.InternalId != strUndoId)
                                 continue;
                             blnFound = true;
                             await treFoci.DoThreadSafeAsync(x =>
                             {
-                                TreeNode objNode = x.FindNode(objFocus.InternalId) ?? x.FindNode(objFocus.GearObject.InternalId);
+                                TreeNode objNode = x.FindNode(objFocus.InternalId) ?? x.FindNode(objFocus.GearObject?.InternalId);
                                 if (objNode != null)
                                 {
                                     IsRefreshing = true;
@@ -13380,11 +13380,12 @@ namespace Chummer
                                     continue;
                                 Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, GenericToken)
                                     .ConfigureAwait(false);
-                                if (objFocus.GearObject.InternalId != strUndoId)
+                                string strLoopGearId = objFocus.GearObject?.InternalId;
+                                if (strLoopGearId != strUndoId)
                                     continue;
                                 await treFoci.DoThreadSafeAsync(x =>
                                 {
-                                    TreeNode objNode = x.FindNode(objFocus.InternalId) ?? x.FindNode(objFocus.GearObject.InternalId);
+                                    TreeNode objNode = x.FindNode(objFocus.InternalId) ?? x.FindNode(strLoopGearId);
                                     if (objNode != null)
                                     {
                                         IsRefreshing = true;
@@ -18222,9 +18223,12 @@ namespace Chummer
                 return;
             try
             {
+                string strFindId = objId.InternalId;
                 Focus objFocus
-                    = await CharacterObject.Foci.FindAsync(x => x.GearObject?.InternalId == objId.InternalId,
-                                                           GenericToken).ConfigureAwait(false);
+                    = await CharacterObject.Foci.FindAsync(x => x.GearObject?.InternalId == strFindId,
+                          GenericToken).ConfigureAwait(false)
+                      ?? await CharacterObject.Foci.FindAsync(x => x.InternalId == strFindId,
+                          GenericToken).ConfigureAwait(false);
 
                 // Mark the Gear as not Bonded and remove any Improvements.
                 Gear objGear = objFocus?.GearObject;
@@ -27123,9 +27127,10 @@ namespace Chummer
                         await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip, token).ConfigureAwait(false);
                         await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                         // Determine the size of the Spellcasting Dice Pool.
-                        await dpcSpellDicePool.DoThreadSafeAsync(x => x.DicePool = objSpell.DicePool, token)
+                        int intPool = await objSpell.GetDicePoolAsync(token).ConfigureAwait(false);
+                        await dpcSpellDicePool.DoThreadSafeAsync(x => x.DicePool = intPool, token)
                                               .ConfigureAwait(false);
-                        await dpcSpellDicePool.SetLabelToolTipAsync(objSpell.DicePoolTooltip, token)
+                        await dpcSpellDicePool.SetLabelToolTipAsync(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token)
                                               .ConfigureAwait(false);
                     }
                     else

@@ -12373,44 +12373,46 @@ namespace Chummer
 
         private async void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
+            if (e.Node.Checked)
+                return;
+            if (!(e.Node.Tag is IHasInternalId objId))
+                return;
             try
             {
-                if (!e.Node.Checked)
+                string strFindId = objId.InternalId;
+                Focus objFocus
+                    = await CharacterObject.Foci.FindAsync(x => x.GearObject?.InternalId == strFindId,
+                          GenericToken).ConfigureAwait(false)
+                      ?? await CharacterObject.Foci.FindAsync(x => x.InternalId == strFindId,
+                          GenericToken).ConfigureAwait(false);
+
+                // Mark the Gear as not Bonded and remove any Improvements.
+                Gear objGear = objFocus?.GearObject;
+
+                if (objGear != null)
                 {
-                    if (!(e.Node.Tag is IHasInternalId objId))
-                        return;
-                    Focus objFocus = await CharacterObject
-                                           .Foci.FindAsync(x => x.GearObject?.InternalId == objId.InternalId,
-                                                           GenericToken)
-                                           .ConfigureAwait(false);
+                    objGear.Bonded = false;
+                    await ImprovementManager
+                        .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear,
+                            objGear.InternalId, token: GenericToken).ConfigureAwait(false);
+                    await CharacterObject.Foci.RemoveAsync(objFocus, GenericToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    // This is a Stacked Focus.
+                    StackedFocus objStack = await CharacterObject.StackedFoci
+                        .FindAsync(x => x.InternalId == objId.InternalId, GenericToken)
+                        .ConfigureAwait(false);
 
-                    // Mark the Gear as not Bonded and remove any Improvements.
-                    Gear objGear = objFocus?.GearObject;
-
-                    if (objGear != null)
+                    if (objStack != null)
                     {
-                        objGear.Bonded = false;
+                        objStack.Bonded = false;
                         await ImprovementManager
-                              .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear,
-                                                       objGear.InternalId, token: GenericToken).ConfigureAwait(false);
-                        await CharacterObject.Foci.RemoveAsync(objFocus, GenericToken).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        // This is a Stacked Focus.
-                        StackedFocus objStack = await CharacterObject.StackedFoci
-                                                                     .FindAsync(x => x.InternalId == objId.InternalId, GenericToken)
-                                                                     .ConfigureAwait(false);
-
-                        if (objStack != null)
-                        {
-                            objStack.Bonded = false;
-                            await ImprovementManager
-                                  .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.StackedFocus,
-                                                           objStack.InternalId, token: GenericToken).ConfigureAwait(false);
-                        }
+                            .RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.StackedFocus,
+                                objStack.InternalId, token: GenericToken).ConfigureAwait(false);
                     }
                 }
+
                 await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -14518,10 +14520,13 @@ namespace Chummer
                                 return true;
                             if (sbdFociPointsTooltip.Length > 0)
                                 sbdFociPointsTooltip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
+                            if (objFocus.GearObject != null)
+                                sbdFociPointsTooltip
+                                    .Append(await objFocus.GearObject.GetCurrentDisplayNameAsync(token)
+                                        .ConfigureAwait(false))
+                                    .Append(strSpace);
                             sbdFociPointsTooltip
-                                .Append(await objFocus.GearObject.GetCurrentDisplayNameAsync(token)
-                                    .ConfigureAwait(false))
-                                .Append(strSpace).Append('(')
+                                .Append('(')
                                 .Append(intBindingCost.ToString(GlobalSettings.CultureInfo))
                                 .Append(')');
                             return true;
@@ -20631,10 +20636,11 @@ namespace Chummer
                         await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip, token).ConfigureAwait(false);
                         await objSpell.SetSourceDetailAsync(lblSpellSource, token).ConfigureAwait(false);
                         // Determine the size of the Spellcasting Dice Pool.
+                        int intPool = await objSpell.GetDicePoolAsync(token).ConfigureAwait(false);
                         await lblSpellDicePool
-                              .DoThreadSafeAsync(x => x.Text = objSpell.DicePool.ToString(GlobalSettings.CultureInfo),
+                              .DoThreadSafeAsync(x => x.Text = intPool.ToString(GlobalSettings.CultureInfo),
                                                  token).ConfigureAwait(false);
-                        await lblSpellDicePool.SetToolTipAsync(objSpell.DicePoolTooltip, token).ConfigureAwait(false);
+                        await lblSpellDicePool.SetToolTipAsync(await objSpell.GetDicePoolTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     else
                     {

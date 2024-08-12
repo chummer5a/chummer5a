@@ -6408,7 +6408,7 @@ namespace Chummer
                                                     Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
-                                                        intFociTotal += objFocus.Rating;
+                                                        intFociTotal += await objFocus.GetRatingAsync(token).ConfigureAwait(false);
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal &&
                                                             !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
@@ -6513,7 +6513,7 @@ namespace Chummer
                                     setNewGears.Add(objGear);
 
                                 int intFociTotal = await CharacterObject.Foci
-                                    .SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token)
+                                    .SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.GetRatingAsync(token), token)
                                     .ConfigureAwait(false);
 
                                 foreach (Gear objGear in e.NewItems)
@@ -6539,7 +6539,7 @@ namespace Chummer
                                                     Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
-                                                        intFociTotal += objFocus.Rating;
+                                                        intFociTotal += await objFocus.GetRatingAsync(token).ConfigureAwait(false);
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal &&
                                                             !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
@@ -6750,7 +6750,7 @@ namespace Chummer
                                     setNewGears.Add(objGear);
 
                                 int intFociTotal = await CharacterObject.Foci
-                                    .SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.Rating, token)
+                                    .SumAsync(x => !setNewGears.Contains(x.GearObject), x => x.GetRatingAsync(token), token)
                                     .ConfigureAwait(false);
 
                                 foreach (Gear objGear in e.NewItems)
@@ -6776,7 +6776,7 @@ namespace Chummer
                                                     Focus objFocus = await CharacterObject.Foci.GetValueAtAsync(i, token).ConfigureAwait(false);
                                                     if (objFocus.GearObject == objGear)
                                                     {
-                                                        intFociTotal += objFocus.Rating;
+                                                        intFociTotal += await objFocus.GetRatingAsync(token).ConfigureAwait(false);
                                                         // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
                                                         if (intFociTotal > intMaxFocusTotal &&
                                                             !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
