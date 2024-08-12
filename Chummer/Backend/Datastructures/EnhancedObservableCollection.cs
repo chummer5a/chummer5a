@@ -330,43 +330,34 @@ namespace Chummer
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            if (_setBeforeClearCollectionChangedAsync.Count != 0)
+            IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
+            try
             {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
-                try
+                using (BlockReentrancy())
                 {
-                    using (BlockReentrancy())
+                    if (_setBeforeClearCollectionChangedAsync.Count != 0)
                     {
                         NotifyCollectionChangedEventArgs objArgs =
                             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                                 (IList)Items);
-                        List<Func<Task>> lstFuncs = new List<Func<Task>>(_setBeforeClearCollectionChangedAsync.Count);
-                        foreach (AsyncNotifyCollectionChangedEventHandler objEvent in _setBeforeClearCollectionChangedAsync)
+                        List<Func<Task>> lstFuncs =
+                            new List<Func<Task>>(_setBeforeClearCollectionChangedAsync.Count);
+                        foreach (AsyncNotifyCollectionChangedEventHandler objEvent in
+                                 _setBeforeClearCollectionChangedAsync)
                             lstFuncs.Add(() => objEvent.Invoke(this, objArgs));
                         Utils.RunWithoutThreadLock(lstFuncs);
                         BeforeClearCollectionChanged?.Invoke(this, objArgs);
                     }
-                }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
-            }
-            else
-            {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
-                try
-                {
-                    using (BlockReentrancy())
+                    else
                     {
                         BeforeClearCollectionChanged?.Invoke(this,
                             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
                     }
                 }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
+            }
+            finally
+            {
+                objLocker?.Dispose();
             }
 
             base.ClearItems();
@@ -376,29 +367,28 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             CheckReentrancy();
-            IAsyncDisposable objLocker = null;
-            if (CollectionChangedLock != null)
-                objLocker = await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = CollectionChangedLock != null
+                ? await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token)
+                    .ConfigureAwait(false)
+                : null;
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_setBeforeClearCollectionChangedAsync.Count != 0)
+                using (BlockReentrancy())
                 {
-                    using (BlockReentrancy())
+                    if (_setBeforeClearCollectionChangedAsync.Count != 0)
                     {
                         NotifyCollectionChangedEventArgs objArgs =
-                            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
-                                (IList)Items);
+                                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
+                                    (IList)Items);
                         await Task.WhenAll(
                                 _setBeforeClearCollectionChangedAsync.Select(x => x.Invoke(this, objArgs, token)))
                             .ConfigureAwait(false);
                         BeforeClearCollectionChanged?.Invoke(this, objArgs);
                     }
-                }
-                else
-                {
-                    using (BlockReentrancy())
+                    else
                     {
+
                         BeforeClearCollectionChanged?.Invoke(this,
                             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
                     }
@@ -457,71 +447,44 @@ namespace Chummer
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (_setCollectionChangedAsync.Count != 0)
+            IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
+            try
             {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
-                try
+                if (_setCollectionChangedAsync.Count != 0)
                 {
                     List<Func<Task>> lstFuncs = new List<Func<Task>>(_setCollectionChangedAsync.Count);
                     foreach (AsyncNotifyCollectionChangedEventHandler objEvent in _setCollectionChangedAsync)
                         lstFuncs.Add(() => objEvent.Invoke(this, e));
                     Utils.RunWithoutThreadLock(lstFuncs);
-                    base.OnCollectionChanged(e);
                 }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
+                base.OnCollectionChanged(e);
             }
-            else
+            finally
             {
-                IDisposable objLocker = CollectionChangedLock?.EnterReadLockWithUpgradeableParent();
-                try
-                {
-                    base.OnCollectionChanged(e);
-                }
-                finally
-                {
-                    objLocker?.Dispose();
-                }
+                objLocker?.Dispose();
             }
         }
 
         protected virtual async Task OnCollectionChangedAsync(NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_setCollectionChangedAsync.Count != 0)
+            IAsyncDisposable objLocker = CollectionChangedLock != null
+                ? await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
+                : null;
+            try
             {
-                IAsyncDisposable objLocker = null;
-                if (CollectionChangedLock != null)
-                    objLocker = await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false);
-                try
+                token.ThrowIfCancellationRequested();
+                if (_setCollectionChangedAsync.Count != 0)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await Task.WhenAll(_setCollectionChangedAsync.Select(x => x.Invoke(this, e, token))).ConfigureAwait(false);
-                    base.OnCollectionChanged(e);
+                    await Task.WhenAll(_setCollectionChangedAsync.Select(x => x.Invoke(this, e, token)))
+                        .ConfigureAwait(false);
                 }
-                finally
-                {
-                    if (objLocker != null)
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                base.OnCollectionChanged(e);
             }
-            else
+            finally
             {
-                IAsyncDisposable objLocker = CollectionChangedLock != null
-                    ? await CollectionChangedLock.EnterReadLockWithUpgradeableParentAsync(token).ConfigureAwait(false)
-                    : null;
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    base.OnCollectionChanged(e);
-                }
-                finally
-                {
-                    if (objLocker != null)
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
