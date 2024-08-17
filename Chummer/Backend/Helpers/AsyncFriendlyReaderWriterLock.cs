@@ -52,14 +52,21 @@ namespace Chummer
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list, but as a tree graph. Each lock creates a disposable release object of some kind, and only disposing it frees the lock.
         // Because .NET Framework doesn't have dictionary optimizations for dealing with multiple AsyncLocals stored per context, we need scrape together something similar.
-        // Therefore, we store a nested tuple where the first element is the number of active local readers and the second element is the tuple containing our writer lock semaphores
+        // Therefore, we store a tuple where the first element is the current helper to be used and the next two elements are the topmost held upgradeable reader and writer helpers.
         // TODO: Revert this cursed bodge once we migrate to a version of .NET that has these AsyncLocal optimizations
 #if ASYNCLOCALWRITEDEBUG
         private readonly AsyncLocal<
                 Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>>
             _objAsyncLocalCurrentsContainer =
                 new AsyncLocal<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper,
-                    string>>();
+                    string>>(ValueChangedHandler);
+
+        private static void ValueChangedHandler(AsyncLocalValueChangedArgs<Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>> objArgs)
+        {
+            // We should never be setting the local to a value where the current helper is disposed, because disposal will always happen after a new value is set
+            if (!objArgs.ThreadContextChanged && objArgs.CurrentValue != null && objArgs.CurrentValue.Item1?.IsDisposed == true)
+                Utils.BreakIfDebug();
+        }
 #else
         private readonly AsyncLocal<
                 Tuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper>>
@@ -408,9 +415,13 @@ namespace Chummer
                     {
                         objParentRelease = await tskInnerParent.ConfigureAwait(false);
                     }
+#if DEBUG
+                    catch (Exception e)
+#else
                     catch
+#endif
                     {
-                        // swallow all exceptions because need to be able to properly unset AsyncLocals when we release
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
                         Utils.BreakIfDebug();
                     }
                     return await TakeWriteLockCoreAsync(
@@ -603,7 +614,11 @@ namespace Chummer
                     {
                         objParentRelease = await tskInnerParent.ConfigureAwait(false);
                     }
+#if DEBUG
+                    catch (Exception e)
+#else
                     catch
+#endif
                     {
                         // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
                         Utils.BreakIfDebug();
@@ -877,9 +892,13 @@ namespace Chummer
                     {
                         objParentRelease = await tskInnerParent.ConfigureAwait(false);
                     }
+#if DEBUG
+                    catch (Exception e)
+#else
                     catch
+#endif
                     {
-                        // swallow all exceptions because need to be able to properly unset AsyncLocals when we release
+                        // swallow all exceptions because we need to be able to properly unset AsyncLocals when we release
                         Utils.BreakIfDebug();
                     }
                     return await TakeReadLockCoreAsync(
