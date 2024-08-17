@@ -634,7 +634,7 @@ namespace Chummer
                 }
 
                 return new SafeUpgradeableReaderSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
-                    objInnerTopMostHeldWriter, this, false, objParentReleaseAsync: objParentReleaseAsync);
+                    objInnerTopMostHeldWriter, this, objParentReleaseAsync: objParentReleaseAsync);
             }
         }
 
@@ -892,7 +892,7 @@ namespace Chummer
             async Task<IAsyncDisposable> TakeReadLockCoreAsync(LinkedAsyncRWLockHelper objInnerCurrentHelper,
                 bool blnInnerIsInReadLock, IAsyncDisposable objParentRelease = null, CancellationToken innerToken = default)
             {
-                if (_intDisposedStatus != 0 || objCurrentHelper.IsDisposed)
+                if (_intDisposedStatus != 0 || objInnerCurrentHelper.IsDisposed)
                 {
 #if DEBUG
                     Debug.WriteLine(
@@ -913,7 +913,7 @@ namespace Chummer
                     return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, blnInnerIsInReadLock, this, true, objParentReleaseAsync: objParentRelease);
                 }
 
-                return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, blnInnerIsInReadLock, this, objCurrentHelper.IsDisposed, objParentReleaseAsync: objParentRelease);
+                return new SafeReaderSemaphoreRelease(objInnerCurrentHelper, blnInnerIsInReadLock, this, objInnerCurrentHelper.IsDisposed, objParentReleaseAsync: objParentRelease);
             }
         }
 
