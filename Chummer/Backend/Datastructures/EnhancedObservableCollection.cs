@@ -40,7 +40,7 @@ namespace Chummer
     {
         /// <summary>
         /// CollectionChanged event subscription that will fire right before the collection is cleared.
-        /// To make things easy, all of the collections elements will be present in e.OldItems.
+        /// To make things easy, all the collections elements will be present in e.OldItems.
         /// </summary>
         [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
         public virtual event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged;
@@ -50,7 +50,7 @@ namespace Chummer
 
         /// <summary>
         /// CollectionChanged event subscription for async events that will fire right before the collection is cleared.
-        /// To make things easy, all of the collections elements will be present in e.OldItems.
+        /// To make things easy, all the collections elements will be present in e.OldItems.
         /// Use this event instead of BeforeClearCollectionChanged for tasks that will be awaited before completion.
         /// </summary>
         [SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
@@ -75,23 +75,79 @@ namespace Chummer
         {
         }
 
-        public new event PropertyChangedEventHandler PropertyChanged;
+        protected override event PropertyChangedEventHandler PropertyChanged;
+
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        {
+            add
+            {
+                IDisposable objLocker = CollectionChangedLock?.EnterWriteLock();
+                try
+                {
+                    base.PropertyChanged += value;
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
+            }
+            remove
+            {
+                IDisposable objLocker = CollectionChangedLock?.EnterWriteLock();
+                try
+                {
+                    base.PropertyChanged -= value;
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
+            }
+        }
 
         private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
             new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
 
-        public virtual event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        event PropertyChangedAsyncEventHandler INotifyPropertyChangedAsync.PropertyChangedAsync
         {
             add => _setPropertyChangedAsync.TryAdd(value);
             remove => _setPropertyChangedAsync.Remove(value);
         }
 
-        public event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+        protected virtual event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged;
+
+        event MultiplePropertiesChangedEventHandler INotifyMultiplePropertiesChanged.MultiplePropertiesChanged
+        {
+            add
+            {
+                IDisposable objLocker = CollectionChangedLock?.EnterWriteLock();
+                try
+                {
+                    MultiplePropertiesChanged += value;
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
+            }
+            remove
+            {
+                IDisposable objLocker = CollectionChangedLock?.EnterWriteLock();
+                try
+                {
+                    MultiplePropertiesChanged -= value;
+                }
+                finally
+                {
+                    objLocker?.Dispose();
+                }
+            }
+        }
 
         private readonly ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler> _setMultiplePropertiesChangedAsync =
             new ConcurrentHashSet<MultiplePropertiesChangedAsyncEventHandler>();
 
-        public virtual event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
+        event MultiplePropertiesChangedAsyncEventHandler INotifyMultiplePropertiesChangedAsync.MultiplePropertiesChangedAsync
         {
             add => _setMultiplePropertiesChangedAsync.TryAdd(value);
             remove => _setMultiplePropertiesChangedAsync.Remove(value);
@@ -152,42 +208,26 @@ namespace Chummer
                 }
 
                 Utils.RunWithoutThreadLock(lstFuncs);
-                Utils.RunOnMainThread(() =>
+                if (PropertyChanged != null)
                 {
-                    if (PropertyChanged != null)
+                    Utils.RunOnMainThread(() =>
                     {
-                        // ReSharper disable once AccessToModifiedClosure
-                        foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                        if (PropertyChanged != null)
                         {
-                            PropertyChanged.Invoke(this, objArgs);
-                            base.OnPropertyChanged(objArgs);
+                            // ReSharper disable once AccessToModifiedClosure
+                            foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                            {
+                                base.OnPropertyChanged(objArgs);
+                            }
                         }
-                    }
-                    else
-                    {
-                        // ReSharper disable once AccessToModifiedClosure
-                        foreach (PropertyChangedEventArgs objArgs in lstArgsList)
-                        {
-                            base.OnPropertyChanged(objArgs);
-                        }
-                    }
-                });
+                    });
+                }
             }
-            else
+            else if (PropertyChanged != null)
             {
                 Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
-                    {
-                        // ReSharper disable once AccessToModifiedClosure
-                        foreach (string strPropertyToChange in lstPropertyNames)
-                        {
-                            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyToChange);
-                            PropertyChanged.Invoke(this, objArgs);
-                            base.OnPropertyChanged(objArgs);
-                        }
-                    }
-                    else
                     {
                         // ReSharper disable once AccessToModifiedClosure
                         foreach (string strPropertyToChange in lstPropertyNames)
@@ -258,42 +298,26 @@ namespace Chummer
                 }
 
                 await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                await Utils.RunOnMainThreadAsync(() =>
+                if (PropertyChanged != null)
                 {
-                    if (PropertyChanged != null)
+                    await Utils.RunOnMainThreadAsync(() =>
                     {
-                        // ReSharper disable once AccessToModifiedClosure
-                        foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                        if (PropertyChanged != null)
                         {
-                            PropertyChanged.Invoke(this, objArgs);
-                            base.OnPropertyChanged(objArgs);
+                            // ReSharper disable once AccessToModifiedClosure
+                            foreach (PropertyChangedEventArgs objArgs in lstArgsList)
+                            {
+                                base.OnPropertyChanged(objArgs);
+                            }
                         }
-                    }
-                    else
-                    {
-                        // ReSharper disable once AccessToModifiedClosure
-                        foreach (PropertyChangedEventArgs objArgs in lstArgsList)
-                        {
-                            base.OnPropertyChanged(objArgs);
-                        }
-                    }
-                }, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                }
             }
-            else
+            else if (PropertyChanged != null)
             {
                 await Utils.RunOnMainThreadAsync(() =>
                 {
                     if (PropertyChanged != null)
-                    {
-                        // ReSharper disable once AccessToModifiedClosure
-                        foreach (string strPropertyToChange in lstPropertyNames)
-                        {
-                            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyToChange);
-                            PropertyChanged.Invoke(this, objArgs);
-                            base.OnPropertyChanged(objArgs);
-                        }
-                    }
-                    else
                     {
                         // ReSharper disable once AccessToModifiedClosure
                         foreach (string strPropertyToChange in lstPropertyNames)

@@ -22,15 +22,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Chummer.Annotations;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T>, IHasLockObject, INotifyMultiplePropertiesChangedAsync
+    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T>, IHasLockObject
     {
         [CLSCompliant(false)]
         protected readonly EnhancedObservableCollection<T> _lstData;
@@ -1248,83 +1245,6 @@ namespace Chummer
         {
             add => _lstData.CollectionChangedAsync += value;
             remove => _lstData.CollectionChangedAsync -= value;
-        }
-
-        /// <inheritdoc />
-#pragma warning disable CA1070
-        public virtual event PropertyChangedEventHandler PropertyChanged
-        {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.PropertyChanged += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.PropertyChanged -= value;
-            }
-        }
-#pragma warning restore CA1070
-
-        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
-        {
-            add => _lstData.PropertyChangedAsync += value;
-            remove => _lstData.PropertyChangedAsync -= value;
-        }
-
-        public virtual event MultiplePropertiesChangedEventHandler MultiplePropertiesChanged
-        {
-            add
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.MultiplePropertiesChanged += value;
-            }
-            remove
-            {
-                using (LockObject.EnterWriteLock())
-                    _lstData.MultiplePropertiesChanged -= value;
-            }
-        }
-
-        public event MultiplePropertiesChangedAsyncEventHandler MultiplePropertiesChangedAsync
-        {
-            add => _lstData.MultiplePropertiesChangedAsync += value;
-            remove => _lstData.MultiplePropertiesChangedAsync -= value;
-        }
-
-        [NotifyPropertyChangedInvocator]
-        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
-        {
-            this.OnMultiplePropertyChanged(strPropertyName);
-        }
-
-        public Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
-        {
-            return this.OnMultiplePropertyChangedAsync(token, strPropertyName);
-        }
-
-        public void OnMultiplePropertiesChanged(IReadOnlyCollection<string> lstPropertyNames)
-        {
-            using (LockObject.EnterUpgradeableReadLock())
-            {
-                _lstData.OnMultiplePropertiesChanged(lstPropertyNames);
-            }
-        }
-
-        public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                await _lstData.OnMultiplePropertiesChangedAsync(lstPropertyNames, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private int _intIsDisposed;
