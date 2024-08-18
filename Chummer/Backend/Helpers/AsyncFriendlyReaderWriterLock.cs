@@ -34,6 +34,7 @@ using System.Diagnostics;
 
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Chummer
 {
@@ -49,6 +50,9 @@ namespace Chummer
     /// </summary>
     public sealed class AsyncFriendlyReaderWriterLock : IAsyncDisposable, IDisposable
     {
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
+
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list, but as a tree graph. Each lock creates a disposable release object of some kind, and only disposing it frees the lock.
         // Because .NET Framework doesn't have dictionary optimizations for dealing with multiple AsyncLocals stored per context, we need scrape together something similar.
@@ -195,14 +199,22 @@ namespace Chummer
                 if (++intLoopCount > Utils.WaitEmergencyReleaseMaxTicks)
                 {
                     // Emergency exit for odd cases where, for some reason, AsyncLocal assignment does not happen (in the right place?) when a locker release is disposed
-                    Utils.BreakIfDebug();
                     // Let's just get the first ancestor lock that is not disposed. If this causes problems, it's because of the above-mentioned comment around AsyncLocal assignment
+                    Log.Warn("Ran into an improperly set AsyncLocal that needs to be reset, location: " + Environment.NewLine + EnhancedStackTrace.Current());
                     while (objCurrentHelper != null && objCurrentHelper.IsDisposed)
                         objCurrentHelper = objCurrentHelper.ParentLinkedHelper;
-                    while (objTopMostHeldUReader != null && objTopMostHeldUReader.IsDisposed)
+                    // Held helpers need to actually be held at the moment, otherwise we have a problem
+                    while (objTopMostHeldUReader != null && (objTopMostHeldUReader.IsDisposed
+                                                             || objTopMostHeldUReader.ActiveUpgradeableReaderSemaphore
+                                                                 .CurrentCount != 0))
                         objTopMostHeldUReader = objTopMostHeldUReader.ParentLinkedHelper;
-                    while (objTopMostHeldWriter != null && objTopMostHeldWriter.IsDisposed)
+                    while (objTopMostHeldWriter != null && (objTopMostHeldWriter.IsDisposed
+                                                            || objTopMostHeldWriter.ActiveUpgradeableReaderSemaphore
+                                                                .CurrentCount != 0
+                                                            || objTopMostHeldWriter.ActiveWriterSemaphore
+                                                                .CurrentCount != 0))
                         objTopMostHeldWriter = objTopMostHeldWriter.ParentLinkedHelper;
+
 #if ASYNCLOCALWRITEDEBUG
                     string strStackTrace;
 #endif
