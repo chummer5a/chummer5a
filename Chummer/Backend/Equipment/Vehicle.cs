@@ -106,6 +106,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnCanSwapAttributes;
         private int _intSortOrder;
         private bool _blnStolen;
+        private bool _blnSkipEvents;
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
@@ -133,6 +134,8 @@ namespace Chummer.Backend.Equipment
         private async Task VehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (_blnSkipEvents)
+                return;
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
                 bool blnDoAI = false;
@@ -201,7 +204,7 @@ namespace Chummer.Backend.Equipment
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
-            return e.Action != NotifyCollectionChangedAction.Move
+            return e.Action != NotifyCollectionChangedAction.Move && !_blnSkipEvents
                 ? this.RefreshMatrixAttributeArrayAsync(_objCharacter, token)
                 : Task.CompletedTask;
         }
@@ -214,12 +217,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateChildren">Whether child items should be created.</param>
         /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether creating the Vehicle should skip the Variable price dialogue (should only be used by SelectVehicle form).</param>
+        /// <param name="blnForSelectForm">Whether this vehicle is being created for a Selection form (which means a lot of expensive code should be skipped).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlVehicle, bool blnSkipCost = false, bool blnCreateChildren = true,
-            bool blnCreateImprovements = true, bool blnSkipSelectForms = false, CancellationToken token = default)
+            bool blnCreateImprovements = true, bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
             Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlVehicle, blnSkipCost, blnCreateChildren,
-                blnCreateImprovements, blnSkipSelectForms, token), token);
+                blnCreateImprovements, blnSkipSelectForms, blnForSelectForm, token), token);
         }
 
         /// <summary>
@@ -230,16 +234,17 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateChildren">Whether child items should be created.</param>
         /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether creating the Vehicle should skip the Variable price dialogue (should only be used by SelectVehicle form).</param>
+        /// <param name="blnForSelectForm">Whether this vehicle is being created for a Selection form (which means a lot of expensive code should be skipped).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlVehicle, bool blnSkipCost = false, bool blnCreateChildren = true,
-            bool blnCreateImprovements = true, bool blnSkipSelectForms = false, CancellationToken token = default)
+            bool blnCreateImprovements = true, bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
             return CreateCoreAsync(false, objXmlVehicle, blnSkipCost, blnCreateChildren, blnCreateImprovements,
-                blnSkipSelectForms, token);
+                blnSkipSelectForms, blnForSelectForm, token);
         }
 
         private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlVehicle, bool blnSkipCost = false, bool blnCreateChildren = true,
-            bool blnCreateImprovements = true, bool blnSkipSelectForms = false, CancellationToken token = default)
+            bool blnCreateImprovements = true, bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!objXmlVehicle.TryGetField("id", Guid.TryParse, out _guiSourceID))
@@ -253,6 +258,7 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
+            _blnSkipEvents = blnForSelectForm;
             objXmlVehicle.TryGetStringFieldQuickly("name", ref _strName);
             objXmlVehicle.TryGetStringFieldQuickly("category", ref _strCategory);
             string strTemp = objXmlVehicle["handling"]?.InnerText;
@@ -327,12 +333,15 @@ namespace Chummer.Backend.Equipment
             if (!objXmlVehicle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlVehicle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            objXmlVehicle.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            if (!blnForSelectForm)
+            {
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlVehicle.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
 
             _strCost = objXmlVehicle["cost"]?.InnerText ?? string.Empty;
-            if (!blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
+            if (!blnForSelectForm && !blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 string strSecondHalf = string.Empty;
@@ -424,7 +433,7 @@ namespace Chummer.Backend.Equipment
             objXmlVehicle.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlVehicle.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            if (!blnForSelectForm && GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
@@ -711,13 +720,13 @@ namespace Chummer.Backend.Equipment
                             objWeapon.ParentVehicle = this;
                             // ReSharper disable once MethodHasAsyncOverload
                             objWeapon.Create(objXmlWeaponNode, lstSubWeapons, blnCreateChildren,
-                                !blnSkipSelectForms && blnCreateImprovements, blnSkipCost, token: token);
+                                !blnSkipSelectForms && blnCreateImprovements, blnSkipCost, blnForSelectForm: blnForSelectForm, token: token);
                         }
                         else
                         {
                             await objWeapon.SetParentVehicleAsync(this, token).ConfigureAwait(false);
                             await objWeapon.CreateAsync(objXmlWeaponNode, lstSubWeapons, blnCreateChildren,
-                                !blnSkipSelectForms && blnCreateImprovements, blnSkipCost, token: token).ConfigureAwait(false);
+                                !blnSkipSelectForms && blnCreateImprovements, blnSkipCost, blnForSelectForm: blnForSelectForm, token: token).ConfigureAwait(false);
                         }
 
                         objWeapon.ParentID = InternalId;

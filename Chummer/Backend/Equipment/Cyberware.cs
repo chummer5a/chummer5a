@@ -1146,11 +1146,11 @@ namespace Chummer.Backend.Equipment
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren,
                                         blnCreateImprovements,
-                                        blnSkipSelectForms, intAddWeaponRating, token);
+                                        blnSkipSelectForms, intAddWeaponRating, token: token);
                                 else
                                     await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, blnCreateChildren,
                                         blnCreateImprovements,
-                                        blnSkipSelectForms, intAddWeaponRating, token).ConfigureAwait(false);
+                                        blnSkipSelectForms, intAddWeaponRating, token: token).ConfigureAwait(false);
                                 objGearWeapon.ParentID = InternalId;
                                 objGearWeapon.Cost = "0";
 
@@ -1241,11 +1241,11 @@ namespace Chummer.Backend.Equipment
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objVehicle.Create(xmlVehicle, blnSkipSelectForms, true, blnCreateImprovements,
-                                        blnSkipSelectForms, token);
+                                        blnSkipSelectForms, token: token);
                                 else
                                     await objVehicle.CreateAsync(xmlVehicle, blnSkipSelectForms, true,
                                         blnCreateImprovements,
-                                        blnSkipSelectForms, token).ConfigureAwait(false);
+                                        blnSkipSelectForms, token: token).ConfigureAwait(false);
                                 objVehicle.ParentID = InternalId;
 
                                 if (Guid.TryParse(objVehicle.InternalId, out _guiVehicleID))

@@ -75,6 +75,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnStolen;
         private bool _blnEncumbrance = true;
+        private bool _blnSkipEvents;
 
         private string _strDeviceRating = string.Empty;
         private string _strAttack = string.Empty;
@@ -123,7 +124,7 @@ namespace Chummer.Backend.Equipment
                     foreach (ArmorMod objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        if (objNewItem.Equipped)
+                        if (!_blnSkipEvents && objNewItem.Equipped)
                         {
                             blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objNewItem.Encumbrance;
@@ -137,7 +138,7 @@ namespace Chummer.Backend.Equipment
                     foreach (ArmorMod objOldItem in e.OldItems)
                     {
                         objOldItem.Parent = null;
-                        if (objOldItem.Equipped)
+                        if (!_blnSkipEvents && objOldItem.Equipped)
                         {
                             blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objOldItem.Encumbrance;
@@ -154,7 +155,7 @@ namespace Chummer.Backend.Equipment
                         if (setNewItems.Contains(objOldItem))
                             continue;
                         objOldItem.Parent = null;
-                        if (objOldItem.Equipped)
+                        if (!_blnSkipEvents && objOldItem.Equipped)
                         {
                             blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objOldItem.Encumbrance;
@@ -164,7 +165,7 @@ namespace Chummer.Backend.Equipment
                     foreach (ArmorMod objNewItem in setNewItems)
                     {
                         objNewItem.Parent = this;
-                        if (objNewItem.Equipped)
+                        if (!_blnSkipEvents && objNewItem.Equipped)
                         {
                             blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objNewItem.Encumbrance;
@@ -175,12 +176,12 @@ namespace Chummer.Backend.Equipment
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    blnDoArmorEncumbranceRefresh = Equipped;
+                    blnDoArmorEncumbranceRefresh = !_blnSkipEvents && Equipped;
                     break;
             }
 
             // Short-circuits this in case we are adding mods to an armor that is not on the character (happens when browsing for new armor to add)
-            if (_objCharacter?.IsLoading != false || !await _objCharacter.Armor.ContainsAsync(this, token).ConfigureAwait(false))
+            if (_blnSkipEvents || _objCharacter?.IsLoading != false || !await _objCharacter.Armor.ContainsAsync(this, token).ConfigureAwait(false))
                 return;
 
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertiesChangedAsync, HashSet<string>>>(
@@ -271,7 +272,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
-                        if (Equipped)
+                        if (!_blnSkipEvents && Equipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
                     break;
@@ -280,7 +281,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
-                        if (Equipped)
+                        if (!_blnSkipEvents && Equipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
                     break;
@@ -289,13 +290,13 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
-                        if (Equipped)
+                        if (!_blnSkipEvents && Equipped)
                             await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
-                        if (Equipped)
+                        if (!_blnSkipEvents && Equipped)
                             await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
                     break;
@@ -311,12 +312,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipCost">Whether creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
         /// <param name="blnCreateChildren">Whether child items should be created.</param>
         /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses like Custom Fit (Stack).</param>
+        /// <param name="blnForSelectForm">Whether this armor is being created for a Selection form (which means a lot of expensive code should be skipped).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
-            bool blnCreateChildren = true, bool blnSkipSelectForms = false, CancellationToken token = default)
+            bool blnCreateChildren = true, bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
             Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlArmorNode, intRating, lstWeapons,
-                blnSkipCost, blnCreateChildren, blnSkipSelectForms, token), token);
+                blnSkipCost, blnCreateChildren, blnSkipSelectForms, blnForSelectForm, token), token);
         }
 
         /// <summary>
@@ -328,16 +330,17 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipCost">Whether creating the Armor should skip the Variable price dialogue (should only be used by SelectArmor form).</param>
         /// <param name="blnCreateChildren">Whether child items should be created.</param>
         /// <param name="blnSkipSelectForms">Whether to skip forms that are created for bonuses like Custom Fit (Stack).</param>
+        /// <param name="blnForSelectForm">Whether this armor is being created for a Selection form (which means a lot of expensive code should be skipped).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
-            bool blnCreateChildren = true, bool blnSkipSelectForms = false, CancellationToken token = default)
+            bool blnCreateChildren = true, bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
             return CreateCoreAsync(false, objXmlArmorNode, intRating, lstWeapons, blnSkipCost, blnCreateChildren,
-                blnSkipSelectForms, token);
+                blnSkipSelectForms, blnForSelectForm, token);
         }
 
         private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
-            bool blnCreateChildren = true, bool blnSkipSelectForms = false, CancellationToken token = default)
+            bool blnCreateChildren = true, bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!objXmlArmorNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
@@ -351,7 +354,8 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
-            _blnEquipped = !blnSkipSelectForms;
+            _blnSkipEvents = !blnForSelectForm;
+            _blnEquipped = !blnForSelectForm && !blnSkipSelectForms;
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
@@ -367,21 +371,25 @@ namespace Chummer.Backend.Equipment
             if (!objXmlArmorNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArmorNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            objXmlArmorNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            _colNotes = ColorTranslator.FromHtml(sNotesColor);
-
-            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            if (!blnForSelectForm)
             {
-                if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
-                    Notes = CommonFunctions.GetBookNotes(objXmlArmorNode, Name, CurrentDisplayName, Source,
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
-                else
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
-                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
-                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlArmorNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+                {
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        Notes = CommonFunctions.GetBookNotes(objXmlArmorNode, Name, CurrentDisplayName, Source,
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
+                    else
+                        Notes = await CommonFunctions.GetBookNotesAsync(objXmlArmorNode, Name,
+                            await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                            await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                            token).ConfigureAwait(false);
+                }
             }
 
             objXmlArmorNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance);
@@ -393,7 +401,7 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("weight", ref _strWeight);
 
             // Check for a Variable Cost.
-            if (!blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
+            if (!blnForSelectForm && !blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 string strSecondHalf = string.Empty;
@@ -477,7 +485,7 @@ namespace Chummer.Backend.Equipment
                     _strCost = strFirstHalf;
             }
 
-            if (!blnSkipSelectForms)
+            if (!blnForSelectForm && !blnSkipSelectForms)
             {
                 if (Bonus != null)
                 {
@@ -553,9 +561,9 @@ namespace Chummer.Backend.Equipment
                                 // ReSharper disable once AccessToModifiedClosure
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, token: token);
+                                    objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token);
                                 else
-                                    await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, token: token).ConfigureAwait(false);
+                                    await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token).ConfigureAwait(false);
                                 objMod.IncludedInArmor = true;
                                 objMod.ArmorCapacity = "[0]";
                                 objMod.Cost = "0";
@@ -616,9 +624,9 @@ namespace Chummer.Backend.Equipment
                             objMod = new ArmorMod(_objCharacter);
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverload
-                                objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, token);
+                                objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token);
                             else
-                                await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, token).ConfigureAwait(false);
+                                await objMod.CreateAsync(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms, blnForSelectForm, token).ConfigureAwait(false);
                             if (string.IsNullOrWhiteSpace(objMod.Extra))
                             {
                                 objMod.Extra = strForceValue;
@@ -745,7 +753,7 @@ namespace Chummer.Backend.Equipment
             objXmlArmorNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             objXmlArmorNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
 
-            if (!blnSkipSelectForms)
+            if (!blnForSelectForm && !blnSkipSelectForms)
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -790,11 +798,11 @@ namespace Chummer.Backend.Equipment
                         // ReSharper disable once MethodHasAsyncOverload
                         objGearWeapon.Create(objXmlWeapon, lstWeapons, true,
                             !blnSkipSelectForms,
-                            blnSkipSelectForms, intAddWeaponRating, token);
+                            blnSkipSelectForms, intAddWeaponRating, blnForSelectForm, token);
                     else
                         await objGearWeapon.CreateAsync(objXmlWeapon, lstWeapons, true,
                             !blnSkipSelectForms,
-                            blnSkipSelectForms, intAddWeaponRating, token).ConfigureAwait(false);
+                            blnSkipSelectForms, intAddWeaponRating, blnForSelectForm, token).ConfigureAwait(false);
                     objGearWeapon.ParentID = InternalId;
                     objGearWeapon.Cost = "0";
                     if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))

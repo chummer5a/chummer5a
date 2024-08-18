@@ -107,6 +107,7 @@ namespace Chummer.Backend.Equipment
         private string _strSpec2 = string.Empty;
         private bool _blnIncludedInWeapon;
         private bool _blnEquipped = true;
+        private bool _blnSkipEvents;
         private bool _blnDiscountCost;
         private bool _blnRequireAmmo = true;
         private string _strAccuracy = string.Empty;
@@ -173,7 +174,7 @@ namespace Chummer.Backend.Equipment
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (e.Action == NotifyCollectionChangedAction.Move)
+            if (e.Action == NotifyCollectionChangedAction.Move || _blnSkipEvents)
                 return;
             bool blnEverDoEncumbranceRefresh = _objCharacter?.IsLoading == false && Equipped && ParentVehicle == null;
             bool blnDoEncumbranceRefresh = false;
@@ -288,7 +289,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
-            bool blnEverDoEncumbranceRefresh = _objCharacter?.IsLoading == false && Equipped && ParentVehicle == null;
+            bool blnEverDoEncumbranceRefresh = !_blnSkipEvents && _objCharacter?.IsLoading == false && Equipped && ParentVehicle == null;
             bool blnDoEncumbranceRefresh = false;
             switch (e.Action)
             {
@@ -425,13 +426,14 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="intRating">Rating of the weapon</param>
+        /// <param name="blnForSelectForm">Whether this weapon is being created for a Selection form (which means a lot of expensive code should be skipped).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlWeapon, ICollection<Weapon> lstWeapons, bool blnCreateChildren = true,
-            bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0,
+            bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0, bool blnForSelectForm = false,
             CancellationToken token = default)
         {
             Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlWeapon, lstWeapons, blnCreateChildren,
-                blnCreateImprovements, blnSkipCost, intRating, token), token);
+                blnCreateImprovements, blnSkipCost, intRating, blnForSelectForm, token), token);
         }
 
         /// <summary>
@@ -443,18 +445,19 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
         /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
         /// <param name="intRating">Rating of the weapon</param>
+        /// <param name="blnForSelectForm">Whether this weapon is being created for a Selection form (which means a lot of expensive code should be skipped).</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public Task CreateAsync(XmlNode objXmlWeapon, ICollection<Weapon> lstWeapons, bool blnCreateChildren = true,
-            bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0,
+            bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0, bool blnForSelectForm = false,
             CancellationToken token = default)
         {
             return CreateCoreAsync(false, objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
-                blnSkipCost, intRating, token);
+                blnSkipCost, intRating, blnForSelectForm, token);
         }
 
         private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlWeapon, ICollection<Weapon> lstWeapons,
             bool blnCreateChildren = true,
-            bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0,
+            bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0, bool blnForSelectForm = false,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -469,7 +472,8 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
-            _blnEquipped = blnCreateImprovements;
+            _blnSkipEvents = !blnForSelectForm;
+            _blnEquipped = !blnForSelectForm && blnCreateImprovements;
             objXmlWeapon.TryGetStringFieldQuickly("name", ref _strName);
             objXmlWeapon.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlWeapon.TryGetStringFieldQuickly("type", ref _strType);
@@ -489,9 +493,12 @@ namespace Chummer.Backend.Equipment
             if (!objXmlWeapon.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlWeapon.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            objXmlWeapon.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            if (!blnForSelectForm)
+            {
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlWeapon.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
 
             _intRating = Math.Max(Math.Min(intRating, MaxRatingValue), MinRatingValue);
             if (objXmlWeapon["accessorymounts"] != null)
@@ -550,7 +557,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
 
             // Check for a Variable Cost.
-            if (!blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
+            if (!blnForSelectForm && !blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
                 string strSecondHalf = string.Empty;
@@ -647,7 +654,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlWeapon.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
+            if (!blnForSelectForm && GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
@@ -717,10 +724,10 @@ namespace Chummer.Backend.Equipment
                         if (blnSync)
                             // ReSharper disable once MethodHasAsyncOverload
                             objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements,
-                                blnSkipCost, token: token);
+                                blnSkipCost, blnForSelectForm: blnForSelectForm, token: token);
                         else
                             await objUnderbarrelWeapon.CreateAsync(objXmlWeaponNode, lstWeapons, true,
-                                blnCreateImprovements, blnSkipCost, token: token).ConfigureAwait(false);
+                                blnCreateImprovements, blnSkipCost, blnForSelectForm: blnForSelectForm, token: token).ConfigureAwait(false);
                         if (!AllowAccessory)
                             objUnderbarrelWeapon.AllowAccessory = false;
                         objUnderbarrelWeapon.ParentID = InternalId;
@@ -967,11 +974,11 @@ namespace Chummer.Backend.Equipment
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
                         objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
-                            blnSkipCost, intAddWeaponRating, token);
+                            blnSkipCost, intAddWeaponRating, blnForSelectForm, token);
                     else
                         await objSubWeapon.CreateAsync(objXmlSubWeapon, lstWeapons, blnCreateChildren,
                             blnCreateImprovements,
-                            blnSkipCost, intAddWeaponRating, token).ConfigureAwait(false);
+                            blnSkipCost, intAddWeaponRating, blnForSelectForm, token).ConfigureAwait(false);
                     objSubWeapon.ParentID = InternalId;
                     objSubWeapon.Cost = "0";
                     lstWeapons.Add(objSubWeapon);

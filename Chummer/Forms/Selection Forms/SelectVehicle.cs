@@ -579,41 +579,57 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, token).ConfigureAwait(false);
-                string strFilter = string.Empty;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                try
                 {
-                    sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
-                    if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
-                                                           && (GlobalSettings.SearchInCategoryOnly
-                                                               || txtSearch.TextLength == 0))
-                        sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
-                    else
+                    token.ThrowIfCancellationRequested();
+                    string strCategory = await cboCategory
+                        .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, token)
+                        .ConfigureAwait(false);
+                    string strFilter = string.Empty;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdCategoryFilter))
+                        sbdFilter.Append('(')
+                            .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
+                            .Append(')');
+                        if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
+                                                               && (GlobalSettings.SearchInCategoryOnly
+                                                                   || txtSearch.TextLength == 0))
+                            sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                        else
                         {
-                            foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                       out StringBuilder sbdCategoryFilter))
                             {
-                                if (!string.IsNullOrEmpty(strItem))
-                                    sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                            }
+                                foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
+                                {
+                                    if (!string.IsNullOrEmpty(strItem))
+                                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath())
+                                            .Append(" or ");
+                                }
 
-                            if (sbdCategoryFilter.Length > 0)
-                            {
-                                sbdCategoryFilter.Length -= 4;
-                                sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                                if (sbdCategoryFilter.Length > 0)
+                                {
+                                    sbdCategoryFilter.Length -= 4;
+                                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                                }
                             }
                         }
+
+                        if (!string.IsNullOrEmpty(txtSearch.Text))
+                            sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                        if (sbdFilter.Length > 0)
+                            strFilter = '[' + sbdFilter.ToString() + ']';
                     }
 
-                    if (!string.IsNullOrEmpty(txtSearch.Text))
-                        sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
-
-                    if (sbdFilter.Length > 0)
-                        strFilter = '[' + sbdFilter.ToString() + ']';
+                    await BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter), token)
+                        .ConfigureAwait(false);
                 }
-                await BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter), token).ConfigureAwait(false);
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -687,7 +703,7 @@ namespace Chummer
                         Vehicle objVehicle = new Vehicle(_objCharacter);
                         try
                         {
-                            await objVehicle.CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, token).ConfigureAwait(false);
+                            await objVehicle.CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, true, token).ConfigureAwait(false);
                             string strID = objVehicle.SourceIDString;
                             string strVehicleName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             string strAccel = await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false);
