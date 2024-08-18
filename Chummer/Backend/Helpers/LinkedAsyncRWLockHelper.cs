@@ -135,7 +135,7 @@ namespace Chummer
             _objParentLinkedHelper = objParent;
 
 #if LINKEDSEMAPHOREDEBUG
-            RecordedStackTrace = Environment.StackTrace;
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -250,7 +250,7 @@ namespace Chummer
 #if LINKEDSEMAPHOREDEBUG
             if (!_setChildren.IsEmpty)
                 Utils.BreakIfDebug();
-            RecordedStackTrace = Environment.StackTrace;
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             DebuggableSemaphoreSlim objActiveUpgradeableReaderSemaphore = Interlocked.Exchange(ref _objActiveUpgradeableReaderSemaphore, null);
             // ReSharper disable once MethodSupportsCancellation
@@ -266,7 +266,7 @@ namespace Chummer
             objCancelledWriterSemaphore?.SafeWait();
 
 #if LINKEDSEMAPHOREDEBUG
-            RecordedStackTrace = Environment.StackTrace;
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             Interlocked.Increment(ref _intDisposedStatus);
             _objHasChildrenSemaphore = null;
@@ -351,7 +351,7 @@ namespace Chummer
             if (!_setChildren.IsEmpty)
                 Utils.BreakIfDebug();
             // Need to separate out the async part to make sure the stacktrace is being recorded in the context of the task's creation, not its execution
-            RecordedStackTrace = Environment.StackTrace;
+            RecordedStackTrace = EnhancedStackTrace.Current().ToString();
 
             return Inner();
 
@@ -465,7 +465,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return;
             }
@@ -558,7 +558,7 @@ namespace Chummer
 #if DEBUG
                 Debug.WriteLine(
                     "Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
-                Debug.WriteLine(Environment.StackTrace);
+                Debug.WriteLine(EnhancedStackTrace.Current().ToString());
 #endif
                 return;
             }
