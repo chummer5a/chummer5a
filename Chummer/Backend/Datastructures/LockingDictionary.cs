@@ -171,7 +171,7 @@ namespace Chummer
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             using (LockObject.EnterReadLock())
-                return _dicData.Contains(item);
+                return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value);
         }
 
         public async Task<bool> ContainsAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
@@ -180,7 +180,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _dicData.Contains(item);
+                return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value);
             }
             finally
             {
