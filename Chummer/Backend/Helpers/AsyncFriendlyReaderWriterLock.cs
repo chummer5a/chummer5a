@@ -25,13 +25,7 @@
 #endif
 
 using System;
-
-#if DEBUG
-
 using System.Diagnostics;
-
-#endif
-
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
