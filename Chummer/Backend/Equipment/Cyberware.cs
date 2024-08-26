@@ -304,7 +304,7 @@ namespace Chummer.Backend.Equipment
                                             token.ThrowIfCancellationRequested();
                                             if (await objOldItem.GetParentAsync(token).ConfigureAwait(false) == this)
                                                 await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
-                                            }
+                                        }
                                         finally
                                         {
                                             await objLocker2.DisposeAsync().ConfigureAwait(false);

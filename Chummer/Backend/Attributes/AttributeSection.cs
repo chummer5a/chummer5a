@@ -508,7 +508,7 @@ namespace Chummer.Backend.Attributes
             _dicUIPropertyChangers =
                 new ConcurrentDictionary<string, UiPropertyChangerTracker>();
 
-        private readonly struct UiPropertyChangerTracker
+        private readonly struct UiPropertyChangerTracker : IEquatable<UiPropertyChangerTracker>
         {
             public string Abbrev { get; }
             public List<MultiplePropertiesChangedEventHandler> PropertyChangedList { get; }
@@ -516,9 +516,32 @@ namespace Chummer.Backend.Attributes
 
             public UiPropertyChangerTracker(string strAbbrev)
             {
-                Abbrev = strAbbrev;
+                Abbrev = strAbbrev ?? string.Empty;
                 PropertyChangedList = new List<MultiplePropertiesChangedEventHandler>();
                 AsyncPropertyChangedList = new List<MultiplePropertiesChangedAsyncEventHandler>();
+            }
+
+            public bool Equals(UiPropertyChangerTracker other)
+            {
+                return string.Equals(Abbrev, other.Abbrev, StringComparison.Ordinal)
+                       && PropertyChangedList.SequenceEqual(other.PropertyChangedList)
+                       && AsyncPropertyChangedList.SequenceEqual(other.AsyncPropertyChangedList);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is UiPropertyChangerTracker other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hashCode = Abbrev.GetHashCode();
+                    hashCode = (hashCode * 397) ^ PropertyChangedList.GetHashCode();
+                    hashCode = (hashCode * 397) ^ AsyncPropertyChangedList.GetHashCode();
+                    return hashCode;
+                }
             }
         }
 
