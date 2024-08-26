@@ -25733,8 +25733,8 @@
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.22.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.10.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25744,20 +25744,20 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.7" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.10.48" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.10.48">
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.11.20" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.11.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.8.8" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="5.3.2" />
-    <PackageReference Include="NLog.Schema" Version="5.3.2" />
+    <PackageReference Include="NLog" Version="5.3.3" />
+    <PackageReference Include="NLog.Schema" Version="5.3.3" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
