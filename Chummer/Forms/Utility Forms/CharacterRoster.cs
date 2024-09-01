@@ -472,6 +472,9 @@ namespace Chummer
                         objTemp.Dispose();
                     }
 
+                    // Clear the mugshot image so that we don't get crashes from disposal ordering (image can get disposed before its picturebox does)
+                    await picMugshot.DoThreadSafeAsync(x => x.Image = null, CancellationToken.None).ConfigureAwait(false);
+
                     await SetMyEventHandlers(true, _objGenericToken).ConfigureAwait(false);
 
                     await DisposeTagNodes(await treCharacterList.DoThreadSafeFuncAsync(x => x.Nodes, _objGenericToken).ConfigureAwait(false)).ConfigureAwait(false);

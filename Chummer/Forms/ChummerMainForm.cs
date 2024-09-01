@@ -87,6 +87,8 @@ namespace Chummer
             }
         }
 
+        public bool IsClosing => _intFormClosing > 0;
+
 #region Control Events
 
         public ChummerMainForm(bool blnIsUnitTest = false, bool blnIsUnitTestForUI = false)
@@ -2698,79 +2700,105 @@ namespace Chummer
 
         private async void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
         {
+            Form frmSender = sender as Form;
+            if (frmSender != null)
+            {
+                e.Cancel = true; // Always have to cancel because of issues with async FormClosing events
+                await frmSender.DoThreadSafeAsync(x => x.Enabled = false, CancellationToken.None).ConfigureAwait(false); // Disable the form to make sure we can't interract with it anymore
+            }
+
+            // Caller returns and form stays open (weird async FormClosing event issue workaround)
+            await Task.Yield();
+
             if (Interlocked.Exchange(ref _intFormClosing, 1) == 1)
+            {
+                e.Cancel = true;
                 return;
-            _objGenericCancellationTokenSource.Cancel(false);
-            Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
-            foreach (Character objCharacter in Program.OpenCharacters)
-            {
-                if (objCharacter?.IsDisposed == false)
-                {
-                    try
-                    {
-                        objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                }
-            }
-
-#if !DEBUG
-            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);
-            if (objTemp?.IsCancellationRequested == false)
-            {
-                objTemp.Cancel(false);
-                objTemp.Dispose();
-            }
-
-            Task tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
-            if (tskOld != null)
-            {
-                try
-                {
-                    await tskOld;
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-#endif
-            await DisposeOpenFormsAsync().ConfigureAwait(false);
-
-            FormWindowState eWindowState = await this.DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
-                                                     .ConfigureAwait(false);
-            Properties.Settings.Default.WindowState = eWindowState;
-            if (eWindowState == FormWindowState.Normal)
-            {
-                Properties.Settings.Default.Location = await this
-                                                             .DoThreadSafeFuncAsync(
-                                                                 x => x.Location, CancellationToken.None)
-                                                             .ConfigureAwait(false);
-                Properties.Settings.Default.Size = await this.DoThreadSafeFuncAsync(x => x.Size, CancellationToken.None)
-                                                             .ConfigureAwait(false);
-            }
-            else
-            {
-                Properties.Settings.Default.Location = await this
-                                                             .DoThreadSafeFuncAsync(
-                                                                 x => x.RestoreBounds.Location, CancellationToken.None)
-                                                             .ConfigureAwait(false);
-                Properties.Settings.Default.Size = await this
-                                                         .DoThreadSafeFuncAsync(
-                                                             x => x.RestoreBounds.Size, CancellationToken.None)
-                                                         .ConfigureAwait(false);
             }
 
             try
             {
-                Properties.Settings.Default.Save();
+                _objGenericCancellationTokenSource.Cancel(false);
+                Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
+                await Program.OpenCharacters.ForEachWithSideEffectsAsync(objCharacter =>
+                {
+                    if (objCharacter?.IsDisposed == false)
+                    {
+                        try
+                        {
+                            objCharacter.PropertyChangedAsync -= UpdateCharacterTabTitle;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                    }
+                }, CancellationToken.None).ConfigureAwait(false);
+
+#if !DEBUG
+                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);
+                if (objTemp?.IsCancellationRequested == false)
+                {
+                    objTemp.Cancel(false);
+                    objTemp.Dispose();
+                }
+
+                Task tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
+                if (tskOld != null)
+                {
+                    try
+                    {
+                        await tskOld;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
+#endif
+                FormWindowState eWindowState = await this
+                    .DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
+                    .ConfigureAwait(false);
+                Properties.Settings.Default.WindowState = eWindowState;
+                if (eWindowState == FormWindowState.Normal)
+                {
+                    Tuple<Point, Size> tupBounds = await this
+                        .DoThreadSafeFuncAsync(x => new Tuple<Point, Size>(x.Location, x.Size), CancellationToken.None)
+                        .ConfigureAwait(false);
+                    Properties.Settings.Default.Location = tupBounds.Item1;
+                    Properties.Settings.Default.Size = tupBounds.Item2;
+                }
+                else
+                {
+                    Rectangle recBounds = await this.DoThreadSafeFuncAsync(x => x.RestoreBounds, CancellationToken.None)
+                        .ConfigureAwait(false);
+                    Properties.Settings.Default.Location = recBounds.Location;
+                    Properties.Settings.Default.Size = recBounds.Size;
+                }
+
+                try
+                {
+                    Properties.Settings.Default.Save();
+                }
+                catch (IOException ex)
+                {
+                    Log.Warn(ex, ex.Message);
+                }
+
+                // Now we close the original caller (weird async FormClosing event issue workaround)
+                if (frmSender != null)
+                {
+                    await frmSender.DoThreadSafeAsync(x =>
+                    {
+                        x.FormClosing -= ChummerMainForm_Closing;
+                        x.Close();
+                    }, CancellationToken.None).ConfigureAwait(false);
+                }
             }
-            catch (IOException ex)
+            finally
             {
-                Log.Warn(ex, ex.Message);
+                if (frmSender != null)
+                    await frmSender.DoThreadSafeAsync(x => x.Enabled = true, CancellationToken.None).ConfigureAwait(false); // Doesn't matter if we're closed
             }
         }
 
@@ -2784,9 +2812,12 @@ namespace Chummer
                 {
                     for (int i = lstToClose1.Count - 1; i >= 0; --i)
                     {
+                        if (i >= lstToClose1.Count)
+                            continue;
                         CharacterShared frmToClose = lstToClose1[i];
+                        if (frmToClose.IsNullOrDisposed())
+                            continue;
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        // ReSharper disable once MethodSupportsCancellation
                         frmToClose.DoThreadSafe(x =>
                         {
                             try
@@ -2801,7 +2832,7 @@ namespace Chummer
                             {
                                 // swallow this
                             }
-                        });
+                        }, CancellationToken.None);
                         objFormCharacter.Dispose();
                     }
                 }
@@ -2817,9 +2848,12 @@ namespace Chummer
                 {
                     for (int i = lstToClose2.Count - 1; i >= 0; --i)
                     {
+                        if (i >= lstToClose2.Count)
+                            continue;
                         ExportCharacter frmToClose = lstToClose2[i];
+                        if (frmToClose.IsNullOrDisposed())
+                            continue;
                         Character objFormCharacter = frmToClose.CharacterObject;
-                        // ReSharper disable once MethodSupportsCancellation
                         frmToClose.DoThreadSafe(x =>
                         {
                             try
@@ -2834,7 +2868,7 @@ namespace Chummer
                             {
                                 // swallow this
                             }
-                        });
+                        }, CancellationToken.None);
                         objFormCharacter.Dispose();
                     }
                 }
@@ -2850,7 +2884,11 @@ namespace Chummer
                 {
                     for (int i = lstToClose3.Count - 1; i >= 0; --i)
                     {
+                        if (i >= lstToClose3.Count)
+                            continue;
                         CharacterSheetViewer frmToClose = lstToClose3[i];
+                        if (frmToClose.IsNullOrDisposed())
+                            continue;
                         List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
                         // ReSharper disable once MethodSupportsCancellation
                         frmToClose.DoThreadSafe(x =>
@@ -2875,147 +2913,67 @@ namespace Chummer
 
                 lstToClose3.Dispose();
             }
-        }
 
-        private async ValueTask DisposeOpenFormsAsync()
-        {
-            ThreadSafeObservableCollection<CharacterShared> lstToClose1
-                = Interlocked.Exchange(ref _lstOpenCharacterEditorForms, null);
-            if (lstToClose1 != null)
+            Interlocked.Exchange(ref _frmMasterIndex, null)?.DoThreadSafe(x =>
             {
-                // ReSharper disable once MethodSupportsCancellation
-                IAsyncDisposable objLocker = await lstToClose1.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    // ReSharper disable once MethodSupportsCancellation
-                    for (int i = await lstToClose1.GetCountAsync()
-                             .ConfigureAwait(false) - 1;
-                         i >= 0;
-                         --i)
-                    {
-                        CharacterShared frmToClose = await lstToClose1
-                            // ReSharper disable once MethodSupportsCancellation
-                            .GetValueAtAsync(i)
-                                                           .ConfigureAwait(false);
-                        Character objFormCharacter = frmToClose.CharacterObject;
-                        // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x =>
-                        {
-                            try
-                            {
-                                x.Close();
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // swallow this
-                            }
-                            catch (ArgumentException)
-                            {
-                                // swallow this
-                            }
-                        }).ConfigureAwait(false);
-                        await objFormCharacter.DisposeAsync().ConfigureAwait(false);
-                    }
+                    x.Close();
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    // swallow this
                 }
-
-                await lstToClose1.DisposeAsync().ConfigureAwait(false);
-            }
-
-            ThreadSafeObservableCollection<ExportCharacter> lstToClose2
-                = Interlocked.Exchange(ref _lstOpenCharacterExportForms, null);
-            if (lstToClose2 != null)
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
+            Interlocked.Exchange(ref _frmCharacterRoster, null)?.DoThreadSafe(x =>
             {
-                // ReSharper disable once MethodSupportsCancellation
-                IAsyncDisposable objLocker = await lstToClose2.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    // ReSharper disable once MethodSupportsCancellation
-                    for (int i = await lstToClose2.GetCountAsync().ConfigureAwait(false) - 1;
-                         i >= 0;
-                         --i)
-                    {
-                        ExportCharacter frmToClose = await lstToClose2
-                            // ReSharper disable once MethodSupportsCancellation
-                            .GetValueAtAsync(i)
-                                                           .ConfigureAwait(false);
-                        Character objFormCharacter = frmToClose.CharacterObject;
-                        // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x =>
-                        {
-                            try
-                            {
-                                x.Close();
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // swallow this
-                            }
-                            catch (ArgumentException)
-                            {
-                                // swallow this
-                            }
-                        }).ConfigureAwait(false);
-                        await objFormCharacter.DisposeAsync().ConfigureAwait(false);
-                    }
+                    x.Close();
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    // swallow this
                 }
-
-                await lstToClose2.DisposeAsync().ConfigureAwait(false);
-            }
-
-            ThreadSafeObservableCollection<CharacterSheetViewer> lstToClose3
-                = Interlocked.Exchange(ref _lstOpenCharacterSheetViewers, null);
-            if (lstToClose3 != null)
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
+            Interlocked.Exchange(ref _frmDiceRoller, null)?.DoThreadSafe(x =>
             {
-                // ReSharper disable once MethodSupportsCancellation
-                IAsyncDisposable objLocker = await lstToClose3.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    // ReSharper disable once MethodSupportsCancellation
-                    for (int i = await lstToClose3.GetCountAsync()
-                             .ConfigureAwait(false) - 1;
-                         i >= 0;
-                         --i)
-                    {
-                        CharacterSheetViewer frmToClose = await lstToClose3
-                            // ReSharper disable once MethodSupportsCancellation
-                            .GetValueAtAsync(i)
-                                                                .ConfigureAwait(false);
-                        List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
-                        // ReSharper disable once MethodSupportsCancellation
-                        await frmToClose.DoThreadSafeAsync(x =>
-                        {
-                            try
-                            {
-                                x.Close();
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // swallow this
-                            }
-                            catch (ArgumentException)
-                            {
-                                // swallow this
-                            }
-                        }).ConfigureAwait(false);
-                        foreach (Character objFormCharacter in lstFormCharacters)
-                            await objFormCharacter.DisposeAsync().ConfigureAwait(false);
-                    }
+                    x.Close();
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    // swallow this
                 }
-
-                await lstToClose3.DisposeAsync().ConfigureAwait(false);
-            }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
+            Interlocked.Exchange(ref _frmUpdate, null)?.DoThreadSafe(x =>
+            {
+                try
+                {
+                    x.Close();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+                catch (ArgumentException)
+                {
+                    // swallow this
+                }
+            }, CancellationToken.None);
         }
 
         private async void mnuHeroLabImporter_Click(object sender, EventArgs e)

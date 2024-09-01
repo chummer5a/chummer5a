@@ -1995,6 +1995,9 @@ namespace Chummer
 
                         SetupCommonCollectionDatabindings(false);
 
+                        // Clear the mugshot image so that we don't get crashes from disposal ordering (image can get disposed before its picturebox does)
+                        await picMugshot.DoThreadSafeAsync(x => x.Image = null, CancellationToken.None).ConfigureAwait(false);
+
                         await Task.WhenAll(RefreshAttributesClearBindings(pnlAttributes, CancellationToken.None),
                             RefreshMartialArtsClearBindings(treMartialArts, CancellationToken.None),
                             RefreshArmorClearBindings(treArmor, CancellationToken.None),
@@ -2034,7 +2037,17 @@ namespace Chummer
                     await frmSender.DoThreadSafeAsync(x =>
                     {
                         x.FormClosing -= CharacterCreate_FormClosing;
-                        x.Close();
+                        try
+                        {
+                            x.Close();
+                        }
+                        catch
+                        {
+                            // Ignore disposal errors if we are quitting the program anyway
+                            if (Program.MainForm.IsNullOrDisposed() || Program.MainForm.IsClosing)
+                                return;
+                            throw;
+                        }
                     }).ConfigureAwait(false);
                 }
             }
@@ -24926,6 +24939,8 @@ namespace Chummer
                 return;
             await picMugshot.DoThreadSafeAsync(x =>
             {
+                if (x.Disposing || x.IsDisposed)
+                    return;
                 try
                 {
                     x.SizeMode = x.Image != null && x.Height >= x.Image.Height
