@@ -121,7 +121,6 @@ namespace Chummer
             this.txtContactName.Name = "txtContactName";
             this.txtContactName.Size = new System.Drawing.Size(175, 20);
             this.txtContactName.TabIndex = 0;
-            this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
             // txtContactLocation
             // 
@@ -131,7 +130,6 @@ namespace Chummer
             this.txtContactLocation.Name = "txtContactLocation";
             this.txtContactLocation.Size = new System.Drawing.Size(176, 20);
             this.txtContactLocation.TabIndex = 1;
-            this.txtContactLocation.TextChanged += new System.EventHandler(this.txtContactLocation_TextChanged);
             // 
             // cmdExpand
             // 

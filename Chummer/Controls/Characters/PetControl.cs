@@ -39,8 +39,6 @@ namespace Chummer
         private readonly Timer _tmrMetatypeChangeTimer;
 
         // Events.
-        public event EventHandlerExtensions.SafeAsyncEventHandler ContactDetailChanged;
-
         public event EventHandlerExtensions.SafeAsyncEventHandler DeleteContact;
 
         #region Control Events
@@ -93,14 +91,6 @@ namespace Chummer
             }
         }
 
-        private async void txtContactName_TextChanged(object sender, EventArgs e)
-        {
-            if (_intLoading != 0)
-                return;
-            if (ContactDetailChanged != null)
-                await ContactDetailChanged.Invoke(this, new TextEventArgs("Name"), _objMyToken).ConfigureAwait(false);
-        }
-
         private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
             if (_tmrMetatypeChangeTimer == null)
@@ -137,9 +127,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingMetatype);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Metatype"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -163,22 +150,36 @@ namespace Chummer
             }
         }
 
-        private void cmdLink_Click(object sender, EventArgs e)
+        private async void cmdLink_Click(object sender, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
-            if (!string.IsNullOrEmpty(_objContact.FileName))
+            try
             {
-                tsAttachCharacter.Visible = false;
-                tsContactOpen.Visible = true;
-                tsRemoveCharacter.Visible = true;
+                if (!string.IsNullOrEmpty(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)))
+                {
+                    await cmsContact.DoThreadSafeAsync(() =>
+                    {
+                        tsAttachCharacter.Visible = false;
+                        tsContactOpen.Visible = true;
+                        tsRemoveCharacter.Visible = true;
+                    }, token: _objMyToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await cmsContact.DoThreadSafeAsync(() =>
+                    {
+                        tsAttachCharacter.Visible = true;
+                        tsContactOpen.Visible = false;
+                        tsRemoveCharacter.Visible = false;
+                    }, token: _objMyToken).ConfigureAwait(false);
+                }
+
+                await cmsContact.DoThreadSafeAsync(x => x.Show(cmdLink, cmdLink.Left - x.PreferredSize.Width, cmdLink.Top), _objMyToken).ConfigureAwait(false);
             }
-            else
+            catch (OperationCanceledException)
             {
-                tsAttachCharacter.Visible = true;
-                tsContactOpen.Visible = false;
-                tsRemoveCharacter.Visible = false;
+                // swallow this
             }
-            cmsContact.Show(cmdLink, cmdLink.Left - 700, cmdLink.Top);
         }
 
         private async void tsContactOpen_Click(object sender, EventArgs e)
@@ -257,6 +258,7 @@ namespace Chummer
         {
             try
             {
+                string strOldFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                 string strFileName = string.Empty;
                 string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objMyToken).ConfigureAwait(false) +
                                    '|'
@@ -272,10 +274,10 @@ namespace Chummer
                     using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                     {
                         dlgOpenFile.Filter = strFilter;
-                        if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+                        if (!string.IsNullOrEmpty(strOldFileName) && File.Exists(strOldFileName))
                         {
-                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
-                            dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strOldFileName);
+                            dlgOpenFile.FileName = Path.GetFileName(strOldFileName);
                         }
 
                         DialogResult eReturn = dlgOpenFile.ShowDialog(x);
@@ -290,18 +292,24 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
                 try
                 {
-                    _objContact.FileName = strFileName;
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile", token: _objMyToken).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
 
                     // Set the relative path.
                     Uri uriApplication = new Uri(Utils.GetStartupPath);
-                    Uri uriFile = new Uri(_objContact.FileName);
+                    Uri uriFile = new Uri(strFileName);
                     Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                    _objContact.RelativeFileName = "../" + uriRelative;
-
-                    if (ContactDetailChanged != null)
-                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
+                    try
+                    {
+                        _objMyToken.ThrowIfCancellationRequested();
+                        await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
@@ -326,12 +334,19 @@ namespace Chummer
                             .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: _objMyToken).ConfigureAwait(false)
                     == DialogResult.Yes)
                 {
-                    _objContact.FileName = string.Empty;
-                    _objContact.RelativeFileName = string.Empty;
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile", token: _objMyToken).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
-                    if (ContactDetailChanged != null)
-                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
+                    try
+                    {
+                        _objMyToken.ThrowIfCancellationRequested();
+                        await _objContact.SetFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
             catch (OperationCanceledException)
@@ -359,8 +374,6 @@ namespace Chummer
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 strTooltip = strTooltip.WordWrap();
                 await cmdNotes.SetToolTipTextAsync(strTooltip, _objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Notes"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

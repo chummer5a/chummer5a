@@ -8055,7 +8055,8 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is ContactControl objContactControl))
                                         continue;
-                                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                    objContactControl.ContactObject.PropertyChangedAsync -=
+                                        MakeDirtyWithCharacterUpdate;
                                     objContactControl.DeleteContact -= DeleteContact;
                                     objContactControl.MouseDown -= DragContactControl;
                                 }
@@ -8079,7 +8080,8 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is ContactControl objContactControl))
                                         continue;
-                                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                    objContactControl.ContactObject.PropertyChangedAsync -=
+                                        MakeDirtyWithCharacterUpdate;
                                     objContactControl.DeleteContact -= DeleteEnemy;
                                     objContactControl.MouseDown -= DragContactControl;
                                 }
@@ -8103,7 +8105,7 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is PetControl objPetControl))
                                         continue;
-                                    objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                    objPetControl.ContactObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                     objPetControl.DeleteContact -= DeletePet;
                                     objPetControl.MouseDown -= DragContactControl;
                                 }
@@ -8170,7 +8172,8 @@ namespace Chummer
                                             ContactControl objContactControl =
                                                 new ContactControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.ContactObject.PropertyChangedAsync +=
+                                                MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteContact;
                                             objContactControl.MouseDown += DragContactControl;
 
@@ -8187,7 +8190,8 @@ namespace Chummer
                                             ContactControl objContactControl =
                                                 new ContactControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.ContactObject.PropertyChangedAsync +=
+                                                MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeleteEnemy;
                                             objContactControl.MouseDown += DragContactControl;
 
@@ -8203,7 +8207,7 @@ namespace Chummer
                                         {
                                             PetControl objContactControl = new PetControl(objContact, GenericToken);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.ContactObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                             objContactControl.DeleteContact += DeletePet;
                                             objContactControl.MouseDown += DragContactControl;
 
@@ -8247,7 +8251,8 @@ namespace Chummer
                                                 ContactControl objContactControl =
                                                     new ContactControl(objContact, GenericToken);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                objContactControl.ContactObject.PropertyChangedAsync +=
+                                                    MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteContact;
                                                 objContactControl.MouseDown += DragContactControl;
 
@@ -8265,7 +8270,8 @@ namespace Chummer
                                                 ContactControl objContactControl =
                                                     new ContactControl(objContact, GenericToken);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                objContactControl.ContactObject.PropertyChangedAsync +=
+                                                    MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteEnemy;
                                                 objContactControl.MouseDown += DragContactControl;
 
@@ -8282,7 +8288,7 @@ namespace Chummer
                                             {
                                                 PetControl objContactControl = new PetControl(objContact, GenericToken);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                objContactControl.ContactObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeletePet;
                                                 objContactControl.MouseDown += DragContactControl;
 
@@ -8312,8 +8318,8 @@ namespace Chummer
                                                     if (x.Controls[i] is ContactControl objContactControl &&
                                                         objContactControl.ContactObject == objContact)
                                                     {
-                                                        objContactControl.ContactDetailChanged
-                                                            -= MakeDirtyWithCharacterUpdate;
+                                                        objContactControl.ContactObject.PropertyChangedAsync -=
+                                                            MakeDirtyWithCharacterUpdate;
                                                         objContactControl.DeleteContact -= DeleteContact;
                                                         objContactControl.MouseDown -= DragContactControl;
                                                         x.Controls.RemoveAt(i);
@@ -8334,8 +8340,8 @@ namespace Chummer
                                                     if (x.Controls[i] is ContactControl objContactControl
                                                         && objContactControl.ContactObject == objContact)
                                                     {
-                                                        objContactControl.ContactDetailChanged
-                                                            -= MakeDirtyWithCharacterUpdate;
+                                                        objContactControl.ContactObject.PropertyChangedAsync -=
+                                                            MakeDirtyWithCharacterUpdate;
                                                         objContactControl.DeleteContact -= DeleteEnemy;
                                                         x.Controls.RemoveAt(i);
                                                     }
@@ -8355,8 +8361,7 @@ namespace Chummer
                                                     if (x.Controls[i] is PetControl objPetControl &&
                                                         objPetControl.ContactObject == objContact)
                                                     {
-                                                        objPetControl.ContactDetailChanged
-                                                            -= MakeDirtyWithCharacterUpdate;
+                                                        objPetControl.ContactObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                                         objPetControl.DeleteContact -= DeletePet;
                                                         x.Controls.RemoveAt(i);
                                                     }
@@ -8386,8 +8391,8 @@ namespace Chummer
                                                     if (x.Controls[i] is ContactControl objContactControl &&
                                                         objContactControl.ContactObject == objContact)
                                                     {
-                                                        objContactControl.ContactDetailChanged
-                                                            -= MakeDirtyWithCharacterUpdate;
+                                                        objContactControl.ContactObject.PropertyChangedAsync -=
+                                                            MakeDirtyWithCharacterUpdate;
                                                         objContactControl.DeleteContact -= DeleteContact;
                                                         objContactControl.MouseDown -= DragContactControl;
                                                         x.Controls.RemoveAt(i);
@@ -8408,8 +8413,8 @@ namespace Chummer
                                                     if (x.Controls[i] is ContactControl objContactControl
                                                         && objContactControl.ContactObject == objContact)
                                                     {
-                                                        objContactControl.ContactDetailChanged
-                                                            -= MakeDirtyWithCharacterUpdate;
+                                                        objContactControl.ContactObject.PropertyChangedAsync -=
+                                                            MakeDirtyWithCharacterUpdate;
                                                         objContactControl.DeleteContact -= DeleteEnemy;
                                                         x.Controls.RemoveAt(i);
                                                     }
@@ -8429,8 +8434,7 @@ namespace Chummer
                                                     if (x.Controls[i] is PetControl objPetControl &&
                                                         objPetControl.ContactObject == objContact)
                                                     {
-                                                        objPetControl.ContactDetailChanged
-                                                            -= MakeDirtyWithCharacterUpdate;
+                                                        objPetControl.ContactObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                                         objPetControl.DeleteContact -= DeletePet;
                                                         x.Controls.RemoveAt(i);
                                                     }
@@ -8454,7 +8458,8 @@ namespace Chummer
                                                 ContactControl objContactControl =
                                                     new ContactControl(objContact, GenericToken);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                objContactControl.ContactObject.PropertyChangedAsync +=
+                                                    MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteContact;
                                                 objContactControl.MouseDown += DragContactControl;
 
@@ -8472,7 +8477,8 @@ namespace Chummer
                                                 ContactControl objContactControl =
                                                     new ContactControl(objContact, GenericToken);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                objContactControl.ContactObject.PropertyChangedAsync +=
+                                                    MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteEnemy;
                                                 objContactControl.MouseDown += DragContactControl;
 
@@ -8489,7 +8495,7 @@ namespace Chummer
                                             {
                                                 PetControl objContactControl = new PetControl(objContact, GenericToken);
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                objContactControl.ContactObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeletePet;
                                                 objContactControl.MouseDown += DragContactControl;
 
@@ -9758,7 +9764,7 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is SpiritControl objSpiritControl))
                                         continue;
-                                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                    objSpiritControl.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                     objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                 }
                             }
@@ -9781,7 +9787,7 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     if (!(x.Controls[i] is SpiritControl objSpiritControl))
                                         continue;
-                                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                    objSpiritControl.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                     objSpiritControl.DeleteSpirit -= DeleteSpirit;
                                 }
                             }
@@ -9849,7 +9855,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
 
                                 // Attach an EventHandler for the ServicesOwedChanged Event.
-                                objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objSpiritControl.SpiritObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                 objSpiritControl.DeleteSpirit += DeleteSpirit;
 
                                 await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)
@@ -9916,7 +9922,7 @@ namespace Chummer
                                             token).ConfigureAwait(false);
 
                                     // Attach an EventHandler for the ServicesOwedChanged Event.
-                                    objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                    objSpiritControl.SpiritObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                     objSpiritControl.DeleteSpirit += DeleteSpirit;
 
                                     await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)
@@ -9971,8 +9977,7 @@ namespace Chummer
                                                     x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                                 await objSpiritControl.DoThreadSafeAsync(x =>
                                                 {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                                     x.DeleteSpirit -= DeleteSpirit;
                                                     x.Dispose();
                                                 }, token).ConfigureAwait(false);
@@ -10007,8 +10012,7 @@ namespace Chummer
                                                     x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                                 await objSpiritControl.DoThreadSafeAsync(x =>
                                                 {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                                     x.DeleteSpirit -= DeleteSpirit;
                                                     x.Dispose();
                                                 }, token).ConfigureAwait(false);
@@ -10061,8 +10065,7 @@ namespace Chummer
                                                     x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                                 await objSpiritControl.DoThreadSafeAsync(x =>
                                                 {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                                     x.DeleteSpirit -= DeleteSpirit;
                                                     x.Dispose();
                                                 }, token).ConfigureAwait(false);
@@ -10095,8 +10098,7 @@ namespace Chummer
                                                     x => x.Controls.RemoveAt(i1), token).ConfigureAwait(false);
                                                 await objSpiritControl.DoThreadSafeAsync(x =>
                                                 {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.SpiritObject.PropertyChangedAsync -= MakeDirtyWithCharacterUpdate;
                                                     x.DeleteSpirit -= DeleteSpirit;
                                                     x.Dispose();
                                                 }, token).ConfigureAwait(false);
@@ -10132,7 +10134,7 @@ namespace Chummer
                                             token).ConfigureAwait(false);
 
                                     // Attach an EventHandler for the ServicesOwedChanged Event.
-                                    objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                    objSpiritControl.SpiritObject.PropertyChangedAsync += MakeDirtyWithCharacterUpdate;
                                     objSpiritControl.DeleteSpirit += DeleteSpirit;
 
                                     await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition, token)

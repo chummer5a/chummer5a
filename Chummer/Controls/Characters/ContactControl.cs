@@ -59,8 +59,6 @@ namespace Chummer
         private readonly Timer _tmrHobbiesViceChangeTimer;
 
         // Events.
-        public event EventHandlerExtensions.SafeAsyncEventHandler ContactDetailChanged;
-
         public event EventHandlerExtensions.SafeAsyncEventHandler DeleteContact;
 
         #region Control Events
@@ -175,44 +173,6 @@ namespace Chummer
             }
         }
 
-        private async void nudConnection_ValueChanged(object sender, EventArgs e)
-        {
-            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
-            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
-                return;
-            try
-            {
-                while (_intStatBlockIsLoaded == 1)
-                    await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Connection"), _objMyToken)
-                        .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
-        private async void nudLoyalty_ValueChanged(object sender, EventArgs e)
-        {
-            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
-            // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
-                return;
-            try
-            {
-                while (_intStatBlockIsLoaded == 1)
-                    await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Loyalty"), _objMyToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
@@ -222,23 +182,6 @@ namespace Chummer
             try
             {
                 await DeleteContact.Invoke(this, e, _objMyToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
-        private async void chkGroup_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
-                return;
-            try
-            {
-                while (_intStatBlockIsLoaded == 1)
-                    await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Group"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -257,22 +200,6 @@ namespace Chummer
             {
                 // swallow this
             }
-        }
-
-        private async void txtContactName_TextChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0)
-                return;
-            if (ContactDetailChanged != null)
-                await ContactDetailChanged.Invoke(this, new TextEventArgs("Name"), _objMyToken).ConfigureAwait(false);
-        }
-
-        private async void txtContactLocation_TextChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0)
-                return;
-            if (ContactDetailChanged != null)
-                await ContactDetailChanged.Invoke(this, new TextEventArgs("Location"), _objMyToken).ConfigureAwait(false);
         }
 
         private async void UpdateMetatype(object sender, EventArgs e)
@@ -306,9 +233,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingMetatype);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Metatype"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -347,9 +271,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingGender);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Gender"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -387,9 +308,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingAge);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Age"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -428,9 +346,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingPersonalLife);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("PersonalLife"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -468,9 +383,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingType);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Type"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -509,9 +421,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingPreferredPayment);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("PreferredPayment"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -550,9 +459,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingHobbiesVice);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("HobbiesVice"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -587,9 +493,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intUpdatingRole);
                     }
                 }
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Role"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -597,23 +500,36 @@ namespace Chummer
             }
         }
 
-        private void cmdLink_Click(object sender, EventArgs e)
+        private async void cmdLink_Click(object sender, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
-            if (!string.IsNullOrEmpty(_objContact.FileName))
+            try
             {
-                tsAttachCharacter.Visible = false;
-                tsContactOpen.Visible = true;
-                tsRemoveCharacter.Visible = true;
-            }
-            else
-            {
-                tsAttachCharacter.Visible = true;
-                tsContactOpen.Visible = false;
-                tsRemoveCharacter.Visible = false;
-            }
+                if (!string.IsNullOrEmpty(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)))
+                {
+                    await cmsContact.DoThreadSafeAsync(() =>
+                    {
+                        tsAttachCharacter.Visible = false;
+                        tsContactOpen.Visible = true;
+                        tsRemoveCharacter.Visible = true;
+                    }, token: _objMyToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await cmsContact.DoThreadSafeAsync(() =>
+                    {
+                        tsAttachCharacter.Visible = true;
+                        tsContactOpen.Visible = false;
+                        tsRemoveCharacter.Visible = false;
+                    }, token: _objMyToken).ConfigureAwait(false);
+                }
 
-            cmsContact.Show(cmdLink, cmdLink.Left - cmsContact.PreferredSize.Width, cmdLink.Top);
+                await cmsContact.DoThreadSafeAsync(x => x.Show(cmdLink, cmdLink.Left - x.PreferredSize.Width, cmdLink.Top), _objMyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         private async void tsContactOpen_Click(object sender, EventArgs e)
@@ -705,45 +621,62 @@ namespace Chummer
                     '|' + await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken)
                         .ConfigureAwait(false) + '|' + await LanguageManager
                         .GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
-                string strFileName = string.Empty;
-                DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+                IAsyncDisposable objLocker = await _objContact.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                try
                 {
-                    // Prompt the user to select a save file to associate with this Contact.
-                    using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                    _objMyToken.ThrowIfCancellationRequested();
+                    string strOldFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    string strFileName = string.Empty;
+                    DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                     {
-                        dlgOpenFile.Filter = strFilter;
-                        if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+                        // Prompt the user to select a save file to associate with this Contact.
+                        using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                         {
-                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
-                            dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
+                            dlgOpenFile.Filter = strFilter;
+                            if (!string.IsNullOrEmpty(strOldFileName) && File.Exists(strOldFileName))
+                            {
+                                dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strOldFileName);
+                                dlgOpenFile.FileName = Path.GetFileName(strOldFileName);
+                            }
+
+                            DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                            strFileName = dlgOpenFile.FileName;
+                            return eReturn;
                         }
-
-                        DialogResult eReturn = dlgOpenFile.ShowDialog(x);
-                        strFileName = dlgOpenFile.FileName;
-                        return eReturn;
+                    }, token: _objMyToken).ConfigureAwait(false);
+                    if (eResult != DialogResult.OK)
+                        return;
+                    if (cmdLink != null)
+                    {
+                        string strText = await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false)
+                            ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenFile", token: _objMyToken)
+                                .ConfigureAwait(false)
+                            : await LanguageManager.GetStringAsync("Tip_Contact_OpenFile", token: _objMyToken)
+                                .ConfigureAwait(false);
+                        await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
                     }
-                }, token: _objMyToken).ConfigureAwait(false);
-                if (eResult != DialogResult.OK)
-                    return;
-                _objContact.FileName = strFileName;
-                if (cmdLink != null)
-                {
-                    string strText = await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false)
-                        ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenFile", token: _objMyToken)
-                            .ConfigureAwait(false)
-                        : await LanguageManager.GetStringAsync("Tip_Contact_OpenFile", token: _objMyToken)
-                            .ConfigureAwait(false);
-                    await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
+
+                    // Set the relative path.
+                    Uri uriApplication = new Uri(Utils.GetStartupPath);
+                    Uri uriFile = new Uri(strFileName);
+                    Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+
+                    IAsyncDisposable objLocker2 = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
+                    try
+                    {
+                        _objMyToken.ThrowIfCancellationRequested();
+                        await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
-
-                // Set the relative path.
-                Uri uriApplication = new Uri(Utils.GetStartupPath);
-                Uri uriFile = new Uri(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false));
-                Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                _objContact.RelativeFileName = "../" + uriRelative;
-
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -764,8 +697,6 @@ namespace Chummer
                             .ConfigureAwait(false),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: _objMyToken).ConfigureAwait(false) == DialogResult.Yes)
                 {
-                    _objContact.FileName = string.Empty;
-                    _objContact.RelativeFileName = string.Empty;
                     if (cmdLink != null)
                     {
                         string strText = await _objContact.GetIsEnemyAsync(_objMyToken).ConfigureAwait(false)
@@ -775,9 +706,17 @@ namespace Chummer
                                 .ConfigureAwait(false);
                         await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
                     }
-
-                    if (ContactDetailChanged != null)
-                        await ContactDetailChanged.Invoke(this, new TextEventArgs("File"), _objMyToken).ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
+                    try
+                    {
+                        _objMyToken.ThrowIfCancellationRequested();
+                        await _objContact.SetFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
             catch (OperationCanceledException)
@@ -808,59 +747,6 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap(), _objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Notes"), _objMyToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
-        private async void chkFree_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
-                return;
-            try
-            {
-                while (_intStatBlockIsLoaded == 1)
-                    await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Free"), _objMyToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
-        private async void chkBlackmail_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
-                return;
-            try
-            {
-                while (_intStatBlockIsLoaded == 1)
-                    await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Blackmail"), _objMyToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // swallow this
-            }
-        }
-
-        private async void chkFamily_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
-                return;
-            try
-            {
-                while (_intStatBlockIsLoaded == 1)
-                    await Utils.SafeSleepAsync(_objMyToken).ConfigureAwait(false);
-                if (ContactDetailChanged != null)
-                    await ContactDetailChanged.Invoke(this, new TextEventArgs("Family"), _objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1141,12 +1027,6 @@ namespace Chummer
                     };
                     x.cmdLink.BatchSetImages(Resources.link_16, Resources.link_20, Resources.link_24, Resources.link_32,
                         Resources.link_48, Resources.link_64);
-                    x.nudConnection.ValueChanged += nudConnection_ValueChanged;
-                    x.nudLoyalty.ValueChanged += nudLoyalty_ValueChanged;
-                    x.chkFree.CheckedChanged += chkFree_CheckedChanged;
-                    x.chkGroup.CheckedChanged += chkGroup_CheckedChanged;
-                    x.chkBlackmail.CheckedChanged += chkBlackmail_CheckedChanged;
-                    x.chkFamily.CheckedChanged += chkFamily_CheckedChanged;
                     x.cmdLink.Click += cmdLink_Click;
                 }, token).ConfigureAwait(false);
                 if (_objContact != null)
