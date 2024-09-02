@@ -6103,6 +6103,11 @@
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>Imaging Scope</name>
+        </accessory>
+      </accessories>
       <range>Sporting Rifles</range>
       <sizecategory>Sporting Rifles</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
