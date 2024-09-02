@@ -670,6 +670,7 @@ namespace Chummer
                     tabVehicles.Columns.Add("Source", typeof(SourceString));
                     tabVehicles.Columns.Add("Cost", typeof(NuyenString));
 
+                    decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
                     {
                         if (blnHideOverAvailLimit && !await objXmlVehicle.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false))
@@ -693,7 +694,7 @@ namespace Chummer
                                                                           "category", token)
                                                                   ?.Value))
                                 decCostMultiplier *= 0.9m;
-                            if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                            if (!await objXmlVehicle.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                             {
                                 ++intOverLimit;
                                 continue;
@@ -796,6 +797,7 @@ namespace Chummer
                 }
                 else
                 {
+                    decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstVehicles))
@@ -822,7 +824,7 @@ namespace Chummer
                                                                               "category", token)
                                                                       ?.Value))
                                     decCostMultiplier *= 0.9m;
-                                if (!await objXmlVehicle.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                                if (!await objXmlVehicle.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
                                     continue;

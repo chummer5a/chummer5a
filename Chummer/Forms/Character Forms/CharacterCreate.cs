@@ -2076,7 +2076,7 @@ namespace Chummer
         private async Task RefreshNuyenDisplays(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (decimal decNuyen, decimal decStolenNuyen) = await CalculateNuyen(token).ConfigureAwait(false);
+            (decimal decNuyen, decimal decStolenNuyen) = await CharacterObject.CalculateNuyenCreateModeAsync(token).ConfigureAwait(false);
             string strDisplayNuyen =
                 decNuyen.ToString(await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo) +
                 await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
@@ -15224,99 +15224,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Calculate the amount of Nuyen the character has remaining.
-        /// </summary>
-        private async Task<Tuple<decimal, decimal>> CalculateNuyen(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            decimal decDeductions = 0;
-            decimal decStolenDeductions = 0;
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                decimal decStolenNuyenAllowance
-                    = await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.Nuyen,
-                        strImprovedName: "Stolen", token: token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Cyberware> lstCyberware
-                    = await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Armor> lstArmor
-                    = await CharacterObject.GetArmorAsync(token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Weapon> lstWeapons
-                    = await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Gear> lstGear
-                    = await CharacterObject.GetGearAsync(token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Vehicle> lstVehicles
-                    = await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Drug> lstDrugs
-                    = await CharacterObject.GetDrugsAsync(token).ConfigureAwait(false);
-                //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
-                if (decStolenNuyenAllowance != 0)
-                {
-                    decDeductions
-                        += await lstCyberware.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstArmor.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstWeapons.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstGear.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstVehicles.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstDrugs.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false);
-                    decStolenDeductions
-                        += await lstCyberware.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstArmor.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstWeapons.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstGear.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstVehicles.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false)
-                           + await lstDrugs.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
-                               .ConfigureAwait(false);
-                }
-                else
-                {
-                    decDeductions += await lstCyberware.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
-                                         .ConfigureAwait(false)
-                                     + await lstArmor.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
-                                         .ConfigureAwait(false)
-                                     + await lstWeapons.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
-                                         .ConfigureAwait(false)
-                                     + await lstGear.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
-                                         .ConfigureAwait(false)
-                                     + await lstVehicles.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
-                                         .ConfigureAwait(false)
-                                     + await lstDrugs.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
-                                         .ConfigureAwait(false);
-                }
-
-                token.ThrowIfCancellationRequested();
-                // Initiation Grade cost.
-                decDeductions += await (await CharacterObject.GetLifestylesAsync(token).ConfigureAwait(false))
-                                     .SumParallelAsync(x => x.GetTotalCostAsync(token), token)
-                                     .ConfigureAwait(false)
-                                 + 10000 * await (await CharacterObject.GetInitiationGradesAsync(token)
-                                         .ConfigureAwait(false))
-                                     .CountAsync(x => x.Schooling, token).ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                decimal decReturn = await CharacterObject.GetTotalStartingNuyenAsync(token).ConfigureAwait(false)
-                                    - decDeductions;
-                return new Tuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
         /// Refresh the information for the currently displayed piece of Cyberware.
         /// </summary>
         private async Task RefreshSelectedCyberware(CancellationToken token = default)
@@ -21142,7 +21049,7 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over the Nuyen limit.
-                    (decimal decNuyen, decimal decStolenNuyen) = await CalculateNuyen(token).ConfigureAwait(false);
+                    (decimal decNuyen, decimal decStolenNuyen) = await CharacterObject.CalculateNuyenCreateModeAsync(token).ConfigureAwait(false);
                     if (decNuyen < 0)
                     {
                         blnValid = false;
@@ -22184,7 +22091,7 @@ namespace Chummer
                             }
                         }
 
-                        decimal decNuyen = (await CalculateNuyen(token).ConfigureAwait(false)).Item1;
+                        decimal decNuyen = (await CharacterObject.CalculateNuyenCreateModeAsync(token).ConfigureAwait(false)).Item1;
                         if (decNuyen > await CharacterObjectSettings.GetNuyenCarryoverAsync(token)
                                 .ConfigureAwait(false) && await Program.ShowScrollableMessageBoxAsync(
                                 this, string.Format(GlobalSettings.CultureInfo,

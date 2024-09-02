@@ -322,6 +322,7 @@ namespace Chummer
                 bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 decimal decBaseCostMultiplier = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
+                decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlMod in objXmlModList)
                 {
                     if (!await _objVehicle.CheckModRequirementsAsync(objXmlMod, token).ConfigureAwait(false))
@@ -370,7 +371,7 @@ namespace Chummer
                         &&
                         (!blnShowOnlyAffordItems || blnFreeItem
                                                  || await objXmlMod.CheckNuyenRestrictionAsync(
-                                                     _objCharacter.Nuyen, decCostMultiplier, intMinRating, token).ConfigureAwait(false)))
+                                                     decNuyen, decCostMultiplier, intMinRating, token).ConfigureAwait(false)))
                     {
                         lstMods.Add(new ListItem(objXmlMod.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
                                                  objXmlMod.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
@@ -608,9 +609,10 @@ namespace Chummer
                                 decCostMultiplier *= 0.9m;
                             int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
                                                             .ConfigureAwait(false);
+                            decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                             while (intMaximum > 1 && !await xmlVehicleMod
                                                             .CheckNuyenRestrictionAsync(
-                                                                _objCharacter.Nuyen, decCostMultiplier, intMaximum,
+                                                                decNuyen, decCostMultiplier, intMaximum,
                                                                 token).ConfigureAwait(false))
                             {
                                 --intMaximum;

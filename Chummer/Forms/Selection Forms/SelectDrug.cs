@@ -272,9 +272,10 @@ namespace Chummer
                             if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked)
                                                             .ConfigureAwait(false))
                                 decCostMultiplier *= 0.9m;
+                            decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync().ConfigureAwait(false);
                             while (intMaxRating > intMinRating
                                    && !await xmlDrug.CheckNuyenRestrictionAsync(
-                                       _objCharacter.Nuyen, decCostMultiplier, intMaxRating).ConfigureAwait(false))
+                                       decNuyen, decCostMultiplier, intMaxRating).ConfigureAwait(false))
                             {
                                 --intMaxRating;
                             }
@@ -815,6 +816,7 @@ namespace Chummer
                 decimal decBaseCostMultiplier
                     = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
                     / 100.0m;
+                decimal decNuyen = blnFree || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                 foreach (XPathNavigator xmlDrug in _xmlBaseDrugDataNode.Select(_strNodeXPath + strFilter))
                 {
                     bool blnIsForceGrade = xmlDrug.SelectSingleNodeAndCacheExpression("forcegrade", token) == null;
@@ -870,7 +872,7 @@ namespace Chummer
                         if (_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                             decCostMultiplier *= 0.9m;
                         if (!await xmlDrug
-                                   .CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token)
+                                   .CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token)
                                    .ConfigureAwait(false))
                         {
                             ++intOverLimit;

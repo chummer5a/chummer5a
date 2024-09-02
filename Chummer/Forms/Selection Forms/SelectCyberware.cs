@@ -617,7 +617,8 @@ namespace Chummer
                                 decCostMultiplier *= _decCostMultiplier;
                                 if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                                     decCostMultiplier *= 0.9m;
-                                while (intMaxRating > intMinRating && !await xmlCyberware.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, intMaxRating, token).ConfigureAwait(false))
+                                decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
+                                while (intMaxRating > intMinRating && !await xmlCyberware.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, intMaxRating, token).ConfigureAwait(false))
                                 {
                                     --intMaxRating;
                                 }
@@ -1541,6 +1542,7 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                     decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                        .ConfigureAwait(false);
+                    decimal decNuyen = blnFree || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                     foreach (XPathNavigator xmlCyberware in xmlIterator)
                     {
                         bool blnIsForceGrade
@@ -1772,7 +1774,7 @@ namespace Chummer
                                         .SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (!await xmlCyberware
-                                       .CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token)
+                                       .CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token)
                                        .ConfigureAwait(false))
                             {
                                 ++intOverLimit;

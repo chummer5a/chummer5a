@@ -33839,6 +33839,172 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Calculate the amount of Nuyen the character has remaining in Create mode.
+        /// </summary>
+        public Tuple<decimal, decimal> CalculateNuyenCreateMode(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decDeductions = 0;
+            decimal decStolenDeductions = 0;
+            using (LockObject.EnterReadLock(token))
+            {
+                decimal decStolenNuyenAllowance
+                    = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen,
+                        strImprovedName: "Stolen", token: token);
+                //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
+                if (decStolenNuyenAllowance != 0)
+                {
+                    decDeductions
+                        += Cyberware.SumParallel(x => x.NonStolenTotalCost, token)
+                           + Armor.SumParallel(x => x.NonStolenTotalCost, token)
+                           + Weapons.SumParallel(x => x.NonStolenTotalCost, token)
+                           + Gear.SumParallel(x => x.NonStolenTotalCost, token)
+                           + Vehicles.SumParallel(x => x.NonStolenTotalCost, token)
+                           + Drugs.SumParallel(x => x.NonStolenTotalCost, token);
+                    decStolenDeductions
+                        += Cyberware.SumParallel(x => x.StolenTotalCost, token)
+                           + Armor.SumParallel(x => x.StolenTotalCost, token)
+                           + Weapons.SumParallel(x => x.StolenTotalCost, token)
+                           + Gear.SumParallel(x => x.StolenTotalCost, token)
+                           + Vehicles.SumParallel(x => x.StolenTotalCost, token)
+                           + Drugs.SumParallel(x => x.StolenTotalCost, token);
+                }
+                else
+                {
+                    decDeductions += Cyberware.SumParallel(x => x.TotalCost, token)
+                                     + Armor.SumParallel(x => x.TotalCost, token)
+                                     + Weapons.SumParallel(x => x.TotalCost, token)
+                                     + Gear.SumParallel(x => x.TotalCost, token)
+                                     + Vehicles.SumParallel(x => x.TotalCost, token)
+                                     + Drugs.SumParallel(x => x.TotalCost, token);
+                }
+
+                token.ThrowIfCancellationRequested();
+                // Initiation Grade cost.
+                decDeductions += Lifestyles.SumParallel(x => x.TotalCost, token)
+                                 + 10000 * InitiationGrades.Count(x => x.Schooling);
+                token.ThrowIfCancellationRequested();
+                decimal decReturn = TotalStartingNuyen - decDeductions;
+                return new Tuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
+            }
+        }
+
+        /// <summary>
+        /// Calculate the amount of Nuyen the character has remaining in Create mode.
+        /// </summary>
+        public async Task<Tuple<decimal, decimal>> CalculateNuyenCreateModeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decDeductions = 0;
+            decimal decStolenDeductions = 0;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decStolenNuyenAllowance
+                    = await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.Nuyen,
+                        strImprovedName: "Stolen", token: token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Cyberware> lstCyberware
+                    = await GetCyberwareAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Armor> lstArmor
+                    = await GetArmorAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Weapon> lstWeapons
+                    = await GetWeaponsAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Gear> lstGear
+                    = await GetGearAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Vehicle> lstVehicles
+                    = await GetVehiclesAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<Drug> lstDrugs
+                    = await GetDrugsAsync(token).ConfigureAwait(false);
+                //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
+                if (decStolenNuyenAllowance != 0)
+                {
+                    decDeductions
+                        += await lstCyberware.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstArmor.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstWeapons.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstGear.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstVehicles.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstDrugs.SumParallelAsync(x => x.GetNonStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false);
+                    decStolenDeductions
+                        += await lstCyberware.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstArmor.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstWeapons.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstGear.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstVehicles.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false)
+                           + await lstDrugs.SumParallelAsync(x => x.GetStolenTotalCostAsync(token), token)
+                               .ConfigureAwait(false);
+                }
+                else
+                {
+                    decDeductions += await lstCyberware.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
+                                         .ConfigureAwait(false)
+                                     + await lstArmor.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
+                                         .ConfigureAwait(false)
+                                     + await lstWeapons.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
+                                         .ConfigureAwait(false)
+                                     + await lstGear.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
+                                         .ConfigureAwait(false)
+                                     + await lstVehicles.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
+                                         .ConfigureAwait(false)
+                                     + await lstDrugs.SumParallelAsync(x => x.GetTotalCostAsync(token), token)
+                                         .ConfigureAwait(false);
+                }
+
+                token.ThrowIfCancellationRequested();
+                // Initiation Grade cost.
+                decDeductions += await (await GetLifestylesAsync(token).ConfigureAwait(false))
+                                     .SumParallelAsync(x => x.GetTotalCostAsync(token), token)
+                                     .ConfigureAwait(false)
+                                 + 10000 * await (await GetInitiationGradesAsync(token)
+                                         .ConfigureAwait(false))
+                                     .CountAsync(x => x.Schooling, token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                decimal decReturn = await GetTotalStartingNuyenAsync(token).ConfigureAwait(false)
+                                    - decDeductions;
+                return new Tuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The amount of nuyen the character currently has available to be spent
+        /// </summary>
+        public decimal GetAvailableNuyen(bool blnStolenGear = false)
+        {
+            if (Created)
+                return Nuyen;
+            Tuple<decimal, decimal> tupReturn = CalculateNuyenCreateMode();
+            return blnStolenGear ? tupReturn.Item2 : tupReturn.Item1;
+        }
+
+        /// <summary>
+        /// The amount of nuyen the character currently has available to be spent
+        /// </summary>
+        public async Task<decimal> GetAvailableNuyenAsync(bool blnStolenGear = false, CancellationToken token = default)
+        {
+            if (await GetCreatedAsync(token).ConfigureAwait(false))
+                return await GetNuyenAsync(token).ConfigureAwait(false);
+            Tuple<decimal, decimal> tupReturn = await CalculateNuyenCreateModeAsync(token);
+            return blnStolenGear ? tupReturn.Item2 : tupReturn.Item1;
+        }
+
+        /// <summary>
         /// Number of Build Points put into Nuyen.
         /// </summary>
         public decimal NuyenBP
@@ -44570,6 +44736,12 @@ namespace Chummer
                                 new DependencyGraphNode<string, Character>(nameof(IgnoreRules))
                             )
                         )
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(GetAvailableNuyen),
+                        new DependencyGraphNode<string, Character>(nameof(CalculateNuyenCreateMode), x => !x.Created, async (x, t) => !await x.GetCreatedAsync(t).ConfigureAwait(false),
+                            new DependencyGraphNode<string, Character>(nameof(TotalStartingNuyen))
+                        ),
+                        new DependencyGraphNode<string, Character>(nameof(Nuyen), x => x.Created, (x, t) => x.GetCreatedAsync(t))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayCareerNuyen),
                         new DependencyGraphNode<string, Character>(nameof(CareerNuyen))
