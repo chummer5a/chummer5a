@@ -10804,15 +10804,15 @@ namespace Chummer
                 return;
             if (GenericToken.IsCancellationRequested)
                 return;
-            if (_intCharacterUpdateRequested == 0)
+            if (_intCharacterUpdateRequested != 1)
                 return;
             DebuggableSemaphoreSlim objCharacterUpdateStartingSemaphore = CharacterUpdateStartingSemaphore;
             if (objCharacterUpdateStartingSemaphore == null)
                 return;
-            if (!await objCharacterUpdateStartingSemaphore.WaitAsync(0, GenericToken).ConfigureAwait(false))
-                return;
             try
             {
+                if (!await objCharacterUpdateStartingSemaphore.WaitAsync(0, GenericToken).ConfigureAwait(false))
+                    return;
                 try
                 {
                     await ActuallyRequestCharacterUpdate(false, GenericToken).ConfigureAwait(false);
@@ -10823,10 +10823,9 @@ namespace Chummer
                     throw;
                 }
             }
-            catch
+            catch (OperationCanceledException)
             {
-                objCharacterUpdateStartingSemaphore.Release();
-                throw;
+                // swallow this
             }
         }
 
@@ -10892,31 +10891,69 @@ namespace Chummer
                     intOldUpdateRequested = Interlocked.CompareExchange(ref _intCharacterUpdateRequested, 1, 0);
                 else
                 {
-                    intOldUpdateRequested = Interlocked.Exchange(ref _intCharacterUpdateRequested, -1);
-                    do
+                    intOldUpdateRequested = Interlocked.Exchange(ref _intCharacterUpdateRequested, 2);
+                    // For safety reasons, make sure only one call of this function is actively trying to fetch the semaphore at a time
+                    while (intOldUpdateRequested == 2)
                     {
-                        _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false);
-                    } while (!await objCharacterUpdateStartingSemaphore.WaitAsync(1000, token).ConfigureAwait(false));
+                        await Utils.SafeSleepAsync(token);
+                        intOldUpdateRequested = Interlocked.Exchange(ref _intCharacterUpdateRequested, 2);
+                    }
+                    try
+                    {
+                        do
+                        {
+                            CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null);
+                            if (objOldSource != null)
+                            {
+                                objOldSource.Cancel(false);
+                                Task tskOld = Interlocked.Exchange(ref _tskUpdateCharacterInfo, Task.CompletedTask);
+                                if (tskOld?.IsCompleted != false)
+                                    continue; // If task is a completed task, that means it is either in between having a new one assigned to it or has been awaited and had the semaphore unset as appropriate (either within the task or by the awaiter), so continue
+                                try
+                                {
+                                    await tskOld.ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    //swallow this
+                                }
+                            }
 
+                            // Releasing the semaphore here would normally be unsafe, but it should be OK here
+                            try
+                            {
+                                objCharacterUpdateStartingSemaphore.Release();
+                            }
+                            catch (SemaphoreFullException)
+                            {
+                                // swallow this
+                            }
+                        } while (!await objCharacterUpdateStartingSemaphore.WaitAsync(1000, token)
+                                     .ConfigureAwait(false));
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref _intCharacterUpdateRequested, intOldUpdateRequested, 2);
+                        throw;
+                    }
                     _intCharacterUpdateRequested = 1;
                 }
 
                 try
                 {
-                    try
-                    {
-                        await ActuallyRequestCharacterUpdate(true, token).ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        objCharacterUpdateStartingSemaphore.Release();
-                        throw;
-                    }
+                    await ActuallyRequestCharacterUpdate(true, token).ConfigureAwait(false);
                 }
                 catch
                 {
                     Interlocked.CompareExchange(ref _intCharacterUpdateRequested, intOldUpdateRequested, 1);
-                    objCharacterUpdateStartingSemaphore.Release();
+                    try
+                    {
+                        objCharacterUpdateStartingSemaphore.Release();
+                    }
+                    catch (SemaphoreFullException)
+                    {
+                        // swallow this
+                    }
                     throw;
                 }
             }
@@ -10987,7 +11024,6 @@ namespace Chummer
                 catch
                 {
                     Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource)?.Dispose();
-                    CharacterUpdateStartingSemaphore?.Release();
                     throw;
                 }
 
