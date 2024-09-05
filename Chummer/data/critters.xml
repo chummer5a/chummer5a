@@ -1262,6 +1262,7 @@
          <powers>
             <power>Gills</power>
             <power select="Ink">Secretion/Substance Extrusion</power>
+            <power rating="1">Armor</power>
          </powers>
          <skills>
             <skill rating="5">Escape Artist</skill>
