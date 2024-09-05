@@ -40,21 +40,36 @@ namespace Chummer
         private readonly SemaphoreSlim _objSemaphoreSlim;
 
 #if SEMAPHOREDEBUG
+        private readonly bool _blnTrackHolder;
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
         private string LastHolderStackTrace { get; set; }
 #endif
         // ReSharper disable once UnusedMember.Local
         //private readonly string _strGuid = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
 
+#if SEMAPHOREDEBUG
+        public DebuggableSemaphoreSlim(bool blnTrackHolder = false)
+#else
         public DebuggableSemaphoreSlim()
+#endif
         {
             _objSemaphoreSlim = new SemaphoreSlim(1, 1);
             _blnDisposeSemaphore = true;
+#if SEMAPHOREDEBUG
+            _blnTrackHolder = blnTrackHolder;
+#endif
         }
 
+#if SEMAPHOREDEBUG
+        public DebuggableSemaphoreSlim(SemaphoreSlim objSemaphoreSlim, bool blnTrackHolder = false)
+#else
         public DebuggableSemaphoreSlim(SemaphoreSlim objSemaphoreSlim)
+#endif
         {
             _objSemaphoreSlim = objSemaphoreSlim;
+#if SEMAPHOREDEBUG
+            _blnTrackHolder = blnTrackHolder;
+#endif
         }
 
         /// <inheritdoc cref="SemaphoreSlim.Wait()"/>
@@ -62,7 +77,8 @@ namespace Chummer
         {
             _objSemaphoreSlim.Wait();
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -72,7 +88,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             _objSemaphoreSlim.Wait(token);
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -80,14 +97,15 @@ namespace Chummer
         public bool Wait(TimeSpan timeout)
         {
 #if SEMAPHOREDEBUG
-            if (!_objSemaphoreSlim.Wait(timeout))
-                return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
-            return true;
-
-#else
-            return _objSemaphoreSlim.Wait(timeout);
+            if (_blnTrackHolder)
+            {
+                if (!_objSemaphoreSlim.Wait(timeout))
+                    return false;
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+                return true;
+            }
 #endif
+            return _objSemaphoreSlim.Wait(timeout);
         }
 
         /// <inheritdoc cref="SemaphoreSlim.Wait(TimeSpan, CancellationToken)"/>
@@ -95,28 +113,30 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
 #if SEMAPHOREDEBUG
-            if (!_objSemaphoreSlim.Wait(timeout, token))
-                return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
-            return true;
-
-#else
-            return _objSemaphoreSlim.Wait(timeout, token);
+            if (_blnTrackHolder)
+            {
+                if (!_objSemaphoreSlim.Wait(timeout, token))
+                    return false;
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+                return true;
+            }
 #endif
+            return _objSemaphoreSlim.Wait(timeout, token);
         }
 
         /// <inheritdoc cref="SemaphoreSlim.Wait(int)"/>
         public bool Wait(int millisecondsTimeout)
         {
 #if SEMAPHOREDEBUG
-            if (!_objSemaphoreSlim.Wait(millisecondsTimeout))
-                return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
-            return true;
-
-#else
-            return _objSemaphoreSlim.Wait(millisecondsTimeout);
+            if (_blnTrackHolder)
+            {
+                if (!_objSemaphoreSlim.Wait(millisecondsTimeout))
+                    return false;
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+                return true;
+            }
 #endif
+            return _objSemaphoreSlim.Wait(millisecondsTimeout);
         }
 
         /// <inheritdoc cref="SemaphoreSlim.Wait(int, CancellationToken)"/>
@@ -124,14 +144,15 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
 #if SEMAPHOREDEBUG
-            if (!_objSemaphoreSlim.Wait(millisecondsTimeout, token))
-                return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
-            return true;
-
-#else
-            return _objSemaphoreSlim.Wait(millisecondsTimeout, token);
+            if (_blnTrackHolder)
+            {
+                if (!_objSemaphoreSlim.Wait(millisecondsTimeout, token))
+                    return false;
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+                return true;
+            }
 #endif
+            return _objSemaphoreSlim.Wait(millisecondsTimeout, token);
         }
 
 #if SEMAPHOREDEBUG
@@ -146,7 +167,8 @@ namespace Chummer
             }
             else
                 await _objSemaphoreSlim.WaitAsync().ConfigureAwait(false);
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
         }
 
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(CancellationToken)"/>
@@ -161,7 +183,8 @@ namespace Chummer
             }
             else
                 await _objSemaphoreSlim.WaitAsync(token).ConfigureAwait(false);
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
         }
 
         /// <inheritdoc cref="SemaphoreSlim.WaitAsync(TimeSpan)"/>
@@ -169,7 +192,8 @@ namespace Chummer
         {
             if (!await _objSemaphoreSlim.WaitAsync(timeout).ConfigureAwait(false))
                 return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 
@@ -179,7 +203,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!await _objSemaphoreSlim.WaitAsync(timeout, token).ConfigureAwait(false))
                 return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 
@@ -188,7 +213,8 @@ namespace Chummer
         {
             if (!await _objSemaphoreSlim.WaitAsync(millisecondsTimeout).ConfigureAwait(false))
                 return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 
@@ -198,7 +224,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!await _objSemaphoreSlim.WaitAsync(millisecondsTimeout, token).ConfigureAwait(false))
                 return false;
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
             return true;
         }
 #else
@@ -396,7 +423,8 @@ namespace Chummer
         {
             _objSemaphoreSlim.Release();
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -405,7 +433,8 @@ namespace Chummer
         {
             _objSemaphoreSlim.Release(releaseCount);
 #if SEMAPHOREDEBUG
-            LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+            if (_blnTrackHolder)
+                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
         }
 
@@ -416,7 +445,8 @@ namespace Chummer
             {
                 _objSemaphoreSlim.Dispose();
 #if SEMAPHOREDEBUG
-                LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
+                if (_blnTrackHolder)
+                    LastHolderStackTrace = EnhancedStackTrace.Current().ToString();
 #endif
             }
         }
