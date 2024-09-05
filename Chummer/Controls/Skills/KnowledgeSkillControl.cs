@@ -361,6 +361,10 @@ namespace Chummer.UI.Skills
                         nameof(KnowledgeSkill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
                         _objMyToken);
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Minimum = y, _objSkill,
+                        nameof(Skill.FreeBase),
+                        x => x.GetFreeBaseAsync(_objMyToken),
+                        _objMyToken);
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                                   nameof(KnowledgeSkill.AllowUpgrade),
                                                                   x => x.GetAllowUpgradeAsync(_objMyToken),
@@ -368,6 +372,10 @@ namespace Chummer.UI.Skills
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objSkill,
                         nameof(KnowledgeSkill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Minimum = y, _objSkill,
+                        nameof(Skill.FreeKarma),
+                        x => x.GetFreeKarmaAsync(_objMyToken),
                         _objMyToken);
 
                     chkNativeLanguage.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
@@ -592,6 +600,10 @@ namespace Chummer.UI.Skills
                     nameof(KnowledgeSkill.RatingMaximum),
                     x => x.GetRatingMaximumAsync(_objMyToken),
                     _objMyToken).ConfigureAwait(false);
+                await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Minimum = y, _objSkill,
+                    nameof(Skill.FreeBase),
+                    x => x.GetFreeBaseAsync(_objMyToken),
+                    _objMyToken).ConfigureAwait(false);
                 await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                               nameof(KnowledgeSkill.AllowUpgrade),
                                                               x => x.GetAllowUpgradeAsync(_objMyToken),
@@ -599,6 +611,10 @@ namespace Chummer.UI.Skills
                 await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objSkill,
                     nameof(KnowledgeSkill.RatingMaximum),
                     x => x.GetRatingMaximumAsync(_objMyToken),
+                    _objMyToken).ConfigureAwait(false);
+                await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Minimum = y, _objSkill,
+                    nameof(Skill.FreeKarma),
+                    x => x.GetFreeKarmaAsync(_objMyToken),
                     _objMyToken).ConfigureAwait(false);
 
                 await chkNativeLanguage.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,

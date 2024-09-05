@@ -400,6 +400,10 @@ namespace Chummer.UI.Skills
                         nameof(Skill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
                         _objMyToken);
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Minimum = y, _objSkill,
+                        nameof(Skill.FreeBase),
+                        x => x.GetFreeBaseAsync(_objMyToken),
+                        _objMyToken);
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
                                                             nameof(Skill.KarmaUnlocked),
                                                             x => x.GetKarmaUnlockedAsync(_objMyToken)
@@ -408,6 +412,10 @@ namespace Chummer.UI.Skills
                     nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Maximum = y, _objSkill,
                         nameof(Skill.RatingMaximum),
                         x => x.GetRatingMaximumAsync(_objMyToken),
+                        _objMyToken);
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Minimum = y, _objSkill,
+                        nameof(Skill.FreeKarma),
+                        x => x.GetFreeKarmaAsync(_objMyToken),
                         _objMyToken);
 
                     if (_objSkill.IsExoticSkill)
@@ -610,6 +618,10 @@ namespace Chummer.UI.Skills
                     nameof(Skill.RatingMaximum),
                     x => x.GetRatingMaximumAsync(_objMyToken),
                     _objMyToken).ConfigureAwait(false);
+                await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Minimum = y, _objSkill,
+                    nameof(Skill.FreeBase),
+                    x => x.GetFreeBaseAsync(_objMyToken),
+                    _objMyToken).ConfigureAwait(false);
                 await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
                                                               nameof(Skill.KarmaUnlocked),
                                                               x => x.GetKarmaUnlockedAsync(_objMyToken)
@@ -617,6 +629,10 @@ namespace Chummer.UI.Skills
                 await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objSkill,
                     nameof(Skill.RatingMaximum),
                     x => x.GetRatingMaximumAsync(_objMyToken),
+                    _objMyToken).ConfigureAwait(false);
+                await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Minimum = y, _objSkill,
+                    nameof(Skill.FreeKarma),
+                    x => x.GetFreeKarmaAsync(_objMyToken),
                     _objMyToken).ConfigureAwait(false);
 
                 if (_objSkill.IsExoticSkill)
