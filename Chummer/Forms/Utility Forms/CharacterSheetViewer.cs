@@ -1285,6 +1285,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 foreach (Character objCharacter in _lstCharacters)
                 {
+                    if (objCharacter.IsDisposed)
+                        continue;
                     IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
@@ -1315,36 +1317,40 @@ namespace Chummer
                 }
                 await _lstCharacters.ClearAsync(token).ConfigureAwait(false);
                 if (lstCharacters != null)
-                    await _lstCharacters.AddRangeAsync(lstCharacters, token).ConfigureAwait(false);
-                foreach (Character objCharacter in _lstCharacters)
                 {
-                    IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    foreach (Character objCharacter in lstCharacters)
                     {
-                        token.ThrowIfCancellationRequested();
-                        objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
-                        // TODO: Make these also work for any children collection changes
-                        objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
-                        objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
-                        objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
-                    }
-                    finally
-                    {
-                        await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                        if (objCharacter.IsDisposed)
+                            continue;
+                        IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
+                            objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
+                            // TODO: Make these also work for any children collection changes
+                            objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
+                            objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        }
+                        finally
+                        {
+                            await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                        await _lstCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
                     }
                 }
             }

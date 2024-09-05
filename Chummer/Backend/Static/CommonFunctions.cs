@@ -1927,6 +1927,8 @@ namespace Chummer
                         {
                             foreach (Character objCharacter in lstCharacters)
                             {
+                                if (objCharacter.IsDisposed)
+                                    continue;
                                 await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage, objToken).ConfigureAwait(false);
                                 if (objWriter.WriteState == WriteState.Error)
                                 {
