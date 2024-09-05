@@ -553,7 +553,7 @@ namespace Chummer.Controls.Shared
 
                 case ListChangedType.Reset:
                     if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                        pnlDisplay.SuspendLayout();
+                        pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
                     try
                     {
                         foreach (ControlWithMetaData objLoopControl in _lstContentList)
@@ -565,12 +565,13 @@ namespace Chummer.Controls.Shared
                         {
                             _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
                         }
-                        pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
+                        Control[] aobjControls = _lstContentList.Select(y => y.Control).ToArray();
+                        pnlDisplay.DoThreadSafe(x => x.Controls.AddRange(aobjControls));
                     }
                     finally
                     {
                         if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                            pnlDisplay.ResumeLayout();
+                            pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
                     }
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList;
@@ -636,7 +637,7 @@ namespace Chummer.Controls.Shared
             if (lstToRedraw != null)
             {
                 if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
-                    pnlDisplay.SuspendLayout();
+                    pnlDisplay.DoThreadSafe(x => x.SuspendLayout());
                 try
                 {
                     PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(nameof(Contents));
@@ -654,7 +655,7 @@ namespace Chummer.Controls.Shared
                 finally
                 {
                     if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                        pnlDisplay.ResumeLayout();
+                        pnlDisplay.DoThreadSafe(x => x.ResumeLayout());
                 }
             }
         }

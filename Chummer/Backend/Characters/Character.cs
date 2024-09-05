@@ -34000,7 +34000,7 @@ namespace Chummer
         {
             if (await GetCreatedAsync(token).ConfigureAwait(false))
                 return await GetNuyenAsync(token).ConfigureAwait(false);
-            Tuple<decimal, decimal> tupReturn = await CalculateNuyenCreateModeAsync(token);
+            Tuple<decimal, decimal> tupReturn = await CalculateNuyenCreateModeAsync(token).ConfigureAwait(false);
             return blnStolenGear ? tupReturn.Item2 : tupReturn.Item1;
         }
 
