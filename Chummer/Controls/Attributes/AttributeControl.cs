@@ -36,8 +36,6 @@ namespace Chummer.UI.Attributes
         public event EventHandlerExtensions.SafeAsyncEventHandler ValueChanged;
 
         private readonly string _strAttributeName;
-        private int _oldBase;
-        private int _oldKarma;
         private readonly Character _objCharacter;
 
         private readonly NumericUpDownEx nudKarma;
@@ -601,8 +599,6 @@ namespace Chummer.UI.Attributes
             {
                 int intValue = await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
                     .ConfigureAwait(false);
-                if (Interlocked.Exchange(ref _oldBase, intValue) == intValue)
-                    return;
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
                 Interlocked.Increment(ref _intChangingBase);
                 try
@@ -613,6 +609,9 @@ namespace Chummer.UI.Attributes
                     try
                     {
                         _objMyToken.ThrowIfCancellationRequested();
+                        int intOldBase = await objAttribute.GetBaseAsync(_objMyToken).ConfigureAwait(false);
+                        if (intOldBase == intValue)
+                            return;
                         if (!await CanBeMetatypeMax(
                                     Math.Max(
                                         await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
@@ -685,9 +684,6 @@ namespace Chummer.UI.Attributes
             {
                 int intValue = await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
                     .ConfigureAwait(false);
-                int intOldKarma = Interlocked.Exchange(ref _oldKarma, intValue);
-                if (intOldKarma == intValue)
-                    return;
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
                 Interlocked.Increment(ref _intChangingKarma);
                 try
@@ -698,6 +694,9 @@ namespace Chummer.UI.Attributes
                     try
                     {
                         _objMyToken.ThrowIfCancellationRequested();
+                        int intOldKarma = await objAttribute.GetKarmaAsync(_objMyToken).ConfigureAwait(false);
+                        if (intOldKarma == intValue)
+                            return;
                         if (!await CanBeMetatypeMax(
                                     Math.Max(
                                         await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
@@ -715,15 +714,10 @@ namespace Chummer.UI.Attributes
                                 await objAttribute.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
                             if (intOldKarma > intKarmaMaximum)
                             {
-                                if (Interlocked.CompareExchange(ref _oldKarma, intKarmaMaximum - 1, intValue) ==
-                                    intValue)
-                                    intValue = intKarmaMaximum - 1;
                                 intOldKarma = intKarmaMaximum - 1;
                             }
-
                             if (intOldKarma < 0)
                             {
-                                Interlocked.CompareExchange(ref _oldKarma, 0, intValue);
                                 int intOldKarmaLocal = intOldKarma;
                                 await nudBase.DoThreadSafeAsync(x =>
                                 {
