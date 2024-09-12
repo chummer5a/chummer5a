@@ -1397,7 +1397,7 @@ namespace Chummer.Backend.Uniques
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
-                await OnPropertyChangedAsync(nameof(DisplayDrainExpression), token).ConfigureAwait(false);
+                await OnPropertyChangedAsync(nameof(DrainExpression), token).ConfigureAwait(false);
             }
             finally
             {
@@ -1427,9 +1427,11 @@ namespace Chummer.Backend.Uniques
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
-        public Task<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
-            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltipAsync(DrainExpression, objCultureInfo, strLanguage, false, token: token);
+            return await _objCharacter.AttributeSection
+                .ProcessAttributesInXPathForTooltipAsync(await GetDrainExpressionAsync(token).ConfigureAwait(false),
+                    objCultureInfo, strLanguage, false, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1461,12 +1463,10 @@ namespace Chummer.Backend.Uniques
                     }
 
                     // Add any Improvements for Drain Resistance.
-                    if (Type == TraditionType.RES)
-                        decDrain += ImprovementManager.ValueOf(_objCharacter,
-                                                               Improvement.ImprovementType.FadingResistance);
-                    else
-                        decDrain += ImprovementManager.ValueOf(_objCharacter,
-                                                               Improvement.ImprovementType.DrainResistance);
+                    decDrain += ImprovementManager.ValueOf(_objCharacter,
+                        Type == TraditionType.RES
+                            ? Improvement.ImprovementType.FadingResistance
+                            : Improvement.ImprovementType.DrainResistance);
 
                     return decDrain.StandardRound();
                 }
@@ -1507,12 +1507,10 @@ namespace Chummer.Backend.Uniques
                 }
 
                 // Add any Improvements for Drain Resistance.
-                if (eType == TraditionType.RES)
-                    decDrain += await ImprovementManager.ValueOfAsync(_objCharacter,
-                        Improvement.ImprovementType.FadingResistance, token: token).ConfigureAwait(false);
-                else
-                    decDrain += await ImprovementManager.ValueOfAsync(_objCharacter,
-                        Improvement.ImprovementType.DrainResistance, token: token).ConfigureAwait(false);
+                decDrain += await ImprovementManager.ValueOfAsync(_objCharacter,
+                    eType == TraditionType.RES
+                        ? Improvement.ImprovementType.FadingResistance
+                        : Improvement.ImprovementType.DrainResistance, token: token).ConfigureAwait(false);
 
                 return decDrain.StandardRound();
             }
@@ -2249,27 +2247,19 @@ namespace Chummer.Backend.Uniques
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XmlDocument objDoc = null;
-                switch (Type)
-                {
-                    case TraditionType.MAG:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
+                XmlDocument objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData(Type == TraditionType.RES ? "streams.xml" : "traditions.xml", strLanguage,
+                        token: token)
+                    : await _objCharacter.LoadDataAsync(
+                            await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.RES
+                                ? "streams.xml"
+                                : "traditions.xml",
+                            strLanguage, token: token)
+                        .ConfigureAwait(false);
 
-                    case TraditionType.RES:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataAsync("streams.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
-                }
-
-                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition", SourceID);
+                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition",
+                    blnSync ? SourceID : await GetSourceIDAsync(token).ConfigureAwait(false));
                 _xmlCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -2302,27 +2292,19 @@ namespace Chummer.Backend.Uniques
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                XPathNavigator objDoc = null;
-                switch (Type)
-                {
-                    case TraditionType.MAG:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath(Type == TraditionType.RES ? "streams.xml" : "traditions.xml", strLanguage,
+                        token: token)
+                    : await _objCharacter.LoadDataXPathAsync(
+                            await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.RES
+                                ? "streams.xml"
+                                : "traditions.xml",
+                            strLanguage, token: token)
+                        .ConfigureAwait(false);
 
-                    case TraditionType.RES:
-                        objDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? _objCharacter.LoadDataXPath("streams.xml", strLanguage, token: token)
-                            : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage, token: token)
-                                                 .ConfigureAwait(false);
-                        break;
-                }
-
-                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition", SourceID);
+                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition",
+                    blnSync ? SourceID : await GetSourceIDAsync(token).ConfigureAwait(false));
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
