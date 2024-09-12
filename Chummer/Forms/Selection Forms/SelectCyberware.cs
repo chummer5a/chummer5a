@@ -572,7 +572,7 @@ namespace Chummer
                                 else
                                 {
                                     Cyberware objLoop = CyberwareParent;
-                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false) && objLoop.Category != "Cyberlimb")
                                         objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
                                     if (objLoop != null)
                                     {
@@ -1685,7 +1685,7 @@ namespace Chummer
                                 else
                                 {
                                     Cyberware objLoop = CyberwareParent;
-                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                    while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false) && objLoop.Category != "Cyberlimb")
                                         objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
                                     if (objLoop != null)
                                     {

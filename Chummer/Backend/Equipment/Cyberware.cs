@@ -5680,7 +5680,7 @@ namespace Chummer.Backend.Equipment
                                     { "AGIMinimum", Math.Max(1, intVehiclePilot) }
                                 };
                             }
-                            else if (IsLimb)
+                            else if (Category == "Cyberlimb" || IsLimb)
                             {
                                 dicVehicleValues = new Dictionary<string, int>(2)
                                 {
@@ -5691,7 +5691,7 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 Cyberware objLoop = Parent;
-                                while (objLoop != null && !objLoop.IsLimb)
+                                while (objLoop != null && objLoop.Category != "Cyberlimb" && !objLoop.IsLimb)
                                     objLoop = objLoop.Parent;
                                 if (objLoop != null)
                                 {
@@ -5750,7 +5750,7 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            if (await GetIsLimbAsync(token).ConfigureAwait(false))
+                            if (Category == "Cyberlimb" || await GetIsLimbAsync(token).ConfigureAwait(false))
                             {
                                 dicVehicleValues = new Dictionary<string, int>(2)
                                 {
@@ -5761,7 +5761,7 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 Cyberware objLoop = await GetParentAsync(token).ConfigureAwait(false);
-                                while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                while (objLoop != null && objLoop.Category != "Cyberlimb" && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
                                     objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
                                 if (objLoop != null)
                                 {
@@ -5841,7 +5841,7 @@ namespace Chummer.Backend.Equipment
                                     { "AGIMinimum", Math.Max(1, intVehiclePilot) }
                                 };
                             }
-                            else if (IsLimb)
+                            else if (Category == "Cyberlimb" || IsLimb)
                             {
                                 dicVehicleValues = new Dictionary<string, int>(2)
                                 {
@@ -5852,7 +5852,7 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 Cyberware objLoop = Parent;
-                                while (objLoop != null && !objLoop.IsLimb)
+                                while (objLoop != null && objLoop.Category != "Cyberlimb" && !objLoop.IsLimb)
                                     objLoop = objLoop.Parent;
                                 if (objLoop != null)
                                 {
@@ -5911,7 +5911,7 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
-                            if (await GetIsLimbAsync(token).ConfigureAwait(false))
+                            if (Category == "Cyberlimb" || await GetIsLimbAsync(token).ConfigureAwait(false))
                             {
                                 dicVehicleValues = new Dictionary<string, int>(2)
                                 {
@@ -5922,7 +5922,7 @@ namespace Chummer.Backend.Equipment
                             else
                             {
                                 Cyberware objLoop = await GetParentAsync(token).ConfigureAwait(false);
-                                while (objLoop != null && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
+                                while (objLoop != null && objLoop.Category != "Cyberlimb" && !await objLoop.GetIsLimbAsync(token).ConfigureAwait(false))
                                     objLoop = await objLoop.GetParentAsync(token).ConfigureAwait(false);
                                 if (objLoop != null)
                                 {
@@ -9744,7 +9744,7 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterReadLock())
                 {
                     // Base Strength for any limb is 3.
-                    return IsLimb ? ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : _intMinStrength : 0;
+                    return Category == "Cyberlimb" || IsLimb ? ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : _intMinStrength : 0;
                 }
             }
         }
@@ -9757,7 +9757,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 // Base Agility for any limb is 3.
-                return await GetIsLimbAsync(token).ConfigureAwait(false)
+                return Category == "Cyberlimb" || await GetIsLimbAsync(token).ConfigureAwait(false)
                     ? ParentVehicle != null ? Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false), 0) : _intMinStrength
                     : 0;
             }
@@ -9774,7 +9774,7 @@ namespace Chummer.Backend.Equipment
                 using (LockObject.EnterReadLock())
                 {
                     // Base Agility for any limb is 3.
-                    return IsLimb ? ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : _intMinAgility : 0;
+                    return Category == "Cyberlimb" || IsLimb ? ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : _intMinAgility : 0;
                 }
             }
         }
@@ -9787,7 +9787,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 // Base Agility for any limb is 3.
-                return await GetIsLimbAsync(token).ConfigureAwait(false)
+                return Category == "Cyberlimb" || await GetIsLimbAsync(token).ConfigureAwait(false)
                     ? ParentVehicle != null ? Math.Max(await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false), 0) : _intMinAgility
                     : 0;
             }
@@ -9806,7 +9806,7 @@ namespace Chummer.Backend.Equipment
                 return 0;
             using (LockObject.EnterReadLock())
             {
-                if (!IsLimb)
+                if (Category != "Cyberlimb" && !IsLimb)
                     return 0;
                 switch (strAbbrev)
                 {
@@ -9833,7 +9833,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!await GetIsLimbAsync(token).ConfigureAwait(false))
+                if (Category != "Cyberlimb" && !await GetIsLimbAsync(token).ConfigureAwait(false))
                     return 0;
                 switch (strAbbrev)
                 {
@@ -9974,7 +9974,7 @@ namespace Chummer.Backend.Equipment
                     return intAverageAttribute / intCyberlimbChildrenNumber;
                 }
 
-                if (!IsLimb)
+                if (Category != "Cyberlimb" && !IsLimb)
                     return 0;
 
                 int intBonus = 0;
@@ -10043,7 +10043,7 @@ namespace Chummer.Backend.Equipment
                     return intAverageAttribute / intCyberlimbChildrenNumber;
                 }
 
-                if (!await GetIsLimbAsync(token).ConfigureAwait(false))
+                if (Category != "Cyberlimb" && !await GetIsLimbAsync(token).ConfigureAwait(false))
                     return 0;
 
                 int intBonus = 0;
