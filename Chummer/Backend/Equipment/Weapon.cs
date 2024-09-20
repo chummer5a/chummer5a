@@ -3677,7 +3677,7 @@ namespace Chummer.Backend.Equipment
         /// Name of Autosoft that is used for a weapon's dicepool. Melee weapons use Melee autosoft per R5 127
         /// </summary>
         private string RelevantAutosoft =>
-            RangeType == "Melee" && _objCharacter.Settings.BookEnabled("RF") ? "[Weapon] Melee Autosoft" : "[Weapon] Targeting Autosoft";
+            RangeType == "Melee" && _objCharacter.Settings.BookEnabled("R5") ? "[Weapon] Melee Autosoft" : "[Weapon] Targeting Autosoft";
 
         /// <summary>
         /// Name of Autosoft that is used for a weapon's dicepool. Melee weapons use Melee autosoft per R5 127
@@ -3686,7 +3686,7 @@ namespace Chummer.Backend.Equipment
         {
             return RangeType == "Melee"
                    && await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                       .BookEnabledAsync("RF", token).ConfigureAwait(false)
+                       .BookEnabledAsync("R5", token).ConfigureAwait(false)
                 ? "[Weapon] Melee Autosoft"
                 : "[Weapon] Targeting Autosoft";
         }
