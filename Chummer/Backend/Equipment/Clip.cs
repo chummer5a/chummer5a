@@ -228,7 +228,7 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (Gear objGear in await objAmmoGear.Children
                                                                .DeepWhereAsync(
-                                                                   x => x.Children,
+                                                                   async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
                                                                    x => x.Equipped && (x.WeaponBonus != null
                                                                        || x.FlechetteWeaponBonus != null), token)
                                                                .ConfigureAwait(false))

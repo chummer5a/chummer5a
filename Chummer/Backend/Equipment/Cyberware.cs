@@ -5064,16 +5064,18 @@ namespace Chummer.Backend.Equipment
 
                 if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
                     && (!string.IsNullOrEmpty(Weight)
-                        || GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
-                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight))
+                        || await GearChildren.DeepAnyAsync(
+                            async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                            x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token).ConfigureAwait(false)
                         || await Children.DeepAnyAsync(x => x.Children,
-                                                       y => !string.IsNullOrEmpty(y.Weight)
-                                                            || y.GearChildren.DeepAny(
-                                                                x => x.Children.Where(z => z.Equipped),
-                                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight)),
-                                                       token)
-                                         .ConfigureAwait(false)))
-                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
+                                y => !string.IsNullOrEmpty(y.Weight)
+                                     || y.GearChildren.DeepAny(
+                                         x => x.Children.Where(z => z.Equipped),
+                                         x => x.Equipped && !string.IsNullOrEmpty(x.Weight)),
+                                token)
+                            .ConfigureAwait(false)))
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token)
+                        .ConfigureAwait(false);
             }
             finally
             {

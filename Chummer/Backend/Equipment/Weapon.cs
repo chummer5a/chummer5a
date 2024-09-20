@@ -306,17 +306,21 @@ namespace Chummer.Backend.Equipment
                                                             y => y.Children.Where(z => z.Equipped),
                                                             y => y.Equipped && !string.IsNullOrEmpty(y.Weight))),
                                     token: token).ConfigureAwait(false)
-                                || objNewItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
-                                    z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
-                                                        || WeaponAccessories.Any(
-                                                            x => x.Equipped
-                                                                 && (!string.IsNullOrEmpty(x.Weight)
-                                                                     || x.GearChildren.DeepAny(
-                                                                         y => y.Children.Where(
-                                                                             t => t.Equipped),
-                                                                         y => y.Equipped
-                                                                              && !string.IsNullOrEmpty(
-                                                                                  y.Weight))), token)))))
+                                || await objNewItem.Children.DeepAnyAsync(
+                                    async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                    async z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                              || await z.WeaponAccessories.AnyAsync(
+                                                                  async x => x.Equipped
+                                                                             && (!string.IsNullOrEmpty(x.Weight)
+                                                                                 || await x.GearChildren.DeepAnyAsync(
+                                                                                     async y => await y.Children
+                                                                                         .ToListAsync(
+                                                                                             t => t.Equipped, token).ConfigureAwait(false),
+                                                                                     y => y.Equipped
+                                                                                         && !string.IsNullOrEmpty(
+                                                                                             y.Weight), token).ConfigureAwait(false)),
+                                                                  token).ConfigureAwait(false)),
+                                    token).ConfigureAwait(false)))
                             blnDoEncumbranceRefresh = true;
                     }
 
@@ -335,17 +339,20 @@ namespace Chummer.Backend.Equipment
                                                             y => y.Children.Where(z => z.Equipped),
                                                             y => y.Equipped && !string.IsNullOrEmpty(y.Weight))),
                                     token: token).ConfigureAwait(false)
-                                || objOldItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
-                                    z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
-                                                        || WeaponAccessories.Any(
-                                                            x => x.Equipped
-                                                                 && (!string.IsNullOrEmpty(x.Weight)
-                                                                     || x.GearChildren.DeepAny(
-                                                                         y => y.Children.Where(
-                                                                             t => t.Equipped),
-                                                                         y => y.Equipped
-                                                                              && !string.IsNullOrEmpty(
-                                                                                  y.Weight))), token)))))
+                                || await objOldItem.Children.DeepAnyAsync(
+                                    async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                    async z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                              || await z.WeaponAccessories.AnyAsync(
+                                                                  async x => x.Equipped
+                                                                             && (!string.IsNullOrEmpty(x.Weight)
+                                                                                 || await x.GearChildren.DeepAnyAsync(
+                                                                                     async y => await y.Children
+                                                                                         .ToListAsync(t => t.Equipped,
+                                                                                             token).ConfigureAwait(false),
+                                                                                     y => y.Equipped
+                                                                                         && !string.IsNullOrEmpty(
+                                                                                             y.Weight), token).ConfigureAwait(false)),
+                                                                  token).ConfigureAwait(false)), token).ConfigureAwait(false)))
                             blnDoEncumbranceRefresh = true;
                     }
 
@@ -364,17 +371,20 @@ namespace Chummer.Backend.Equipment
                                                             y => y.Children.Where(z => z.Equipped),
                                                             y => y.Equipped && !string.IsNullOrEmpty(y.Weight))),
                                     token: token).ConfigureAwait(false)
-                                || objOldItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
-                                    z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
-                                                        || WeaponAccessories.Any(
-                                                            x => x.Equipped
-                                                                 && (!string.IsNullOrEmpty(x.Weight)
-                                                                     || x.GearChildren.DeepAny(
-                                                                         y => y.Children.Where(
-                                                                             t => t.Equipped),
-                                                                         y => y.Equipped
-                                                                              && !string.IsNullOrEmpty(
-                                                                                  y.Weight))), token)))))
+                                || await objOldItem.Children.DeepAnyAsync(
+                                    async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                    async z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                              || await z.WeaponAccessories.AnyAsync(
+                                                                  async x => x.Equipped
+                                                                             && (!string.IsNullOrEmpty(x.Weight)
+                                                                                 || await x.GearChildren.DeepAnyAsync(
+                                                                                     async y => await y.Children
+                                                                                         .ToListAsync(t => t.Equipped,
+                                                                                             token).ConfigureAwait(false),
+                                                                                     y => y.Equipped
+                                                                                         && !string.IsNullOrEmpty(
+                                                                                             y.Weight), token).ConfigureAwait(false)),
+                                                                  token).ConfigureAwait(false)), token).ConfigureAwait(false)))
                             blnDoEncumbranceRefresh = true;
                     }
 
@@ -390,17 +400,21 @@ namespace Chummer.Backend.Equipment
                                                             y => y.Children.Where(z => z.Equipped),
                                                             y => y.Equipped && !string.IsNullOrEmpty(y.Weight))),
                                     token: token).ConfigureAwait(false)
-                                || objNewItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
-                                    z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
-                                                        || WeaponAccessories.Any(
-                                                            x => x.Equipped
-                                                                 && (!string.IsNullOrEmpty(x.Weight)
-                                                                     || x.GearChildren.DeepAny(
-                                                                         y => y.Children.Where(
-                                                                             t => t.Equipped),
-                                                                         y => y.Equipped
-                                                                              && !string.IsNullOrEmpty(
-                                                                                  y.Weight))), token)))))
+                                || await objNewItem.Children.DeepAnyAsync(
+                                    async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                    async z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                              || await z.WeaponAccessories.AnyAsync(
+                                                                  async x => x.Equipped
+                                                                             && (!string.IsNullOrEmpty(x.Weight)
+                                                                                 || await x.GearChildren.DeepAnyAsync(
+                                                                                     async y => await y.Children
+                                                                                         .ToListAsync(
+                                                                                             t => t.Equipped, token).ConfigureAwait(false),
+                                                                                     y => y.Equipped
+                                                                                         && !string.IsNullOrEmpty(
+                                                                                             y.Weight), token).ConfigureAwait(false)),
+                                                                  token).ConfigureAwait(false)),
+                                    token).ConfigureAwait(false)))
                             blnDoEncumbranceRefresh = true;
                     }
 

@@ -1087,10 +1087,23 @@ namespace Chummer.Backend.Equipment
             {
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
-                if (Parent.Equipped && Parent.ParentVehicle == null && (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))
-                    && !Parent.Yield().DeepAny(x => x.Parent.Yield(), x => !x.Equipped || x.ParentVehicle != null))
+                if (Parent.Equipped && Parent.ParentVehicle == null && (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"))))
                 {
-                    _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                    bool blnDoPropertyChange = true;
+                    Weapon objWeapon = Parent;
+                    for (Weapon objParent = objWeapon.Parent; objParent != null; objParent = objWeapon.Parent)
+                    {
+                        objWeapon = objParent;
+                        if (!objWeapon.Equipped || objWeapon.ParentVehicle != null)
+                        {
+                            blnDoPropertyChange = false;
+                            break;
+                        }
+                    }
+                    if (blnDoPropertyChange)
+                    {
+                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                    }
                 }
                 if (GearChildren.Count > 0)
                 {

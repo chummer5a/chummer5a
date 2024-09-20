@@ -4954,10 +4954,10 @@ namespace Chummer.Backend.Equipment
             await Children.ForEachWithSideEffectsAsync(x => x.ChangeEquippedStatusAsync(blnEquipped, true, token), token).ConfigureAwait(false);
 
             if (!blnSkipEncumbranceOnPropertyChanged && (!string.IsNullOrEmpty(Weight)
-                                                         || Children
-                                                             .DeepAny(
-                                                                 x => x.Children.Where(y => y.Equipped),
-                                                                 x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
+                                                         || await Children
+                                                             .DeepAnyAsync(
+                                                                 async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                                                 x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token).ConfigureAwait(false)))
                 await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
         }
 
@@ -6698,8 +6698,9 @@ namespace Chummer.Backend.Equipment
 
                 if (Equipped && ((setNamesOfChangedProperties.Contains(nameof(TotalWeight))
                                   && (!string.IsNullOrEmpty(Weight)
-                                      || Children.DeepAny(x => x.Children.Where(y => y.Equipped),
-                                          x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
+                                      || await Children.DeepAnyAsync(
+                                          async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
+                                          x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token).ConfigureAwait(false)))
                                  || (setNamesOfChangedProperties.Contains(nameof(Rating))
                                      && await Children.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"),
                                          token: token).ConfigureAwait(false))))
