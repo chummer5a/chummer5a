@@ -10895,7 +10895,7 @@ namespace Chummer
                     // For safety reasons, make sure only one call of this function is actively trying to fetch the semaphore at a time
                     while (intOldUpdateRequested == 2)
                     {
-                        await Utils.SafeSleepAsync(token);
+                        await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                         intOldUpdateRequested = Interlocked.Exchange(ref _intCharacterUpdateRequested, 2);
                     }
                     try

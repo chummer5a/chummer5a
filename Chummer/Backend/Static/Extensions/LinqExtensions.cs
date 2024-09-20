@@ -206,7 +206,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild)).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -222,7 +222,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild, token)).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -238,7 +238,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!await predicate(objLoopChild) || !await funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!await predicate(objLoopChild).ConfigureAwait(false) || !await funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -254,7 +254,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!await predicate(objLoopChild, token) || !await funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!await predicate(objLoopChild, token).ConfigureAwait(false) || !await funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -270,7 +270,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!await predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild)).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!await predicate(objLoopChild).ConfigureAwait(false) || !await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -286,7 +286,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!await predicate(objLoopChild, token) || !await (await funcGetChildrenMethod(objLoopChild)).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!await predicate(objLoopChild, token).ConfigureAwait(false) || !await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -302,7 +302,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!await predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild, token)).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!await predicate(objLoopChild).ConfigureAwait(false) || !await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -318,7 +318,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (!await predicate(objLoopChild, token) || !await (await funcGetChildrenMethod(objLoopChild, token)).DeepAll(funcGetChildrenMethod, predicate, token))
+                if (!await predicate(objLoopChild, token).ConfigureAwait(false) || !await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepAll(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return false;
             }
 
@@ -344,7 +344,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild)).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -360,7 +360,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild, token)).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -376,7 +376,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild) || await funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (await predicate(objLoopChild).ConfigureAwait(false) || await funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -392,7 +392,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token) || await funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false) || await funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -408,7 +408,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild)).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (await predicate(objLoopChild).ConfigureAwait(false) || await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -423,7 +423,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             foreach (T objLoopChild in objParentList)
             {
-                if (await predicate(objLoopChild, token) || await (await funcGetChildrenMethod(objLoopChild)).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false) || await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -439,7 +439,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild, token)).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (await predicate(objLoopChild).ConfigureAwait(false) || await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -455,7 +455,7 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token) || await (await funcGetChildrenMethod(objLoopChild, token)).DeepAny(funcGetChildrenMethod, predicate, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false) || await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepAny(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
                     return true;
             }
 
@@ -518,7 +518,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepFirst(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
@@ -537,10 +537,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirst(funcGetChildrenMethod, predicate, token);
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirst(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
@@ -559,10 +559,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepFirst(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
@@ -584,7 +584,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirst(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -602,10 +602,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirst(funcGetChildrenMethod, predicate, token);
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirst(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -623,10 +623,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirst(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -669,7 +669,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
@@ -688,10 +688,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
@@ -710,10 +710,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
@@ -735,7 +735,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -753,10 +753,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -774,10 +774,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     return objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -812,7 +812,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -825,7 +825,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -838,7 +838,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -851,7 +851,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -864,7 +864,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -877,7 +877,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -890,7 +890,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -903,7 +903,7 @@ namespace Chummer
         public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, token);
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -965,7 +965,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     objReturn = objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objTemp = await (await funcGetChildrenMethod(objLoopChild)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objTemp?.Equals(default(T)) == false)
                     objReturn = objTemp;
@@ -985,10 +985,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     objReturn = objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objTemp = await funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                T objTemp = await funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objTemp?.Equals(default(T)) == false)
                     objReturn = objTemp;
@@ -1008,10 +1008,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     objReturn = objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objTemp = await (await funcGetChildrenMethod(objLoopChild)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objTemp?.Equals(default(T)) == false)
                     objReturn = objTemp;
@@ -1034,7 +1034,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     objReturn = objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objTemp = await (await funcGetChildrenMethod(objLoopChild, token)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objTemp?.Equals(default(T)) == false)
                     objReturn = objTemp;
@@ -1054,10 +1054,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     objReturn = objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objTemp = await funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                T objTemp = await funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objTemp?.Equals(default(T)) == false)
                     objReturn = objTemp;
@@ -1077,10 +1077,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     objReturn = objLoopChild;
                 token.ThrowIfCancellationRequested();
-                T objTemp = await (await funcGetChildrenMethod(objLoopChild, token)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (objTemp?.Equals(default(T)) == false)
                     objReturn = objTemp;
@@ -1100,11 +1100,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (funcGetChildrenMethod != null)
             {
-                List<T> lstChildren = (await funcGetChildrenMethod(objReturn)).ToList();
+                List<T> lstChildren = (await funcGetChildrenMethod(objReturn).ConfigureAwait(false)).ToList();
                 token.ThrowIfCancellationRequested();
                 if (lstChildren.Count > 0)
                 {
-                    T objTemp = await lstChildren.DeepLastOrDefault(funcGetChildrenMethod, token);
+                    T objTemp = await lstChildren.DeepLastOrDefault(funcGetChildrenMethod, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     if (objTemp?.Equals(default(T)) == false)
                         return objTemp;
@@ -1125,11 +1125,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (funcGetChildrenMethod != null)
             {
-                List<T> lstChildren = (await funcGetChildrenMethod(objReturn, token)).ToList();
+                List<T> lstChildren = (await funcGetChildrenMethod(objReturn, token).ConfigureAwait(false)).ToList();
                 token.ThrowIfCancellationRequested();
                 if (lstChildren.Count > 0)
                 {
-                    T objTemp = await lstChildren.DeepLastOrDefault(funcGetChildrenMethod, token);
+                    T objTemp = await lstChildren.DeepLastOrDefault(funcGetChildrenMethod, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     if (objTemp?.Equals(default(T)) == false)
                         return objTemp;
@@ -1166,7 +1166,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild)).DeepWhere(funcGetChildrenMethod, predicate, token));
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepWhere(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
             }
 
             return lstReturn;
@@ -1182,10 +1182,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate, token));
+                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
             }
 
             return lstReturn;
@@ -1201,10 +1201,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild)).DeepWhere(funcGetChildrenMethod, predicate, token));
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).DeepWhere(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
             }
 
             return lstReturn;
@@ -1223,7 +1223,7 @@ namespace Chummer
                 if (predicate(objLoopChild))
                     lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token)).DeepWhere(funcGetChildrenMethod, predicate, token));
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepWhere(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
             }
 
             return lstReturn;
@@ -1239,10 +1239,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate, token));
+                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
             }
 
             return lstReturn;
@@ -1258,10 +1258,10 @@ namespace Chummer
             foreach (T objLoopChild in objParentList)
             {
                 token.ThrowIfCancellationRequested();
-                if (await predicate(objLoopChild, token))
+                if (await predicate(objLoopChild, token).ConfigureAwait(false))
                     lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token)).DeepWhere(funcGetChildrenMethod, predicate, token));
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).DeepWhere(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
             }
 
             return lstReturn;
@@ -1293,7 +1293,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild)).GetAllDescendants(funcGetChildrenMethod));
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).GetAllDescendants(funcGetChildrenMethod).ConfigureAwait(false));
             }
             return lstReturn;
         }
@@ -1310,7 +1310,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token)).GetAllDescendants(funcGetChildrenMethod, token));
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false)).GetAllDescendants(funcGetChildrenMethod, token).ConfigureAwait(false));
             }
             return lstReturn;
         }
