@@ -7209,11 +7209,25 @@ namespace Chummer.Backend.Equipment
                                 x => x.Name == strAutosoft && x.Equipped &&
                                      (x.Extra == strName || x.Extra == strDisplayName));
                         }
-                        if (WirelessOn && HasWirelessSmartgun
-                                       && ParentVehicle.GearChildren.DeepAny(
-                                           x => x.Children.Where(y => y.Equipped), x => x.Name == "Smartsoft" && x.Equipped))
+
+                        if (WirelessOn && HasWirelessSmartgun)
                         {
-                            ++decDicePoolModifier;
+                            if (_objCharacter.Settings.BookEnabled("R5"))
+                            {
+                                if (ParentVehicle.GearChildren.DeepAny(
+                                        x => x.Children.Where(y => y.Equipped),
+                                        x => x.Name == "Smartsoft" && x.Equipped))
+                                {
+                                    ++decDicePoolModifier;
+                                }
+                            }
+                            else if (ParentVehicle.GearChildren.DeepAny(
+                                         x => x.Children.Where(y => y.Equipped),
+                                         x => x.Name == "Camera" && x.Equipped &&
+                                              x.GearChildren.Any(y => y.Name == "Smartlink" && y.Equipped)))
+                            {
+                                ++decDicePoolModifier;
+                            }
                         }
                     }
 
@@ -7467,12 +7481,25 @@ namespace Chummer.Backend.Equipment
                                      (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
                         }
 
-                        if (WirelessOn && HasWirelessSmartgun
-                                       && await ParentVehicle.GearChildren.DeepAnyAsync(
-                                               async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Name == "Smartsoft" && x.Equipped, token)
-                                           .ConfigureAwait(false))
+                        if (WirelessOn && HasWirelessSmartgun)
                         {
-                            ++decDicePoolModifier;
+                            if (await _objCharacter.Settings.BookEnabledAsync("R5", token))
+                            {
+                                if (await ParentVehicle.GearChildren.DeepAnyAsync(
+                                            async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Name == "Smartsoft" && x.Equipped, token)
+                                        .ConfigureAwait(false))
+                                {
+                                    ++decDicePoolModifier;
+                                }
+                            }
+                            else if (await ParentVehicle.GearChildren.DeepAnyAsync(
+                                             async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
+                                             async x => x.Name == "Camera" && x.Equipped &&
+                                                  await x.GearChildren.AnyAsync(y => y.Name == "Smartlink" && y.Equipped, token), token)
+                                         .ConfigureAwait(false))
+                            {
+                                ++decDicePoolModifier;
+                            }
                         }
                     }
 
@@ -8183,12 +8210,28 @@ namespace Chummer.Backend.Equipment
                         switch (FireMode)
                         {
                             case FiringMode.DogBrain:
-                                if (ParentVehicle != null && ParentVehicle.GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
-                                        x => x.Name == "Smartsoft" && x.Equipped))
+                                if (ParentVehicle != null)
                                 {
-                                    sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                        strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"),
-                                        1);
+                                    bool blnHasSmartlink;
+                                    if (_objCharacter.Settings.BookEnabled("R5"))
+                                    {
+                                        blnHasSmartlink = ParentVehicle.GearChildren.DeepAny(
+                                            x => x.Children.Where(y => y.Equipped),
+                                            x => x.Name == "Smartsoft" && x.Equipped);
+                                    }
+                                    else
+                                    {
+                                        blnHasSmartlink = ParentVehicle.GearChildren.DeepAny(
+                                            x => x.Children.Where(y => y.Equipped),
+                                            x => x.Name == "Camera" && x.Equipped &&
+                                                 x.GearChildren.Any(y => y.Name == "Smartlink" && y.Equipped));
+                                    }
+                                    if (blnHasSmartlink)
+                                    {
+                                        sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                            strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"),
+                                            1);
+                                    }
                                 }
 
                                 break;
@@ -8670,14 +8713,34 @@ namespace Chummer.Backend.Equipment
                     switch (FireMode)
                     {
                         case FiringMode.DogBrain:
-                            if (ParentVehicle != null && await ParentVehicle.GearChildren.DeepAnyAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
-                                    x => x.Name == "Smartsoft" && x.Equipped, token: token).ConfigureAwait(false))
+                            if (ParentVehicle != null)
                             {
-                                sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                    strSpace,
-                                    await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
-                                        .ConfigureAwait(false),
-                                    1);
+                                bool blnHasSmartlink;
+                                if (await _objCharacter.Settings.BookEnabledAsync("R5", token))
+                                {
+                                    blnHasSmartlink = await ParentVehicle.GearChildren.DeepAnyAsync(
+                                            async x => await x.Children.ToListAsync(y => y.Equipped, token: token)
+                                                .ConfigureAwait(false), x => x.Name == "Smartsoft" && x.Equipped, token)
+                                        .ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    blnHasSmartlink = await ParentVehicle.GearChildren.DeepAnyAsync(
+                                            async x => await x.Children.ToListAsync(y => y.Equipped, token: token)
+                                                .ConfigureAwait(false),
+                                            async x => x.Name == "Camera" && x.Equipped &&
+                                                       await x.GearChildren.AnyAsync(
+                                                           y => y.Name == "Smartlink" && y.Equipped, token), token)
+                                        .ConfigureAwait(false);
+                                }
+                                if (blnHasSmartlink)
+                                {
+                                    sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                        strSpace,
+                                        await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
+                                            .ConfigureAwait(false),
+                                        1);
+                                }
                             }
 
                             break;
