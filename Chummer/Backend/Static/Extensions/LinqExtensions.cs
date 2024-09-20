@@ -198,6 +198,134 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild)).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild, token)).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await predicate(objLoopChild) || !await funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await predicate(objLoopChild, token) || !await funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild)).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await predicate(objLoopChild, token) || !await (await funcGetChildrenMethod(objLoopChild)).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await predicate(objLoopChild) || !await (await funcGetChildrenMethod(objLoopChild, token)).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await predicate(objLoopChild, token) || !await (await funcGetChildrenMethod(objLoopChild, token)).DeepAll(funcGetChildrenMethod, predicate, token))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static bool DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
@@ -205,6 +333,133 @@ namespace Chummer
             return objParentList.Any(objLoopChild =>
                 predicate(objLoopChild) ||
                 funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate));
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild)).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild, token)).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild) || await funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token) || await funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild)).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                if (await predicate(objLoopChild, token) || await (await funcGetChildrenMethod(objLoopChild)).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild) || await (await funcGetChildrenMethod(objLoopChild, token)).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<bool> DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token) || await (await funcGetChildrenMethod(objLoopChild, token)).DeepAny(funcGetChildrenMethod, predicate, token))
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -250,17 +505,279 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static T DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
+        public static async Task<T> DeepFirst<T>(this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objParentList == null)
                 return default;
             foreach (T objLoopChild in objParentList)
             {
+                token.ThrowIfCancellationRequested();
                 if (predicate(objLoopChild))
                     return objLoopChild;
-                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirst<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirst(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirst<T>(this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirst<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirst<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirst(funcGetChildrenMethod, predicate, token);
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirst<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirst(funcGetChildrenMethod, predicate, token);
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static T DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                if (objReturn?.Equals(default(T)) == false)
+                    return objReturn;
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objReturn = await (await funcGetChildrenMethod(objLoopChild, token)).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -284,6 +801,110 @@ namespace Chummer
         public static T DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod);
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            token.ThrowIfCancellationRequested();
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            token.ThrowIfCancellationRequested();
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            token.ThrowIfCancellationRequested();
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            token.ThrowIfCancellationRequested();
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            token.ThrowIfCancellationRequested();
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+            token.ThrowIfCancellationRequested();
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, token);
+            token.ThrowIfCancellationRequested();
+            if (objReturn?.Equals(default(T)) == false)
+                return objReturn;
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = await objParentList.DeepLastOrDefault(funcGetChildrenMethod, token);
+            token.ThrowIfCancellationRequested();
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
             throw new InvalidOperationException();
@@ -330,6 +951,194 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    objReturn = objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    objReturn = objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objTemp = await funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    objReturn = objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    objReturn = objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild, token)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    objReturn = objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objTemp = await funcGetChildrenMethod(objLoopChild).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = default;
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    objReturn = objLoopChild;
+                token.ThrowIfCancellationRequested();
+                T objTemp = await (await funcGetChildrenMethod(objLoopChild, token)).DeepLastOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
+                if (objTemp?.Equals(default(T)) == false)
+                    objReturn = objTemp;
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = objParentList.LastOrDefault();
+            token.ThrowIfCancellationRequested();
+            if (funcGetChildrenMethod != null)
+            {
+                List<T> lstChildren = (await funcGetChildrenMethod(objReturn)).ToList();
+                token.ThrowIfCancellationRequested();
+                if (lstChildren.Count > 0)
+                {
+                    T objTemp = await lstChildren.DeepLastOrDefault(funcGetChildrenMethod, token);
+                    token.ThrowIfCancellationRequested();
+                    if (objTemp?.Equals(default(T)) == false)
+                        return objTemp;
+                }
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<T> DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objParentList == null)
+                return default;
+            T objReturn = objParentList.LastOrDefault();
+            token.ThrowIfCancellationRequested();
+            if (funcGetChildrenMethod != null)
+            {
+                List<T> lstChildren = (await funcGetChildrenMethod(objReturn, token)).ToList();
+                token.ThrowIfCancellationRequested();
+                if (lstChildren.Count > 0)
+                {
+                    T objTemp = await lstChildren.DeepLastOrDefault(funcGetChildrenMethod, token);
+                    token.ThrowIfCancellationRequested();
+                    if (objTemp?.Equals(default(T)) == false)
+                        return objTemp;
+                }
+            }
+            return objReturn;
+        }
+
+        /// <summary>
         /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static IEnumerable<T> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
@@ -345,6 +1154,120 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild)).DeepWhere(funcGetChildrenMethod, predicate, token));
+            }
+
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate, token));
+            }
+
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild)).DeepWhere(funcGetChildrenMethod, predicate, token));
+            }
+
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (predicate(objLoopChild))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token)).DeepWhere(funcGetChildrenMethod, predicate, token));
+            }
+
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate, token));
+            }
+
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, Func<T, CancellationToken, Task<bool>> predicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                if (await predicate(objLoopChild, token))
+                    lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token)).DeepWhere(funcGetChildrenMethod, predicate, token));
+            }
+
+            return lstReturn;
+        }
+
+        /// <summary>
         /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static IEnumerable<T> GetAllDescendants<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
@@ -356,6 +1279,40 @@ namespace Chummer
                 foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopChild).GetAllDescendants(funcGetChildrenMethod))
                     yield return objLoopGrandchild;
             }
+        }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> GetAllDescendants<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild)).GetAllDescendants(funcGetChildrenMethod));
+            }
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> GetAllDescendants<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<IEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            foreach (T objLoopChild in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                lstReturn.Add(objLoopChild);
+                token.ThrowIfCancellationRequested();
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild, token)).GetAllDescendants(funcGetChildrenMethod, token));
+            }
+            return lstReturn;
         }
 
         public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)

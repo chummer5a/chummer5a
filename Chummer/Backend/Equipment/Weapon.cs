@@ -3663,7 +3663,19 @@ namespace Chummer.Backend.Equipment
         /// Name of Autosoft that is used for a weapon's dicepool. Melee weapons use Melee autosoft per R5 127
         /// </summary>
         private string RelevantAutosoft =>
-            RangeType == "Melee" ? "[Weapon] Melee Autosoft" : "[Weapon] Targeting Autosoft";
+            RangeType == "Melee" && _objCharacter.Settings.BookEnabled("RF") ? "[Weapon] Melee Autosoft" : "[Weapon] Targeting Autosoft";
+
+        /// <summary>
+        /// Name of Autosoft that is used for a weapon's dicepool. Melee weapons use Melee autosoft per R5 127
+        /// </summary>
+        private async Task<string> GetRelevantAutosoftAsync(CancellationToken token = default)
+        {
+            return RangeType == "Melee"
+                   && await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                       .BookEnabledAsync("RF", token).ConfigureAwait(false)
+                ? "[Weapon] Melee Autosoft"
+                : "[Weapon] Targeting Autosoft";
+        }
 
         #endregion Properties
 
@@ -3997,8 +4009,8 @@ namespace Chummer.Backend.Equipment
 
                         // Do the same for any plugins.
                         foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token)
                                          .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear"
@@ -4812,8 +4824,8 @@ namespace Chummer.Backend.Equipment
 
                         // Do the same for any plugins.
                         foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token)
                                          .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear"
@@ -5293,8 +5305,8 @@ namespace Chummer.Backend.Equipment
 
                         // Do the same for any plugins.
                         foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token)
                                          .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
@@ -5628,8 +5640,8 @@ namespace Chummer.Backend.Equipment
 
                         // Do the same for any plugins.
                         foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children, x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
+                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token)
                                          .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
@@ -6027,7 +6039,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
                                 objChild.FlechetteWeaponBonus != null)
@@ -6194,7 +6206,7 @@ namespace Chummer.Backend.Equipment
 
                         // Do the same for any plugins.
                         foreach (Gear objChild in await objGear.Children
-                                     .DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                     .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token)
                                      .ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
@@ -6580,7 +6592,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                    foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                    && objChild.FlechetteWeaponBonus != null)
@@ -6672,7 +6684,7 @@ namespace Chummer.Backend.Equipment
 
                     // Do the same for any plugins.
                     foreach (Gear objChild in await objGear.Children
-                                 .DeepWhereAsync(x => x.Children, x => x.Equipped, token)
+                                 .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token)
                                  .ConfigureAwait(false))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear"
@@ -7161,19 +7173,37 @@ namespace Chummer.Backend.Equipment
             {
                 case FiringMode.DogBrain:
                 {
-                    intDicePool = ParentVehicle.Pilot;
-                    Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
-                        x => x.Children,
-                        x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName));
+                    string strAutosoft = RelevantAutosoft;
+                    string strName = Name;
+                    string strDisplayName = CurrentDisplayName;
+                    Gear objAutosoft = null;
+                    if (_objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                    {
+                        objAutosoft = _objCharacter.Gear.DeepFirstOrDefault(
+                            x => x.Children.Where(y => y.Equipped),
+                            x => x.Name == strAutosoft && x.Equipped &&
+                                 (x.Extra == strName || x.Extra == strDisplayName));
+                    }
+
+                    if (ParentVehicle != null)
+                    {
+                        intDicePool = ParentVehicle.Pilot;
+                        if (objAutosoft == null)
+                        {
+                            objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
+                                x => x.Children.Where(y => y.Equipped),
+                                x => x.Name == strAutosoft && x.Equipped &&
+                                     (x.Extra == strName || x.Extra == strDisplayName));
+                        }
+                        if (WirelessOn && HasWirelessSmartgun
+                                       && ParentVehicle.GearChildren.DeepAny(
+                                           x => x.Children.Where(y => y.Equipped), x => x.Name == "Smartsoft" && x.Equipped))
+                        {
+                            ++decDicePoolModifier;
+                        }
+                    }
 
                     intDicePool += objAutosoft?.Rating ?? -1;
-
-                    if (WirelessOn && HasWirelessSmartgun
-                                   && ParentVehicle.GearChildren.DeepAny(
-                                       x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
-                    {
-                        ++decDicePoolModifier;
-                    }
 
                     break;
                 }
@@ -7185,8 +7215,8 @@ namespace Chummer.Backend.Equipment
                     {
                         decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
                             Improvement.ImprovementType.Smartlink);
-                        foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
-                                     x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
+                        foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children.Where(y => y.Equipped),
+                                     x => x.Equipped && x.Bonus?.InnerXml.Contains("<smartlink>") == true))
                         {
                             string strLoopBonus = string.Empty;
                             if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
@@ -7353,7 +7383,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objAmmo.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                    foreach (Gear objChild in objAmmo.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                         {
@@ -7402,24 +7432,39 @@ namespace Chummer.Backend.Equipment
             {
                 case FiringMode.DogBrain:
                 {
+                    string strAutosoft = await GetRelevantAutosoftAsync(token).ConfigureAwait(false);
+                    string strName = Name;
                     string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                    intDicePool = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                    Gear objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(
-                            x => x.Children,
-                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == strDisplayName), token)
-                        .ConfigureAwait(false);
+                    Gear objAutosoft = null;
+                    if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                    {
+                        objAutosoft = await _objCharacter.Gear.DeepFirstOrDefaultAsync(
+                            async x => await x.Children.ToListAsync(y => y.Equipped, token: token),
+                            x => x.Name == strAutosoft && x.Equipped &&
+                                 (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                    }
+                    if (ParentVehicle != null)
+                    {
+                        intDicePool = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
+                        if (objAutosoft == null)
+                        {
+                            objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token),
+                                x => x.Name == strAutosoft && x.Equipped &&
+                                     (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                        }
+
+                        if (WirelessOn && HasWirelessSmartgun
+                                       && await ParentVehicle.GearChildren.DeepAnyAsync(
+                                               async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Name == "Smartsoft" && x.Equipped, token)
+                                           .ConfigureAwait(false))
+                        {
+                            ++decDicePoolModifier;
+                        }
+                    }
 
                     intDicePool += objAutosoft != null
                         ? await objAutosoft.GetRatingAsync(token).ConfigureAwait(false)
                         : -1;
-
-                    if (WirelessOn && HasWirelessSmartgun
-                                   && await ParentVehicle.GearChildren.DeepAnyAsync(
-                                           x => x.Children, x => x.Name == "Smartsoft" && x.Equipped, token)
-                                       .ConfigureAwait(false))
-                    {
-                        ++decDicePoolModifier;
-                    }
 
                     break;
                 }
@@ -7433,7 +7478,7 @@ namespace Chummer.Backend.Equipment
                     {
                         decimal decSmartlinkBonus = await ImprovementManager.ValueOfAsync(_objCharacter,
                             Improvement.ImprovementType.Smartlink, token: token).ConfigureAwait(false);
-                        foreach (Gear objLoopGear in await ParentVehicle.GearChildren.DeepWhereAsync(x => x.Children,
+                        foreach (Gear objLoopGear in await ParentVehicle.GearChildren.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token),
                                          x => x.Bonus?.InnerXml.Contains("<smartlink>") == true, token)
                                      .ConfigureAwait(false))
                         {
@@ -7517,7 +7562,7 @@ namespace Chummer.Backend.Equipment
                                        .ConfigureAwait(false) == 0)
                             {
                                 objAttributeSource = await objAttributeSource.GetParentAsync(token).ConfigureAwait(false);
-                                }
+                            }
 
                             if (objAttributeSource != null)
                                 intDicePool = await objSkill.PoolOtherAttributeAsync(
@@ -7633,7 +7678,7 @@ namespace Chummer.Backend.Equipment
 
                     // Do the same for any plugins.
                     foreach (Gear objChild in await objAmmo.Children
-                                 .DeepWhereAsync(x => x.Children, x => x.Equipped, token).ConfigureAwait(false))
+                                 .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token).ConfigureAwait(false))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                         {
@@ -7980,7 +8025,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objLoadedAmmo.Children.DeepWhere(x => x.Children, x => x.Equipped))
+                        foreach (Gear objChild in objLoadedAmmo.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
                                 objChild.FlechetteWeaponBonus != null)
@@ -8124,23 +8169,30 @@ namespace Chummer.Backend.Equipment
                         switch (FireMode)
                         {
                             case FiringMode.DogBrain:
-                                if (ParentVehicle.GearChildren.DeepAny(x => x.Children,
+                                if (ParentVehicle != null && ParentVehicle.GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
                                         x => x.Name == "Smartsoft" && x.Equipped))
+                                {
                                     sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                         strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"),
                                         1);
+                                }
+
                                 break;
 
                             case FiringMode.RemoteOperated:
-                                foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
-                                             x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
+                                if (ParentVehicle != null)
                                 {
-                                    string strLoopBonus = string.Empty;
-                                    if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                                    foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children.Where(y => y.Equipped),
+                                                 x => x.Equipped && x.Bonus?.InnerXml.Contains("<smartlink>") == true))
                                     {
-                                        decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
-                                            _objCharacter, strLoopBonus,
-                                            objLoopGear.Rating));
+                                        string strLoopBonus = string.Empty;
+                                        if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                                        {
+                                            decSmartlinkBonus = Math.Max(decSmartlinkBonus,
+                                                ImprovementManager.ValueToDec(
+                                                    _objCharacter, strLoopBonus,
+                                                    objLoopGear.Rating));
+                                        }
                                     }
                                 }
 
@@ -8170,9 +8222,26 @@ namespace Chummer.Backend.Equipment
                     {
                         strReturn = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2})",
                             strSpace, LanguageManager.GetString("String_Pilot"), ParentVehicle?.Pilot ?? 0);
-                        Gear objAutosoft = ParentVehicle?.GearChildren.DeepFirstOrDefault(x => x.Children,
-                            x => x.Name == RelevantAutosoft &&
-                                 (x.Extra == Name || x.Extra == CurrentDisplayName));
+                        string strAutosoft = RelevantAutosoft;
+                        string strName = Name;
+                        string strDisplayName = CurrentDisplayName;
+                        Gear objAutosoft = null;
+                        if (_objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                        {
+                            objAutosoft = _objCharacter.Gear.DeepFirstOrDefault(
+                                x => x.Children.Where(y => y.Equipped),
+                                x => x.Name == strAutosoft && x.Equipped &&
+                                     (x.Extra == strName || x.Extra == strDisplayName));
+                        }
+
+                        if (ParentVehicle != null && objAutosoft == null)
+                        {
+                            objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
+                                x => x.Children.Where(y => y.Equipped),
+                                x => x.Name == strAutosoft && x.Equipped &&
+                                     (x.Extra == strName || x.Extra == strDisplayName));
+                        }
+
                         if (objAutosoft != null)
                         {
                             strReturn += string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
@@ -8427,7 +8496,7 @@ namespace Chummer.Backend.Equipment
 
                     // Do the same for any plugins.
                     foreach (Gear objChild in await objLoadedAmmo.Children
-                                 .DeepWhereAsync(x => x.Children, x => x.Equipped, token: token).ConfigureAwait(false))
+                                 .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token), x => x.Equipped, token: token).ConfigureAwait(false))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                         {
@@ -8551,11 +8620,13 @@ namespace Chummer.Backend.Equipment
                                 .ValueOfAsync(_objCharacter, Improvement.ImprovementType.Smartlink, token: token)
                                 .ConfigureAwait(false);
                         if (decSmartlinkBonus != 0)
+                        {
                             sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                 strSpace,
                                 await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
                                     .ConfigureAwait(false),
                                 decSmartlinkBonus);
+                        }
                     }
 
                     foreach (Improvement objImprovement in (await ImprovementManager
@@ -8585,48 +8656,60 @@ namespace Chummer.Backend.Equipment
                     switch (FireMode)
                     {
                         case FiringMode.DogBrain:
-                            if (await ParentVehicle.GearChildren.DeepAnyAsync(x => x.Children,
+                            if (ParentVehicle != null && await ParentVehicle.GearChildren.DeepAnyAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token),
                                     x => x.Name == "Smartsoft" && x.Equipped, token: token).ConfigureAwait(false))
+                            {
                                 sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace,
                                     await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
                                         .ConfigureAwait(false),
                                     1);
+                            }
+
                             break;
 
                         case FiringMode.RemoteOperated:
-                            foreach (Gear objLoopGear in await ParentVehicle.GearChildren.DeepWhereAsync(
-                                             x => x.Children,
-                                             x => x.Bonus?.InnerXml.Contains("<smartlink>") == true, token: token)
-                                         .ConfigureAwait(false))
+                            if (ParentVehicle != null)
                             {
-                                string strLoopBonus = string.Empty;
-                                if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                                foreach (Gear objLoopGear in await ParentVehicle.GearChildren.DeepWhereAsync(
+                                                 async x => await x.Children.ToListAsync(y => y.Equipped, token: token),
+                                                 x => x.Equipped && x.Bonus?.InnerXml.Contains("<smartlink>") == true, token: token)
+                                             .ConfigureAwait(false))
                                 {
-                                    decSmartlinkBonus = Math.Max(decSmartlinkBonus, await ImprovementManager
-                                        .ValueToDecAsync(
-                                            _objCharacter, strLoopBonus,
-                                            await objLoopGear.GetRatingAsync(token).ConfigureAwait(false), token)
-                                        .ConfigureAwait(false));
+                                    string strLoopBonus = string.Empty;
+                                    if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                                    {
+                                        decSmartlinkBonus = Math.Max(decSmartlinkBonus, await ImprovementManager
+                                            .ValueToDecAsync(
+                                                _objCharacter, strLoopBonus,
+                                                await objLoopGear.GetRatingAsync(token).ConfigureAwait(false), token)
+                                            .ConfigureAwait(false));
+                                    }
                                 }
                             }
 
                             if (decSmartlinkBonus != 0)
+                            {
                                 sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace,
                                     await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
                                         .ConfigureAwait(false),
                                     decSmartlinkBonus);
+                            }
+
                             break;
 
                         case FiringMode.GunneryCommandDevice:
                         case FiringMode.ManualOperation:
                             if (decSmartlinkBonus != 0)
+                            {
                                 sbdExtra.AppendFormat(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace,
                                     await LanguageManager.GetStringAsync("Tip_Skill_Smartlink", token: token)
                                         .ConfigureAwait(false),
                                     decSmartlinkBonus);
+                            }
+
                             break;
                     }
                 }
@@ -8640,16 +8723,27 @@ namespace Chummer.Backend.Equipment
             {
                 case FiringMode.DogBrain:
                 {
-                    string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                     strReturn = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2})",
                         strSpace,
                         await LanguageManager.GetStringAsync("String_Pilot", token: token).ConfigureAwait(false),
                         ParentVehicle != null ? await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false) : 0);
-                    Gear objAutosoft = ParentVehicle != null
-                        ? await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(x => x.Children,
-                            x => x.Name == RelevantAutosoft &&
-                                 (x.Extra == Name || x.Extra == strDisplayName), token: token).ConfigureAwait(false)
-                        : null;
+                    string strAutosoft = await GetRelevantAutosoftAsync(token).ConfigureAwait(false);
+                    string strName = Name;
+                    string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                    Gear objAutosoft = null;
+                    if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                    {
+                        objAutosoft = await _objCharacter.Gear.DeepFirstOrDefaultAsync(
+                            async x => await x.Children.ToListAsync(y => y.Equipped, token: token),
+                            x => x.Name == strAutosoft && x.Equipped &&
+                                 (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                    }
+                    if (objAutosoft == null && ParentVehicle != null)
+                    {
+                        objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token),
+                            x => x.Name == strAutosoft && x.Equipped &&
+                                 (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                    }
                     if (objAutosoft != null)
                     {
                         strReturn += string.Format(GlobalSettings.CultureInfo, "{0}+{0}{1}{0}({2})",
@@ -10306,8 +10400,9 @@ namespace Chummer.Backend.Equipment
             // Find all of the Ammo for the current Weapon that the character is carrying.
             if (AmmoCategory == "Gear")
             {
-                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children.Where(y => y.Equipped), x =>
                     x.Quantity > 0
+                    && x.Equipped
                     && x.LoadedIntoClip == null
                     && Name == x.Name
                     && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)))
@@ -10319,8 +10414,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (Damage.Contains("(f)"))
                 {
-                    foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                    foreach (Gear objGear in lstGears.DeepWhere(x => x.Children.Where(y => y.Equipped), x =>
                                                                     x.Quantity > 0
+                                                                    && x.Equipped
                                                                     && x.LoadedIntoClip == null
                                                                     && x.IsFlechetteAmmo
                                                                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
@@ -10333,8 +10429,9 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                    foreach (Gear objGear in lstGears.DeepWhere(x => x.Children.Where(y => y.Equipped), x =>
                                                                     x.Quantity > 0
+                                                                    && x.Equipped
                                                                     && x.LoadedIntoClip == null
                                                                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                                                                     && (string.IsNullOrEmpty(x.Extra)
@@ -10347,8 +10444,9 @@ namespace Chummer.Backend.Equipment
             }
             else if (Damage.Contains("(f)"))
             {
-                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children.Where(y => y.Equipped), x =>
                     x.Quantity > 0
+                    && x.Equipped
                     && x.LoadedIntoClip == null
                     && x.IsFlechetteAmmo
                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
@@ -10360,8 +10458,9 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children.Where(y => y.Equipped), x =>
                     x.Quantity > 0
+                    && x.Equipped
                     && x.LoadedIntoClip == null
                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                     && (string.IsNullOrEmpty(x.Extra)
