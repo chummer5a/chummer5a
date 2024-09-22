@@ -27,6 +27,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -461,7 +462,7 @@ namespace Chummer
                     }
                     case "$CharacterName":
                     {
-                        return _objCharacter.CharacterName;
+                        return await _objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                     }
                     case "$CharacterGrammaticalGender":
                     {
@@ -469,55 +470,57 @@ namespace Chummer
                     }
                     case "$Metatype":
                     {
-                        return _objCharacter.Metatype;
+                        return await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
                     }
                     case "$Metavariant":
                     {
-                        return _objCharacter.Metavariant;
+                        return await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
                     }
                     case "$Eyes":
                     {
-                        return _objCharacter.Eyes;
+                        return await _objCharacter.GetEyesAsync(token).ConfigureAwait(false);
                     }
                     case "$Hair":
                     {
-                        return _objCharacter.Hair;
+                        return await _objCharacter.GetHairAsync(token).ConfigureAwait(false);
                     }
                     case "$Skin":
                     {
-                        return _objCharacter.Skin;
+                        return await _objCharacter.GetSkinAsync(token).ConfigureAwait(false);
                     }
                     case "$Height":
                     {
-                        return _objCharacter.Height;
+                        return await _objCharacter.GetHeightAsync(token).ConfigureAwait(false);
                     }
                     case "$Weight":
                     {
-                        return _objCharacter.Weight;
+                        return await _objCharacter.GetWeightAsync(token).ConfigureAwait(false);
                     }
                     case "$Gender":
                     {
-                        return _objCharacter.Gender;
+                        return await _objCharacter.GetGenderAsync(token).ConfigureAwait(false);
                     }
                     case "$Alias":
                     {
-                        return !string.IsNullOrEmpty(_objCharacter.Alias)
-                            ? _objCharacter.Alias
+                        string strAlias = await _objCharacter.GetAliasAsync(token).ConfigureAwait(false);
+                        return !string.IsNullOrEmpty(strAlias)
+                            ? strAlias
                             : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                    .ConfigureAwait(false);
                     }
                     case "$Name":
                     {
-                        if (!string.IsNullOrWhiteSpace(_objCharacter.Name))
+                        string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
+                        if (!string.IsNullOrWhiteSpace(strName))
                         {
                             if (!string.IsNullOrEmpty(strArguments) && int.TryParse(strArguments, out int intNameIndex))
                             {
                                 string[] lstNames
-                                    = _objCharacter.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                    = strName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                                 return lstNames[Math.Max(Math.Min(intNameIndex, lstNames.Length - 1), 0)];
                             }
 
-                            return _objCharacter.Name;
+                            return strName;
                         }
 
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
@@ -525,7 +528,8 @@ namespace Chummer
                     }
                     case "$Year":
                     {
-                        if (int.TryParse(_objCharacter.Age, out int intCurrentAge))
+                        string strAge = await _objCharacter.GetAgeAsync(token).ConfigureAwait(false);
+                        if (int.TryParse(strAge, out int intCurrentAge))
                         {
                             int intBirthYear = DateTime.UtcNow.Year + 62 - intCurrentAge;
                             if (!string.IsNullOrEmpty(strArguments)
@@ -569,44 +573,110 @@ namespace Chummer
                     }
                     case "$LookupExtra":
                     {
-                        string strExtra = _objCharacter.AIPrograms
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Armor
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.ComplexForms
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.CritterPowers
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Cyberware
-                                                       .DeepFirstOrDefault(
-                                                           x => x.Children,
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Gear
-                                                       .DeepFirstOrDefault(
-                                                           x => x.Children,
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Powers
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Qualities
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra ??
-                                          _objCharacter.Spells
-                                                       .FirstOrDefault(
-                                                           x => x.Name == strArguments
-                                                                && !string.IsNullOrEmpty(x.Extra))?.Extra;
+                        string strExtra = string.Empty;
+                        AIProgram objProgram = await _objCharacter.AIPrograms
+                            .FirstOrDefaultAsync(
+                                x => x.Name == strArguments
+                                     && !string.IsNullOrEmpty(x.Extra), token: token).ConfigureAwait(false);
+                        if (objProgram != null)
+                        {
+                            strExtra = objProgram.Extra;
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Armor objArmor = await _objCharacter.Armor
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objArmor != null)
+                            {
+                                strExtra = objArmor.Extra;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            ComplexForm objComplexForm = await _objCharacter.ComplexForms
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objComplexForm != null)
+                            {
+                                strExtra = objComplexForm.Extra;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            CritterPower objCritterPower = await _objCharacter.CritterPowers
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objCritterPower != null)
+                            {
+                                strExtra = objCritterPower.Extra;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Cyberware objCyberware = await _objCharacter.Cyberware
+                                .DeepFirstOrDefaultAsync(
+                                    x => x.Children,
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objCyberware != null)
+                            {
+                                strExtra = objCyberware.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Gear objGear = await _objCharacter.Gear
+                                .DeepFirstOrDefaultAsync(
+                                    x => x.Children,
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objGear != null)
+                            {
+                                strExtra = objGear.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Power objPower = await _objCharacter.Powers
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objPower != null)
+                            {
+                                strExtra = objPower.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Quality objQuality = await _objCharacter.Qualities
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objQuality != null)
+                            {
+                                strExtra = objQuality.Extra;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strExtra))
+                        {
+                            Spell objSpell = await _objCharacter.Spells
+                                .FirstOrDefaultAsync(
+                                    x => x.Name == strArguments
+                                         && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
+                            if (objSpell != null)
+                            {
+                                strExtra = objSpell.Extra;
+                            }
+                        }
+
                         if (!string.IsNullOrEmpty(strExtra))
                         {
                             return await _objCharacter.TranslateExtraAsync(strExtra, strLanguage, token: token)

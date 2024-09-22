@@ -1293,7 +1293,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).GetAllDescendants(funcGetChildrenMethod).ConfigureAwait(false));
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false)).GetAllDescendants(funcGetChildrenMethod, token).ConfigureAwait(false));
             }
             return lstReturn;
         }

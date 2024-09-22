@@ -12172,7 +12172,7 @@ namespace Chummer.Backend.Equipment
                     else if (!string.IsNullOrEmpty(ParentID))
                     {
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
+                        Cyberware objWeaponParent = await _objCharacter.Cyberware.DeepFirstOrDefaultAsync(x => x.Children, x => x.InternalId == ParentID, token).ConfigureAwait(false);
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
