@@ -204,7 +204,7 @@ namespace Chummer.Backend.Skills
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
-        
+
         public async Task SetBaseAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

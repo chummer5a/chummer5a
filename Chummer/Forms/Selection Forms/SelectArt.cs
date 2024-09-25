@@ -174,7 +174,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strFilter = _strXPathFilter;
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))

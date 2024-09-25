@@ -295,8 +295,7 @@ namespace Chummer
                     string strName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                    if (_xmlOptionalComplexFormNode != null
-                        && _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("complexform", token: token) != null
+                    if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform", token: token) != null
                         && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + ']') == null)
                         continue;
 

@@ -665,7 +665,6 @@ namespace Chummer
                         return true;
                     objReturnVehicle = objVehicle;
                     return false;
-
                 }, token).ConfigureAwait(false);
             }
 
@@ -1052,7 +1051,6 @@ namespace Chummer
 
                     objReturnArmor = objArmor;
                     return false;
-
                 }, token).ConfigureAwait(false);
             }
 

@@ -3889,7 +3889,7 @@ namespace Chummer
         private async Task ProcessQueuedCharactersToOpen(CancellationToken token = default)
         {
             ConcurrentStringHashSet setCharactersToOpen = Interlocked.Exchange(ref _setCharactersToOpen, null);
-            if (setCharactersToOpen == null || setCharactersToOpen.IsEmpty)
+            if (setCharactersToOpen?.IsEmpty != false)
                 return;
 
             CancellationTokenSource objSource = null;

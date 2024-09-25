@@ -1295,7 +1295,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (IncludedInVehicle || FreeCost)
                     return Weapons.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
-                
+
                 decimal decOptionCost = WeaponMountOptions.Sum(w => w.TotalCost);
                 if (DiscountCost)
                     decOptionCost *= 0.9m;
@@ -1380,7 +1380,7 @@ namespace Chummer.Backend.Equipment
                 return await Weapons.SumAsync(w => w.CalculatedStolenTotalCostAsync(blnStolen, token),
                                               token).ConfigureAwait(false)
                        + await Mods.SumAsync(m => m.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
-            
+
             decimal decOptionCost = 0;
             foreach (WeaponMountOption objOption in WeaponMountOptions)
                 decOptionCost += await objOption.GetTotalCostAsync(token).ConfigureAwait(false);

@@ -30,7 +30,7 @@ namespace Chummer
     {
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
-        
+
         private Character _character;
 
         public AddToken(InitiativeUserControl init)

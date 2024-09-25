@@ -1137,7 +1137,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
-        
+
         /// <summary>
         /// Whether this Mod is installed and contributing towards the Vehicle's stats.
         /// </summary>
@@ -1750,49 +1750,49 @@ namespace Chummer.Backend.Equipment
             {
                 if (string.IsNullOrEmpty(Capacity))
                     return 0.0m;
-                decimal decCapacity = 0;
                 if (Capacity.Contains("/["))
                 {
                     // Get the Cyberware base Capacity.
                     string strBaseCapacity = CalculatedCapacity;
                     strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
-                    decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
-                                  // Run through its Children and deduct the Capacity costs.
-                                  - Cyberware.Sum(objCyberware =>
-                                  {
-                                      string strCapacity = objCyberware.CalculatedCapacity;
-                                      int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                                      if (intPos != -1)
-                                          strCapacity = strCapacity.Substring(intPos + 2,
-                                              strCapacity.LastIndexOf(']') - intPos - 2);
-                                      else if (strCapacity.StartsWith('['))
-                                          strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                                      if (strCapacity == "*")
-                                          strCapacity = "0";
-                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
-                                  });
-                }
-                else if (!Capacity.Contains('['))
-                {
-                    // Get the Cyberware base Capacity.
-                    decCapacity = Convert.ToDecimal(CalculatedCapacity, GlobalSettings.CultureInfo)
-                                  // Run through its Children and deduct the Capacity costs.
-                                  - Cyberware.Sum(objCyberware =>
-                                  {
-                                      string strCapacity = objCyberware.CalculatedCapacity;
-                                      int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                                      if (intPos != -1)
-                                          strCapacity = strCapacity.Substring(intPos + 2,
-                                              strCapacity.LastIndexOf(']') - intPos - 2);
-                                      else if (strCapacity.StartsWith('['))
-                                          strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                                      if (strCapacity == "*")
-                                          strCapacity = "0";
-                                      return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
-                                  });
+                    return Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
+                           // Run through its Children and deduct the Capacity costs.
+                           - Cyberware.Sum(objCyberware =>
+                           {
+                               string strCapacity = objCyberware.CalculatedCapacity;
+                               int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                               if (intPos != -1)
+                                   strCapacity = strCapacity.Substring(intPos + 2,
+                                       strCapacity.LastIndexOf(']') - intPos - 2);
+                               else if (strCapacity.StartsWith('['))
+                                   strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                               if (strCapacity == "*")
+                                   strCapacity = "0";
+                               return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                           });
                 }
 
-                return decCapacity;
+                if (!Capacity.Contains('['))
+                {
+                    // Get the Cyberware base Capacity.
+                    return Convert.ToDecimal(CalculatedCapacity, GlobalSettings.CultureInfo)
+                           // Run through its Children and deduct the Capacity costs.
+                           - Cyberware.Sum(objCyberware =>
+                           {
+                               string strCapacity = objCyberware.CalculatedCapacity;
+                               int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                               if (intPos != -1)
+                                   strCapacity = strCapacity.Substring(intPos + 2,
+                                       strCapacity.LastIndexOf(']') - intPos - 2);
+                               else if (strCapacity.StartsWith('['))
+                                   strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                               if (strCapacity == "*")
+                                   strCapacity = "0";
+                               return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                           });
+                }
+
+                return 0.0m;
             }
         }
 
@@ -1803,31 +1803,12 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(Capacity))
                 return 0.0m;
-            decimal decCapacity = 0;
             if (Capacity.Contains("/["))
             {
                 // Get the Cyberware base Capacity.
                 string strBaseCapacity = await GetCalculatedCapacityAsync(token).ConfigureAwait(false);
                 strBaseCapacity = strBaseCapacity.Substring(0, strBaseCapacity.IndexOf('/'));
-                decCapacity = Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
-                              // Run through its Children and deduct the Capacity costs.
-                              - await Cyberware.SumAsync(async objCyberware =>
-                              {
-                                  string strCapacity = await objCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
-                                  int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                                  if (intPos != -1)
-                                      strCapacity = strCapacity.Substring(intPos + 2,
-                                          strCapacity.LastIndexOf(']') - intPos - 2);
-                                  else if (strCapacity.StartsWith('['))
-                                      strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                                  if (strCapacity == "*") strCapacity = "0";
-                                  return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
-                              }, token).ConfigureAwait(false);
-            }
-            else if (!Capacity.Contains('['))
-            {
-                // Get the Cyberware base Capacity.
-                decCapacity = Convert.ToDecimal(await GetCalculatedCapacityAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                return Convert.ToDecimal(strBaseCapacity, GlobalSettings.CultureInfo)
                               // Run through its Children and deduct the Capacity costs.
                               - await Cyberware.SumAsync(async objCyberware =>
                               {
@@ -1843,7 +1824,26 @@ namespace Chummer.Backend.Equipment
                               }, token).ConfigureAwait(false);
             }
 
-            return decCapacity;
+            if (!Capacity.Contains('['))
+            {
+                // Get the Cyberware base Capacity.
+                return Convert.ToDecimal(await GetCalculatedCapacityAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                       // Run through its Children and deduct the Capacity costs.
+                       - await Cyberware.SumAsync(async objCyberware =>
+                       {
+                           string strCapacity = await objCyberware.GetCalculatedCapacityAsync(token).ConfigureAwait(false);
+                           int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                           if (intPos != -1)
+                               strCapacity = strCapacity.Substring(intPos + 2,
+                                   strCapacity.LastIndexOf(']') - intPos - 2);
+                           else if (strCapacity.StartsWith('['))
+                               strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                           if (strCapacity == "*") strCapacity = "0";
+                           return Convert.ToDecimal(strCapacity, GlobalSettings.CultureInfo);
+                       }, token).ConfigureAwait(false);
+            }
+
+            return 0.0m;
         }
 
         public string DisplayCapacity

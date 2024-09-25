@@ -2468,7 +2468,7 @@ namespace Chummer
             {
                 List<Focus> list
                     = _objCharacter.Foci.FindAll(
-                        x => x.GearObject != null && x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded);
+                        x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating");
                 if (list.Count > 0)
                 {
                     // get any bonded foci that add to the base magic stat and return the highest rated one's rating
@@ -2508,8 +2508,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 List<Focus> list
                     = await _objCharacter.Foci.FindAllAsync(
-                        x => x.GearObject != null && x.GearObject.Bonus.InnerText == "MAGRating" &&
-                             x.GearObject.Bonded, token).ConfigureAwait(false);
+                            x => x.GearObject?.Bonded == true && x.GearObject.Bonus.InnerText == "MAGRating", token)
+                        .ConfigureAwait(false);
                 if (list.Count > 0)
                 {
                     // get any bonded foci that add to the base magic stat and return the highest rated one's rating

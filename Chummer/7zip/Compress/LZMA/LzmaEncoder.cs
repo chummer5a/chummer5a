@@ -2098,7 +2098,7 @@ namespace SevenZip.Compression.LZMA
                         await FlushAsync((int)_nowPos64, token).ConfigureAwait(false);
                         return new Tuple<long, long, bool> (inSize, outSize, true);
                     }
-                    
+
                     await ReadMatchDistancesAsync(token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     int posState = (int)_nowPos64 & _posStateMask;

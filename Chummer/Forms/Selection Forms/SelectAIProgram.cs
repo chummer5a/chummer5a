@@ -345,8 +345,7 @@ namespace Chummer
                     string strName = objXmlProgram.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a critter with Optional Programs, see if this Program is allowed.
-                    if (_xmlOptionalAIProgramsNode != null
-                        && _xmlOptionalAIProgramsNode.SelectSingleNodeAndCacheExpression("program", token) != null
+                    if (_xmlOptionalAIProgramsNode?.SelectSingleNodeAndCacheExpression("program", token) != null
                         && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + ']') == null)
                         continue;
                     string strDisplayName = objXmlProgram.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName;

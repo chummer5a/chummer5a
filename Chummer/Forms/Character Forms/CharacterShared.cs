@@ -389,7 +389,7 @@ namespace Chummer
                                     .ConfigureAwait(false));
 
                             // Autosaves are uncompressed to make them happen as fast as possible
-                            string strExtension = ".chum5";
+                            const string strExtension = ".chum5";
                             if (string.IsNullOrEmpty(strAutosaveFileName))
                                 strAutosaveFileName = strCharacterName.CleanForFileName() + strExtension;
                             else

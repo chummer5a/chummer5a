@@ -956,7 +956,7 @@ namespace Chummer
                     ? objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax", token: token)?.Value ?? string.Empty
                     : string.Empty;
                 int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
-                if ((objXmlMetatype != null && objXmlMetatype.SelectSingleNodeAndCacheExpression("forcecreature", token: token) != null) || intPos != -1)
+                if ((objXmlMetatype?.SelectSingleNodeAndCacheExpression("forcecreature", token: token) != null) || intPos != -1)
                 {
                     if (intPos != -1)
                     {

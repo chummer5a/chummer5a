@@ -3926,7 +3926,7 @@ namespace Chummer.Backend.Equipment
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
                 int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
-                
+
                 // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
                 return OwnCostPreMultipliers * Quantity * intParentMultiplier / CostFor + decPlugin * Quantity;
             }
@@ -3962,7 +3962,7 @@ namespace Chummer.Backend.Equipment
 
             // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
-            
+
             // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
             return OwnCostPreMultipliers * Quantity * intParentMultiplier / CostFor + decPlugin * Quantity;
         }
@@ -5102,30 +5102,25 @@ namespace Chummer.Backend.Equipment
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                decReturn += _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
-                    .Sum(x => x.TotalCost + x.DeleteWeapon());
-
-                decReturn += _objCharacter.Vehicles.AsEnumerableWithSideEffects().Sum(objVehicle =>
+                List<Weapon> lstWeapons = _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList();
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                 {
-                    return objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
-                               .Sum(x => x.TotalCost + x.DeleteWeapon())
-                           + objVehicle.Mods.AsEnumerableWithSideEffects().Sum(objMod =>
-                           {
-                               return objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
-                                   .Sum(x => x.TotalCost + x.DeleteWeapon());
-                           })
-                           + objVehicle.WeaponMounts.AsEnumerableWithSideEffects().Sum(objMount =>
-                           {
-                               return objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId)
-                                          .ToList().Sum(x => x.TotalCost + x.DeleteWeapon())
-                                      + objMount.Mods.AsEnumerableWithSideEffects().Sum(objMod =>
-                                      {
-                                          return objMod.Weapons
-                                              .DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList()
-                                              .Sum(x => x.TotalCost + x.DeleteWeapon());
-                                      });
-                           });
-                });
+                    lstWeapons.AddRange(objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId));
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        lstWeapons.AddRange(objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId));
+                    }
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        lstWeapons.AddRange(objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId));
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            lstWeapons.AddRange(objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId));
+                        }
+                    }
+                }
+
+                decReturn += lstWeapons.Sum(objDeleteWeapon => objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon());
             }
 
             decReturn +=
@@ -5215,80 +5210,38 @@ namespace Chummer.Backend.Equipment
             // Remove the Gear Weapon created by the Gear if applicable.
             if (!WeaponID.IsEmptyGuid())
             {
-                foreach (Weapon objDeleteWeapon in await _objCharacter.Weapons
-                                                                      .DeepWhereAsync(
-                                                                          x => x.Children,
-                                                                          x => x.ParentID == InternalId, token)
-                                                                      .ConfigureAwait(false))
+                List<Weapon> lstWeapons = await _objCharacter.Weapons
+                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ConfigureAwait(false);
+                await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
                 {
-                    decReturn += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                 + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
-                }
-
-                decReturn += await _objCharacter.Vehicles.SumWithSideEffectsAsync(async objVehicle =>
-                {
-                    decimal decInner = 0;
-                    foreach (Weapon objDeleteWeapon in await objVehicle.Weapons
-                                                                       .DeepWhereAsync(
-                                                                           x => x.Children,
-                                                                           x => x.ParentID == InternalId, token)
-                                                                       .ConfigureAwait(false))
+                    lstWeapons.AddRange(await objVehicle.Weapons
+                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                        .ConfigureAwait(false));
+                    await objVehicle.Mods.ForEachAsync(async objMod =>
                     {
-                        decInner += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                    + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
-                    }
-
-                    decInner += await objVehicle.Mods.SumWithSideEffectsAsync(async objMod =>
-                    {
-                        decimal decInner2 = 0;
-                        foreach (Weapon objDeleteWeapon in await objMod.Weapons
-                                                                       .DeepWhereAsync(
-                                                                           x => x.Children,
-                                                                           x => x.ParentID == InternalId, token)
-                                                                       .ConfigureAwait(false))
-                        {
-                            decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
-                        }
-
-                        return decInner2;
+                        lstWeapons.AddRange(await objMod.Weapons
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                            .ConfigureAwait(false));
                     }, token).ConfigureAwait(false);
 
-                    decInner += await objVehicle.WeaponMounts.SumWithSideEffectsAsync(async objMount =>
+                    await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
                     {
-                        decimal decInner2 = 0;
-                        foreach (Weapon objDeleteWeapon in await objMount.Weapons
-                                                                         .DeepWhereAsync(
-                                                                             x => x.Children,
-                                                                             x => x.ParentID == InternalId, token)
-                                                                         .ConfigureAwait(false))
+                        lstWeapons.AddRange(await objMount.Weapons
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                            .ConfigureAwait(false));
+                        await objMount.Mods.ForEachAsync(async objMod =>
                         {
-                            decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
-                        }
-
-                        decInner2 += await objMount.Mods.SumWithSideEffectsAsync(async objMod =>
-                        {
-                            decimal decInner3 = 0;
-                            foreach (Weapon objDeleteWeapon in await objMod.Weapons
-                                                                           .DeepWhereAsync(
-                                                                               x => x.Children,
-                                                                               x => x.ParentID == InternalId, token)
-                                                                           .ConfigureAwait(false))
-                            {
-                                decInner3 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
-                                             + await objDeleteWeapon.DeleteWeaponAsync(token: token)
-                                                                    .ConfigureAwait(false);
-                            }
-
-                            return decInner3;
+                            lstWeapons.AddRange(await objMod.Weapons
+                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                .ConfigureAwait(false));
                         }, token).ConfigureAwait(false);
-
-                        return decInner2;
                     }, token).ConfigureAwait(false);
-
-                    return decInner;
                 }, token).ConfigureAwait(false);
+
+                decReturn += await lstWeapons.SumAsync(async objDeleteWeapon =>
+                        await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
+                        + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
             }
 
             decReturn +=

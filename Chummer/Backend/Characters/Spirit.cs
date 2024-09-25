@@ -868,7 +868,6 @@ namespace Chummer
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-
                     if (_strName == value)
                         return;
                     using (LockObject.EnterWriteLock())

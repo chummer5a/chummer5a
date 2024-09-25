@@ -183,7 +183,7 @@ namespace Chummer.UI.Skills
                         TabStop = false
                     };
                     cboSpec.TextChanged += cboSpec_TextChanged;
-                    
+
                     chkKarma = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,

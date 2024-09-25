@@ -248,7 +248,7 @@ namespace Chummer
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
             XPathNodeIterator objArtList = _xmlBaseMartialArtsNode.Select("martialart[" + strFilter + ']');
-            
+
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMartialArt))
             {
                 foreach (XPathNavigator objXmlArt in objArtList)

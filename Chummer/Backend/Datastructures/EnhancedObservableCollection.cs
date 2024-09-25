@@ -412,7 +412,6 @@ namespace Chummer
                     }
                     else
                     {
-
                         BeforeClearCollectionChanged?.Invoke(this,
                             new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
                     }

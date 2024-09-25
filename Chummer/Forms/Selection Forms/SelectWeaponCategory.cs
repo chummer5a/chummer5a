@@ -30,7 +30,7 @@ namespace Chummer
         private string _strForceCategory = string.Empty;
 
         public string WeaponType { get; set; }
-        
+
         private readonly Character _objCharacter;
 
         #region Control Events
@@ -84,7 +84,7 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ConfirmSelection(strSelect)).ConfigureAwait(false);
                         return;
                 }
-                
+
                 await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 await cboCategory.DoThreadSafeAsync(x =>
                 {

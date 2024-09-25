@@ -2432,10 +2432,10 @@ namespace Chummer
                                                               "Message_SelectGeneric_PriorityRestriction",
                                                               token: token).ConfigureAwait(false));
                     return new Tuple<bool, string>(
-                        (blnSync
+                        blnSync
                             ? objCharacter.EffectiveBuildMethodUsesPriorityTables
                             : await objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync(token)
-                                .ConfigureAwait(false)), strName);
+                                .ConfigureAwait(false), strName);
                 }
                 case "power":
                 {

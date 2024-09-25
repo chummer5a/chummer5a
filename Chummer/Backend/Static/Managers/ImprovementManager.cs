@@ -3028,13 +3028,14 @@ namespace Chummer
                         case Improvement.ImprovementType.Weapon:
                             Weapon objWeapon
                                 = blnSync
-                                    ? (objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                           x => x.InternalId == strImprovedName)
-                                       ??
-                                       objCharacter.Vehicles.FindVehicleWeapon(strImprovedName))
+                                    ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token)
+                                      ??
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
                                     : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
                                           x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
-                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token).ConfigureAwait(false))
+                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
+                                          .ConfigureAwait(false))
                                       .Item1;
                             if (objWeapon != null)
                             {
@@ -3706,13 +3707,14 @@ namespace Chummer
                         case Improvement.ImprovementType.Weapon:
                             Weapon objWeapon
                                 = blnSync
-                                    ? (objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                           x => x.InternalId == strImprovedName)
-                                       ??
-                                       objCharacter.Vehicles.FindVehicleWeapon(strImprovedName))
+                                    ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token)
+                                      ??
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
                                     : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
                                           x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
-                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token).ConfigureAwait(false))
+                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
+                                          .ConfigureAwait(false))
                                       .Item1;
                             if (objWeapon != null)
                             {
@@ -5176,13 +5178,14 @@ namespace Chummer
                         {
                             Weapon objWeapon
                                 = blnSync
-                                    ? (objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                           x => x.InternalId == strImprovedName)
-                                       ??
-                                       objCharacter.Vehicles.FindVehicleWeapon(strImprovedName))
+                                    ? objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                          x => x.InternalId == strImprovedName, token)
+                                      ??
+                                      objCharacter.Vehicles.FindVehicleWeapon(strImprovedName)
                                     : await objCharacter.Weapons.DeepFirstOrDefaultAsync(x => x.Children,
                                           x => x.InternalId == strImprovedName, token: token).ConfigureAwait(false)
-                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token).ConfigureAwait(false))
+                                      ?? (await objCharacter.Vehicles.FindVehicleWeaponAsync(strImprovedName, token)
+                                          .ConfigureAwait(false))
                                       .Item1;
                             if (objWeapon != null)
                             {

@@ -16880,7 +16880,7 @@ namespace Chummer
                                 await lblArmorValue.DoThreadSafeAsync(x => x.Visible = false, token)
                                                    .ConfigureAwait(false);
                             }
-                            
+
                             string strAvail = await objArmorMod.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                             await lblArmorAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                .ConfigureAwait(false);

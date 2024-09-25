@@ -34,9 +34,9 @@ namespace SevenZip.Compression.LZ
         protected bool _streamEndWasReached; // if (true) then _streamPos shows real end of stream
 
         private int _pointerToLastSafePosition;
-        
+
         public int _bufferOffset;
-        
+
         public int _blockSize; // Size of Allocated memory block
         public int _pos; // offset (from _buffer) of curent byte
         private int _keepSizeBefore; // how many BYTEs must be kept in buffer before _pos

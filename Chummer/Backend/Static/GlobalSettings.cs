@@ -843,7 +843,7 @@ namespace Chummer
                         s_LstFavoriteCharacters.Add(strFileName);
                 }
             }
-            
+
             s_LstFavoriteCharacters.Sort();
             for (int i = 1; i <= MaxMruSize; ++i)
             {

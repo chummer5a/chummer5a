@@ -293,7 +293,7 @@ namespace Chummer.UI.Powers
                     null),
                 new Tuple<string, Func<Power, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
-                    power => Task.FromResult(true)),
+                    x => Task.FromResult(true)),
                 new Tuple<string, Func<Power, Task<bool>>>(
                     LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
                     async power =>

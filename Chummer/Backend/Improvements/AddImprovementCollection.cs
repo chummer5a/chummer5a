@@ -1072,7 +1072,6 @@ namespace Chummer
                                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
                                }))
                     {
-
                         // Make sure the dialogue window was not canceled.
                         if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
@@ -1881,7 +1880,7 @@ namespace Chummer
                     {
                         throw new AbortedException();
                     }
-                    
+
                     xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram)
                                  ?? throw new AbortedException();
                 }
@@ -2218,7 +2217,6 @@ namespace Chummer
                                                : LanguageManager.GetString("String_Improvement_SelectAttribute")
                                        }))
                         {
-
                             // Make sure the dialogue window was not canceled.
                             if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             {
@@ -3903,7 +3901,7 @@ namespace Chummer
                                 {
                                     throw new AbortedException();
                                 }
-                                
+
                                 objXmlPower = xmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
                                               ?? throw new AbortedException();
                             }
@@ -4016,7 +4014,7 @@ namespace Chummer
                             // Don't do anything else if the form was canceled.
                             if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
-                            
+
                             objXmlSelectedArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickItem.MyForm.SelectedItem)
                                                 ?? throw new AbortedException();
                         }
@@ -4234,7 +4232,7 @@ namespace Chummer
                             // Don't do anything else if the form was canceled.
                             if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
-                            
+
                             xmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", frmPickItem.MyForm.SelectedItem)
                                               ?? throw new AbortedException();
                         }

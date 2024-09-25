@@ -111,7 +111,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll > 1)
                 ApplyInitChange(-1);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -126,7 +126,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 5 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 5)
                 ApplyInitChange(-5);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -141,7 +141,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(-10);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -156,7 +156,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(1);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -171,7 +171,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(5);
             else
                 Program.ShowMessageBox("unable to go beyond 0");
@@ -186,7 +186,7 @@ namespace Chummer
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
-            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
+            else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll >= 1)
                 ApplyInitChange(10);
             else
                 Program.ShowMessageBox("unable to go beyond 0");

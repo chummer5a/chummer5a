@@ -7893,7 +7893,7 @@ namespace Chummer
                                 return;
 
                             // Make sure the Nuyen expense would not put the character's remaining Nuyen amount below 0.
-                            if (await CharacterObject.GetNuyenAsync(GenericToken).ConfigureAwait(false) - frmNewExpense.MyForm.Amount < 0)
+                            if (await CharacterObject.GetNuyenAsync(GenericToken).ConfigureAwait(false) < frmNewExpense.MyForm.Amount)
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
                                     this,

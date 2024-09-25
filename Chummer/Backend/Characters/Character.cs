@@ -12852,7 +12852,7 @@ namespace Chummer
                     {
                         Cyberware objCyberware = Cyberware.DeepFirstOrDefault(x => x.Children,
                                                                               x => x.InternalId == strImprovedSourceName
-                                                                                  && x.SourceType == eSource);
+                                                                                  && x.SourceType == eSource, token);
                         if (objCyberware != null)
                         {
                             string strWareReturn = objCyberware.DisplayNameShort(strLanguage);
@@ -12869,7 +12869,7 @@ namespace Chummer
                             foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                             {
                                 objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
-                                    x => x.InternalId == strImprovedSourceName);
+                                    x => x.InternalId == strImprovedSourceName, token);
                                 if (objCyberware != null)
                                 {
                                     string strWareReturn
@@ -12892,7 +12892,7 @@ namespace Chummer
                                 foreach (VehicleMod objVehicleMod in objMount.Mods)
                                 {
                                     objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
-                                        x => x.InternalId == strImprovedSourceName);
+                                        x => x.InternalId == strImprovedSourceName, token);
                                     if (objCyberware != null)
                                     {
                                         string strWareReturn
@@ -12919,7 +12919,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.Gear:
                     {
                         Gear objReturnGear =
-                            Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strImprovedSourceName);
+                            Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strImprovedSourceName, token);
                         if (objReturnGear != null)
                         {
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -12996,7 +12996,7 @@ namespace Chummer
                         foreach (Vehicle objVehicle in Vehicles)
                         {
                             objReturnGear = objVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                x => x.InternalId == strImprovedSourceName);
+                                x => x.InternalId == strImprovedSourceName, token);
                             if (objReturnGear != null)
                             {
                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -13018,7 +13018,7 @@ namespace Chummer
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
                                     objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                        x => x.InternalId == strImprovedSourceName);
+                                        x => x.InternalId == strImprovedSourceName, token);
                                     if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -13052,7 +13052,7 @@ namespace Chummer
                                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                     {
                                         objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                            x => x.InternalId == strImprovedSourceName);
+                                            x => x.InternalId == strImprovedSourceName, token);
                                         if (objReturnGear != null)
                                         {
                                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -13082,7 +13082,7 @@ namespace Chummer
                                              x => x.GearChildren.Count > 0, token))
                                 {
                                     objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                        x => x.InternalId == strImprovedSourceName);
+                                        x => x.InternalId == strImprovedSourceName, token);
                                     if (objReturnGear != null)
                                     {
                                         string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -13117,7 +13117,7 @@ namespace Chummer
                                         {
                                             objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(
                                                 x => x.Children,
-                                                x => x.InternalId == strImprovedSourceName);
+                                                x => x.InternalId == strImprovedSourceName, token);
                                             if (objReturnGear != null)
                                             {
                                                 string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -13156,7 +13156,7 @@ namespace Chummer
                                                  x => x.GearChildren.Count > 0, token))
                                     {
                                         objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
-                                            x => x.InternalId == strImprovedSourceName);
+                                            x => x.InternalId == strImprovedSourceName, token);
                                         if (objReturnGear != null)
                                         {
                                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
@@ -26219,7 +26219,7 @@ namespace Chummer
                     strSpace + '(' +
                     (await objInt.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) +
                     ')' + strSpace + '×' + strSpace + 2.ToString(GlobalSettings.CultureInfo);
-                
+
                 int intWoundModifier = await GetWoundModifierAsync(token).ConfigureAwait(false);
                 if (intINTAttributeModifiers != 0 || intWoundModifier != 0)
                 {
@@ -33882,7 +33882,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 // Initiation Grade cost.
                 decDeductions += Lifestyles.SumParallel(x => x.TotalCost, token)
-                                 + 10000 * InitiationGrades.Count(x => x.Schooling);
+                                 + 10000 * InitiationGrades.Count(x => x.Schooling, token);
                 token.ThrowIfCancellationRequested();
                 decimal decReturn = TotalStartingNuyen - decDeductions;
                 return new Tuple<decimal, decimal>(decReturn, decStolenNuyenAllowance - decStolenDeductions);
@@ -46035,14 +46035,14 @@ namespace Chummer
                                                                        .SelectSingleNodeAndCacheExpression("category", token)
                                                                        .Value;
                                                 _strMetavariant = string.Empty;
-                                                
+
                                                 XPathNavigator objRunNode
                                                     = xmlMetatype.SelectSingleNodeAndCacheExpression("run", token);
                                                 XPathNavigator objWalkNode
                                                     = xmlMetatype.SelectSingleNodeAndCacheExpression("walk", token);
                                                 XPathNavigator objSprintNode
                                                     = xmlMetatype.SelectSingleNodeAndCacheExpression("sprint", token);
-                                                
+
                                                 _strMovement
                                                     = xmlMetatype.SelectSingleNodeAndCacheExpression("movement", token)?.Value
                                                       ??
@@ -46050,7 +46050,7 @@ namespace Chummer
                                                 _strRun = objRunNode?.Value ?? string.Empty;
                                                 _strWalk = objWalkNode?.Value ?? string.Empty;
                                                 _strSprint = objSprintNode?.Value ?? string.Empty;
-                                                
+
                                                 objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                 objWalkNode = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                 objSprintNode
@@ -46073,7 +46073,7 @@ namespace Chummer
                                                         xmlMetatype.SelectSingleNodeAndCacheExpression("category", token)
                                                                    .Value;
                                                     _strMetavariant = strMetavariantName;
-                                                    
+
                                                     XPathNavigator objRunNode =
                                                         xmlMetavariant?.SelectSingleNodeAndCacheExpression("run", token) ??
                                                         xmlMetatype?.SelectSingleNodeAndCacheExpression("run", token);
@@ -46083,7 +46083,7 @@ namespace Chummer
                                                     XPathNavigator objSprintNode =
                                                         xmlMetavariant?.SelectSingleNodeAndCacheExpression("sprint", token) ??
                                                         xmlMetatype?.SelectSingleNodeAndCacheExpression("sprint", token);
-                                                    
+
                                                     _strMovement =
                                                         xmlMetavariant?.SelectSingleNodeAndCacheExpression("movement", token)
                                                                       ?.Value ??
@@ -46093,7 +46093,7 @@ namespace Chummer
                                                     _strRun = objRunNode?.Value ?? string.Empty;
                                                     _strWalk = objWalkNode?.Value ?? string.Empty;
                                                     _strSprint = objSprintNode?.Value ?? string.Empty;
-                                                    
+
                                                     objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                     objWalkNode
                                                         = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt", token);

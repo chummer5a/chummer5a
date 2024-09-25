@@ -485,7 +485,7 @@ namespace Chummer
                             return;
                         }
                     }
-                    else if (objXmlSpell != null && objXmlSpell.SelectSingleNodeAndCacheExpression("category", token)?.Value == "Rituals")
+                    else if (objXmlSpell?.SelectSingleNodeAndCacheExpression("category", token)?.Value == "Rituals")
                     {
                         if (intRitualCount >= intSpellLimit)
                         {

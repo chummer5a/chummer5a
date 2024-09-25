@@ -441,7 +441,7 @@ namespace Chummer
                         if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         {
                             int intFreeSpells = await _objCharacter.GetFreeSpellsAsync(token).ConfigureAwait(false);
-                            if (intFreeSpells > 0 
+                            if (intFreeSpells > 0
                                 && Convert.ToBoolean(
                                     xmlQuality.SelectSingleNodeAndCacheExpression("canbuywithspellpoints", token)?.Value,
                                     GlobalSettings.InvariantCultureInfo))

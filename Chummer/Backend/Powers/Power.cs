@@ -1029,7 +1029,6 @@ namespace Chummer
                             .ConfigureAwait(false),
                         token).ConfigureAwait(false);
                 }
-                
                 await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
             }
             finally
