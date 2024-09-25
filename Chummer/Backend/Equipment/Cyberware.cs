@@ -7063,7 +7063,7 @@ namespace Chummer.Backend.Equipment
                     if (ReferenceEquals(_objParent, value))
                         return;
                     bool blnOldEquipped = IsModularCurrentlyEquipped;
-                    using (LockObject.EnterReadLock())
+                    using (LockObject.EnterWriteLock())
                     {
                         if (ReferenceEquals(Interlocked.Exchange(ref _objParent, value), value))
                             return;
