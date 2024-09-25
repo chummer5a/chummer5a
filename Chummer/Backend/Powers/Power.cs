@@ -65,7 +65,6 @@ namespace Chummer
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
         private decimal _decFreePoints;
-        private string _strCachedPowerPoints = string.Empty;
         private bool _blnLevelsEnabled;
         private int _intRating = 1;
         private int _intCachedLearnedRating = int.MinValue;
@@ -1054,14 +1053,7 @@ namespace Chummer
                     if (Interlocked.Exchange(ref _strExtra, value) == value)
                         return;
                     if (Name == "Improved Ability (skill)")
-                    {
-                        Skill objBoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
-                        using (LockObject.EnterWriteLock())
-                        {
-                            BoostedSkill = objBoostedSkill;
-                        }
-                    }
-
+                        BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
                     OnPropertyChanged();
                 }
             }
@@ -1101,15 +1093,7 @@ namespace Chummer
                 {
                     Skill objBoostedSkill = await CharacterObject.SkillsSection.GetActiveSkillAsync(value, token)
                         .ConfigureAwait(false);
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        await SetBoostedSkillAsync(objBoostedSkill, token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    await SetBoostedSkillAsync(objBoostedSkill, token).ConfigureAwait(false);
                 }
 
                 await OnPropertyChangedAsync(nameof(Extra), token).ConfigureAwait(false);
@@ -1304,8 +1288,10 @@ namespace Chummer
                     if (_decExtraPointCost == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _decExtraPointCost = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1585,6 +1571,159 @@ namespace Chummer
             }
         }
 
+        private string _strCachedTotalRatingToolTip = string.Empty;
+
+        /// <summary>
+        /// ToolTip that shows how the Power is calculating its Modified Rating.
+        /// </summary>
+        public string TotalRatingToolTip
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (!string.IsNullOrEmpty(_strCachedTotalRatingToolTip))
+                        return _strCachedTotalRatingToolTip;
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                    {
+                        bool blnFirstItem = true;
+                        bool blnLevelsEnabled = LevelsEnabled;
+                        int intRating = Rating;
+                        if (blnLevelsEnabled)
+                        {
+                            if (intRating != 0)
+                            {
+                                sbdModifier.Append(LanguageManager.GetString("String_Rating")).Append(strSpace).Append('(')
+                                    .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                blnFirstItem = false;
+                            }
+                        }
+                        else if (intRating != 0)
+                        {
+                            sbdModifier.Append(LanguageManager.GetString("Label_Base"));
+                            blnFirstItem = false;
+                        }
+
+                        string strExtra = Extra;
+                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                     CharacterObject, Improvement.ImprovementType.AdeptPowerFreeLevels, Name))
+                        {
+                            if (objImprovement.UniqueName != strExtra)
+                                continue;
+                            if (blnFirstItem)
+                                blnFirstItem = false;
+                            else
+                            {
+                                sbdModifier.Append(strSpace)
+                                    .Append('+')
+                                    .Append(strSpace);
+                            }
+
+                            sbdModifier.Append(CharacterObject.GetObjectName(objImprovement));
+                            if (blnLevelsEnabled)
+                            {
+                                sbdModifier.Append(strSpace)
+                                    .Append('(')
+                                    .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo))
+                                    .Append(')');
+                            }
+                        }
+
+                        int intTotalMaximum = TotalMaximumLevels;
+                        if (intRating + FreeLevels > intTotalMaximum)
+                        {
+                            sbdModifier.Append(']').Append(strSpace);
+                            return _strCachedTotalRatingToolTip = string.Format(GlobalSettings.CultureInfo,
+                                LanguageManager.GetString("Tip_Power_Capped"), sbdModifier.ToString(), intTotalMaximum);
+                        }
+                        return _strCachedTotalRatingToolTip = sbdModifier.ToString();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// ToolTip that shows how the Power is calculating its Modified Rating.
+        /// </summary>
+        public async Task<string> GetTotalRatingToolTipAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(_strCachedTotalRatingToolTip))
+                    return _strCachedTotalRatingToolTip;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                {
+                    bool blnFirstItem = true;
+                    bool blnLevelsEnabled = await GetLevelsEnabledAsync(token).ConfigureAwait(false);
+                    int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                    if (blnLevelsEnabled)
+                    {
+                        if (intRating != 0)
+                        {
+                            sbdModifier.Append(await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
+                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            blnFirstItem = false;
+                        }
+                    }
+                    else if (intRating != 0)
+                    {
+                        sbdModifier.Append(await LanguageManager.GetStringAsync("Label_Base", token: token)
+                            .ConfigureAwait(false));
+                        blnFirstItem = false;
+                    }
+
+                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
+                    foreach (Improvement objImprovement in await ImprovementManager
+                                 .GetCachedImprovementListForValueOfAsync(
+                                     CharacterObject, Improvement.ImprovementType.AdeptPowerFreeLevels,
+                                     await GetNameAsync(token).ConfigureAwait(false), token: token)
+                                 .ConfigureAwait(false))
+                    {
+                        if (objImprovement.UniqueName != strExtra)
+                            continue;
+                        if (blnFirstItem)
+                            blnFirstItem = false;
+                        else
+                        {
+                            sbdModifier.Append(strSpace)
+                                .Append('+')
+                                .Append(strSpace);
+                        }
+
+                        sbdModifier.Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
+                            .ConfigureAwait(false));
+                        if (blnLevelsEnabled)
+                        {
+                            sbdModifier.Append(strSpace)
+                                .Append('(')
+                                .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo))
+                                .Append(')');
+                        }
+                    }
+
+                    int intTotalMaximum = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
+                    if (intRating + await GetFreeLevelsAsync(token).ConfigureAwait(false) > intTotalMaximum)
+                    {
+                        sbdModifier.Append(']').Append(strSpace);
+                        return _strCachedTotalRatingToolTip = string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("Tip_Power_Capped", token: token)
+                                .ConfigureAwait(false), sbdModifier.ToString(), intTotalMaximum);
+                    }
+
+                    return _strCachedTotalRatingToolTip = sbdModifier.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private int _intCachedFreeLevels = int.MinValue;
 
         private readonly AsyncFriendlyReaderWriterLock _objCachedFreeLevelsLock;
@@ -1618,10 +1757,11 @@ namespace Chummer
                                 Name)
                             .Sum(objImprovement => objImprovement.UniqueName == Extra,
                                 objImprovement => objImprovement.Rating);
+                        decimal decPointsPerLevel = PointsPerLevel;
                         // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
                         if (Rating + intReturn == 0 && ExtraPointCost > 0)
                         {
-                            decExtraCost -= PointsPerLevel + ExtraPointCost;
+                            decExtraCost -= decPointsPerLevel + ExtraPointCost;
                             if (decExtraCost >= 0)
                             {
                                 ++intReturn;
@@ -1632,7 +1772,7 @@ namespace Chummer
                                 ++intReturn;
                             }
                         }
-                        else if (PointsPerLevel == 0)
+                        else if (decPointsPerLevel == 0)
                         {
                             Utils.BreakIfDebug();
                             // power costs no PP, just return free levels
@@ -1640,7 +1780,7 @@ namespace Chummer
                         //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
                         else
                         {
-                            for (decimal i = decExtraCost; i >= PointsPerLevel; i -= PointsPerLevel)
+                            for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
                             {
                                 ++intReturn;
                             }
@@ -1775,24 +1915,29 @@ namespace Chummer
 
                     using (_objCachedPowerPointsLock.EnterWriteLock())
                     {
-                        if (Rating == 0 || !LevelsEnabled && FreeLevels > 0)
+                        int intRating = Rating;
+                        if (intRating == 0)
                         {
                             return _decCachedPowerPoints = 0;
                         }
 
-                        decimal decReturn;
-                        if (FreeLevels * PointsPerLevel >= FreePoints)
+                        int intFreeLevels = FreeLevels;
+                        if (!LevelsEnabled && intFreeLevels > 0)
                         {
-                            decReturn = Rating * PointsPerLevel;
-                            decReturn += ExtraPointCost;
+                            return _decCachedPowerPoints = 0;
+                        }
+
+                        decimal decReturn = ExtraPointCost - Discount;
+                        decimal decPointsPerLevel = PointsPerLevel;
+                        decimal decFreePoints = FreePoints;
+                        if (intFreeLevels * decPointsPerLevel >= decFreePoints)
+                        {
+                            decReturn += intRating * decPointsPerLevel;
                         }
                         else
                         {
-                            decReturn = TotalRating * PointsPerLevel + ExtraPointCost;
-                            decReturn -= FreePoints;
+                            decReturn += TotalRating * decPointsPerLevel - decFreePoints;
                         }
-
-                        decReturn -= Discount;
                         return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
                     }
                 }
@@ -1830,31 +1975,29 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
                     int intRating = await GetRatingAsync(token).ConfigureAwait(false);
-                    if (intRating == 0 ||
-                        !await GetLevelsEnabledAsync(token).ConfigureAwait(false) && intFreeLevels > 0)
+                    if (intRating == 0)
                     {
                         return _decCachedPowerPoints = 0;
                     }
 
-                    decimal decReturn;
-                    decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
+                    int intFreeLevels = await GetFreeLevelsAsync(token).ConfigureAwait(false);
+                    if (!await GetLevelsEnabledAsync(token).ConfigureAwait(false) && intFreeLevels > 0)
+                    {
+                        return _decCachedPowerPoints = 0;
+                    }
+
+                    decimal decReturn = await GetExtraPointCostAsync(token).ConfigureAwait(false) - await GetDiscountAsync(token).ConfigureAwait(false);
                     decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
-                    decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
+                    decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
                     if (intFreeLevels * decPointsPerLevel >= decFreePoints)
                     {
-                        decReturn = intRating * decPointsPerLevel;
-                        decReturn += decExtraPointCost;
+                        decReturn += intRating * decPointsPerLevel;
                     }
                     else
                     {
-                        decReturn = await GetTotalRatingAsync(token).ConfigureAwait(false) * decPointsPerLevel
-                                    + decExtraPointCost;
-                        decReturn -= decFreePoints;
+                        decReturn += await GetTotalRatingAsync(token).ConfigureAwait(false) * decPointsPerLevel - decFreePoints;
                     }
-
-                    decReturn -= await GetDiscountAsync(token).ConfigureAwait(false);
                     return _decCachedPowerPoints = Math.Max(decReturn, 0.0m);
                 }
                 finally
@@ -1868,29 +2011,224 @@ namespace Chummer
             }
         }
 
-        public string DisplayPoints
+        public string DisplayPoints => PowerPoints.ToString(GlobalSettings.CultureInfo);
+
+        public async Task<string> GetDisplayPointsAsync(CancellationToken token = default)
+        {
+            return (await GetPowerPointsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+        }
+
+        private string _strCachedDisplayPointsToolTip = string.Empty;
+
+        public string DisplayPointsToolTip
         {
             get
             {
-                using (LockObject.EnterReadLock())
+                using (_objCachedPowerPointsLock.EnterReadLock())
                 {
-                    if (string.IsNullOrEmpty(_strCachedPowerPoints))
-                        _strCachedPowerPoints = PowerPoints.ToString(GlobalSettings.CultureInfo);
-                    return _strCachedPowerPoints;
+                    if (!string.IsNullOrEmpty(_strCachedDisplayPointsToolTip))
+                        return _strCachedDisplayPointsToolTip;
+                }
+
+                using (_objCachedPowerPointsLock.EnterUpgradeableReadLock())
+                {
+                    if (!string.IsNullOrEmpty(_strCachedDisplayPointsToolTip))
+                        return _strCachedDisplayPointsToolTip;
+                    // Do not set write lock because we are only using the cached power points lock to prevent duplicate calls, which this will already do
+
+                    int intRating = Rating;
+                    if (intRating == 0)
+                    {
+                        return _strCachedDisplayPointsToolTip = LanguageManager.GetString("String_None");
+                    }
+
+                    int intFreeLevels = FreeLevels;
+                    if (!LevelsEnabled && intFreeLevels > 0)
+                    {
+                        return _strCachedDisplayPointsToolTip = LanguageManager.GetString("Checkbox_Contact_Free");
+                    }
+
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                    {
+                        decimal decExtraPointCost = ExtraPointCost;
+                        if (decExtraPointCost != 0)
+                        {
+                            sbdModifier.Append(LanguageManager.GetString("Label_Base")).Append(strSpace)
+                                .Append('(')
+                                .Append(decExtraPointCost.ToString(GlobalSettings.CultureInfo)).Append(')')
+                                .Append(strSpace).Append('+').Append(strSpace);
+                        }
+
+                        decimal decPointsPerLevel = PointsPerLevel;
+                        decimal decFreePoints = FreePoints;
+                        if (intFreeLevels != 0)
+                        {
+                            int intMaximumLevels = TotalMaximumLevels;
+                            if (intMaximumLevels < intRating + intFreeLevels)
+                            {
+                                sbdModifier.Append('(').AppendFormat(
+                                    GlobalSettings.CultureInfo,
+                                    LanguageManager.GetString("Tip_Power_Capped"),
+                                    LanguageManager.GetString("String_Level") + strSpace + '(' +
+                                    intRating.ToString(GlobalSettings.CultureInfo) + ')' +
+                                    strSpace + (intFreeLevels > 0 ? '-' : '+') + strSpace +
+                                    LanguageManager.GetString("Checkbox_Contact_Free") + strSpace +
+                                    '(' + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ')',
+                                    intMaximumLevels).Append(')');
+                            }
+                            else
+                            {
+                                sbdModifier.Append('[').Append(LanguageManager.GetString("String_Level")).Append(strSpace).Append('(')
+                                    .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')')
+                                    .Append(strSpace).Append(intFreeLevels > 0 ? '-' : '+').Append(strSpace)
+                                    .Append(LanguageManager.GetString("Checkbox_Contact_Free")).Append(strSpace).Append('(')
+                                    .Append(intFreeLevels.ToString(GlobalSettings.CultureInfo)).Append(")]");
+                            }
+                        }
+                        else
+                        {
+                            sbdModifier.Append(LanguageManager.GetString("String_Level")).Append(strSpace).Append('(')
+                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                        }
+
+                        sbdModifier.Append(strSpace).Append('×').Append(strSpace)
+                            .Append(LanguageManager.GetString("Tip_Power_PPperLevel")).Append(strSpace).Append('(')
+                            .Append(decPointsPerLevel.ToString(GlobalSettings.CultureInfo)).Append(')');
+                        if (decFreePoints != 0 && intFreeLevels * decPointsPerLevel < decFreePoints)
+                        {
+                            sbdModifier.Append(strSpace).Append(decFreePoints > 0 ? '-' : '+').Append(strSpace)
+                                .Append(LanguageManager.GetString("Tab_Improvements")).Append(strSpace).Append('(')
+                                .Append(Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo)).Append(')');
+                        }
+
+                        decimal decDiscount = Discount;
+                        if (decDiscount != 0)
+                        {
+                            sbdModifier.Append(strSpace).Append(decDiscount > 0 ? '-' : '+').Append(strSpace)
+                                .Append(LanguageManager.GetString("Checkbox_Power_AdeptWay")).Append(strSpace)
+                                .Append('(')
+                                .Append(Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo)).Append(')');
+                        }
+
+                        return _strCachedDisplayPointsToolTip = sbdModifier.ToString();
+                    }
                 }
             }
         }
 
-        public async Task<string> GetDisplayPointsAsync(CancellationToken token = default)
+        public async Task<string> GetDisplayPointsToolTipAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objCachedPowerPointsLock.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (string.IsNullOrEmpty(_strCachedPowerPoints))
-                    _strCachedPowerPoints
-                        = (await GetPowerPointsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                return _strCachedPowerPoints;
+                if (!string.IsNullOrEmpty(_strCachedDisplayPointsToolTip))
+                    return _strCachedDisplayPointsToolTip;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker =
+                await _objCachedPowerPointsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(_strCachedDisplayPointsToolTip))
+                    return _strCachedDisplayPointsToolTip;
+                // Do not set write lock because we are only using the cached power points lock to prevent duplicate calls, which this will already do
+
+                int intRating = await GetRatingAsync(token).ConfigureAwait(false);
+                if (intRating == 0)
+                {
+                    return _strCachedDisplayPointsToolTip = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+                }
+
+                int intFreeLevels = FreeLevels;
+                if (!LevelsEnabled && intFreeLevels > 0)
+                {
+                    return _strCachedDisplayPointsToolTip = await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token).ConfigureAwait(false);
+                }
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
+                {
+                    decimal decExtraPointCost = await GetExtraPointCostAsync(token).ConfigureAwait(false);
+                    if (decExtraPointCost != 0)
+                    {
+                        sbdModifier.Append(await LanguageManager.GetStringAsync("Label_Base", token: token)
+                                .ConfigureAwait(false)).Append(strSpace)
+                            .Append('(')
+                            .Append(decExtraPointCost.ToString(GlobalSettings.CultureInfo)).Append(')')
+                            .Append(strSpace).Append('+').Append(strSpace);
+                    }
+
+                    decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
+                    decimal decFreePoints = await GetFreePointsAsync(token).ConfigureAwait(false);
+                    if (intFreeLevels != 0)
+                    {
+                        int intMaximumLevels = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
+                        if (intMaximumLevels < intRating + intFreeLevels)
+                        {
+                            sbdModifier.Append('(').AppendFormat(
+                                GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("Tip_Power_Capped", token: token)
+                                    .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("String_Level", token: token)
+                                    .ConfigureAwait(false) + strSpace + '(' +
+                                intRating.ToString(GlobalSettings.CultureInfo) + ')' +
+                                strSpace + (intFreeLevels > 0 ? '-' : '+') + strSpace +
+                                await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
+                                    .ConfigureAwait(false) + strSpace +
+                                '(' + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ')',
+                                intMaximumLevels).Append(')');
+                        }
+                        else
+                        {
+                            sbdModifier.Append('[')
+                                .Append(await LanguageManager.GetStringAsync("String_Level", token: token)
+                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
+                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')')
+                                .Append(strSpace).Append(intFreeLevels > 0 ? '-' : '+').Append(strSpace)
+                                .Append(await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
+                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
+                                .Append(intFreeLevels.ToString(GlobalSettings.CultureInfo)).Append(")]");
+                        }
+                    }
+                    else
+                    {
+                        sbdModifier.Append(await LanguageManager.GetStringAsync("String_Level", token: token)
+                                .ConfigureAwait(false)).Append(strSpace).Append('(')
+                            .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    sbdModifier.Append(strSpace).Append('×').Append(strSpace)
+                        .Append(await LanguageManager.GetStringAsync("Tip_Power_PPperLevel", token: token)
+                            .ConfigureAwait(false)).Append(strSpace).Append('(')
+                        .Append(decPointsPerLevel.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    if (decFreePoints != 0 && intFreeLevels * decPointsPerLevel < decFreePoints)
+                    {
+                        sbdModifier.Append(strSpace).Append(decFreePoints > 0 ? '-' : '+').Append(strSpace)
+                            .Append(await LanguageManager.GetStringAsync("Tab_Improvements", token: token)
+                                .ConfigureAwait(false)).Append(strSpace).Append('(')
+                            .Append(Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    decimal decDiscount = await GetDiscountAsync(token).ConfigureAwait(false);
+                    if (decDiscount != 0)
+                    {
+                        sbdModifier.Append(strSpace).Append(decDiscount > 0 ? '-' : '+').Append(strSpace)
+                            .Append(await LanguageManager.GetStringAsync("Checkbox_Power_AdeptWay", token: token)
+                                .ConfigureAwait(false)).Append(strSpace)
+                            .Append('(')
+                            .Append(Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
+
+                    return _strCachedDisplayPointsToolTip = sbdModifier.ToString();
+                }
             }
             finally
             {
@@ -2112,8 +2450,10 @@ namespace Chummer
                     if (_blnLevelsEnabled == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnLevelsEnabled = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2198,8 +2538,10 @@ namespace Chummer
                     if (_blnDiscountedAdeptWay == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnDiscountedAdeptWay = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2239,12 +2581,12 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     _blnDiscountedAdeptWay = value;
+                    await OnPropertyChangedAsync(nameof(DiscountedAdeptWay), token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-                await OnPropertyChangedAsync(nameof(DiscountedAdeptWay), token).ConfigureAwait(false);
             }
             finally
             {
@@ -2275,8 +2617,10 @@ namespace Chummer
                     if (_blnDiscountedGeas == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _blnDiscountedGeas = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2325,8 +2669,10 @@ namespace Chummer
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
+                    {
                         _colNotes = value;
-                    OnPropertyChanged();
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2423,9 +2769,11 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
+                {
                     return !string.IsNullOrEmpty(Notes)
                         ? ColorManager.GenerateCurrentModeColor(NotesColor)
                         : ColorManager.WindowText;
+                }
             }
         }
 
@@ -2583,8 +2931,7 @@ namespace Chummer
             {
                 if (!DiscountedAdeptWay)
                     return;
-                using (LockObject.EnterWriteLock())
-                    DiscountedAdeptWay = false;
+                DiscountedAdeptWay = false;
             }
         }
 
@@ -2609,16 +2956,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (!await GetDiscountedAdeptWayAsync(token).ConfigureAwait(false))
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    await SetDiscountedAdeptWayAsync(false, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
+                await SetDiscountedAdeptWayAsync(false, token).ConfigureAwait(false);
             }
             finally
             {
@@ -2656,9 +2994,12 @@ namespace Chummer
                         )
                     )
                 ),
-                new DependencyGraphNode<string, Power>(nameof(ToolTip),
-                    new DependencyGraphNode<string, Power>(nameof(Rating)),
-                    new DependencyGraphNode<string, Power>(nameof(PointsPerLevel))
+                new DependencyGraphNode<string, Power>(nameof(TotalRatingToolTip),
+                    new DependencyGraphNode<string, Power>(nameof(TotalRating)),
+                    new DependencyGraphNode<string, Power>(nameof(LevelsEnabled))
+                ),
+                new DependencyGraphNode<string, Power>(nameof(DisplayPointsToolTip),
+                    new DependencyGraphNode<string, Power>(nameof(DisplayPoints))
                 ),
                 new DependencyGraphNode<string, Power>(nameof(AdeptWayDiscountEnabled),
                     new DependencyGraphNode<string, Power>(nameof(AdeptWayDiscount))
@@ -2732,8 +3073,8 @@ namespace Chummer
 
                     using (LockObject.EnterWriteLock())
                     {
-                        if (setNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
-                            _strCachedPowerPoints = string.Empty;
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayPointsToolTip)))
+                            _strCachedDisplayPointsToolTip = string.Empty;
                         if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
                             _intCachedFreeLevels = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(PowerPoints)))
@@ -2750,6 +3091,7 @@ namespace Chummer
                                 {
                                     int intOldTotalRating = TotalRating;
                                     _intCachedTotalRating = int.MinValue;
+                                    _strCachedTotalRatingToolTip = string.Empty;
                                     intTotalRating = TotalRating;
                                     blnRefreshImprovements = intOldTotalRating != intTotalRating;
                                 }
@@ -2778,7 +3120,10 @@ namespace Chummer
                                 }
                             }
                             else
+                            {
                                 _intCachedTotalRating = int.MinValue;
+                                _strCachedTotalRatingToolTip = string.Empty;
+                            }
                         }
                     }
 
@@ -2898,8 +3243,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        if (setNamesOfChangedProperties.Contains(nameof(DisplayPoints)))
-                            _strCachedPowerPoints = string.Empty;
+                        if (setNamesOfChangedProperties.Contains(nameof(DisplayPointsToolTip)))
+                            _strCachedDisplayPointsToolTip = string.Empty;
                         if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
                             _intCachedFreeLevels = int.MinValue;
                         if (setNamesOfChangedProperties.Contains(nameof(PowerPoints)))
@@ -2917,6 +3262,7 @@ namespace Chummer
                                 {
                                     int intOldTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
                                     _intCachedTotalRating = int.MinValue;
+                                    _strCachedTotalRatingToolTip = string.Empty;
                                     intTotalRating = await GetTotalRatingAsync(token).ConfigureAwait(false);
                                     blnRefreshImprovements = intOldTotalRating != intTotalRating;
                                 }
@@ -2952,7 +3298,10 @@ namespace Chummer
                                 }
                             }
                             else
+                            {
                                 _intCachedTotalRating = int.MinValue;
+                                _strCachedTotalRatingToolTip = string.Empty;
+                            }
                         }
                     }
                     finally
@@ -3223,83 +3572,6 @@ namespace Chummer
                 objLocker?.Dispose();
                 if (objLockerAsync != null)
                     await objLockerAsync.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// ToolTip that shows how the Power is calculating its Modified Rating.
-        /// </summary>
-        public string ToolTip
-        {
-            get
-            {
-                string strSpace = LanguageManager.GetString("String_Space");
-                using (LockObject.EnterReadLock())
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
-                {
-                    sbdModifier.Append(LanguageManager.GetString("String_Rating")).Append(strSpace).Append('(')
-                               .Append(Rating.ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append('×')
-                               .Append(strSpace).Append(PointsPerLevel.ToString(GlobalSettings.CultureInfo))
-                               .Append(')');
-                    foreach (Improvement objImprovement in ImprovementManager
-                                                           .GetCachedImprovementListForValueOf(
-                                                               CharacterObject, Improvement.ImprovementType.AdeptPower,
-                                                               Name).Where(objImprovement =>
-                                                                               objImprovement.UniqueName == Extra))
-                    {
-                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                   .Append(CharacterObject.GetObjectName(objImprovement)).Append(strSpace).Append('(')
-                                   .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
-                    }
-
-                    return sbdModifier.ToString();
-                }
-            }
-        }
-
-        /// <summary>
-        /// ToolTip that shows how the Power is calculating its Modified Rating.
-        /// </summary>
-        public async Task<string> GetToolTipAsync(CancellationToken token = default)
-        {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdModifier))
-                {
-                    sbdModifier.Append(await LanguageManager.GetStringAsync("String_Rating", token: token)
-                            .ConfigureAwait(false)).Append(strSpace).Append('(')
-                        .Append((await GetRatingAsync(token).ConfigureAwait(false)).ToString(
-                            GlobalSettings.CultureInfo)).Append(strSpace)
-                        .Append('×')
-                        .Append(strSpace)
-                        .Append((await GetPointsPerLevelAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
-                            .CultureInfo))
-                        .Append(')');
-                    string strExtra = await GetExtraAsync(token).ConfigureAwait(false);
-                    foreach (Improvement objImprovement in (await ImprovementManager
-                                 .GetCachedImprovementListForValueOfAsync(
-                                     CharacterObject,
-                                     Improvement.ImprovementType.AdeptPower,
-                                     await GetNameAsync(token).ConfigureAwait(false), token: token)
-                                 .ConfigureAwait(false)).Where(
-                                 objImprovement =>
-                                     objImprovement.UniqueName == strExtra))
-                    {
-                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                            .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
-                                .ConfigureAwait(false)).Append(strSpace).Append('(')
-                            .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
-                    }
-
-                    return sbdModifier.ToString();
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

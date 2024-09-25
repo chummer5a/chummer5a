@@ -6702,6 +6702,14 @@
       <key>Tip_Power_DoublePoints</key>
       <text>The Power Point cost for this Power has been increased because it has caused the Attribute to exceed your Metatype Maximum value by {0}. This cost increase only applies to the {0} points that have exceeded the Metatype Maximum.</text>
     </string>
+    <string>
+      <key>Tip_Power_PPperLevel</key>
+      <text>Power Points per Level</text>
+    </string>
+    <string>
+      <key>Tip_Power_Capped</key>
+      <text>[{0}] Capped to {1}</text>
+    </string>
     <!-- End Region-->
     <!-- Region Skills -->
     <string>

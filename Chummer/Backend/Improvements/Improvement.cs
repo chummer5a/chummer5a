@@ -151,7 +151,6 @@ namespace Chummer
             IgnoreCMPenaltyPhysical,
             CyborgEssence,
             EssenceMax,
-            AdeptPower,
             SpecificQuality,
             MartialArt,
             LimitModifier,
@@ -1485,9 +1484,6 @@ namespace Chummer
                         }
                     }
                 }
-                    break;
-
-                case ImprovementType.AdeptPower:
                     break;
 
                 case ImprovementType.SpecificQuality:
@@ -3820,9 +3816,6 @@ namespace Chummer
                             }
                         }
                     }
-                    break;
-
-                case ImprovementType.AdeptPower:
                     break;
 
                 case ImprovementType.SpecificQuality:

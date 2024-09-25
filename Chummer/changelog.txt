@@ -134,6 +134,8 @@ Changed/New Strings:
 - String_Fastest_Option
 - String_Ultra_Option
 - Message_File_Incorrect_Format
+- Tip_Power_PPperLevel
+- Tip_Power_Capped
 
 Removed Strings:
 - Label_SelectMetamagic_Disadvantage

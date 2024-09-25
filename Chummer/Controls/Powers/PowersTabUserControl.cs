@@ -689,6 +689,7 @@ namespace Chummer.UI.Powers
                         Text = "Total Rating",
                         Extractor = Extractor,
                         Tag = "String_TotalRating",
+                        ToolTipExtractor = ToolTipExtractor,
                         Sorter = Sorter
                     };
 
@@ -710,6 +711,27 @@ namespace Chummer.UI.Powers
                         catch (OperationCanceledException)
                         {
                             return default;
+                        }
+                    }
+
+                    async Task<string> ToolTipExtractor(Power item)
+                    {
+                        try
+                        {
+                            CursorWait objCursorWait =
+                                await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+                            try
+                            {
+                                return await item.GetTotalRatingToolTipAsync(MyToken).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return string.Empty;
                         }
                     }
 
@@ -744,6 +766,7 @@ namespace Chummer.UI.Powers
                     }
                 });
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
+            totalRatingColumn.AddDependency(nameof(Power.TotalRatingToolTip));
 
             TableColumn<Power> powerPointsColumn = this.DoThreadSafeFunc(
                 () =>
@@ -785,7 +808,7 @@ namespace Chummer.UI.Powers
                                 await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                             try
                             {
-                                return await item.GetToolTipAsync(MyToken).ConfigureAwait(false);
+                                return await item.GetDisplayPointsToolTipAsync(MyToken).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -799,7 +822,7 @@ namespace Chummer.UI.Powers
                     }
                 });
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
-            powerPointsColumn.AddDependency(nameof(Power.ToolTip));
+            powerPointsColumn.AddDependency(nameof(Power.DisplayPointsToolTip));
 
             TableColumn<Power> sourceColumn = this.DoThreadSafeFunc(() =>
             {
