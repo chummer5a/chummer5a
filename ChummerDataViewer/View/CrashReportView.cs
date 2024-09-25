@@ -28,6 +28,7 @@ namespace ChummerDataViewer
     {
         private readonly CrashReport _objReport;
         private readonly DownloaderWorker _worker;
+        private static readonly string[] separator = { " at " };
 
         internal CrashReportView(CrashReport objReport, DownloaderWorker worker)
         {
@@ -54,7 +55,7 @@ namespace ChummerDataViewer
         {
             string exception = stacktrace.Split(':')[0];
 
-            string location = stacktrace.Split(new[] { " at " }, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer.", StringComparison.Ordinal));
+            string location = stacktrace.Split(separator, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer.", StringComparison.Ordinal));
 
             if (location != null) return exception + " : " + location;
 

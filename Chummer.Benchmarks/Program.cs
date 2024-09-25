@@ -50,6 +50,8 @@ namespace Chummer.Benchmarks
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once UnassignedField.Global
         public int N;
+        private static readonly string[] separator = { "rem " };
+        private static readonly char[] separator2 = { ' ' };
 
         public ForeachSplitComparison()
         {
@@ -78,7 +80,7 @@ namespace Chummer.Benchmarks
         {
             string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
-            foreach (string strWord in strBaseWord.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string strWord in strBaseWord.Split(separator2, StringSplitOptions.RemoveEmptyEntries))
             {
                 blnDummy = strWord.Length > 3;
             }
@@ -110,7 +112,7 @@ namespace Chummer.Benchmarks
         {
             string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
-            foreach (string strWord in strBaseWord.Split(new[] { "rem " }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string strWord in strBaseWord.Split(separator, StringSplitOptions.RemoveEmptyEntries))
             {
                 blnDummy = strWord.Length > 3;
             }

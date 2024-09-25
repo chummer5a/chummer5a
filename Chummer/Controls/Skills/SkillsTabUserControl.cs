@@ -794,7 +794,7 @@ namespace Chummer.UI.Skills
                 new Tuple<string, Predicate<Skill>>(await LanguageManager.GetStringAsync("String_Search", token: token).ConfigureAwait(false),
                     null),
                 new Tuple<string, Predicate<Skill>>(await LanguageManager.GetStringAsync("String_SkillFilterAll", token: token).ConfigureAwait(false),
-                    skill => true),
+                    x => true),
                 new Tuple<string, Predicate<Skill>>(await LanguageManager.GetStringAsync("String_SkillFilterRatingAboveZero", token: token).ConfigureAwait(false),
                     skill => skill.Rating > 0),
                 new Tuple<string, Predicate<Skill>>(await LanguageManager.GetStringAsync("String_SkillFilterTotalRatingAboveZero", token: token).ConfigureAwait(false),

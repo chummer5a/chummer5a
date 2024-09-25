@@ -107,7 +107,7 @@ namespace ChummerDataViewer.Model
                     return Array.Empty<byte>();
                 }
             }
-            
+
             return unencrypted;
         }
 

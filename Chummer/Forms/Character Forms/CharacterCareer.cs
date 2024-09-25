@@ -24285,7 +24285,7 @@ namespace Chummer
                         {
                             // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                             if (CharacterObjectSettings.EnforceCapacity &&
-                                objSelectedGear.CapacityRemaining - objGear.PluginCapacity < 0)
+                                objSelectedGear.CapacityRemaining < objGear.PluginCapacity)
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
                                     this,
