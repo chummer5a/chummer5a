@@ -4405,7 +4405,7 @@ namespace Chummer
                                 _intEdgeUsed.ToString(GlobalSettings.InvariantCultureInfo));
                             // <contactpoints />
                             objWriter.WriteElementString("contactpoints",
-                                _intCachedContactPoints.ToString(
+                                ContactPoints.ToString(
                                     GlobalSettings.InvariantCultureInfo));
                             // <spelllimit />
                             objWriter.WriteElementString("spelllimit",
@@ -4431,19 +4431,19 @@ namespace Chummer
                                     GlobalSettings.InvariantCultureInfo));
                             // <carrylimit />
                             objWriter.WriteElementString("basecarrylimit",
-                                _decCachedBaseCarryLimit.ToString(
+                                BaseCarryLimit.ToString(
                                     GlobalSettings.InvariantCultureInfo));
                             // <liftlimit />
                             objWriter.WriteElementString("baseliftlimit",
-                                _decCachedBaseLiftLimit.ToString(
+                                BaseLiftLimit.ToString(
                                     GlobalSettings.InvariantCultureInfo));
                             // <totalcarriedweight />
                             objWriter.WriteElementString("totalcarriedweight",
-                                _decCachedTotalCarriedWeight.ToString(
+                                TotalCarriedWeight.ToString(
                                     GlobalSettings.InvariantCultureInfo));
                             // <encumbranceinterval />
                             objWriter.WriteElementString("encumbranceinterval",
-                                _decCachedEncumbranceInterval.ToString(
+                                EncumbranceInterval.ToString(
                                     GlobalSettings.InvariantCultureInfo));
                             // <streetcred />
                             objWriter.WriteElementString("streetcred",
@@ -5074,7 +5074,7 @@ namespace Chummer
                                 token: token).ConfigureAwait(false);
                             // <contactpoints />
                             await objWriter.WriteElementStringAsync("contactpoints",
-                                _intCachedContactPoints.ToString(
+                                (await GetContactPointsAsync(token).ConfigureAwait(false)).ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             // <spelllimit />
@@ -5109,22 +5109,22 @@ namespace Chummer
                                 token: token).ConfigureAwait(false);
                             // <carrylimit />
                             await objWriter.WriteElementStringAsync("basecarrylimit",
-                                _decCachedBaseCarryLimit.ToString(
+                                (await GetBaseCarryLimitAsync(token).ConfigureAwait(false)).ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             // <liftlimit />
                             await objWriter.WriteElementStringAsync("baseliftlimit",
-                                _decCachedBaseLiftLimit.ToString(
+                                (await GetBaseLiftLimitAsync(token).ConfigureAwait(false)).ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             // <totalcarriedweight />
                             await objWriter.WriteElementStringAsync("totalcarriedweight",
-                                _decCachedTotalCarriedWeight.ToString(
+                                (await GetTotalCarriedWeightAsync(token).ConfigureAwait(false)).ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             // <encumbranceinterval />
                             await objWriter.WriteElementStringAsync("encumbranceinterval",
-                                _decCachedEncumbranceInterval.ToString(
+                                (await GetEncumbranceIntervalAsync(token).ConfigureAwait(false)).ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             // <streetcred />
