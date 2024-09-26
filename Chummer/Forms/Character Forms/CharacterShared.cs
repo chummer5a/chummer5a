@@ -8159,6 +8159,7 @@ namespace Chummer
                                     .ConfigureAwait(false);
                             if (panPets != null)
                                 await panPets.DoThreadSafeAsync(x => x.Controls.Clear(), token).ConfigureAwait(false);
+                            bool blnHasEnemyTracking = await CharacterObjectSettings.GetEnableEnemyTrackingAsync(token).ConfigureAwait(false);
                             await CharacterObject.Contacts.ForEachAsync(objContact =>
                             {
                                 switch (objContact.EntityType)
@@ -8183,7 +8184,7 @@ namespace Chummer
 
                                     case ContactType.Enemy:
                                     {
-                                        if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
+                                        if (panEnemies == null || !blnHasEnemyTracking)
                                             break;
                                         return this.DoThreadSafeAsync(() =>
                                         {
@@ -8263,7 +8264,7 @@ namespace Chummer
 
                                         case ContactType.Enemy:
                                         {
-                                            if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
+                                            if (panEnemies == null || !await CharacterObjectSettings.GetEnableEnemyTrackingAsync(token).ConfigureAwait(false))
                                                 break;
                                             await panEnemies.DoThreadSafeAsync(x =>
                                             {
@@ -8470,7 +8471,7 @@ namespace Chummer
 
                                         case ContactType.Enemy:
                                         {
-                                            if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
+                                            if (panEnemies == null || !await CharacterObjectSettings.GetEnableEnemyTrackingAsync(token).ConfigureAwait(false))
                                                 break;
                                             await panEnemies.DoThreadSafeAsync(x =>
                                             {

@@ -194,7 +194,9 @@ namespace Chummer
                 {
                     // Emergency exit for odd cases where, for some reason, AsyncLocal assignment does not happen (in the right place?) when a locker release is disposed
                     // Let's just get the first ancestor lock that is not disposed. If this causes problems, it's because of the above-mentioned comment around AsyncLocal assignment
+#if DEBUG
                     Log.Warn("Ran into an improperly set AsyncLocal that needs to be reset, location: " + Environment.NewLine + EnhancedStackTrace.Current());
+#endif
                     while (objCurrentHelper != null && objCurrentHelper.IsDisposed)
                         objCurrentHelper = objCurrentHelper.ParentLinkedHelper;
                     // Held helpers need to actually be held at the moment, otherwise we have a problem

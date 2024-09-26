@@ -290,9 +290,9 @@ namespace Chummer
                                         return;
                                     }
 
-                                    if (!CharacterObject.IsCritter
-                                        && !CharacterObject.EffectiveBuildMethodIsLifeModule
-                                        && CharacterObjectSettings.BuildKarma == 0)
+                                    if (!await CharacterObject.GetIsCritterAsync(GenericToken).ConfigureAwait(false)
+                                        && !await CharacterObject.GetEffectiveBuildMethodIsLifeModuleAsync(GenericToken).ConfigureAwait(false)
+                                        && await CharacterObjectSettings.GetBuildKarmaAsync(GenericToken).ConfigureAwait(false) == 0)
                                     {
                                         _blnFreestyle = true;
                                         await tsMain.DoThreadSafeAsync(() =>
@@ -626,7 +626,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    if (!CharacterObjectSettings.EnableEnemyTracking)
+                                    if (!await CharacterObjectSettings.GetEnableEnemyTrackingAsync(GenericToken).ConfigureAwait(false))
                                     {
                                         await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies),
                                                 GenericToken)
@@ -1659,7 +1659,7 @@ namespace Chummer
                                             }
                                         }
 
-                                        if (!CharacterObjectSettings.EnableEnemyTracking)
+                                        if (!await CharacterObjectSettings.GetEnableEnemyTrackingAsync(GenericToken).ConfigureAwait(false))
                                         {
                                             await tabPeople.DoThreadSafeAsync(
                                                 x => x.TabPages.Remove(tabEnemies), GenericToken).ConfigureAwait(false);
@@ -2219,12 +2219,13 @@ namespace Chummer
                             tsMetamagicAddEnhancement.Visible = true;
                             tsMetamagicAddRitual.Visible = true;
                         }, token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
                         string strInitTip = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Tip_ImproveInitiateGrade", token: token).ConfigureAwait(false),
-                            CharacterObject.InitiateGrade + 1,
-                            CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) *
-                            CharacterObjectSettings.KarmaInitiation);
+                            intGrade + 1,
+                            await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false) + (intGrade + 1) *
+                            await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false));
                         await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
                         string strTemp7 = await LanguageManager
                             .GetStringAsync("Checkbox_JoinedGroup", token: token)
@@ -2357,10 +2358,11 @@ namespace Chummer
                             CharacterObjectSettings.KarmaRESInitiationSchoolingPercent
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
+                        bool blnEnabled = await CharacterObjectSettings.GetAllowTechnomancerSchoolingAsync(token).ConfigureAwait(false);
                         await chkInitiationSchooling.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText3;
-                            x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
+                            x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
                         await cmsMetamagic.DoThreadSafeAsync(() =>
                         {
@@ -2369,12 +2371,13 @@ namespace Chummer
                             tsMetamagicAddEnhancement.Visible = false;
                             tsMetamagicAddRitual.Visible = false;
                         }, token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
                         string strInitTip = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Tip_ImproveSubmersionGrade", token: token).ConfigureAwait(false),
-                            CharacterObject.SubmersionGrade + 1,
-                            CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) *
-                            CharacterObjectSettings.KarmaInitiation);
+                            intGrade + 1,
+                            await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false) + (intGrade + 1) *
+                            await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false));
                         await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
                         string strTemp7 = await LanguageManager
                             .GetStringAsync("Checkbox_JoinedNetwork", token: token)
@@ -10373,14 +10376,14 @@ namespace Chummer
                             bool blnAddItem = true;
                             if (await objQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false) && !await CharacterObject.GetIgnoreRulesAsync(GenericToken).ConfigureAwait(false))
                             {
+                                int intMaxQualityAmount = await CharacterObjectSettings.GetQualityKarmaLimitAsync(GenericToken).ConfigureAwait(false);
                                 // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
                                 string strAmount
-                                    = CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo)
+                                    = intMaxQualityAmount.ToString(GlobalSettings.CultureInfo)
                                       + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
                                           .ConfigureAwait(false)
                                       + await LanguageManager.GetStringAsync("String_Karma", token: GenericToken)
                                           .ConfigureAwait(false);
-                                int intMaxQualityAmount = await CharacterObjectSettings.GetQualityKarmaLimitAsync(GenericToken).ConfigureAwait(false);
 
                                 // Add the cost of the Quality that is being added.
                                 int intBP = await objQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
@@ -14020,7 +14023,7 @@ namespace Chummer
                                     strNameToUse,
                                     strSpace,
                                     await objGroupContact.GetContactPointsAsync(token).ConfigureAwait(false)
-                                    * CharacterObjectSettings.KarmaContact).AppendLine();
+                                    * await CharacterObjectSettings.GetKarmaContactAsync(token).ConfigureAwait(false)).AppendLine();
                             }, token).ConfigureAwait(false);
                         }
 
@@ -17397,7 +17400,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
                         if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                         {
-                            int intDecimalPlaces = CharacterObjectSettings.MaxNuyenDecimals;
+                            int intDecimalPlaces = await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                             if (intDecimalPlaces <= 0)
                             {
                                 await nudGearQty.DoThreadSafeAsync(x =>
@@ -20248,7 +20251,7 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                             {
-                                int intDecimalPlaces = CharacterObjectSettings.MaxNuyenDecimals;
+                                int intDecimalPlaces = await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
                                 if (intDecimalPlaces <= 0)
                                 {
                                     await nudVehicleGearQty.DoThreadSafeAsync(x =>
@@ -20753,7 +20756,8 @@ namespace Chummer
                     // Check if the character has more than 1 Martial Art, not counting qualities.
                     int intMartialArts = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false))
                                                .CountAsync(objArt => !objArt.IsQuality, token).ConfigureAwait(false);
-                    if (intMartialArts > CharacterObjectSettings.MaximumMartialArts)
+                    int intMaximumMartialArts = await CharacterObjectSettings.GetMaximumMartialArtsAsync(token).ConfigureAwait(false);
+                    if (intMartialArts > intMaximumMartialArts)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
@@ -20761,7 +20765,7 @@ namespace Chummer
                                                 await LanguageManager
                                                       .GetStringAsync("Message_InvalidPointExcess", token: token)
                                                       .ConfigureAwait(false),
-                                                intMartialArts - CharacterObjectSettings.MaximumMartialArts)
+                                                intMartialArts - intMaximumMartialArts)
                                   .Append(await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false))
                                   .Append(await LanguageManager.GetStringAsync("String_MartialArtsCount", token: token)
@@ -20775,7 +20779,8 @@ namespace Chummer
                         int intTechniques
                             = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).SumAsync(
                                 x => x.Techniques.GetCountAsync(token), token).ConfigureAwait(false);
-                        if (intTechniques > CharacterObjectSettings.MaximumMartialTechniques)
+                        int intMaximumMartialArtsTechniques = await CharacterObjectSettings.GetMaximumMartialTechniquesAsync(token).ConfigureAwait(false);
+                        if (intTechniques > intMaximumMartialArtsTechniques)
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t')
@@ -20783,7 +20788,7 @@ namespace Chummer
                                                     await LanguageManager
                                                           .GetStringAsync("Message_InvalidPointExcess", token: token)
                                                           .ConfigureAwait(false),
-                                                    intTechniques - CharacterObjectSettings.MaximumMartialTechniques)
+                                                    intTechniques - intMaximumMartialArtsTechniques)
                                       .Append(await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                    .ConfigureAwait(false))
                                       .Append(await LanguageManager
@@ -20792,27 +20797,28 @@ namespace Chummer
                         }
                     }
 
+                    int intQualityKarmaLimit = await CharacterObjectSettings.GetQualityKarmaLimitAsync(token).ConfigureAwait(false);
                     // if positive points > 25
-                    if (CharacterObject.PositiveQualityLimitKarma > CharacterObjectSettings.QualityKarmaLimit
-                        && !CharacterObjectSettings.ExceedPositiveQualities)
+                    if (await CharacterObject.GetPositiveQualityLimitKarmaAsync(token).ConfigureAwait(false) > intQualityKarmaLimit
+                        && !await CharacterObjectSettings.GetExceedPositiveQualitiesAsync(token).ConfigureAwait(false))
                     {
                         sbdMessage.AppendLine().Append('\t').AppendFormat(
                             GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("Message_PositiveQualityLimit", token: token)
                                                  .ConfigureAwait(false),
-                            CharacterObjectSettings.QualityKarmaLimit);
+                            intQualityKarmaLimit);
                         blnValid = false;
                     }
 
                     // if negative points > 25
-                    if (CharacterObject.NegativeQualityLimitKarma > CharacterObjectSettings.QualityKarmaLimit
-                        && !CharacterObjectSettings.ExceedNegativeQualities)
+                    if (await CharacterObject.GetNegativeQualityLimitKarmaAsync(token).ConfigureAwait(false) > intQualityKarmaLimit
+                        && !await CharacterObjectSettings.GetExceedNegativeQualitiesAsync(token).ConfigureAwait(false))
                     {
                         sbdMessage.AppendLine().Append('\t').AppendFormat(
                             GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("Message_NegativeQualityLimit", token: token)
                                                  .ConfigureAwait(false),
-                            CharacterObjectSettings.QualityKarmaLimit);
+                            intQualityKarmaLimit);
                         blnValid = false;
                     }
 
@@ -20821,12 +20827,12 @@ namespace Chummer
                         ThreadSafeObservableCollection<Contact> lstContacts
                             = await CharacterObject.GetContactsAsync(token).ConfigureAwait(false);
                         // If we have Friends in High Places, then we need to account for any mixture of Friends in High Places plus contact karma discounts (e.g. from Massive Network)
-                        if (await lstContacts.AnyAsync(x => x.Connection < 8 && x.ContactPoints > 7, token)
+                        if (await lstContacts.AnyAsync(async x => await x.GetConnectionAsync(token).ConfigureAwait(false) < 8 && await x.GetContactPointsAsync(token).ConfigureAwait(false) > 7, token)
                                              .ConfigureAwait(false)
                             // With Friends in High Places, we can only have "too high contacts" if we overspend our Friends in High Places karma on eligible contacts
                             || await lstContacts
-                                     .SumAsync(x => x.Connection >= 8 && x.ContactPoints > 7,
-                                               x => x.ContactPoints, token).ConfigureAwait(false)
+                                     .SumAsync(async x => await x.GetConnectionAsync(token).ConfigureAwait(false) >= 8 && await x.GetContactPointsAsync(token).ConfigureAwait(false) > 7,
+                                               x => x.GetContactPointsAsync(token), token).ConfigureAwait(false)
                             > 4 * await (await CharacterObject.GetAttributeAsync("CHA", token: token)
                                                               .ConfigureAwait(false)).GetValueAsync(token)
                                 .ConfigureAwait(false))
@@ -20838,7 +20844,7 @@ namespace Chummer
                         }
                     }
                     else if (await (await CharacterObject.GetContactsAsync(token).ConfigureAwait(false))
-                                   .AnyAsync(x => x.ContactPoints > 7, token).ConfigureAwait(false))
+                                   .AnyAsync(async x => await x.GetContactPointsAsync(token).ConfigureAwait(false) > 7, token).ConfigureAwait(false))
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
@@ -20851,12 +20857,11 @@ namespace Chummer
                         intBuildPoints = await CalculateBPandRefreshBPDisplays(false, token).ConfigureAwait(false);
                     int intStagedPurchaseQualityPoints
                         = await (await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false))
-                                .SumAsync(objQuality =>
+                                .SumAsync(async objQuality =>
                                               objQuality.StagedPurchase
-                                              && objQuality.Type
-                                              == QualityType.Positive
-                                              && objQuality.ContributeToBP,
-                                          x => x.BP, token).ConfigureAwait(false);
+                                              && await objQuality.GetTypeAsync(token).ConfigureAwait(false) == QualityType.Positive
+                                              && await objQuality.GetContributeToBPAsync(token).ConfigureAwait(false),
+                                          x => x.GetBPAsync(token), token).ConfigureAwait(false);
                     if (intBuildPoints + intStagedPurchaseQualityPoints < 0 && !_blnFreestyle)
                     {
                         blnValid = false;
@@ -20873,43 +20878,46 @@ namespace Chummer
                     }
 
                     // if character has more than permitted Metagenic qualities
-                    if (CharacterObject.MetagenicLimit > 0)
+                    int intMetagenicLimit = await CharacterObject.GetMetagenicLimitAsync(token).ConfigureAwait(false);
+                    if (intMetagenicLimit > 0)
                     {
-                        if (-CharacterObject.MetagenicNegativeQualityKarma > CharacterObject.MetagenicLimit)
+                        int intMetagenicNegativeQualityKarma =
+                            await CharacterObject.GetMetagenicNegativeQualityKarmaAsync(token).ConfigureAwait(false);
+                        if (-intMetagenicNegativeQualityKarma > intMetagenicLimit)
                         {
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager
                                       .GetStringAsync("Message_OverNegativeMetagenicQualities", token: token)
                                       .ConfigureAwait(false),
-                                -CharacterObject.MetagenicNegativeQualityKarma, CharacterObject.MetagenicLimit);
+                                -intMetagenicNegativeQualityKarma, intMetagenicLimit);
                             blnValid = false;
                         }
 
-                        if (CharacterObject.MetagenicPositiveQualityKarma > CharacterObject.MetagenicLimit)
+                        int intMetagenicPositiveQualityKarma =
+                            await CharacterObject.GetMetagenicPositiveQualityKarmaAsync(token).ConfigureAwait(false);
+                        if (intMetagenicPositiveQualityKarma > intMetagenicLimit)
                         {
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager
                                       .GetStringAsync("Message_OverPositiveMetagenicQualities", token: token)
                                       .ConfigureAwait(false),
-                                CharacterObject.MetagenicPositiveQualityKarma, CharacterObject.MetagenicLimit);
+                                intMetagenicPositiveQualityKarma, intMetagenicLimit);
                             blnValid = false;
                         }
 
-                        if (-CharacterObject.MetagenicNegativeQualityKarma
-                            != CharacterObject.MetagenicPositiveQualityKarma &&
-                            -CharacterObject.MetagenicNegativeQualityKarma
-                            != CharacterObject.MetagenicPositiveQualityKarma - 1)
+                        if (-intMetagenicNegativeQualityKarma != intMetagenicPositiveQualityKarma &&
+                            -intMetagenicNegativeQualityKarma != intMetagenicPositiveQualityKarma - 1)
                         {
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager
                                       .GetStringAsync("Message_MetagenicQualitiesUnbalanced", token: token)
                                       .ConfigureAwait(false),
-                                -CharacterObject.MetagenicNegativeQualityKarma,
-                                CharacterObject.MetagenicPositiveQualityKarma - 1,
-                                CharacterObject.MetagenicPositiveQualityKarma);
+                                -intMetagenicNegativeQualityKarma,
+                                intMetagenicPositiveQualityKarma - 1,
+                                intMetagenicPositiveQualityKarma);
                             blnValid = false;
                         }
                     }
@@ -20919,9 +20927,11 @@ namespace Chummer
                     ThreadSafeObservableCollection<CharacterAttrib> lstAttributes
                         = await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false);
                     // Check if the character has more attributes at their metatype max than allowed
-                    if (CharacterObjectSettings.MaxNumberMaxAttributesCreate
+                    int intMaxNumberMaxAttributesCreate =
+                        await CharacterObjectSettings.GetMaxNumberMaxAttributesCreateAsync(token).ConfigureAwait(false);
+                    if (intMaxNumberMaxAttributesCreate
                         < await lstAttributes.GetCountAsync(token)
-                                             .ConfigureAwait(false))
+                            .ConfigureAwait(false))
                     {
                         int intCountAttributesAtMax
                             = await lstAttributes.CountAsync(
@@ -20930,7 +20940,7 @@ namespace Chummer
                                                                 && await x.GetAtMetatypeMaximumAsync(token)
                                                                           .ConfigureAwait(false), token)
                                                  .ConfigureAwait(false);
-                        if (intCountAttributesAtMax > CharacterObjectSettings.MaxNumberMaxAttributesCreate)
+                        if (intCountAttributesAtMax > intMaxNumberMaxAttributesCreate)
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
@@ -20938,8 +20948,7 @@ namespace Chummer
                                                                                   "Message_TooManyAttributesAtMax",
                                                                                   token: token).ConfigureAwait(false),
                                                                               intCountAttributesAtMax,
-                                                                              CharacterObjectSettings
-                                                                                  .MaxNumberMaxAttributesCreate);
+                                                                              intMaxNumberMaxAttributesCreate);
                         }
                     }
 
@@ -21085,7 +21094,7 @@ namespace Chummer
                         decimal decExcessEss = 0.0m;
                         // Need to split things up this way because without internal rounding, Essence can be as small as the player wants as long as it is positive
                         // And getting the smallest positive number supported by the decimal type is way trickier than just checking if it's zero or negative
-                        if (CharacterObjectSettings.DontRoundEssenceInternally)
+                        if (await CharacterObjectSettings.GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
                         {
                             if (decEss < 0)
                                 decExcessEss = -decEss;
@@ -21096,7 +21105,7 @@ namespace Chummer
                         }
                         else
                         {
-                            decimal decMinEss = 10.0m.RaiseToPower(-CharacterObjectSettings.EssenceDecimals);
+                            decimal decMinEss = 10.0m.RaiseToPower(-await CharacterObjectSettings.GetEssenceDecimalsAsync(token).ConfigureAwait(false));
                             if (decEss < decMinEss)
                                 decExcessEss = decMinEss - decEss;
                         }
@@ -21329,23 +21338,24 @@ namespace Chummer
                         = await CharacterObject.GetPrototypeTranshumanAsync(token).ConfigureAwait(false);
                     if (decPrototypeTranshumanEssenceMax > 0)
                     {
-                        decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
+                        decimal decPrototypeTranshumanEssenceUsed = await CharacterObject.GetPrototypeTranshumanEssenceUsedAsync(token).ConfigureAwait(false);
                         if (decPrototypeTranshumanEssenceMax < decPrototypeTranshumanEssenceUsed)
                         {
                             blnValid = false;
+                            string strEssenceFormat = await CharacterObjectSettings.GetEssenceFormatAsync(token).ConfigureAwait(false);
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Message_OverPrototypeLimit", token: token)
                                                      .ConfigureAwait(false),
-                                decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat,
+                                decPrototypeTranshumanEssenceUsed.ToString(strEssenceFormat,
                                                                            GlobalSettings.CultureInfo),
-                                decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat,
+                                decPrototypeTranshumanEssenceMax.ToString(strEssenceFormat,
                                                                           GlobalSettings.CultureInfo));
                         }
                     }
 
                     // Check item Capacities if the option is enabled.
-                    if (CharacterObjectSettings.EnforceCapacity)
+                    if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false))
                     {
                         List<string> lstOverCapacity = new List<string>(1);
                         // Armor Capacity.
@@ -23121,8 +23131,8 @@ namespace Chummer
                     if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                         decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
                     int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
-                    intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
-                                  + (intGrade + 1) * CharacterObjectSettings.KarmaInitiation)
+                    intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                                  + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
                                  * decMultiplier).StandardRound();
                     token.ThrowIfCancellationRequested();
                     strInitTip = string.Format(GlobalSettings.CultureInfo,
@@ -23141,8 +23151,8 @@ namespace Chummer
                     if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                         decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
                     int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
-                    intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
-                                  + (intGrade + 1) * CharacterObjectSettings.KarmaInitiation)
+                    intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                                  + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
                                  * decMultiplier).StandardRound();
                     token.ThrowIfCancellationRequested();
                     strInitTip = string.Format(GlobalSettings.CultureInfo,
@@ -23351,7 +23361,7 @@ namespace Chummer
                                                                        .GetStringAsync(
                                                                            "Tip_CommonContacts", token: token)
                                                                        .ConfigureAwait(false),
-                                                                 CharacterObjectSettings.KarmaContact.ToString(
+                                                                 (await CharacterObjectSettings.GetKarmaContactAsync(token).ConfigureAwait(false)).ToString(
                                                                      GlobalSettings.CultureInfo)), token)
                                   .ConfigureAwait(false);
             await lblBuildEnemies
@@ -23380,16 +23390,16 @@ namespace Chummer
                 string.Format(GlobalSettings.CultureInfo,
                               await LanguageManager.GetStringAsync("Tip_SkillsSkillGroups", token: token)
                                                    .ConfigureAwait(false),
-                              CharacterObjectSettings.KarmaImproveSkillGroup.ToString(GlobalSettings.CultureInfo)),
+                              (await CharacterObjectSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
                 token).ConfigureAwait(false);
             await lblBuildActiveSkills.SetToolTipAsync(
                                           string.Format(GlobalSettings.CultureInfo,
                                                         await LanguageManager
                                                               .GetStringAsync("Tip_SkillsActiveSkills", token: token)
                                                               .ConfigureAwait(false),
-                                                        CharacterObjectSettings.KarmaImproveActiveSkill.ToString(
+                                                        (await CharacterObjectSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false)).ToString(
                                                             GlobalSettings.CultureInfo),
-                                                        CharacterObjectSettings.KarmaSpecialization.ToString(
+                                                        (await CharacterObjectSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false)).ToString(
                                                             GlobalSettings.CultureInfo)), token)
                                       .ConfigureAwait(false);
             await lblBuildKnowledgeSkills.SetToolTipAsync(
@@ -23398,9 +23408,9 @@ namespace Chummer
                                                                  .GetStringAsync("Tip_SkillsKnowledgeSkills",
                                                                      token: token)
                                                                  .ConfigureAwait(false),
-                                                           CharacterObjectSettings.KarmaImproveKnowledgeSkill.ToString(
+                                                           (await CharacterObjectSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false)).ToString(
                                                                GlobalSettings.CultureInfo),
-                                                           CharacterObjectSettings.KarmaKnowledgeSpecialization
+                                                           (await CharacterObjectSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false))
                                                                .ToString(GlobalSettings.CultureInfo)), token)
                                          .ConfigureAwait(false);
             await lblBuildSpells.SetToolTipAsync(
@@ -23408,7 +23418,7 @@ namespace Chummer
                                                   await LanguageManager
                                                         .GetStringAsync("Tip_SpellsSelectedSpells", token: token)
                                                         .ConfigureAwait(false),
-                                                  CharacterObjectSettings.KarmaSpell.ToString(
+                                                  (await CharacterObjectSettings.GetKarmaSpellAsync(token).ConfigureAwait(false)).ToString(
                                                       GlobalSettings.CultureInfo)), token)
                                 .ConfigureAwait(false);
             await lblBuildSpirits.SetToolTipAsync(
@@ -23416,7 +23426,7 @@ namespace Chummer
                                                    await LanguageManager
                                                          .GetStringAsync("Tip_SpellsSpirits", token: token)
                                                          .ConfigureAwait(false),
-                                                   CharacterObjectSettings.KarmaSpirit.ToString(GlobalSettings
+                                                   (await CharacterObjectSettings.GetKarmaSpiritAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                                                        .CultureInfo)), token)
                                  .ConfigureAwait(false);
             await lblBuildSprites.SetToolTipAsync(
@@ -23424,7 +23434,7 @@ namespace Chummer
                                                    await LanguageManager
                                                          .GetStringAsync("Tip_TechnomancerSprites", token: token)
                                                          .ConfigureAwait(false),
-                                                   CharacterObjectSettings.KarmaSpirit.ToString(GlobalSettings
+                                                   (await CharacterObjectSettings.GetKarmaSpiritAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                                                        .CultureInfo)), token)
                                  .ConfigureAwait(false);
             await lblBuildComplexForms.SetToolTipAsync(
@@ -23433,7 +23443,7 @@ namespace Chummer
                                                               .GetStringAsync(
                                                                   "Tip_TechnomancerComplexForms", token: token)
                                                               .ConfigureAwait(false),
-                                                        CharacterObjectSettings.KarmaNewComplexForm.ToString(
+                                                        (await CharacterObjectSettings.GetKarmaNewComplexFormAsync(token).ConfigureAwait(false)).ToString(
                                                             GlobalSettings.CultureInfo)), token)
                                       .ConfigureAwait(false);
             // Other Info Tab.

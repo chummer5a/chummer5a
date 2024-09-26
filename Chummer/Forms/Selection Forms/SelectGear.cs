@@ -661,6 +661,7 @@ namespace Chummer
         /// </summary>
         public decimal MaximumCapacity
         {
+            get => _decMaximumCapacity;
             set
             {
                 _decMaximumCapacity = value;

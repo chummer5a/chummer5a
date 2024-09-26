@@ -2854,12 +2854,13 @@ namespace Chummer
                             tsMetamagicAddEnhancement.Visible = true;
                             tsMetamagicAddRitual.Visible = true;
                         }, token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
                         string strInitTip = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Tip_ImproveInitiateGrade", token: token).ConfigureAwait(false),
-                            CharacterObject.InitiateGrade + 1,
-                            CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) *
-                            CharacterObjectSettings.KarmaInitiation);
+                            intGrade + 1,
+                            await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false) + (intGrade + 1) *
+                            await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false));
                         await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
                         string strTemp7 = await LanguageManager
                             .GetStringAsync("Checkbox_JoinedGroup", token: token)
@@ -2990,10 +2991,11 @@ namespace Chummer
                             CharacterObjectSettings.KarmaRESInitiationSchoolingPercent
                                 .ToString(
                                     "P", GlobalSettings.CultureInfo));
+                        bool blnEnabled = await CharacterObjectSettings.GetAllowTechnomancerSchoolingAsync(token).ConfigureAwait(false);
                         await chkInitiationSchooling.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText3;
-                            x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
+                            x.Enabled = blnEnabled;
                         }, token).ConfigureAwait(false);
                         await cmsMetamagic.DoThreadSafeAsync(() =>
                         {
@@ -3002,12 +3004,13 @@ namespace Chummer
                             tsMetamagicAddEnhancement.Visible = false;
                             tsMetamagicAddRitual.Visible = false;
                         }, token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
                         string strInitTip = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync(
                                 "Tip_ImproveSubmersionGrade", token: token).ConfigureAwait(false),
-                            CharacterObject.SubmersionGrade + 1,
-                            CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) *
-                            CharacterObjectSettings.KarmaInitiation);
+                            intGrade + 1,
+                            await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false) + (intGrade + 1) *
+                            await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false));
                         await cmdAddMetamagic.SetToolTipAsync(strInitTip, token).ConfigureAwait(false);
                         string strTemp7 = await LanguageManager
                             .GetStringAsync("Checkbox_JoinedNetwork", token: token)
@@ -3647,10 +3650,11 @@ namespace Chummer
                 {
                     if (e.PropertyNames.Contains(nameof(CharacterSettings.ArmorDegradation)))
                     {
+                        bool blnVisible = await CharacterObjectSettings.GetArmorDegradationAsync(token).ConfigureAwait(false);
                         await this.DoThreadSafeAsync(() =>
                         {
-                            cmdArmorDecrease.Visible = CharacterObjectSettings.ArmorDegradation;
-                            cmdArmorIncrease.Visible = CharacterObjectSettings.ArmorDegradation;
+                            cmdArmorDecrease.Visible = blnVisible;
+                            cmdArmorIncrease.Visible = blnVisible;
                         }, token).ConfigureAwait(false);
                     }
 
@@ -7320,8 +7324,8 @@ namespace Chummer
                                 decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
 
                             int intKarmaExpense
-                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
-                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+                                = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
+                                    * await CharacterObjectSettings.GetKarmaInitiationAsync(GenericToken).ConfigureAwait(false)) * decMultiplier).StandardRound();
 
                             if (intKarmaExpense >
                                 await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
@@ -7450,8 +7454,8 @@ namespace Chummer
                             }
 
                             int intAmount
-                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
-                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+                                = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
+                                    * await CharacterObjectSettings.GetKarmaInitiationAsync(GenericToken).ConfigureAwait(false)) * decMultiplier).StandardRound();
 
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade", token: GenericToken)
@@ -7495,8 +7499,8 @@ namespace Chummer
                                 decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
 
                             int intKarmaExpense
-                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
-                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+                                = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
+                                    * await CharacterObjectSettings.GetKarmaInitiationAsync(GenericToken).ConfigureAwait(false)) * decMultiplier).StandardRound();
 
                             if (intKarmaExpense >
                                 await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
@@ -7565,8 +7569,8 @@ namespace Chummer
                             objExpense.Undo = objUndo;
 
                             int intAmount
-                                = ((CharacterObjectSettings.KarmaInitiationFlat + (intGrade + 1)
-                                    * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
+                                = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(GenericToken).ConfigureAwait(false) + (intGrade + 1)
+                                    * await CharacterObjectSettings.GetKarmaInitiationAsync(GenericToken).ConfigureAwait(false)) * decMultiplier).StandardRound();
 
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade", token: GenericToken)
@@ -7654,7 +7658,7 @@ namespace Chummer
                             {
                                 // Create the Expense Log Entry.
                                 objExpense = new ExpenseLogEntry(CharacterObject);
-                                objExpense.Create(frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP,
+                                objExpense.Create(-frmNewExpense.MyForm.Amount * await CharacterObjectSettings.GetNuyenPerBPWftPAsync(GenericToken).ConfigureAwait(false),
                                     frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
                                     frmNewExpense.MyForm.SelectedDate);
                                 objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
@@ -7668,7 +7672,7 @@ namespace Chummer
                                 // Adjust the character's Nuyen total.
                                 await CharacterObject
                                     .ModifyNuyenAsync(
-                                        -frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
+                                        -frmNewExpense.MyForm.Amount * await CharacterObjectSettings.GetNuyenPerBPWftMAsync(GenericToken).ConfigureAwait(false),
                                         GenericToken).ConfigureAwait(false);
                             }
                         }
@@ -7751,7 +7755,7 @@ namespace Chummer
                             {
                                 // Create the Expense Log Entry.
                                 objExpense = new ExpenseLogEntry(CharacterObject);
-                                objExpense.Create(frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
+                                objExpense.Create(frmNewExpense.MyForm.Amount * await CharacterObjectSettings.GetNuyenPerBPWftMAsync(GenericToken).ConfigureAwait(false),
                                     frmNewExpense.MyForm.Reason, ExpenseType.Nuyen,
                                     frmNewExpense.MyForm.SelectedDate);
                                 objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
@@ -7765,7 +7769,7 @@ namespace Chummer
                                 // Adjust the character's Nuyen total.
                                 await CharacterObject
                                     .ModifyNuyenAsync(
-                                        frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM,
+                                        frmNewExpense.MyForm.Amount * await CharacterObjectSettings.GetNuyenPerBPWftMAsync(GenericToken).ConfigureAwait(false),
                                         GenericToken).ConfigureAwait(false);
                             }
                         }
@@ -7832,7 +7836,7 @@ namespace Chummer
                             {
                                 // Create the Expense Log Entry.
                                 objExpense = new ExpenseLogEntry(CharacterObject);
-                                int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftM)
+                                int intAmount = (frmNewExpense.MyForm.Amount / await CharacterObjectSettings.GetNuyenPerBPWftMAsync(GenericToken).ConfigureAwait(false))
                                     .ToInt32();
                                 objExpense.Create(-intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
                                     frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
@@ -7925,7 +7929,7 @@ namespace Chummer
                             {
                                 // Create the Expense Log Entry.
                                 objExpense = new ExpenseLogEntry(CharacterObject);
-                                int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftP)
+                                int intAmount = (frmNewExpense.MyForm.Amount / await CharacterObjectSettings.GetNuyenPerBPWftPAsync(GenericToken).ConfigureAwait(false))
                                     .ToInt32();
                                 objExpense.Create(intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma,
                                     frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
@@ -8126,7 +8130,7 @@ namespace Chummer
                 int intDecimalPlaces = 0;
                 if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    intDecimalPlaces = CharacterObjectSettings.MaxNuyenDecimals;
+                    intDecimalPlaces = await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(GenericToken).ConfigureAwait(false);
                 }
                 else if (objGear.Category == "Currency")
                 {
@@ -8192,7 +8196,7 @@ namespace Chummer
                 int intDecimalPlaces = 0;
                 if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    intDecimalPlaces = Math.Max(0, CharacterObjectSettings.MaxNuyenDecimals);
+                    intDecimalPlaces = Math.Max(0, await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(GenericToken).ConfigureAwait(false));
                     // Need a for loop instead of a power system to maintain exact precision
                     for (int i = 0; i < intDecimalPlaces; ++i)
                         decMinimumAmount /= 10.0m;
@@ -8303,7 +8307,7 @@ namespace Chummer
                 int intDecimalPlaces = 0;
                 if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    intDecimalPlaces = Math.Max(0, CharacterObjectSettings.MaxNuyenDecimals);
+                    intDecimalPlaces = Math.Max(0, await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(GenericToken).ConfigureAwait(false));
                     // Need a for loop instead of a power system to maintain exact precision
                     for (int i = 0; i < intDecimalPlaces; ++i)
                         decMinimumAmount /= 10.0m;
@@ -8397,7 +8401,7 @@ namespace Chummer
                 int intDecimalPlaces = 0;
                 if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    intDecimalPlaces = Math.Max(0, CharacterObjectSettings.MaxNuyenDecimals);
+                    intDecimalPlaces = Math.Max(0, await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(GenericToken).ConfigureAwait(false));
                     // Need a for loop instead of a power system to maintain exact precision
                     for (int i = 0; i < intDecimalPlaces; ++i)
                         decMinimumAmount /= 10.0m;
@@ -8555,7 +8559,7 @@ namespace Chummer
                         int intDecimalPlaces = 0;
                         if (objSelectedGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                         {
-                            intDecimalPlaces = Math.Max(0, CharacterObjectSettings.MaxNuyenDecimals);
+                            intDecimalPlaces = Math.Max(0, await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(GenericToken).ConfigureAwait(false));
                             // Need a for loop instead of a power system to maintain exact precision
                             for (int i = 0; i < intDecimalPlaces; ++i)
                                 decMinimumAmount /= 10.0m;
@@ -8679,7 +8683,7 @@ namespace Chummer
                 int intDecimalPlaces = 0;
                 if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                 {
-                    intDecimalPlaces = Math.Max(0, CharacterObjectSettings.MaxNuyenDecimals);
+                    intDecimalPlaces = Math.Max(0, await CharacterObjectSettings.GetMaxNuyenDecimalsAsync(GenericToken).ConfigureAwait(false));
                 }
                 else if (objGear.Category == "Currency")
                 {
@@ -9135,7 +9139,7 @@ namespace Chummer
                                 GlobalSettings.InvariantCultureInfo) * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
                             if (blnCompleteDelete)
                                 intBP *= await objSelectedQuality.GetLevelsAsync(token).ConfigureAwait(false);
-                            if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                            if (!await CharacterObjectSettings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false) && objSelectedQuality.DoubleCost)
                             {
                                 intBP *= 2;
                             }
@@ -9174,9 +9178,9 @@ namespace Chummer
                     {
                         if (objXmlDeleteQuality?.SelectSingleNodeAndCacheExpression("refundkarmaonremove", token: token) != null)
                         {
-                            int intKarmaCost = objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality;
+                            int intKarmaCost = objSelectedQuality.BP * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false);
 
-                            if (!CharacterObjectSettings.DontDoubleQualityPurchases && objSelectedQuality.DoubleCost)
+                            if (!await CharacterObjectSettings.GetDontDoubleQualityPurchasesAsync(token).ConfigureAwait(false) && objSelectedQuality.DoubleCost)
                             {
                                 intKarmaCost *= 2;
                             }
@@ -9216,8 +9220,8 @@ namespace Chummer
                     else
                     {
                         // Make sure the character has enough Karma to buy off the Quality.
-                        int intKarmaCost = -(objSelectedQuality.BP * CharacterObjectSettings.KarmaQuality);
-                        if (!CharacterObjectSettings.DontDoubleQualityRefunds)
+                        int intKarmaCost = -(objSelectedQuality.BP * await CharacterObjectSettings.GetKarmaQualityAsync(token).ConfigureAwait(false));
+                        if (!await CharacterObjectSettings.GetDontDoubleQualityRefundsAsync(token).ConfigureAwait(false))
                         {
                             intKarmaCost *= 2;
                         }
@@ -11208,13 +11212,13 @@ namespace Chummer
                         await objVehicle.Mods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
 
                         // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-                        if (CharacterObjectSettings.EnforceCapacity)
+                        if (await CharacterObjectSettings.GetEnforceCapacityAsync(GenericToken).ConfigureAwait(false))
                         {
                             bool blnOverCapacity;
                             if (await CharacterObjectSettings.BookEnabledAsync("R5", GenericToken)
                                                              .ConfigureAwait(false))
                             {
-                                if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
+                                if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(GenericToken).ConfigureAwait(false))
                                     blnOverCapacity
                                         = await objVehicle.GetDroneModSlotsUsedAsync(GenericToken)
                                                            .ConfigureAwait(false) > await objVehicle
@@ -19135,15 +19139,15 @@ namespace Chummer
             {
                 if (IsRefreshing || IsLoading
                                  || await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false)
-                                 == CharacterObject.GroupMember)
+                                 == await CharacterObject.GetGroupMemberAsync(GenericToken).ConfigureAwait(false))
                     return;
 
                 // Joining a Network does not cost Karma for Technomancers, so this only applies to Magicians/Adepts.
-                if (CharacterObject.MAGEnabled)
+                if (await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false))
                 {
                     if (await chkJoinGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false))
                     {
-                        int intKarmaExpense = CharacterObjectSettings.KarmaJoinGroup;
+                        int intKarmaExpense = await CharacterObjectSettings.GetKarmaJoinGroupAsync(GenericToken).ConfigureAwait(false);
 
                         if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
                         {
@@ -19166,22 +19170,10 @@ namespace Chummer
                             return;
                         }
 
-                        string strMessage;
-                        string strExpense;
-                        if (CharacterObject.MAGEnabled)
-                        {
-                            strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinGroup", token: GenericToken)
-                                                              .ConfigureAwait(false);
-                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinGroup", token: GenericToken)
-                                                              .ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinNetwork", token: GenericToken)
-                                                              .ConfigureAwait(false);
-                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinNetwork", token: GenericToken)
-                                                              .ConfigureAwait(false);
-                        }
+                        string strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinGroup", token: GenericToken)
+                            .ConfigureAwait(false);
+                        string strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinGroup", token: GenericToken)
+                            .ConfigureAwait(false);
 
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
                                                       string.Format(GlobalSettings.CultureInfo, strMessage,
@@ -19215,7 +19207,7 @@ namespace Chummer
                     }
                     else
                     {
-                        int intKarmaExpense = CharacterObjectSettings.KarmaLeaveGroup;
+                        int intKarmaExpense = await CharacterObjectSettings.GetKarmaLeaveGroupAsync(GenericToken).ConfigureAwait(false);
 
                         if (intKarmaExpense > await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false))
                         {
@@ -19238,22 +19230,10 @@ namespace Chummer
                             return;
                         }
 
-                        string strMessage;
-                        string strExpense;
-                        if (await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false))
-                        {
-                            strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveGroup", token: GenericToken)
-                                                              .ConfigureAwait(false);
-                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveGroup", token: GenericToken)
-                                                              .ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            strMessage = await LanguageManager.GetStringAsync(
-                                "Message_ConfirmKarmaExpenseLeaveNetwork", token: GenericToken).ConfigureAwait(false);
-                            strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveNetwork", token: GenericToken)
-                                                              .ConfigureAwait(false);
-                        }
+                        string strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveGroup", token: GenericToken)
+                            .ConfigureAwait(false);
+                        string strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveGroup", token: GenericToken)
+                            .ConfigureAwait(false);
 
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
                                                       string.Format(GlobalSettings.CultureInfo, strMessage,
@@ -21248,7 +21228,7 @@ namespace Chummer
                                                      .ConfigureAwait(false);
                     }
 
-                    string strESSFormat = CharacterObjectSettings.EssenceFormat;
+                    string strESSFormat = await CharacterObjectSettings.GetEssenceFormatAsync(token).ConfigureAwait(false);
                     switch (objSelectedNodeTag)
                     {
                         case Cyberware objCyberware:
@@ -23913,7 +23893,7 @@ namespace Chummer
                                 {
                                     setLoopDisallowedMounts.Clear();
                                     setLoopDisallowedMounts.AddRange(
-                                        objLoopCyberware.BlocksMounts.SplitNoAlloc(',',
+                                        (await objLoopCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(',',
                                             StringSplitOptions.RemoveEmptyEntries));
                                     setLoopHasModularMount.Clear();
                                     string strLoopHasModularMount = await objLoopCyberware
@@ -23928,7 +23908,8 @@ namespace Chummer
                                                              .ConfigureAwait(false)),
                                                      token).ConfigureAwait(false))
                                     {
-                                        foreach (string strLoop in objInnerLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                        foreach (string strLoop in (await objInnerLoopCyberware
+                                                     .GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(
                                                      ',', StringSplitOptions.RemoveEmptyEntries))
                                             setLoopDisallowedMounts.Add(strLoop);
                                         strLoopHasModularMount = await objInnerLoopCyberware
@@ -24148,10 +24129,10 @@ namespace Chummer
                                 !objSelectedGear.Capacity.Contains('[')
                                 || objSelectedGear.Capacity.Contains("/["))
                             {
-                                frmPickGear.MyForm.MaximumCapacity = objSelectedGear.CapacityRemaining;
+                                frmPickGear.MyForm.MaximumCapacity = await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
-                                if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                                if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && frmPickGear.MyForm.MaximumCapacity < 0)
                                 {
                                     await Program.ShowScrollableMessageBoxAsync(
                                             this,
@@ -24269,8 +24250,7 @@ namespace Chummer
                         }
 
                         // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
-                        switch (chrAvail)
+                        switch ((await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
                                 decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
@@ -24284,8 +24264,9 @@ namespace Chummer
                         if (!blnNullParent && objStackWith == null)
                         {
                             // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                            if (CharacterObjectSettings.EnforceCapacity &&
-                                objSelectedGear.CapacityRemaining < objGear.PluginCapacity)
+                            if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) &&
+                                await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false) <
+                                await objGear.GetPluginCapacityAsync(token).ConfigureAwait(false))
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
                                     this,
@@ -24461,10 +24442,10 @@ namespace Chummer
                             if (objSelectedGear != null && (!objSelectedGear.Capacity.Contains('[')
                                                             || objSelectedGear.Capacity.Contains("/[")))
                             {
-                                frmPickGear.MyForm.MaximumCapacity = objSelectedGear.CapacityRemaining;
+                                frmPickGear.MyForm.MaximumCapacity = await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false);
 
                                 // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
-                                if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
+                                if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) && frmPickGear.MyForm.MaximumCapacity < 0)
                                 {
                                     await Program.ShowScrollableMessageBoxAsync(
                                         this,
@@ -25103,7 +25084,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
                             {
-                                if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
+                                if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(token).ConfigureAwait(false))
                                 {
                                     await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                    .ConfigureAwait(false);
@@ -26876,15 +26857,16 @@ namespace Chummer
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
                 if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
-                intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
-                              + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation)
+                int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
+                intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                              + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
                              * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
                 strInitTip = string.Format(GlobalSettings.CultureInfo,
                                            await LanguageManager
                                                  .GetStringAsync("Tip_ImproveInitiateGrade", token: token)
                                                  .ConfigureAwait(false),
-                                           (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                           (intGrade + 1).ToString(GlobalSettings.CultureInfo),
                                            intAmount.ToString(GlobalSettings.CultureInfo));
             }
             else
@@ -26895,15 +26877,16 @@ namespace Chummer
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
                 if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
-                intAmount = ((CharacterObjectSettings.KarmaInitiationFlat
-                              + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation)
+                int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
+                intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                              + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
                              * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
                 strInitTip = string.Format(GlobalSettings.CultureInfo,
                                            await LanguageManager
                                                  .GetStringAsync("Tip_ImproveSubmersionGrade", token: token)
                                                  .ConfigureAwait(false),
-                                           (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                           (intGrade + 1).ToString(GlobalSettings.CultureInfo),
                                            intAmount.ToString(GlobalSettings.CultureInfo));
             }
 
@@ -27080,7 +27063,7 @@ namespace Chummer
                   .SetToolTipAsync(
                       await LanguageManager.GetStringAsync("Tip_Notoriety", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
-            if (CharacterObjectSettings.UseCalculatedPublicAwareness)
+            if (await CharacterObjectSettings.GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
                 await lblPublicAware
                       .SetToolTipAsync(
                           await LanguageManager.GetStringAsync("Tip_PublicAwareness", token: token)
@@ -27715,7 +27698,7 @@ namespace Chummer
                                         await LanguageManager.GetStringAsync(
                                                 "String_Metamagic", token: GenericToken)
                                             .ConfigureAwait(false),
-                                        CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo)),
+                                        (await CharacterObjectSettings.GetKarmaMetamagicAsync(GenericToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
                                     GenericToken)
                                 .ConfigureAwait(false))
                             return;
@@ -27729,7 +27712,7 @@ namespace Chummer
                                          await LanguageManager
                                              .GetStringAsync("String_Echo", token: GenericToken)
                                              .ConfigureAwait(false),
-                                         CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo)),
+                                         (await CharacterObjectSettings.GetKarmaMetamagicAsync(GenericToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
                                      GenericToken)
                                  .ConfigureAwait(false))
                         return;
@@ -28192,7 +28175,7 @@ namespace Chummer
                                         .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(
                                         "String_Enhancement", token: GenericToken).ConfigureAwait(false),
-                                    CharacterObjectSettings.KarmaEnhancement.ToString(GlobalSettings.CultureInfo)),
+                                    (await CharacterObjectSettings.GetKarmaEnhancementAsync(GenericToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
                                 token: GenericToken)
                             .ConfigureAwait(false))
                         return;
@@ -28250,7 +28233,7 @@ namespace Chummer
                         .ConfigureAwait(false);
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(CharacterObjectSettings.KarmaEnhancement * -1,
+                    objExpense.Create(await CharacterObjectSettings.GetKarmaEnhancementAsync(GenericToken).ConfigureAwait(false) * -1,
                         strType + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
                                     .ConfigureAwait(false)
                                 + await objEnhancement.GetCurrentDisplayNameShortAsync(GenericToken)
