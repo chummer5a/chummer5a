@@ -15525,6 +15525,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveGearParent(TreeNode objDestination, TreeNode objGearNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objGearNode == null || objDestination == null)
                 return;
             // The item cannot be dropped onto itself or onto one of its children.
@@ -15555,7 +15556,7 @@ namespace Chummer
             if (!blnAllowMove)
                 return;
 
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 // Remove the Gear from the character.
                 if (objGear.Parent is IHasChildren<Gear> parent)
@@ -15582,6 +15583,77 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Move a Gear TreeNode after Drag and Drop, changing its parent.
+        /// </summary>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="objGearNode">Node of gear to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveGearParentAsync(TreeNode objDestination, TreeNode objGearNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objGearNode == null || objDestination == null)
+                return;
+            // The item cannot be dropped onto itself or onto one of its children.
+            for (TreeNode objCheckNode = objDestination;
+                objCheckNode != null && objCheckNode.Level >= objDestination.Level;
+                objCheckNode = objCheckNode.Parent)
+                if (objCheckNode == objGearNode)
+                    return;
+            if (!(objGearNode.Tag is Gear objGear))
+                return;
+
+            // Gear cannot be moved to one if its children.
+            bool blnAllowMove = true;
+            if (objDestination.Level > 0)
+            {
+                TreeNode objFindNode = objDestination;
+                do
+                {
+                    objFindNode = objFindNode.Parent;
+                    if (objFindNode.Tag == objGear)
+                    {
+                        blnAllowMove = false;
+                        break;
+                    }
+                } while (objFindNode.Level > 0);
+            }
+
+            if (!blnAllowMove)
+                return;
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Remove the Gear from the character.
+                if (objGear.Parent is IHasChildren<Gear> parent)
+                    await parent.Children.RemoveAsync(objGear, token).ConfigureAwait(false);
+                else
+                    await Gear.RemoveAsync(objGear, token).ConfigureAwait(false);
+
+                switch (objDestination.Tag)
+                {
+                    case Location objLocation:
+                        // The Gear was moved to a location, so add it to the character instead.
+                        objGear.Location = objLocation;
+                        await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                        await Gear.AddAsync(objGear, token).ConfigureAwait(false);
+                        break;
+
+                    case Gear objParent:
+                        // Add the Gear as a child of the destination Node and clear its location.
+                        objGear.Location = null;
+                        await objParent.Children.AddAsync(objGear, token).ConfigureAwait(false);
+                        break;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Move a Gear TreeNode after Drag and Drop.
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
@@ -15590,6 +15662,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objDestination == null || nodeToMove == null)
                 return;
             if (!(nodeToMove.Tag is Gear objGear))
@@ -15598,14 +15671,20 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 switch (objNewParent.Tag)
                 {
                     case Location objLocation:
-                        nodeToMove.Remove();
+                        if (nodeToMove.TreeView != null)
+                            nodeToMove.TreeView.DoThreadSafe(nodeToMove.Remove, token);
+                        else
+                            nodeToMove.Remove();
                         objGear.Location = objLocation;
-                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        if (objNewParent.TreeView != null)
+                            objNewParent.TreeView.DoThreadSafe(() => objNewParent.Nodes.Insert(0, nodeToMove), token);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
 
                     case string _:
@@ -15618,13 +15697,65 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Move a Gear TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodeToMove">Node of gear to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveGearNodeAsync(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDestination == null || nodeToMove == null)
+                return;
+            if (!(nodeToMove.Tag is Gear objGear))
+                return;
+            TreeNode objNewParent = objDestination;
+            while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                objNewParent = objNewParent.Parent;
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                switch (objNewParent.Tag)
+                {
+                    case Location objLocation:
+                        if (nodeToMove.TreeView != null)
+                            await nodeToMove.TreeView.DoThreadSafeAsync(nodeToMove.Remove, token).ConfigureAwait(false);
+                        else
+                            nodeToMove.Remove();
+                        objGear.Location = objLocation;
+                        if (objNewParent.TreeView != null)
+                            await objNewParent.TreeView.DoThreadSafeAsync(() =>
+                                objNewParent.Nodes.Insert(0, nodeToMove), token).ConfigureAwait(false);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+
+                    case string _:
+                        objGear.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, await Gear.GetCountAsync(token).ConfigureAwait(false) - 1);
+                        await Gear.MoveAsync(await Gear.IndexOfAsync(objGear, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                        break;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Move a Gear Location TreeNode after Drag and Drop.
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodOldNode">Node of gear location to move.</param>
-        public void MoveGearRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveGearRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
             if (objDestination != null)
@@ -15636,7 +15767,41 @@ namespace Chummer
                 if (!(objNewParent.Tag is Location))
                     intNewIndex = 0;
             }
-            GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
+            using (LockObject.EnterUpgradeableReadLock(token))
+                GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move a Gear Location TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of gear location to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveGearRootAsync(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(nodOldNode?.Tag is Location objLocation))
+                return;
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+                if (!(objNewParent.Tag is Location))
+                    intNewIndex = 0;
+            }
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await GearLocations.MoveAsync(await GearLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -15645,8 +15810,10 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodLifestyleNode">Node of lifestyle to move.</param>
-        public void MoveLifestyleNode(int intNewIndex, TreeNode objDestination, TreeNode nodLifestyleNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveLifestyleNode(int intNewIndex, TreeNode objDestination, TreeNode nodLifestyleNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (nodLifestyleNode == null)
                 return;
             if (objDestination != null)
@@ -15659,7 +15826,42 @@ namespace Chummer
 
             if (!(nodLifestyleNode.Tag is Lifestyle objLifestyle))
                 return;
-            Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
+            using (LockObject.EnterUpgradeableReadLock(token))
+                Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move a Lifestyle TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodLifestyleNode">Node of lifestyle to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveLifestyleNodeAsync(int intNewIndex, TreeNode objDestination, TreeNode nodLifestyleNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (nodLifestyleNode == null)
+                return;
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+            }
+
+            if (!(nodLifestyleNode.Tag is Lifestyle objLifestyle))
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await Lifestyles.MoveAsync(await Lifestyles.IndexOfAsync(objLifestyle, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -15671,6 +15873,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objDestination == null)
                 return;
             if (!(nodeToMove?.Tag is Armor objArmor))
@@ -15679,14 +15882,20 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 switch (objNewParent.Tag)
                 {
                     case Location objLocation:
-                        nodeToMove.Remove();
+                        if (nodeToMove.TreeView != null)
+                            nodeToMove.TreeView.DoThreadSafe(nodeToMove.Remove, token);
+                        else
+                            nodeToMove.Remove();
                         objArmor.Location = objLocation;
-                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        if (objNewParent.TreeView != null)
+                            objNewParent.TreeView.DoThreadSafe(() => objNewParent.Nodes.Insert(0, nodeToMove), token);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
 
                     case string _:
@@ -15699,13 +15908,64 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Move an Armor TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodeToMove">Node of armor to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveArmorNodeAsync(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDestination == null)
+                return;
+            if (!(nodeToMove?.Tag is Armor objArmor))
+                return;
+            TreeNode objNewParent = objDestination;
+            while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                objNewParent = objNewParent.Parent;
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                switch (objNewParent.Tag)
+                {
+                    case Location objLocation:
+                        if (nodeToMove.TreeView != null)
+                            await nodeToMove.TreeView.DoThreadSafeAsync(nodeToMove.Remove, token).ConfigureAwait(false);
+                        else
+                            nodeToMove.Remove();
+                        objArmor.Location = objLocation;
+                        if (objNewParent.TreeView != null)
+                            await objNewParent.TreeView.DoThreadSafeAsync(() => objNewParent.Nodes.Insert(0, nodeToMove), token).ConfigureAwait(false);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+
+                    case string _:
+                        objArmor.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, await Armor.GetCountAsync(token).ConfigureAwait(false) - 1);
+                        await Armor.MoveAsync(await Armor.IndexOfAsync(objArmor, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                        break;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Move an Armor Location TreeNode after Drag and Drop.
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodOldNode">Node of armor location to move.</param>
-        public void MoveArmorRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveArmorRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
             if (objDestination != null)
@@ -15717,7 +15977,41 @@ namespace Chummer
                 if (!(objNewParent.Tag is Location))
                     intNewIndex = 0;
             }
-            ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
+            using (LockObject.EnterUpgradeableReadLock(token))
+                ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move an Armor Location TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of armor location to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveArmorRootAsync(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(nodOldNode?.Tag is Location objLocation))
+                return;
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+                if (!(objNewParent.Tag is Location))
+                    intNewIndex = 0;
+            }
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await ArmorLocations.MoveAsync(await ArmorLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -15729,6 +16023,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objDestination == null)
                 return;
             if (!(nodeToMove?.Tag is Weapon objWeapon))
@@ -15737,14 +16032,20 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 switch (objNewParent.Tag)
                 {
                     case Location objLocation:
-                        nodeToMove.Remove();
+                        if (nodeToMove.TreeView != null)
+                            nodeToMove.TreeView.DoThreadSafe(nodeToMove.Remove, token);
+                        else
+                            nodeToMove.Remove();
                         objWeapon.Location = objLocation;
-                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        if (objNewParent.TreeView != null)
+                            objNewParent.TreeView.DoThreadSafe(() => objNewParent.Nodes.Insert(0, nodeToMove), token);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
 
                     case string _:
@@ -15757,13 +16058,64 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Move a Weapon TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodeToMove">Node of weapon to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveWeaponNodeAsync(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDestination == null)
+                return;
+            if (!(nodeToMove?.Tag is Weapon objWeapon))
+                return;
+            TreeNode objNewParent = objDestination;
+            while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                objNewParent = objNewParent.Parent;
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                switch (objNewParent.Tag)
+                {
+                    case Location objLocation:
+                        if (nodeToMove.TreeView != null)
+                            await nodeToMove.TreeView.DoThreadSafeAsync(nodeToMove.Remove, token).ConfigureAwait(false);
+                        else
+                            nodeToMove.Remove();
+                        objWeapon.Location = objLocation;
+                        if (objNewParent.TreeView != null)
+                            await objNewParent.TreeView.DoThreadSafeAsync(() => objNewParent.Nodes.Insert(0, nodeToMove), token).ConfigureAwait(false);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+
+                    case string _:
+                        objWeapon.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, await Weapons.GetCountAsync(token).ConfigureAwait(false) - 1);
+                        await Weapons.MoveAsync(await Weapons.IndexOfAsync(objWeapon, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                        break;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Move a Weapon Location TreeNode after Drag and Drop.
         /// </summary>
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodOldNode">Node of weapon location to move.</param>
-        public void MoveWeaponRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveWeaponRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!(nodOldNode?.Tag is Location objLocation))
                 return;
             if (objDestination != null)
@@ -15775,7 +16127,41 @@ namespace Chummer
                 if (!(objNewParent.Tag is Location))
                     intNewIndex = 0;
             }
-            WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
+            using (LockObject.EnterUpgradeableReadLock(token))
+                WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
+        }
+
+        /// <summary>
+        /// Move a Weapon Location TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of weapon location to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveWeaponRootAsync(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!(nodOldNode?.Tag is Location objLocation))
+                return;
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+                if (!(objNewParent.Tag is Location))
+                    intNewIndex = 0;
+            }
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await WeaponLocations.MoveAsync(await WeaponLocations.IndexOfAsync(objLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -15787,6 +16173,7 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objDestination == null)
                 return;
             if (!(nodeToMove?.Tag is Vehicle objVehicle))
@@ -15795,22 +16182,77 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock(token))
+            using (LockObject.EnterUpgradeableReadLock(token))
             {
                 switch (objNewParent.Tag)
                 {
                     case Location objLocation:
-                        nodeToMove.Remove();
+                        if (nodeToMove.TreeView != null)
+                            nodeToMove.TreeView.DoThreadSafe(nodeToMove.Remove, token);
+                        else
+                            nodeToMove.Remove();
                         objVehicle.Location = objLocation;
-                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        if (objNewParent.TreeView != null)
+                            objNewParent.TreeView.DoThreadSafe(() => objNewParent.Nodes.Insert(0, nodeToMove), token);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
                         break;
 
                     case string _:
                         objVehicle.Location = null;
-                        intNewIndex = Math.Min(intNewIndex, Weapons.Count - 1);
+                        intNewIndex = Math.Min(intNewIndex, Vehicles.Count - 1);
                         Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Move a Vehicle TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodeToMove">Node of vehicle to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveVehicleNodeAsync(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDestination == null)
+                return;
+            if (!(nodeToMove?.Tag is Vehicle objVehicle))
+                return;
+            TreeNode objNewParent = objDestination;
+            while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
+                objNewParent = objNewParent.Parent;
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                switch (objNewParent.Tag)
+                {
+                    case Location objLocation:
+                        if (nodeToMove.TreeView != null)
+                            await nodeToMove.TreeView.DoThreadSafeAsync(nodeToMove.Remove, token).ConfigureAwait(false);
+                        else
+                            nodeToMove.Remove();
+                        objVehicle.Location = objLocation;
+                        if (objNewParent.TreeView != null)
+                            await objNewParent.TreeView.DoThreadSafeAsync(() => objNewParent.Nodes.Insert(0, nodeToMove), token).ConfigureAwait(false);
+                        else
+                            objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+
+                    case string _:
+                        objVehicle.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, await Vehicles.GetCountAsync(token).ConfigureAwait(false) - 1);
+                        await Vehicles.MoveAsync(await Vehicles.IndexOfAsync(objVehicle, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+                        break;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16016,17 +16458,45 @@ namespace Chummer
             TreeNode objNewParent = objDestination;
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
-            TreeView treView = objNewParent.TreeView;
-
+            string strGroup = objNewParent.Tag?.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGroup) && strGroup != "Node_SelectedImprovements")
+                strGroup = objNewParent.Text;
             using (LockObject.EnterWriteLock(token))
             {
-                objImprovement.CustomGroup = treView?.DoThreadSafeFunc(() =>
-                    objNewParent.Tag.ToString() == "Node_SelectedImprovements"
-                        ? string.Empty
-                        : objNewParent.Text, token) ?? (objNewParent.Tag.ToString() == "Node_SelectedImprovements"
-                    ? string.Empty
-                    : objNewParent.Text);
+                objImprovement.CustomGroup = strGroup;
                 Improvements[Improvements.IndexOf(objImprovement)] = objImprovement;
+            }
+        }
+
+        /// <summary>
+        /// Move an Improvement TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of improvement to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveImprovementNodeAsync(TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDestination == null)
+                return;
+            if (!(nodOldNode?.Tag is Improvement objImprovement))
+                return;
+            TreeNode objNewParent = objDestination;
+            while (objNewParent.Level > 0)
+                objNewParent = objNewParent.Parent;
+            string strGroup = objNewParent.Tag?.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGroup) && strGroup != "Node_SelectedImprovements")
+                strGroup = objNewParent.Text;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objImprovement.CustomGroup = strGroup;
+                await Improvements.SetValueAtAsync(await Improvements.IndexOfAsync(objImprovement, token).ConfigureAwait(false), objImprovement, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16036,22 +16506,66 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodOldNode">Node of improvement group to move.</param>
-        public void MoveImprovementRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveImprovementRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (nodOldNode == null)
                 return;
+            string strNewGroup = string.Empty;
             if (objDestination != null)
             {
                 TreeNode objNewParent = objDestination;
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
-                if (!ImprovementGroups.Contains(objNewParent.Tag?.ToString()))
-                    intNewIndex = 0;
+                strNewGroup = objNewParent.Tag?.ToString() ?? string.Empty;
             }
 
             string strLocation = nodOldNode.Tag.ToString();
-            ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
+            using (LockObject.EnterUpgradeableReadLock(token))
+            {
+                if (!ImprovementGroups.Contains(strNewGroup))
+                    intNewIndex = 0;
+                ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
+            }
+        }
+
+        /// <summary>
+        /// Move an Improvement Group TreeNode after Drag and Drop.
+        /// </summary>
+        /// <param name="intNewIndex">Node's new index.</param>
+        /// <param name="objDestination">Destination Node.</param>
+        /// <param name="nodOldNode">Node of improvement group to move.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task MoveImprovementRootAsync(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (nodOldNode == null)
+                return;
+            string strNewGroup = string.Empty;
+            if (objDestination != null)
+            {
+                TreeNode objNewParent = objDestination;
+                while (objNewParent.Level > 0)
+                    objNewParent = objNewParent.Parent;
+                intNewIndex = objNewParent.Index;
+                strNewGroup = objNewParent.Tag?.ToString() ?? string.Empty;
+            }
+
+            string strLocation = nodOldNode.Tag.ToString();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!await ImprovementGroups.ContainsAsync(strNewGroup, token).ConfigureAwait(false))
+                    intNewIndex = 0;
+                await ImprovementGroups.MoveAsync(await ImprovementGroups.IndexOfAsync(strLocation, token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         #endregion Move TreeNodes

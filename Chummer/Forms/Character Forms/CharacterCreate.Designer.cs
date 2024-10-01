@@ -4995,7 +4995,7 @@ namespace Chummer
             this.treMartialArts.Size = new System.Drawing.Size(304, 590);
             this.treMartialArts.TabIndex = 2;
             this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
-            this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
+            this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treMartialArts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpMartialArtsButtons
@@ -5187,7 +5187,7 @@ namespace Chummer
             this.treSpells.Size = new System.Drawing.Size(304, 385);
             this.treSpells.TabIndex = 70;
             this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
-            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treSpells_KeyDown);
+            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treSpells.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpMagician
@@ -6082,7 +6082,7 @@ namespace Chummer
             this.treComplexForms.Size = new System.Drawing.Size(304, 385);
             this.treComplexForms.TabIndex = 71;
             this.treComplexForms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treComplexForms_AfterSelect);
-            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treComplexForms_KeyDown);
+            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treComplexForms.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpTechnomancer
@@ -6622,7 +6622,7 @@ namespace Chummer
             this.treAIPrograms.Size = new System.Drawing.Size(304, 590);
             this.treAIPrograms.TabIndex = 71;
             this.treAIPrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAIPrograms_AfterSelect);
-            this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treAIPrograms_KeyDown);
+            this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             // 
             // tlpAdvancedProgramsButtons
             // 
@@ -6792,7 +6792,7 @@ namespace Chummer
             this.treCritterPowers.Size = new System.Drawing.Size(304, 590);
             this.treCritterPowers.TabIndex = 0;
             this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
-            this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
+            this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treCritterPowers.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpCritterButtons
@@ -7156,7 +7156,7 @@ namespace Chummer
             this.treMetamagic.Size = new System.Drawing.Size(304, 590);
             this.treMetamagic.TabIndex = 96;
             this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
-            this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
+            this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treMetamagic.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpInitiationButtons
@@ -7603,7 +7603,7 @@ namespace Chummer
             this.treCyberware.Size = new System.Drawing.Size(304, 590);
             this.treCyberware.TabIndex = 28;
             this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
-            this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
+            this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treCyberware.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpCyberware
@@ -8518,8 +8518,11 @@ namespace Chummer
             this.treGear.Size = new System.Drawing.Size(302, 564);
             this.treGear.TabIndex = 49;
             this.treGear.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treGear_AfterSelect);
-            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.treGear_DragOver);
-            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treGear_KeyDown);
+            this.treGear.DragDrop += new System.Windows.Forms.DragEventHandler(this.treGear_DragDrop);
+            this.treGear.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treGear.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treGear.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpGear
@@ -9267,8 +9270,11 @@ namespace Chummer
             this.treArmor.Size = new System.Drawing.Size(302, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
-            this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
-            this.treArmor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treArmor_KeyDown);
+            this.treArmor.DragDrop += new System.Windows.Forms.DragEventHandler(this.treArmor_DragDrop);
+            this.treArmor.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treArmor.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treArmor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treArmor.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpArmor
@@ -9979,8 +9985,11 @@ namespace Chummer
             this.treWeapons.Size = new System.Drawing.Size(302, 564);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
-            this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
-            this.treWeapons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treWeapons_KeyDown);
+            this.treWeapons.DragDrop += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragDrop);
+            this.treWeapons.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treWeapons.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treWeapons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treWeapons.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpWeapons
@@ -11550,9 +11559,8 @@ namespace Chummer
             this.treLifestyles.Size = new System.Drawing.Size(302, 564);
             this.treLifestyles.TabIndex = 80;
             this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
-            this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
             this.treLifestyles.DoubleClick += new System.EventHandler(this.treLifestyles_DoubleClick);
-            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLifestyles_KeyDown);
+            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treLifestyles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpLifestyleDetails
@@ -13480,8 +13488,11 @@ namespace Chummer
             this.treVehicles.Size = new System.Drawing.Size(304, 590);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
-            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
-            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
+            this.treVehicles.DragDrop += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragDrop);
+            this.treVehicles.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treVehicles.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treVehicles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpVehiclesButtons

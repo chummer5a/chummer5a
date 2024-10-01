@@ -217,61 +217,73 @@ namespace Chummer
             tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
-            treGear.ItemDrag += treGear_ItemDrag;
-            treGear.DragEnter += treGear_DragEnter;
-            treGear.DragDrop += treGear_DragDrop;
-            /*
-            treLifestyles.ItemDrag += treLifestyles_ItemDrag;
-            treLifestyles.DragEnter += treLifestyles_DragEnter;
-            treLifestyles.DragDrop += treLifestyles_DragDrop;
-            */
-            treArmor.ItemDrag += treArmor_ItemDrag;
-            treArmor.DragEnter += treArmor_DragEnter;
-            treArmor.DragDrop += treArmor_DragDrop;
-            treWeapons.ItemDrag += treWeapons_ItemDrag;
-            treWeapons.DragEnter += treWeapons_DragEnter;
-            treWeapons.DragDrop += treWeapons_DragDrop;
-            treVehicles.ItemDrag += treVehicles_ItemDrag;
-            treVehicles.DragEnter += treVehicles_DragEnter;
-            treVehicles.DragDrop += treVehicles_DragDrop;
-            treImprovements.ItemDrag += treImprovements_ItemDrag;
-            treImprovements.DragEnter += treImprovements_DragEnter;
-            treImprovements.DragDrop += treImprovements_DragDrop;
-            Disposed += (sender, args) =>
+        }
+
+        private async void TreeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is TreeView treView && e.KeyCode == Keys.Delete)
             {
-                tabCharacterTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabInfo.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabLongTexts.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabPeople.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabStreetGearTabs.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabArmorCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabCyberwareCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabGearCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                panVehicleCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabWeaponCM.MouseWheel -= CommonFunctions.ShiftTabsOnMouseScroll;
-                tabSkillsUc.MakeDirtyWithCharacterUpdate -= MakeDirtyWithCharacterUpdate;
-                lmtControl.MakeDirty -= MakeDirty;
-                treGear.ItemDrag -= treGear_ItemDrag;
-                treGear.DragEnter -= treGear_DragEnter;
-                treGear.DragDrop -= treGear_DragDrop;
-                /*
-                treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
-                treLifestyles.DragEnter -= treLifestyles_DragEnter;
-                treLifestyles.DragDrop -= treLifestyles_DragDrop;
-                */
-                treArmor.ItemDrag -= treArmor_ItemDrag;
-                treArmor.DragEnter -= treArmor_DragEnter;
-                treArmor.DragDrop -= treArmor_DragDrop;
-                treWeapons.ItemDrag -= treWeapons_ItemDrag;
-                treWeapons.DragEnter -= treWeapons_DragEnter;
-                treWeapons.DragDrop -= treWeapons_DragDrop;
-                treVehicles.ItemDrag -= treVehicles_ItemDrag;
-                treVehicles.DragEnter -= treVehicles_DragEnter;
-                treVehicles.DragDrop -= treVehicles_DragDrop;
-                treImprovements.ItemDrag -= treImprovements_ItemDrag;
-                treImprovements.DragEnter -= treImprovements_DragEnter;
-                treImprovements.DragDrop -= treImprovements_DragDrop;
-            };
+                try
+                {
+                    await RemoveSelectedObject(
+                        await treView.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                            .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
+        }
+
+        private void TreeView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            if (!(sender is TreeView treView))
+                return;
+            TreeNode nodSelected = treView.SelectedNode;
+            object objTag = nodSelected?.Tag;
+            if (objTag == null || (objTag is string strTag && (string.IsNullOrEmpty(strTag) || strTag.StartsWith("Node_"))))
+                return;
+            int intDragLevel = nodSelected.Level;
+            if (treView == treGear)
+            {
+                if ((intDragLevel == 0) != (e.Button == MouseButtons.Left))
+                    return;
+            }
+            else if (treView == treVehicles)
+            {
+                DraggingGear = objTag is Gear;
+            }
+            else if (intDragLevel != 1)
+                return;
+            _intDragLevel = intDragLevel;
+            DragButton = e.Button;
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private async void TreeView_DragDrop(object sender, DragEventArgs e)
+        {
+            if (!(sender is TreeView treView))
+                return;
+            ItemTreeViewTypes eType = ItemTreeViewTypes.Misc;
+            if (treView == treWeapons)
+                eType = ItemTreeViewTypes.Weapons;
+            else if (treView == treArmor)
+                eType = ItemTreeViewTypes.Armor;
+            else if (treView == treGear)
+                eType = ItemTreeViewTypes.Gear;
+            else if (treView == treVehicles)
+                eType = ItemTreeViewTypes.Vehicles;
+            else if (treView == treImprovements)
+                eType = ItemTreeViewTypes.Improvements;
+            try
+            {
+                await DoTreeDragDrop(sender, e, eType, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -279,26 +291,57 @@ namespace Chummer
             // Generic event for all TreeViews to allow right-clicking to select a TreeNode so the proper ContextMenu is shown.
             //if (e.Button == System.Windows.Forms.MouseButtons.Right)
             //{
-            TreeView objTree = (TreeView)sender;
-            objTree.SelectedNode = objTree.HitTest(e.X, e.Y).Node;
+            if (!(sender is TreeView treView))
+                return;
+            TreeNode nodSelected = treView.SelectedNode = treView.HitTest(e.X, e.Y).Node;
             //}
-            if (ModifierKeys == Keys.Control)
+            if (ModifierKeys != Keys.Control)
+                return;
+            if (nodSelected != null)
             {
-                if (objTree.SelectedNode?.IsExpanded == false)
+                if (!nodSelected.IsExpanded)
                 {
-                    foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
+                    foreach (TreeNode objNode in nodSelected.Nodes)
                     {
                         objNode.ExpandAll();
                     }
                 }
-                else if (objTree.SelectedNode?.Nodes != null)
+                else
                 {
-                    foreach (TreeNode objNode in objTree.SelectedNode.Nodes)
+                    foreach (TreeNode objNode in nodSelected.Nodes)
                     {
                         objNode.Collapse();
                     }
                 }
             }
+        }
+
+        private void TreeView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void TreeView_DragOver(object sender, DragEventArgs e)
+        {
+            if (!(sender is TreeView treView))
+                return;
+            Point pt = treView.PointToClient(new Point(e.X, e.Y));
+            TreeNode objNode = treView.GetNodeAt(pt);
+
+            if (objNode == null)
+                return;
+
+            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
+            if (DragButton == MouseButtons.Left)
+            {
+                if (objNode.Level <= _intDragLevel)
+                    objNode.BackColor = ColorManager.ControlDarker;
+            }
+            else
+                objNode.BackColor = ColorManager.ControlDarker;
+
+            // Clear the background color for all other Nodes.
+            treView.ClearNodeBackground(objNode);
         }
 
         private async void CharacterCareer_Load(object sender, EventArgs e)
@@ -7004,89 +7047,13 @@ namespace Chummer
         {
             try
             {
-                await DoDeleteVehicle(GenericToken).ConfigureAwait(false);
+                await RemoveSelectedObject(
+                    await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
-            }
-        }
-
-        private async Task DoDeleteVehicle(CancellationToken token = default)
-        {
-            if (!await cmdDeleteVehicle.DoThreadSafeFuncAsync(x => x.Enabled, token).ConfigureAwait(false))
-                return;
-            // Delete the selected Vehicle.
-            TreeNode objSelectedNode
-                = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
-            // Delete the selected Vehicle.
-            if (objSelectedNode == null)
-            {
-                return;
-            }
-
-            switch (objSelectedNode.Tag)
-            {
-                // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
-                case VehicleMod objMod when objMod.Name == "Obsolete"
-                                            || objMod.Name == "Obsolescent"
-                                            && CharacterObjectSettings.AllowObsolescentUpgrade:
-                {
-                    string strRetrofit = await LanguageManager.GetStringAsync("String_Retrofit", token: token)
-                                                              .ConfigureAwait(false);
-                    using (ThreadSafeForm<SelectNumber> frmModPercent = await ThreadSafeForm<SelectNumber>.GetAsync(
-                               () => new SelectNumber
-                               {
-                                   Minimum = 0,
-                                   Maximum = 1000000,
-                                   Description = strRetrofit
-                               }, token).ConfigureAwait(false))
-                    {
-                        if (await frmModPercent.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
-                            == DialogResult.Cancel)
-                            return;
-
-                        decimal decPercentage = frmModPercent.MyForm.SelectedValue;
-
-                        decimal decVehicleCost = objMod.Parent.OwnCost;
-
-                        // Make sure the character has enough Nuyen for the expense.
-                        decimal decCost = decVehicleCost * decPercentage / 100;
-
-                        // Create a Vehicle Mod for the Retrofit.
-                        VehicleMod objRetrofit = new VehicleMod(CharacterObject);
-
-                        XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml", token: token)
-                                                                          .ConfigureAwait(false);
-                        XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                        await objRetrofit.CreateAsync(objXmlNode, 0, objMod.Parent, token: token).ConfigureAwait(false);
-                        objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
-                        objRetrofit.IncludedInVehicle = true;
-                        await objMod.Parent.Mods.AddAsync(objRetrofit, token).ConfigureAwait(false);
-
-                        // Create an Expense Log Entry for removing the Obsolete Mod.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1,
-                                          string.Format(GlobalSettings.CultureInfo,
-                                                        await LanguageManager
-                                                              .GetStringAsync(
-                                                                  "String_ExpenseVehicleRetrofit", token: token)
-                                                              .ConfigureAwait(false),
-                                                        await objMod.Parent.GetCurrentDisplayNameAsync(token)
-                                                                    .ConfigureAwait(false)), ExpenseType.Nuyen,
-                                          DateTime.Now);
-                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
-                                             .ConfigureAwait(false);
-
-                        // Adjust the character's Nuyen total.
-                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
-                    }
-
-                    break;
-                }
-                case ICanRemove selectedObject:
-                    await selectedObject.RemoveAsync(token: token).ConfigureAwait(false);
-                    break;
             }
         }
 
@@ -16144,55 +16111,6 @@ namespace Chummer
             }
         }
 
-        private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            TreeNode nodSelected = treWeapons.SelectedNode;
-            if (nodSelected == null)
-                return;
-            string strSelectedWeapon = nodSelected.Tag?.ToString();
-            if (string.IsNullOrEmpty(strSelectedWeapon) || strSelectedWeapon == "Node_SelectedWeapons")
-                return;
-            int intDragLevel = nodSelected.Level;
-            if (intDragLevel != 1)
-                return;
-            _intDragLevel = intDragLevel;
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        private void treWeapons_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private async void treWeapons_DragDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                await DoTreeDragDrop(sender, e, treWeapons, ItemTreeViewTypes.Weapons, GenericToken)
-                    .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void treWeapons_DragOver(object sender, DragEventArgs e)
-        {
-            Point pt = ((TreeView) sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = ((TreeView) sender).GetNodeAt(pt);
-
-            if (objNode == null)
-                return;
-
-            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDarker;
-
-            // Clear the background color for all other Nodes.
-            treWeapons.ClearNodeBackground(objNode);
-        }
-
         private async void treArmor_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
@@ -16206,48 +16124,6 @@ namespace Chummer
             {
                 //swallow this
             }
-        }
-
-        private void treArmor_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            int intDragLevel = treArmor.SelectedNode?.Level ?? 0;
-            if (intDragLevel != 1)
-                return;
-            _intDragLevel = intDragLevel;
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        private void treArmor_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private async void treArmor_DragDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                await DoTreeDragDrop(sender, e, treArmor, ItemTreeViewTypes.Armor, GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void treArmor_DragOver(object sender, DragEventArgs e)
-        {
-            Point pt = ((TreeView) sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = ((TreeView) sender).GetNodeAt(pt);
-
-            if (objNode == null)
-                return;
-
-            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDarker;
-
-            // Clear the background color for all other Nodes.
-            treArmor.ClearNodeBackground(objNode);
         }
 
         private async void treLifestyles_AfterSelect(object sender, TreeViewEventArgs e)
@@ -16400,63 +16276,6 @@ namespace Chummer
             {
                 //swallow this
             }
-        }
-
-        /*
-        private void treLifestyles_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level != 1)
-            {
-                    return;
-            }
-            _intDragLevel = treLifestyles.SelectedNode.Level;
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        private void treLifestyles_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private void treLifestyles_DragDrop(object sender, DragEventArgs e)
-        {
-            Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
-
-            int intNewIndex = 0;
-            if (nodDestination != null)
-            {
-                intNewIndex = nodDestination.Index;
-            }
-            else if (treLifestyles.Nodes.Count > 0)
-            {
-                intNewIndex = treLifestyles.Nodes[treLifestyles.Nodes.Count - 1].Nodes.Count;
-                nodDestination = treLifestyles.Nodes[treLifestyles.Nodes.Count - 1];
-            }
-
-            CommonFunctions.MoveLifestyleNode(CharacterObject, intNewIndex, nodDestination, treLifestyles);
-
-            // Clear the background color for all Nodes.
-            treLifestyles.ClearNodeBackground(null);
-
-            await SetDirty(true);
-        }
-        */
-
-        private void treLifestyles_DragOver(object sender, DragEventArgs e)
-        {
-            Point pt = ((TreeView) sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = ((TreeView) sender).GetNodeAt(pt);
-
-            if (objNode == null)
-                return;
-
-            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDarker;
-
-            // Clear the background color for all other Nodes.
-            treLifestyles.ClearNodeBackground(objNode);
         }
 
         private async void treGear_AfterSelect(object sender, TreeViewEventArgs e)
@@ -16700,70 +16519,6 @@ namespace Chummer
             {
                 //swallow this
             }
-        }
-
-        private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            TreeNode nodSelected = treGear.SelectedNode;
-            if (nodSelected == null)
-                return;
-            string strSelected = nodSelected.Tag?.ToString();
-            if (string.IsNullOrEmpty(strSelected) || strSelected == "Node_SelectedGear")
-                return;
-            int intDragLevel = nodSelected.Level;
-            if (e.Button == MouseButtons.Left)
-            {
-                if (intDragLevel > 1 || intDragLevel < 0)
-                    return;
-                DragButton = MouseButtons.Left;
-            }
-            else
-            {
-                if (intDragLevel == 0)
-                    return;
-                DragButton = MouseButtons.Right;
-            }
-
-            _intDragLevel = intDragLevel;
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        private void treGear_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private async void treGear_DragDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                await DoTreeDragDrop(sender, e, treGear, ItemTreeViewTypes.Gear, GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void treGear_DragOver(object sender, DragEventArgs e)
-        {
-            Point pt = ((TreeView) sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = ((TreeView) sender).GetNodeAt(pt);
-
-            if (objNode == null)
-                return;
-
-            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (DragButton == MouseButtons.Left)
-            {
-                if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = ColorManager.ControlDarker;
-            }
-            else
-                objNode.BackColor = ColorManager.ControlDarker;
-
-            // Clear the background color for all other Nodes.
-            treGear.ClearNodeBackground(objNode);
         }
 
         private async void chkGearEquipped_CheckedChanged(object sender, EventArgs e)
@@ -18027,67 +17782,6 @@ namespace Chummer
             }
         }
 
-        private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            TreeNode nodSelected = treVehicles.SelectedNode;
-            switch (nodSelected?.Tag)
-            {
-                // Determine if this is a piece of Gear or a Vehicle. If not, don't let the user drag it.
-                case Gear _:
-                    DragButton = e.Button;
-                    DraggingGear = true;
-                    _intDragLevel = nodSelected.Level;
-                    DoDragDrop(e.Item, DragDropEffects.Move);
-                    break;
-
-                case Vehicle _:
-                    DragButton = e.Button;
-                    DraggingGear = false;
-                    _intDragLevel = nodSelected.Level;
-                    DoDragDrop(e.Item, DragDropEffects.Move);
-                    break;
-            }
-        }
-
-        private void treVehicles_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private async void treVehicles_DragDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                await DoTreeDragDrop(sender, e, treVehicles, ItemTreeViewTypes.Vehicles, GenericToken)
-                    .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void treVehicles_DragOver(object sender, DragEventArgs e)
-        {
-            Point pt = ((TreeView) sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = ((TreeView) sender).GetNodeAt(pt);
-
-            if (objNode == null)
-                return;
-
-            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (DragButton == MouseButtons.Left)
-            {
-                if (objNode.Level <= _intDragLevel)
-                    objNode.BackColor = ColorManager.ControlDarker;
-            }
-            else
-                objNode.BackColor = ColorManager.ControlDarker;
-
-            // Clear the background color for all other Nodes.
-            treVehicles.ClearNodeBackground(objNode);
-        }
-
         private async void cmdFireVehicleWeapon_Click(object sender, EventArgs e)
         {
             try
@@ -18997,23 +18691,6 @@ namespace Chummer
             }
         }
 
-        private async void treComplexForms_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
         private async void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
@@ -19757,50 +19434,6 @@ namespace Chummer
             }
         }
 
-        private void treImprovements_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            // Do not allow the root element to be moved.
-            if (treImprovements.SelectedNode == null
-                || treImprovements.SelectedNode.Tag.ToString() == "Node_SelectedImprovements")
-                return;
-            _intDragLevel = treImprovements.SelectedNode.Level;
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        private void treImprovements_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-        }
-
-        private async void treImprovements_DragDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                await DoTreeDragDrop(sender, e, treImprovements, ItemTreeViewTypes.Improvements, GenericToken)
-                    .ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void treImprovements_DragOver(object sender, DragEventArgs e)
-        {
-            Point pt = ((TreeView) sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode objNode = ((TreeView) sender).GetNodeAt(pt);
-
-            if (objNode == null)
-                return;
-
-            // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (objNode.Level <= _intDragLevel)
-                objNode.BackColor = ColorManager.ControlDarker;
-
-            // Clear the background color for all other Nodes.
-            treImprovements.ClearNodeBackground(objNode);
-        }
-
         private async void cmdAddImprovementGroup_Click(object sender, EventArgs e)
         {
             try
@@ -19843,174 +19476,6 @@ namespace Chummer
                 try
                 {
                     await DoDeleteQuality(GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treSpells_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treCyberware_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treLifestyles_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treArmor_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treWeapons_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treGear_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treVehicles_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await DoDeleteVehicle(GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treMartialArts_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treCritterPowers_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
-        private async void treMetamagic_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {

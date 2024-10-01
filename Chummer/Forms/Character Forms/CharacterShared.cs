@@ -10501,11 +10501,13 @@ namespace Chummer
         protected MouseButtons DragButton { get; set; } = MouseButtons.None;
         protected bool DraggingGear { get; set; }
 
-        protected async Task DoTreeDragDrop(object sender, DragEventArgs e, TreeView treView, ItemTreeViewTypes eType, CancellationToken token = default)
+        protected async Task DoTreeDragDrop(object sender, DragEventArgs e, ItemTreeViewTypes eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestination = await ((TreeView)sender).DoThreadSafeFuncAsync(x => x.GetNodeAt(pt), token).ConfigureAwait(false);
+            if (!(sender is TreeView treView))
+                return;
+            Point pt = treView.PointToClient(new Point(e.X, e.Y));
+            TreeNode nodDestination = await treView.DoThreadSafeFuncAsync(x => x.GetNodeAt(pt), token).ConfigureAwait(false);
 
             TreeNode objSelected = await treView.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
             for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
@@ -10532,78 +10534,76 @@ namespace Chummer
                 }
             }
 
-            bool requireParentSortable = false;
+            bool blnRequireParentSortable = false;
             // Put the weapon in the right location (or lack thereof)
-            await treView.DoThreadSafeAsync(() =>
+            switch (eType)
             {
-                switch (eType)
-                {
-                    case ItemTreeViewTypes.Misc:
-                        requireParentSortable = true;
-                        break;
-                    case ItemTreeViewTypes.Weapons:
+                case ItemTreeViewTypes.Misc:
+                    blnRequireParentSortable = true;
+                    break;
+                case ItemTreeViewTypes.Weapons:
                     {
-                        if (objSelected.Level == 1)
-                            CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, objSelected, token: token);
-                        else
-                            CharacterObject.MoveWeaponRoot(intNewIndex, nodDestination, objSelected);
+                        if (objSelected.Level == 0)
+                            await CharacterObject.MoveWeaponRootAsync(intNewIndex, nodDestination, objSelected, token).ConfigureAwait(false);
+                        else if (objSelected.Level == nodDestination?.Level)
+                            await CharacterObject.MoveWeaponNodeAsync(intNewIndex, nodDestination, objSelected, token: token).ConfigureAwait(false);
                         break;
                     }
-                    case ItemTreeViewTypes.Armor:
+                case ItemTreeViewTypes.Armor:
                     {
-                        if (objSelected.Level == 1)
-                            CharacterObject.MoveArmorNode(intNewIndex, nodDestination, objSelected, token: token);
-                        else
-                            CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, objSelected);
+                        if (objSelected.Level == 0)
+                            await CharacterObject.MoveArmorRootAsync(intNewIndex, nodDestination, objSelected, token).ConfigureAwait(false);
+                        else if (objSelected.Level == nodDestination?.Level)
+                            await CharacterObject.MoveArmorNodeAsync(intNewIndex, nodDestination, objSelected, token: token).ConfigureAwait(false);
                         break;
                     }
-                    case ItemTreeViewTypes.Gear:
+                case ItemTreeViewTypes.Gear:
                     {
                         switch (DragButton)
                         {
                             // If the item was moved using the left mouse button, change the order of things.
-                            case MouseButtons.Left when objSelected.Level == 1:
-                                CharacterObject.MoveGearNode(intNewIndex, nodDestination, objSelected, token: token);
-                                break;
-
                             case MouseButtons.Left:
-                                CharacterObject.MoveGearRoot(intNewIndex, nodDestination, objSelected);
+                                if (objSelected.Level == 0)
+                                    await CharacterObject.MoveGearRootAsync(intNewIndex, nodDestination, objSelected, token).ConfigureAwait(false);
+                                else if (objSelected.Level == nodDestination?.Level)
+                                    await CharacterObject.MoveGearNodeAsync(intNewIndex, nodDestination, objSelected, token: token).ConfigureAwait(false);
                                 break;
-
                             case MouseButtons.Right:
-                                CharacterObject.MoveGearParent(objSelected, objSelected, token: token);
+                                await CharacterObject.MoveGearParentAsync(objSelected, objSelected, token: token).ConfigureAwait(false);
                                 break;
                         }
+
                         break;
                     }
-                    case ItemTreeViewTypes.Vehicles:
+                case ItemTreeViewTypes.Vehicles:
                     {
                         if (!DraggingGear)
                         {
-                            CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, objSelected, token: token);
+                            await CharacterObject.MoveVehicleNodeAsync(intNewIndex, nodDestination, objSelected, token: token).ConfigureAwait(false);
                         }
                         else
                         {
-                            CharacterObject.MoveVehicleGearParent(nodDestination, objSelected, token: token);
+                            await CharacterObject.MoveVehicleGearParentAsync(nodDestination, objSelected, token: token).ConfigureAwait(false);
                             DraggingGear = false;
                         }
                         break;
                     }
-                    case ItemTreeViewTypes.Improvements:
+                case ItemTreeViewTypes.Improvements:
                     {
-                        if (objSelected.Level == 1)
-                            CharacterObject.MoveImprovementNode(nodDestination, objSelected, token: token);
+                        if (objSelected.Level == 0)
+                            await CharacterObject.MoveImprovementRootAsync(intNewIndex, nodDestination, objSelected, token).ConfigureAwait(false);
                         else
-                            CharacterObject.MoveImprovementRoot(intNewIndex, nodDestination, objSelected);
+                            await CharacterObject.MoveImprovementNodeAsync(nodDestination, objSelected, token: token).ConfigureAwait(false);
                         break;
                     }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(eType), eType, null);
-                }
-            }, token).ConfigureAwait(false);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eType), eType, null);
+            }
 
             // Put the weapon in the right order in the tree
-            await MoveTreeNode(await treView.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objSelected.Tag), token).ConfigureAwait(false), intNewIndex, requireParentSortable, token).ConfigureAwait(false);
+            await MoveTreeNode(
+                await treView.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objSelected.Tag), token).ConfigureAwait(false),
+                intNewIndex, blnRequireParentSortable, token).ConfigureAwait(false);
 
             await treView.DoThreadSafeAsync(x =>
             {
@@ -11434,6 +11434,7 @@ namespace Chummer
             GenericToken.ThrowIfCancellationRequested();
             if (!(objSelected is ICanRemove objRemovable))
                 return;
+
             CancellationTokenSource objSource = null;
             if (token != GenericToken)
             {
@@ -11450,6 +11451,63 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
+                        if (objRemovable is VehicleMod objMod && objMod.Name == "Obsolete")
+                        {
+                            decimal decPercentage;
+                            string strRetrofit = await LanguageManager.GetStringAsync("String_Retrofit", token: token)
+                                .ConfigureAwait(false);
+                            using (ThreadSafeForm<SelectNumber> frmModPercent = await ThreadSafeForm<SelectNumber>.GetAsync(
+                                       () => new SelectNumber
+                                       {
+                                           Minimum = 0,
+                                           Maximum = 1000000,
+                                           Description = strRetrofit
+                                       }, token).ConfigureAwait(false))
+                            {
+                                if (await frmModPercent.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    return;
+
+                                decPercentage = frmModPercent.MyForm.SelectedValue;
+                            }
+
+                            decimal decVehicleCost = objMod.Parent.OwnCost;
+
+                            // Make sure the character has enough Nuyen for the expense.
+                            decimal decCost = decVehicleCost * decPercentage / 100;
+
+                            // Create a Vehicle Mod for the Retrofit.
+                            VehicleMod objRetrofit = new VehicleMod(CharacterObject);
+
+                            XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml", token: token)
+                                .ConfigureAwait(false);
+                            XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
+                            await objRetrofit.CreateAsync(objXmlNode, 0, objMod.Parent, token: token).ConfigureAwait(false);
+                            objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
+                            objRetrofit.IncludedInVehicle = true;
+                            await objMod.Parent.Mods.AddAsync(objRetrofit, token).ConfigureAwait(false);
+
+                            if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                            {
+                                // Create an Expense Log Entry for removing the Obsolete Mod.
+                                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                                objExpense.Create(decCost * -1,
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager
+                                            .GetStringAsync(
+                                                "String_ExpenseVehicleRetrofit", token: token)
+                                            .ConfigureAwait(false),
+                                        await objMod.Parent.GetCurrentDisplayNameAsync(token)
+                                            .ConfigureAwait(false)), ExpenseType.Nuyen,
+                                    DateTime.Now);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                    .ConfigureAwait(false);
+
+                                // Adjust the character's Nuyen total.
+                                await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+                            }
+                        }
                         await objRemovable.RemoveAsync(token: token).ConfigureAwait(false);
                     }
                     finally
