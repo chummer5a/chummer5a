@@ -68,7 +68,6 @@ namespace Chummer
         private bool _blnAllowEditPartOfBaseWeapon;
         private bool _blnAllowHigherStackedFoci;
         private bool _blnAllowInitiationInCreateMode;
-        private bool _blnAllowObsolescentUpgrade;
         private bool _blnDontUseCyberlimbCalculation;
         private bool _blnAllowSkillRegrouping = true;
         private bool _blnSpecializationsBreakSkillGroups = true;
@@ -1284,7 +1283,6 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnAllowEditPartOfBaseWeapon.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowHigherStackedFoci.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowInitiationInCreateMode.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowObsolescentUpgrade.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDontUseCyberlimbCalculation.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowSkillRegrouping.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnSpecializationsBreakSkillGroups.GetHashCode();
@@ -3429,8 +3427,6 @@ namespace Chummer
                 // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
                 objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
                                                   ref _blnAlternateMetatypeAttributeKarma);
-                // Whether Obsolescent can be removed/upgrade in the same manner as Obsolete.
-                objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
                 // Whether Bioware Suites can be created and added.
                 objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
                 // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
@@ -4201,8 +4197,6 @@ namespace Chummer
                 // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
                 objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
                                                   ref _blnAlternateMetatypeAttributeKarma);
-                // Whether Obsolescent can be removed/upgrade in the same manner as Obsolete.
-                objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
                 // Whether Bioware Suites can be created and added.
                 objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
                 // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
@@ -12639,31 +12633,6 @@ namespace Chummer
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Whether Obsolescent can be removed/upgraded in the same way as Obsolete.
-        /// </summary>
-        public bool AllowObsolescentUpgrade
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return _blnAllowObsolescentUpgrade;
-            }
-            set
-            {
-                using (LockObject.EnterUpgradeableReadLock())
-                {
-                    if (_blnAllowObsolescentUpgrade == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        _blnAllowObsolescentUpgrade = value;
-                        OnPropertyChanged();
-                    }
-                }
             }
         }
 
