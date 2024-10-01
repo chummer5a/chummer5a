@@ -3221,9 +3221,9 @@ namespace Chummer.Backend.Attributes
                     int intTotalBase = intRawTotalBase;
                     if (_objCharacter.Settings.AlternateMetatypeAttributeKarma)
                     {
-                        int intHumanMinimum = _objCharacter.Settings.ReverseAttributePriorityOrder
-                            ? FreeBase + 1 + MinimumModifiers
-                            : Base + FreeBase + 1 + MinimumModifiers;
+                        int intHumanMinimum = FreeBase + 1 + MinimumModifiers;
+                        if (!_objCharacter.Settings.ReverseAttributePriorityOrder)
+                            intHumanMinimum += Base;
                         if (intHumanMinimum < 1)
                         {
                             if (_objCharacter.IsCritter || MetatypeMaximum == 0 || Abbrev == "EDG" || Abbrev == "MAG" ||
@@ -3292,15 +3292,15 @@ namespace Chummer.Backend.Attributes
                 int intValue = await GetValueAsync(token).ConfigureAwait(false);
                 int intFreeBase = await GetFreeBaseAsync(token).ConfigureAwait(false);
                 CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                int intRawTotalBase = objSettings.ReverseAttributePriorityOrder
+                int intRawTotalBase = await objSettings.GetReverseAttributePriorityOrderAsync(token).ConfigureAwait(false)
                     ? Math.Max(intFreeBase + await GetRawMinimumAsync(token).ConfigureAwait(false),
                         await GetTotalMinimumAsync(token).ConfigureAwait(false))
                     : await GetTotalBaseAsync(token).ConfigureAwait(false);
                 int intTotalBase = intRawTotalBase;
-                if (objSettings.AlternateMetatypeAttributeKarma)
+                if (await objSettings.GetAlternateMetatypeAttributeKarmaAsync(token).ConfigureAwait(false))
                 {
                     int intHumanMinimum = intFreeBase + 1 + await GetMinimumModifiersAsync(token).ConfigureAwait(false);
-                    if (!objSettings.ReverseAttributePriorityOrder)
+                    if (!await objSettings.GetReverseAttributePriorityOrderAsync(token).ConfigureAwait(false))
                         intHumanMinimum += await GetBaseAsync(token).ConfigureAwait(false);
                     if (intHumanMinimum < 1)
                     {

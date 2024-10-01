@@ -1683,12 +1683,12 @@ namespace Chummer
                                                          GlobalSettings.InvariantCultureInfo));
 
                         objWriter.WriteElementString("mysaddppcareer",
-                                                     MysAdeptAllowPpCareer.ToString(
-                                                         GlobalSettings.InvariantCultureInfo));
+                            _blnMysAdeptAllowPpCareer.ToString(
+                                GlobalSettings.InvariantCultureInfo));
 
                         // <mysadeptsecondmagattribute />
                         objWriter.WriteElementString("mysadeptsecondmagattribute",
-                                                     MysAdeptSecondMAGAttribute.ToString(
+                                                     _blnMysAdeptSecondMAGAttribute.ToString(
                                                          GlobalSettings.InvariantCultureInfo));
 
                         // <exceednegativequalities />
@@ -1773,12 +1773,8 @@ namespace Chummer
                                                          GlobalSettings.InvariantCultureInfo));
                         // <reversekarmapriorityorder />
                         objWriter.WriteElementString("reverseattributepriorityorder",
-                                                     ReverseAttributePriorityOrder.ToString(
-                                                         GlobalSettings.InvariantCultureInfo));
-                        // <allowobsolescentupgrade />
-                        objWriter.WriteElementString("allowobsolescentupgrade",
-                                                     _blnAllowObsolescentUpgrade.ToString(
-                                                         GlobalSettings.InvariantCultureInfo));
+                            _blnReverseAttributePriorityOrder.ToString(
+                                GlobalSettings.InvariantCultureInfo));
                         // <allowbiowaresuites />
                         objWriter.WriteElementString("allowbiowaresuites",
                                                      _blnAllowBiowareSuites.ToString(
@@ -2476,13 +2472,13 @@ namespace Chummer
                             .ConfigureAwait(false);
 
                         await objWriter.WriteElementStringAsync("mysaddppcareer",
-                                (await GetMysAdeptAllowPpCareerAsync(token).ConfigureAwait(false)).ToString(
+                                _blnMysAdeptAllowPpCareer.ToString(
                                     GlobalSettings.InvariantCultureInfo), token: token)
                             .ConfigureAwait(false);
 
                         // <mysadeptsecondmagattribute />
                         await objWriter.WriteElementStringAsync("mysadeptsecondmagattribute",
-                                (await GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)).ToString(
+                                _blnMysAdeptSecondMAGAttribute.ToString(
                                     GlobalSettings.InvariantCultureInfo), token: token)
                             .ConfigureAwait(false);
 
@@ -2592,12 +2588,7 @@ namespace Chummer
                             .ConfigureAwait(false);
                         // <reversekarmapriorityorder />
                         await objWriter.WriteElementStringAsync("reverseattributepriorityorder",
-                                ReverseAttributePriorityOrder.ToString(
-                                    GlobalSettings.InvariantCultureInfo), token: token)
-                            .ConfigureAwait(false);
-                        // <allowobsolescentupgrade />
-                        await objWriter.WriteElementStringAsync("allowobsolescentupgrade",
-                                _blnAllowObsolescentUpgrade.ToString(
+                                _blnReverseAttributePriorityOrder.ToString(
                                     GlobalSettings.InvariantCultureInfo), token: token)
                             .ConfigureAwait(false);
                         // <allowbiowaresuites />
