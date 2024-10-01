@@ -8518,7 +8518,7 @@ namespace Chummer
             this.treGear.Size = new System.Drawing.Size(302, 564);
             this.treGear.TabIndex = 49;
             this.treGear.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treGear_AfterSelect);
-            this.treGear.DragDrop += new System.Windows.Forms.DragEventHandler(this.treGear_DragDrop);
+            this.treGear.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
             this.treGear.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
             this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
             this.treGear.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
@@ -9270,7 +9270,7 @@ namespace Chummer
             this.treArmor.Size = new System.Drawing.Size(302, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
-            this.treArmor.DragDrop += new System.Windows.Forms.DragEventHandler(this.treArmor_DragDrop);
+            this.treArmor.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
             this.treArmor.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
             this.treArmor.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
@@ -9985,7 +9985,7 @@ namespace Chummer
             this.treWeapons.Size = new System.Drawing.Size(302, 564);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
-            this.treWeapons.DragDrop += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragDrop);
+            this.treWeapons.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
             this.treWeapons.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
             this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
             this.treWeapons.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
@@ -13488,7 +13488,7 @@ namespace Chummer
             this.treVehicles.Size = new System.Drawing.Size(304, 590);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
-            this.treVehicles.DragDrop += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragDrop);
+            this.treVehicles.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
             this.treVehicles.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
             this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
             this.treVehicles.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
