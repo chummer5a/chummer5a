@@ -1205,14 +1205,14 @@ namespace Chummer.Backend.Skills
                         return _intCachedHasAnyBreakingSkills > 0;
                     using (_objCachedHasAnyBreakingSkillsLock.EnterWriteLock())
                     {
-                        if (SkillList.Count <= 1)
-                            _intCachedHasAnyBreakingSkills = 0;
-                        else
+                        if (SkillList.Count > 0)
                         {
                             Skill objFirstEnabledSkill = SkillList.Find(x => x.Enabled);
                             if (objFirstEnabledSkill == null ||
                                 SkillList.All(x => x == objFirstEnabledSkill || !x.Enabled))
+                            {
                                 _intCachedHasAnyBreakingSkills = 0;
+                            }
                             else if (_objCharacter.Settings.SpecializationsBreakSkillGroups && SkillList.Any(
                                          x =>
                                              x.Specializations.Count != 0
@@ -1229,6 +1229,8 @@ namespace Chummer.Backend.Skills
                                     && x.Enabled).ToInt32();
                             }
                         }
+                        else
+                            _intCachedHasAnyBreakingSkills = 0;
                     }
 
                     return _intCachedHasAnyBreakingSkills > 0;
@@ -1262,9 +1264,7 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (SkillList.Count <= 1)
-                        _intCachedHasAnyBreakingSkills = 0;
-                    else
+                    if (SkillList.Count > 0)
                     {
                         Skill objFirstEnabledSkill = await SkillList
                             .FirstOrDefaultAsync(
@@ -1276,7 +1276,9 @@ namespace Chummer.Backend.Skills
                                     async x => x == objFirstEnabledSkill
                                                || !await x.GetEnabledAsync(token).ConfigureAwait(false),
                                     token).ConfigureAwait(false))
+                        {
                             _intCachedHasAnyBreakingSkills = 0;
+                        }
                         else if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
                                      .GetSpecializationsBreakSkillGroupsAsync(token).ConfigureAwait(false)
                                  && await SkillList
@@ -1305,6 +1307,8 @@ namespace Chummer.Backend.Skills
                                 .ConfigureAwait(false)).ToInt32();
                         }
                     }
+                    else
+                        _intCachedHasAnyBreakingSkills = 0;
                 }
                 finally
                 {
@@ -1912,8 +1916,7 @@ namespace Chummer.Backend.Skills
                         new DependencyGraphNode<string, SkillGroup>(nameof(Name))
                     ),
                     new DependencyGraphNode<string, SkillGroup>(nameof(IsBroken),
-                        new DependencyGraphNode<string, SkillGroup>(nameof(HasAnyBreakingSkills), x => !x.IsBroken || x.CharacterObject.Settings.AllowSkillRegrouping, async (x, t) => !await x.GetIsBrokenAsync(t).ConfigureAwait(false) || await
-                                (await x.CharacterObject.GetSettingsAsync(t).ConfigureAwait(false)).GetAllowSkillRegroupingAsync(t).ConfigureAwait(false),
+                        new DependencyGraphNode<string, SkillGroup>(nameof(HasAnyBreakingSkills),
                             new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
                         )
                     ),
