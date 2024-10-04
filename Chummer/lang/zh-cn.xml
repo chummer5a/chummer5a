@@ -2739,15 +2739,15 @@
     </string>
     <string>
       <key>Tip_SkillsSkillGroups</key>
-      <text>每个技能组点数花费{0}业力。</text>
+      <text>技能组花费每等级{0}点业力。</text>
     </string>
     <string>
       <key>Tip_SkillsActiveSkills</key>
-      <text>技能花费{0}点业力，专精花费{1}点业力。角色在创建阶段最多有一个行动技能达到6级，两个行动技能达到5级，其他的必须在4级或4级以下。</text>
+      <text>技能花费每等级{0}点业力，专精花费{1}点业力。</text>
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>角色获得（INT+LOG）x{0}点免费知识与语言技能点。额外的知识技能点每点花费{1}点业力。等级为0的知识技能视为你的母语。</text>
+      <text>角色依据角色选项获得若干点免费知识与语言技能点。额外的知识与语言技能花费每等级{0}点业力，专精花费{1}点业力。等级为0的语言技能视为你的母语。</text>
     </string>
     <!-- Martial Arts Tab -->
     <string>
