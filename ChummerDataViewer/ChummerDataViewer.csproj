@@ -45,17 +45,20 @@
     <ProjectReference Include="$(SolutionDir)Chummer\Chummer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core" Version="3.7.400.24" />
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.401.2" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.400.29" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.401.7" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework" Version="1.0.118.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118.0" />
+    <PackageReference Include="Stub.System.Data.SQLite.Core.NetFramework" Version="1.0.119" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
