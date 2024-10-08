@@ -885,7 +885,7 @@ namespace Chummer
 
         private void SetButtonDrawState()
         {
-            if (Bounds.Contains(Parent.PointToClient(Cursor.Position)))
+            if (ClientRectangle.Contains(Parent.PointToClient(Cursor.Position)))
             {
                 State = PushButtonState.Hot;
             }

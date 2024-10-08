@@ -418,7 +418,7 @@ namespace Chummer.UI.Skills
 
         private ButtonWithToolTip FindToolTipControl(Point pt)
         {
-            return Controls.OfType<ButtonWithToolTip>().FirstOrDefault(c => c.Bounds.Contains(pt));
+            return Controls.OfType<ButtonWithToolTip>().FirstOrDefault(c => c.ClientRectangle.Contains(pt));
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
