@@ -733,79 +733,65 @@ namespace Chummer.Backend.Equipment
                         objWeapon.Cost = "0";
 
                         // Find the first free Weapon Mount in the Vehicle.
-                        foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
+                        WeaponMount objWeaponMount = blnSync
+                            ? _lstWeaponMounts.FirstOrDefault(x => !x.IsWeaponsFull &&
+                                                                   (x.AllowedWeaponCategories.Contains(
+                                                                        objWeapon.SizeCategory) ||
+                                                                    x.AllowedWeapons.Contains(objWeapon.Name) ||
+                                                                    string.IsNullOrEmpty(x.AllowedWeaponCategories)))
+                            : await _lstWeaponMounts.FirstOrDefaultAsync(x => !x.IsWeaponsFull &&
+                                                                              (x.AllowedWeaponCategories.Contains(
+                                                                                   objWeapon.SizeCategory) ||
+                                                                               x.AllowedWeapons
+                                                                                   .Contains(objWeapon.Name) ||
+                                                                               string.IsNullOrEmpty(
+                                                                                   x.AllowedWeaponCategories)), token).ConfigureAwait(false);
+                        if (objWeaponMount != null)
                         {
-                            if (objWeaponMount.IsWeaponsFull)
-                                continue;
-                            if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
-                                !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
-                                !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
-                                continue;
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objWeaponMount.Weapons.Add(objWeapon);
                             else
                                 await objWeaponMount.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                            blnAttached = true;
-                            foreach (Weapon objSubWeapon in lstSubWeapons)
+                        }
+                        else
+                        {
+                            VehicleMod objMod = (blnSync
+                                                    ? _lstVehicleMods.FirstOrDefault(x =>
+                                                        x.Name.Contains("Weapon Mount") ||
+                                                        !string.IsNullOrEmpty(x.WeaponMountCategories) &&
+                                                        x.WeaponMountCategories.Contains(objWeapon.SizeCategory) &&
+                                                        x.Weapons.Count == 0)
+                                                    : await _lstVehicleMods.FirstOrDefaultAsync(async x =>
+                                                        x.Name.Contains("Weapon Mount") ||
+                                                        !string.IsNullOrEmpty(x.WeaponMountCategories) &&
+                                                        x.WeaponMountCategories.Contains(objWeapon.SizeCategory) &&
+                                                        await x.Weapons.GetCountAsync(token).ConfigureAwait(false) == 0, token).ConfigureAwait(false)) ??
+                                                (blnSync
+                                                    ? _lstVehicleMods.FirstOrDefault(x =>
+                                                        x.Name.Contains("Weapon Mount") ||
+                                                        !string.IsNullOrEmpty(x.WeaponMountCategories) &&
+                                                        x.WeaponMountCategories.Contains(objWeapon.SizeCategory))
+                                                    : await _lstVehicleMods.FirstOrDefaultAsync(x =>
+                                                            x.Name.Contains("Weapon Mount") ||
+                                                            !string.IsNullOrEmpty(x.WeaponMountCategories) &&
+                                                            x.WeaponMountCategories.Contains(objWeapon.SizeCategory),
+                                                        token).ConfigureAwait(false));
+                            if (objMod != null)
                             {
                                 if (blnSync)
+                                {
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objWeaponMount.Weapons.Add(objSubWeapon);
-                                else
-                                    await objWeaponMount.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-
-                        // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
-                        if (!blnAttached)
-                        {
-                            foreach (VehicleMod objMod in _lstVehicleMods)
-                            {
-                                if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory) && objMod.Weapons.Count == 0)
-                                {
-                                    if (blnSync)
-                                    {
+                                    objMod.Weapons.Add(objWeapon);
+                                    foreach (Weapon objSubWeapon in lstSubWeapons)
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objMod.Weapons.Add(objWeapon);
-                                        foreach (Weapon objSubWeapon in lstSubWeapons)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objMod.Weapons.Add(objSubWeapon);
-                                    }
-                                    else
-                                    {
-                                        await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                                        foreach (Weapon objSubWeapon in lstSubWeapons)
-                                            await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
-                                    }
-
-                                    break;
+                                        objMod.Weapons.Add(objSubWeapon);
                                 }
-                            }
-                            if (!blnAttached)
-                            {
-                                foreach (VehicleMod objMod in _lstVehicleMods)
+                                else
                                 {
-                                    if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.SizeCategory))
-                                    {
-                                        if (blnSync)
-                                        {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objMod.Weapons.Add(objWeapon);
-                                            foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objMod.Weapons.Add(objSubWeapon);
-                                        }
-                                        else
-                                        {
-                                            await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                                            foreach (Weapon objSubWeapon in lstSubWeapons)
-                                                await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
-                                        }
-                                        break;
-                                    }
+                                    await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                    foreach (Weapon objSubWeapon in lstSubWeapons)
+                                        await objMod.Weapons.AddAsync(objSubWeapon, token).ConfigureAwait(false);
                                 }
                             }
                         }
