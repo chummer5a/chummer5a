@@ -178,11 +178,11 @@ namespace Codaxy.WkHtmlToPdf
                 document.Url = "-";
 
             string outputPdfFilePath = woutput.OutputFilePath;
-            bool delete = false;
-            if (string.IsNullOrWhiteSpace(outputPdfFilePath) || !Directory.Exists(outputPdfFilePath))
+            bool blnTemporaryFile = false;
+            if (string.IsNullOrWhiteSpace(outputPdfFilePath))
             {
                 outputPdfFilePath = Path.Combine(environment.TempFolderPath, Guid.NewGuid() + ".pdf");
-                delete = true;
+                blnTemporaryFile = true;
             }
 
             if (!File.Exists(environment.WkHtmlToPdfPath))
@@ -471,7 +471,7 @@ namespace Codaxy.WkHtmlToPdf
             }
             finally
             {
-                if (delete)
+                if (blnTemporaryFile)
                 {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
