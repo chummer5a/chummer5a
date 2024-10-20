@@ -7099,6 +7099,35 @@ namespace Chummer
 
         #region ContextMenu Events
 
+        private async void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                // Enable and disable menu items
+                if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false) is InitiationGrade objGrade))
+                    return;
+                int intGrade = objGrade.Grade;
+                bool blnHasArt = await CharacterObject.Arts.AnyAsync(art => art.Grade == intGrade, GenericToken)
+                    .ConfigureAwait(false);
+                bool blnHasBonus = await CharacterObject.Metamagics
+                                       .AnyAsync(bonus => bonus.Grade == intGrade, GenericToken)
+                                       .ConfigureAwait(false)
+                                   || await CharacterObject.Spells
+                                       .AnyAsync(spell => spell.Grade == intGrade, GenericToken)
+                                       .ConfigureAwait(false);
+                await this.DoThreadSafeAsync(() =>
+                {
+                    tsMetamagicAddArt.Enabled = !blnHasArt;
+                    tsMetamagicAddMetamagic.Enabled = !blnHasBonus;
+                }, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             try
@@ -12919,7 +12948,12 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (!await CharacterObject.GetInitiationEnabledAsync(token).ConfigureAwait(false))
+            {
+                await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 return;
+            }
+
             IsRefreshing = true;
             try
             {
@@ -12932,10 +12966,12 @@ namespace Chummer
                             objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
                                 ? "Button_RemoveMetamagic"
                                 : "Button_RemoveEcho", token: token).ConfigureAwait(false);
+                        await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
                             x.Enabled = objMetamagic.Grade >= 0;
+                            x.Visible = true;
                         }, token).ConfigureAwait(false);
                         await objMetamagic.SetSourceDetailAsync(lblMetamagicSource, token).ConfigureAwait(false);
                         break;
@@ -12946,10 +12982,12 @@ namespace Chummer
                             objArt.SourceType == Improvement.ImprovementSource.Metamagic
                                 ? "Button_RemoveMetamagic"
                                 : "Button_RemoveEcho", token: token).ConfigureAwait(false);
+                        await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
                             x.Enabled = objArt.Grade >= 0;
+                            x.Visible = true;
                         }, token).ConfigureAwait(false);
                         await objArt.SetSourceDetailAsync(lblMetamagicSource, token).ConfigureAwait(false);
                         break;
@@ -12957,11 +12995,13 @@ namespace Chummer
                     case Spell objSpell:
                     {
                         strText = await LanguageManager.GetStringAsync("Button_RemoveMetamagic", token: token)
-                                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
+                        await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
                             x.Enabled = objSpell.Grade >= 0;
+                            x.Visible = true;
                         }, token).ConfigureAwait(false);
                         await objSpell.SetSourceDetailAsync(lblMetamagicSource, token).ConfigureAwait(false);
                         break;
@@ -12969,11 +13009,13 @@ namespace Chummer
                     case ComplexForm objComplexForm:
                     {
                         strText = await LanguageManager.GetStringAsync("Button_RemoveEcho", token: token)
-                                                       .ConfigureAwait(false);
+                            .ConfigureAwait(false);
+                        await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
                             x.Enabled = objComplexForm.Grade >= 0;
+                            x.Visible = true;
                         }, token).ConfigureAwait(false);
                         await objComplexForm.SetSourceDetailAsync(lblMetamagicSource, token).ConfigureAwait(false);
                         break;
@@ -12984,29 +13026,40 @@ namespace Chummer
                             objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic
                                 ? "Button_RemoveMetamagic"
                                 : "Button_RemoveEcho", token: token).ConfigureAwait(false);
+                        await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
                             x.Enabled = objEnhancement.Grade >= 0;
+                            x.Visible = true;
                         }, token).ConfigureAwait(false);
                         await objEnhancement.SetSourceDetailAsync(lblMetamagicSource, token).ConfigureAwait(false);
                         break;
                     }
-                    default:
+                    case InitiationGrade objGrade:
                     {
                         strText = await LanguageManager.GetStringAsync(
-                            CharacterObject.MAGEnabled
-                                ? "Button_RemoveInitiateGrade"
-                                : "Button_RemoveSubmersionGrade", token: token).ConfigureAwait(false);
+                            objGrade.Technomancer
+                                ? "Button_RemoveSubmersionGrade"
+                                : "Button_RemoveInitiateGrade", token: token).ConfigureAwait(false);
+                        await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
-                            x.Enabled = true;
+                            x.Enabled = objGrade.Grade >= 0;
+                            x.Visible = true;
                         }, token).ConfigureAwait(false);
                         await SourceString.Blank.SetControlAsync(lblMetamagicSource, token).ConfigureAwait(false);
                         break;
                     }
+                    default:
+                    {
+                        await cmsMetamagic.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                        await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        break;
+                    }
                 }
+
                 bool blnVisible = await lblMetamagicSource
                                         .DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(x.Text),
                                                                token: token).ConfigureAwait(false);
