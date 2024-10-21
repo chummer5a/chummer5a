@@ -3357,11 +3357,6 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Legendary Rep</quality>
-        </oneof>
-      </forbidden>
       <source>RF</source>
       <page>149</page>
     </quality>
@@ -3374,11 +3369,6 @@
       <bonus>
         <selecttext />
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Solid Rep</quality>
-        </oneof>
-      </forbidden>
       <source>RF</source>
       <page>149</page>
     </quality>
