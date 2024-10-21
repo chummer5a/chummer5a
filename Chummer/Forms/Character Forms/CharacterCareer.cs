@@ -28073,7 +28073,7 @@ namespace Chummer
                             blnAddAgain = frmPickProgram.MyForm.AddAgain;
 
                             XmlNode objXmlProgram = objXmlDocument.TryGetNodeByNameOrId(
-                                "/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram.CleanXPath());
+                                "/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram);
                             if (objXmlProgram == null)
                                 continue;
 
