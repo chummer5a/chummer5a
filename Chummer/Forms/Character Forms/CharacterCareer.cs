@@ -21841,24 +21841,16 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            if (objSelectedAccessory.Accuracy == 0)
+                            await lblWeaponAccuracyLabel
+                                .DoThreadSafeAsync(x => x.Visible = objSelectedAccessory.TotalAccuracy != 0,
+                                token).ConfigureAwait(false);
+                            await lblWeaponAccuracy.DoThreadSafeAsync(x =>
                             {
-                                await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                            .ConfigureAwait(false);
-                                await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false, token)
-                                                       .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                                            .ConfigureAwait(false);
-                                await lblWeaponAccuracy.DoThreadSafeAsync(x =>
-                                {
-                                    x.Visible = true;
-                                    x.Text = objSelectedAccessory.Accuracy.ToString(
-                                        "+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                                }, token).ConfigureAwait(false);
-                            }
+                                    x.Visible = objSelectedAccessory.TotalAccuracy != 0;
+                                    x.Text
+                                    = objSelectedAccessory.TotalAccuracy.ToString(
+                                "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            }, token).ConfigureAwait(false);
 
                             token.ThrowIfCancellationRequested();
                             if (objSelectedAccessory.DicePool == 0)
@@ -25582,7 +25574,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            if (objAccessory.Accuracy == 0)
+                            if (objAccessory.TotalAccuracy == 0)
                             {
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                                    .ConfigureAwait(false);
@@ -25597,7 +25589,7 @@ namespace Chummer
                                 {
                                     x.Visible = true;
                                     x.Text
-                                        = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                        = objAccessory.TotalAccuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 }, token).ConfigureAwait(false);
                             }
 

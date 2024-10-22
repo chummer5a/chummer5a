@@ -6125,7 +6125,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (objWeaponAccessory.Equipped)
                 {
-                    int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                    int intLoopAccuracy = objWeaponAccessory.TotalAccuracy;
                     if (intLoopAccuracy != 0)
                     {
                         if (!objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
@@ -6145,7 +6145,7 @@ namespace Chummer.Backend.Equipment
                     if (objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
                         && objWeaponAccessory.IncludedInWeapon && objWeaponAccessory.Equipped)
                     {
-                        int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                        int intLoopAccuracy = objWeaponAccessory.TotalAccuracy;
                         if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
                             intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
                     }
@@ -6298,7 +6298,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (objWeaponAccessory.Equipped)
                 {
-                    int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                    int intLoopAccuracy = objWeaponAccessory.TotalAccuracy;
                     if (intLoopAccuracy != 0)
                     {
                         if (!objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
@@ -6318,7 +6318,7 @@ namespace Chummer.Backend.Equipment
                     if (objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
                         && objWeaponAccessory.IncludedInWeapon && objWeaponAccessory.Equipped)
                     {
-                        int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                        int intLoopAccuracy = objWeaponAccessory.TotalAccuracy;
                         if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
                             intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
                     }

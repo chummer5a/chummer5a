@@ -69,7 +69,7 @@ namespace Chummer.Backend.Equipment
         private Color _colNotes = ColorManager.HasNotesColor;
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
-        private int _intAccuracy;
+        private string _strAccuracy = string.Empty;
         private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
@@ -324,7 +324,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
             objXmlAccessory.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
             objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
-            objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+            objXmlAccessory.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
             objXmlAccessory.TryGetStringFieldQuickly("damagetype", ref _strDamageType);
             objXmlAccessory.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -501,7 +501,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("accuracy", _strAccuracy);
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
@@ -576,7 +576,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
-            objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+            objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
             {
                 // Loading older save before maxrating was tracked for Weapon Accessories
@@ -708,7 +708,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("included", IncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy", TotalAccuracy.ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
                 if (GearChildren.Count > 0)
                 {
                     // <gears>
@@ -866,7 +866,74 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Accuracy.
         /// </summary>
-        public int Accuracy => _intAccuracy;
+        public string Accuracy => _strAccuracy;
+
+        public int TotalAccuracy
+        {
+            get
+            {
+                int intReturn = 0;
+
+                string strAccuracy = Accuracy;
+                if (strAccuracy.Contains("Rating"))
+                {
+                    // If the cost is determined by the Rating, evaluate the expression.
+                    strAccuracy = strAccuracy.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    try
+                    {
+                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAccuracy);
+                        if (blnIsSuccess)
+                            intReturn = ((double)objProcess).StandardRound();
+                    }
+                    catch (OverflowException)
+                    {
+                        // swallow this
+                    }
+                    catch (InvalidCastException)
+                    {
+                        // swallow this
+                    }
+                }
+                else if (!string.IsNullOrEmpty(strAccuracy) && !int.TryParse(strAccuracy, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+                {
+                    intReturn = 0;
+                }
+                return intReturn;
+            }
+        }
+
+        public async Task<int> GetTotalAccuracyAsync(CancellationToken token = default)
+        {
+            int intReturn = 0;
+
+            string strAccuracy = Accuracy;
+            if (strAccuracy.Contains("Rating"))
+            {
+                // If the cost is determined by the Rating, evaluate the expression.
+                strAccuracy = strAccuracy.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                try
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strAccuracy, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intReturn = ((double)objProcess).StandardRound();
+                }
+                catch (OverflowException)
+                {
+                    // swallow this
+                }
+                catch (InvalidCastException)
+                {
+                    // swallow this
+                }
+            }
+            else if (!string.IsNullOrEmpty(strAccuracy)
+                     && !int.TryParse(strAccuracy, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+            {
+                intReturn = 0;
+            }
+
+            return intReturn;
+        }
 
         /// <summary>
         /// Accessory modifies Reach by this value.
