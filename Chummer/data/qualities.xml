@@ -14996,7 +14996,6 @@
           <oneof>
             <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
-            <quality>Aware</quality>
             <quality>Enchanter</quality>
             <quality>Explorer</quality>
             <quality>Adept</quality>
@@ -15033,7 +15032,6 @@
           <oneof>
             <quality>Apprentice</quality>
             <quality>Aspected Magician</quality>
-            <quality>Aware</quality>
             <quality>Enchanter</quality>
             <quality>Explorer</quality>
             <quality>Adept</quality>
