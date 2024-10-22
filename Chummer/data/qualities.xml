@@ -14999,6 +14999,7 @@
             <quality>Aware</quality>
             <quality>Enchanter</quality>
             <quality>Explorer</quality>
+            <quality>Adept</quality>
           </oneof>
         </required>
         <value>-5</value>
@@ -15035,6 +15036,7 @@
             <quality>Aware</quality>
             <quality>Enchanter</quality>
             <quality>Explorer</quality>
+            <quality>Adept</quality>
           </oneof>
         </required>
         <value>-5</value>
