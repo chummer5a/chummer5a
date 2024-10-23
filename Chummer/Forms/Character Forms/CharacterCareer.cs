@@ -247,8 +247,19 @@ namespace Chummer
             int intDragLevel = nodSelected.Level;
             if (treView == treGear)
             {
-                if ((intDragLevel == 0) != (e.Button == MouseButtons.Left))
-                    return;
+                switch (e.Button)
+                {
+                    case MouseButtons.Left:
+                        if (intDragLevel < 0 || intDragLevel > 1)
+                            return;
+                        break;
+                    case MouseButtons.Right:
+                        if (intDragLevel == 0)
+                            return;
+                        break;
+                    default:
+                        return;
+                }
             }
             else if (treView == treVehicles)
             {
