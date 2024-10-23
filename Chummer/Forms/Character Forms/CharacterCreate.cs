@@ -5029,7 +5029,7 @@ namespace Chummer
 
                 await CharacterObject.CritterPowers.AddAsync(objPower, GenericToken).ConfigureAwait(false);
 
-                CharacterObject.MetatypeCategory = "Free Sprite";
+                await CharacterObject.SetMetatypeCategoryAsync("Free Sprite", GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -20933,15 +20933,15 @@ namespace Chummer
                         // Armor Capacity.
                         foreach (Armor objArmor in await CharacterObject.GetArmorAsync(token).ConfigureAwait(false))
                         {
-                            if (await objArmor.GetCapacityRemainingAsync(token) < 0)
+                            if (await objArmor.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
                             {
                                 lstOverCapacity.Add(await objArmor.GetCurrentDisplayNameShortAsync(token)
                                     .ConfigureAwait(false));
                             }
 
                             foreach (Gear objGear in await objArmor.GearChildren.DeepWhereAsync(
-                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token) < 0,
-                                         token))
+                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
+                                         token).ConfigureAwait(false))
                             {
                                 lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                     .ConfigureAwait(false));
@@ -20950,8 +20950,8 @@ namespace Chummer
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
                             {
                                 foreach (Gear objGear in await objMod.GearChildren.DeepWhereAsync(
-                                             x => x.Children, async x => await x.GetCapacityRemainingAsync(token) < 0,
-                                             token))
+                                             x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
+                                             token).ConfigureAwait(false))
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                         .ConfigureAwait(false));
@@ -20970,8 +20970,8 @@ namespace Chummer
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
                                 foreach (Gear objGear in await objAccessory.GearChildren.DeepWhereAsync(
-                                             x => x.Children, async x => await x.GetCapacityRemainingAsync(token) < 0,
-                                             token))
+                                             x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
+                                             token).ConfigureAwait(false))
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                         .ConfigureAwait(false));
@@ -20982,7 +20982,7 @@ namespace Chummer
                         // Gear Capacity.
                         foreach (Gear objGear in await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
                                      .DeepWhereAsync(
-                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token) < 0,
+                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
                                          token).ConfigureAwait(false))
                         {
                             lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
@@ -21001,8 +21001,8 @@ namespace Chummer
                             }
 
                             foreach (Gear objGear in await objCyberware.GearChildren.DeepWhereAsync(
-                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token) < 0,
-                                         token))
+                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
+                                         token).ConfigureAwait(false))
                             {
                                 lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                     .ConfigureAwait(false));
@@ -21039,8 +21039,8 @@ namespace Chummer
                             }
 
                             foreach (Gear objGear in await objVehicle.GearChildren.DeepWhereAsync(
-                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token) < 0,
-                                         token))
+                                         x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
+                                         token).ConfigureAwait(false))
                             {
                                 lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                     .ConfigureAwait(false));
@@ -21088,7 +21088,7 @@ namespace Chummer
                                     {
                                         foreach (Gear objGear in await objAccessory.GearChildren.DeepWhereAsync(
                                                      x => x.Children,
-                                                     async x => await x.GetCapacityRemainingAsync(token) < 0, token))
+                                                     async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0, token).ConfigureAwait(false))
                                         {
                                             lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                 .ConfigureAwait(false));

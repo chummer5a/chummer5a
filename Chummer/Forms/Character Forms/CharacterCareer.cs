@@ -6139,7 +6139,7 @@ namespace Chummer
 
                 await CharacterObject.CritterPowers.AddAsync(objPower, GenericToken).ConfigureAwait(false);
 
-                CharacterObject.MetatypeCategory = "Free Sprite";
+                await CharacterObject.SetMetatypeCategoryAsync("Free Sprite", GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

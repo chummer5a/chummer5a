@@ -974,7 +974,7 @@ namespace Chummer
                             break;
 
                         case nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue):
-                            await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
+                            setPropertiesToRefresh.Add(nameof(EssenceAtSpecialStart)); // Proxy for refreshing Essence loss improvements
                             break;
 
                         case nameof(CharacterSettings.NuyenFormat):
@@ -3450,7 +3450,7 @@ namespace Chummer
                 await AttributeSection.CreateAsync(charNode, intForce, token: token).ConfigureAwait(false);
                 MetatypeGuid = new Guid(strMetatypeId);
                 Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
-                MetatypeCategory = strSelectedMetatypeCategory;
+                await SetMetatypeCategoryAsync(strSelectedMetatypeCategory, token).ConfigureAwait(false);
                 MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
                 Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? string.Empty : string.Empty;
                 // We only reverted to the base metatype to get the attributes.
@@ -25422,7 +25422,7 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _decEssenceAtSpecialStart = value;
-                        RefreshEssenceLossImprovements();
+                        OnPropertyChanged();
                     }
                 }
             }
@@ -25461,7 +25461,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     _decEssenceAtSpecialStart = value;
-                    await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(EssenceAtSpecialStart), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -35695,9 +35695,11 @@ namespace Chummer
                     string strOldValue = Interlocked.Exchange(ref _strMetatypeCategory, value);
                     if (strOldValue == value)
                         return;
-                    OnPropertyChanged();
                     if (strOldValue == "Cyberzombie" || value == "Cyberzombie")
-                        RefreshEssenceLossImprovements();
+                        this.OnMultiplePropertyChanged(nameof(MetatypeCategory),
+                            nameof(EssenceAtSpecialStart)); // Proxy for refreshing Essence loss improvements
+                    else
+                        OnPropertyChanged();
                 }
             }
         }
@@ -35712,6 +35714,30 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strMetatypeCategory;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Metatype Category.
+        /// </summary>
+        public async Task SetMetatypeCategoryAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strMetatypeCategory, value);
+                if (strOldValue == value)
+                    return;
+                if (strOldValue == "Cyberzombie" || value == "Cyberzombie")
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(MetatypeCategory),
+                        nameof(EssenceAtSpecialStart)).ConfigureAwait(false); // Proxy for refreshing Essence loss improvements
+                else
+                    await OnPropertyChangedAsync(nameof(MetatypeCategory), token).ConfigureAwait(false);
             }
             finally
             {
@@ -45604,9 +45630,11 @@ namespace Chummer
                         RefreshBlackMarketDiscounts();
                     if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                         RefreshRedlinerImprovements();
-                    if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                    if (setNamesOfChangedProperties.Contains(nameof(Essence)) ||
+                        setNamesOfChangedProperties.Contains(nameof(EssenceAtSpecialStart)))
                     {
-                        ResetCachedEssence();
+                        if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                            ResetCachedEssence();
                         RefreshEssenceLossImprovements();
                     }
                     if (setNamesOfChangedProperties.Contains(nameof(Encumbrance)))
@@ -45893,9 +45921,11 @@ namespace Chummer
                         await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                         await RefreshRedlinerImprovementsAsync(token).ConfigureAwait(false);
-                    if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                    if (setNamesOfChangedProperties.Contains(nameof(Essence)) ||
+                        setNamesOfChangedProperties.Contains(nameof(EssenceAtSpecialStart)))
                     {
-                        await ResetCachedEssenceAsync(token).ConfigureAwait(false);
+                        if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                            await ResetCachedEssenceAsync(token).ConfigureAwait(false);
                         await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                     }
 
@@ -50417,7 +50447,7 @@ namespace Chummer
                 }
 
                 // Change the MetatypeCategory to Cyberzombie.
-                MetatypeCategory = "Cyberzombie";
+                await SetMetatypeCategoryAsync("Cyberzombie", token).ConfigureAwait(false);
 
                 // Gain access to Critter Powers.
                 CritterEnabled = true;
