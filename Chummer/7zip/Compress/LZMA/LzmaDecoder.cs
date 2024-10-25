@@ -314,17 +314,16 @@ namespace SevenZip.Compression.LZMA
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None));
+            Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, outSize, progress, null, CancellationToken.None));
         }
 
         public Task CodeAsync(Stream inStream, Stream outStream,
                               long inSize, long outSize, IAsyncCodeProgress progress, CancellationToken token = default)
         {
-            return CodeCoreAsync(false, inStream, outStream, inSize, outSize, null, progress, token);
+            return CodeCoreAsync(false, inStream, outStream, outSize, null, progress, token);
         }
 
-        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream,
-                                         long inSize, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
+        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             if (blnSync)

@@ -463,7 +463,7 @@ namespace Chummer
                 }
 
                 return new SafeWriterSemaphoreRelease(objInnerNextHelper, objInnerTopMostHeldUReader,
-                    objInnerTopMostHeldWriter, this, false, objParentReleaseAsync: objParentReleaseAsync);
+                    objInnerTopMostHeldWriter, this, objParentReleaseAsync: objParentReleaseAsync);
             }
         }
 
@@ -579,7 +579,7 @@ namespace Chummer
             }
 
             LinkedAsyncRWLockHelper objCurrentHelper;
-            LinkedAsyncRWLockHelper objNextHelper = null;
+            LinkedAsyncRWLockHelper objNextHelper;
             LinkedAsyncRWLockHelper objTopMostHeldUReader;
             LinkedAsyncRWLockHelper objTopMostHeldWriter;
             try
