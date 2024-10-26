@@ -1949,11 +1949,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the VehicleMod.
         /// </summary>
-        public decimal TotalCost => OwnCost + Weapons.Sum(x => x.TotalCost) + Cyberware.Sum(x => x.TotalCost);
+        public decimal TotalCost => (IncludedInVehicle ? 0 : OwnCost) + Weapons.Sum(x => x.TotalCost) + Cyberware.Sum(x => x.TotalCost);
 
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
-            return await GetOwnCostAsync(token).ConfigureAwait(false)
+            return (IncludedInVehicle ? 0 : await GetOwnCostAsync(token).ConfigureAwait(false))
                    + await Weapons.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false)
                    + await Cyberware.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
         }
@@ -2646,12 +2646,9 @@ namespace Chummer.Backend.Equipment
 
         public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            decimal d = 0;
-            if (Stolen == blnStolen)
-                d += OwnCost;
-            d += Weapons.Sum(objWeapon => objWeapon.CalculatedStolenTotalCost(blnStolen));
-            d += Cyberware.Sum(objCyberware => objCyberware.CalculatedStolenTotalCost(blnStolen));
-            return d;
+            decimal decReturn = !IncludedInVehicle && Stolen == blnStolen ? OwnCost : 0;
+            return decReturn + Weapons.Sum(objWeapon => objWeapon.CalculatedStolenTotalCost(blnStolen)) +
+                   Cyberware.Sum(objCyberware => objCyberware.CalculatedStolenTotalCost(blnStolen));
         }
 
         public Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
@@ -2660,12 +2657,14 @@ namespace Chummer.Backend.Equipment
 
         public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
-            decimal d = 0;
-            if (Stolen == blnStolen)
-                d += await GetOwnCostAsync(token).ConfigureAwait(false);
-            d += await Weapons.SumAsync(objWeapon => objWeapon.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
-            d += await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
-            return d;
+            decimal decReturn = !IncludedInVehicle && Stolen == blnStolen ? await GetOwnCostAsync(token).ConfigureAwait(false) : 0;
+            return decReturn
+                   + await Weapons
+                       .SumAsync(objWeapon => objWeapon.CalculatedStolenTotalCostAsync(blnStolen, token), token)
+                       .ConfigureAwait(false)
+                   + await Cyberware
+                       .SumAsync(objCyberware => objCyberware.CalculatedStolenTotalCostAsync(blnStolen, token), token)
+                       .ConfigureAwait(false);
         }
 
         #endregion UI Methods
