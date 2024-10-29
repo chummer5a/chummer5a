@@ -2438,25 +2438,25 @@ namespace Chummer.Backend.Equipment
             if (lstUniques.Count == 0 || string.IsNullOrEmpty(strCategory))
                 return false;
             if (strCategory.StartsWith("Drones", StringComparison.Ordinal))
-                return lstUniques.Contains("Drones");
+                return lstUniques.Contains(LanguageManager.GetString("String_DealerConnection_Drones"));
             switch (strCategory)
             {
                 case "Fixed-Wing Aircraft":
                 case "LTAV":
                 case "Rotorcraft":
                 case "VTOL/VSTOL":
-                    return lstUniques.Contains("Aircraft");
+                    return lstUniques.Contains(LanguageManager.GetString("String_DealerConnection_Aircraft"));
 
                 case "Boats":
                 case "Submarines":
-                    return lstUniques.Contains("Watercraft");
+                    return lstUniques.Contains(LanguageManager.GetString("String_DealerConnection_Watercraft"));
 
                 case "Bikes":
                 case "Cars":
                 case "Trucks":
                 case "Municipal/Construction":
                 case "Corpsec/Police/Military":
-                    return lstUniques.Contains("Groundcraft");
+                    return lstUniques.Contains(LanguageManager.GetString("String_DealerConnection_Groundcraft"));
             }
             return false;
         }
