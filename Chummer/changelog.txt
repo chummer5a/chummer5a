@@ -106,6 +106,8 @@ Data Changes:
 - Incompetent now properly sets all skills in the chosen skill group to Unaware, meaning they can also not be learned until the quality is bought off. Existing characters with the quality will need to re-apply improvements to see the change reflected on their sheets. Fixes #5111.
 - Fixed the W Zone and Bad Neighborhood lifestyle qualities not correctly modifying the Area value.
 - Added missing Imaging Scope to the Parashield Dart Rifle.
+- Removed Aware from discount for Dedicated Spellslinger.
+- Added Adept to discount for Dedicated Spellslinger.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
