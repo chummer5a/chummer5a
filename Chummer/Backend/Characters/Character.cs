@@ -10324,7 +10324,7 @@ namespace Chummer
                             if (LastSavedVersion <= new Version(5, 225, 686))
                             {
                                 // Fix legacy cases where characters have dealer connection improvement keys saved in non-English
-                                using (Timekeeper.StartSyncron("load_char_nonenglishdealerconnection", loadActivity))
+                                using (Timekeeper.StartSyncron("load_char_nonenglishdealerconnectionfix", loadActivity))
                                 {
                                     if (blnSync)
                                     {
