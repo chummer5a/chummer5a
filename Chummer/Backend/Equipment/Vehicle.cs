@@ -2344,7 +2344,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCharacter?.DealerConnectionDiscount != true || string.IsNullOrEmpty(_strCategory))
                 return false;
-            string strUniqueToSearchFor = string.Empty;
+            string strUniqueToSearchFor;
             if (_strCategory.StartsWith("Drones", StringComparison.Ordinal))
             {
                 strUniqueToSearchFor = "Drones";
@@ -2372,6 +2372,9 @@ namespace Chummer.Backend.Equipment
                     case "Corpsec/Police/Military":
                         strUniqueToSearchFor = "Groundcraft";
                         break;
+
+                    default:
+                        return false;
                 }
             }
 
@@ -2389,7 +2392,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(_strCategory) || _objCharacter == null || !await _objCharacter.GetDealerConnectionDiscountAsync(token).ConfigureAwait(false))
                 return false;
-            string strUniqueToSearchFor = string.Empty;
+            string strUniqueToSearchFor;
             if (_strCategory.StartsWith("Drones", StringComparison.Ordinal))
             {
                 strUniqueToSearchFor = "Drones";
@@ -2417,6 +2420,9 @@ namespace Chummer.Backend.Equipment
                     case "Corpsec/Police/Military":
                         strUniqueToSearchFor = "Groundcraft";
                         break;
+
+                    default:
+                        return false;
                 }
             }
 

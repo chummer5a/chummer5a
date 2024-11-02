@@ -10321,6 +10321,106 @@ namespace Chummer
                                 }
                             }
 
+                            if (LastSavedVersion <= new Version(5, 225, 686))
+                            {
+                                // Fix legacy cases where characters have dealer connection improvement keys saved in non-English
+                                using (Timekeeper.StartSyncron("load_char_nonenglishdealerconnection", loadActivity))
+                                {
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable MethodHasAsyncOverload
+                                        List<Improvement> lstDealerConnectionImprovements = ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                this, Improvement.ImprovementType.DealerConnection, token: token);
+                                        foreach (Improvement objImprovement in lstDealerConnectionImprovements)
+                                        {
+                                            string strCategory = objImprovement.UniqueName;
+                                            if (!string.IsNullOrEmpty(
+                                                    LanguageManager.GetString("String_DealerConnection_" + strCategory,
+                                                        false, token)))
+                                                continue;
+                                            if (LanguageManager.GetString("String_DealerConnection_Drones",
+                                                    token: token) ==
+                                                strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Drones";
+                                                objImprovement.UniqueName = "Drones";
+                                            }
+                                            else if (LanguageManager.GetString(
+                                                         "String_DealerConnection_Groundcraft", token: token) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Groundcraft";
+                                                objImprovement.UniqueName = "Groundcraft";
+                                            }
+                                            else if (LanguageManager.GetString(
+                                                         "String_DealerConnection_Aircraft", token: token) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Aircraft";
+                                                objImprovement.UniqueName = "Aircraft";
+                                            }
+                                            else if (LanguageManager.GetString(
+                                                         "String_DealerConnection_Watercraft", token: token) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Watercraft";
+                                                objImprovement.UniqueName = "Watercraft";
+                                            }
+                                        }
+                                        // ReSharper enable MethodHasAsyncOverload
+                                    }
+                                    else
+                                    {
+                                        List<Improvement> lstDealerConnectionImprovements = await ImprovementManager
+                                            .GetCachedImprovementListForValueOfAsync(
+                                                this, Improvement.ImprovementType.DealerConnection, token: token)
+                                            .ConfigureAwait(false);
+                                        foreach (Improvement objImprovement in lstDealerConnectionImprovements)
+                                        {
+                                            string strCategory = objImprovement.UniqueName;
+                                            if (!string.IsNullOrEmpty(
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_DealerConnection_" + strCategory,
+                                                        false, token).ConfigureAwait(false)))
+                                                continue;
+                                            if (await LanguageManager
+                                                    .GetStringAsync("String_DealerConnection_Drones", token: token)
+                                                    .ConfigureAwait(false) ==
+                                                strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Drones";
+                                                objImprovement.UniqueName = "Drones";
+                                            }
+                                            else if (await LanguageManager
+                                                         .GetStringAsync("String_DealerConnection_Groundcraft",
+                                                             token: token).ConfigureAwait(false) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Groundcraft";
+                                                objImprovement.UniqueName = "Groundcraft";
+                                            }
+                                            else if (await LanguageManager
+                                                         .GetStringAsync("String_DealerConnection_Aircraft",
+                                                             token: token).ConfigureAwait(false) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Aircraft";
+                                                objImprovement.UniqueName = "Aircraft";
+                                            }
+                                            else if (await LanguageManager
+                                                         .GetStringAsync("String_DealerConnection_Watercraft",
+                                                             token: token).ConfigureAwait(false) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Watercraft";
+                                                objImprovement.UniqueName = "Watercraft";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             if (frmLoadingForm != null)
                             {
                                 if (blnSync)
