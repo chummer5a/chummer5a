@@ -6484,11 +6484,11 @@ namespace Chummer.Backend.Equipment
                             break;
                         }
                     }
-                    if (decOldExtraESSAdditiveMultiplier != _decExtraESSAdditiveMultiplier
-                        || decOldExtraESSMultiplicativeMultiplier != _decExtraESSMultiplicativeMultiplier)
+                    if ((decOldExtraESSAdditiveMultiplier != _decExtraESSAdditiveMultiplier
+                         || decOldExtraESSMultiplicativeMultiplier != _decExtraESSMultiplicativeMultiplier)
+                        && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
                     {
-                        if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                            _objCharacter.OnPropertyChanged(EssencePropertyName);
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                     }
                 }
             }

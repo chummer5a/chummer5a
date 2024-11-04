@@ -397,8 +397,8 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (length >= 2)
             {
-                IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
-                    ? objHasLockObject.LockObject.EnterWriteLock(token)
+                IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                    ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;
                 try
                 {
@@ -407,7 +407,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    objLocker?.Dispose();
+                    if (objLocker != null)
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }

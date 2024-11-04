@@ -148,8 +148,8 @@ namespace Chummer
                         else
                         {
                             // Cyberware/Bioware.
-                            foreach (Cyberware objCyberware in (await _objCharacter.GetCyberwareAsync().ConfigureAwait(false)).GetAllDescendants(
-                                         x => x.Children))
+                            foreach (Cyberware objCyberware in await (await _objCharacter.GetCyberwareAsync().ConfigureAwait(false)).GetAllDescendantsAsync(
+                                         x => x.Children).ConfigureAwait(false))
                             {
                                 if ((await objCyberware.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
@@ -157,8 +157,8 @@ namespace Chummer
                                         new ListItem(objCyberware.InternalId, await objCyberware.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
                                 }
 
-                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children).ConfigureAwait(false))
                                 {
                                     if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
@@ -184,8 +184,8 @@ namespace Chummer
                                                                       .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objMod.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             lstItems.Add(new ListItem(objGear.InternalId,
@@ -194,8 +194,8 @@ namespace Chummer
                                     }
                                 }).ConfigureAwait(false);
 
-                                foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objArmor.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children).ConfigureAwait(false))
                                 {
                                     if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         lstItems.Add(new ListItem(objGear.InternalId,
@@ -205,7 +205,7 @@ namespace Chummer
                             }).ConfigureAwait(false);
 
                             // Weapons.
-                            foreach (Weapon objWeapon in (await _objCharacter.GetWeaponsAsync().ConfigureAwait(false)).GetAllDescendants(x => x.Children))
+                            foreach (Weapon objWeapon in await (await _objCharacter.GetWeaponsAsync().ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children).ConfigureAwait(false))
                             {
                                 if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
@@ -223,8 +223,8 @@ namespace Chummer
                                                                            .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             lstItems.Add(new ListItem(objGear.InternalId,
@@ -235,7 +235,7 @@ namespace Chummer
                             }
 
                             // Gear.
-                            foreach (Gear objGear in (await _objCharacter.GetGearAsync().ConfigureAwait(false)).GetAllDescendants(x => x.Children))
+                            foreach (Gear objGear in await (await _objCharacter.GetGearAsync().ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children).ConfigureAwait(false))
                             {
                                 if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                     lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
@@ -260,7 +260,7 @@ namespace Chummer
                                                                               .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                                    foreach (Weapon objWeapon in await objMod.Weapons.GetAllDescendantsAsync(x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         {
@@ -281,8 +281,8 @@ namespace Chummer
                                                                               .ConfigureAwait(false)));
                                             }
 
-                                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                         x => x.Children))
+                                            foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                         x => x.Children).ConfigureAwait(false))
                                             {
                                                 if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                                     lstItems.Add(
@@ -304,8 +304,8 @@ namespace Chummer
                                                                       .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Weapon objWeapon in await objWeaponMount.Weapons.GetAllDescendantsAsync(
+                                                 x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         {
@@ -326,8 +326,8 @@ namespace Chummer
                                                                               .ConfigureAwait(false)));
                                             }
 
-                                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                         x => x.Children))
+                                            foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                         x => x.Children).ConfigureAwait(false))
                                             {
                                                 if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                                     lstItems.Add(
@@ -339,8 +339,8 @@ namespace Chummer
                                     }
                                 }).ConfigureAwait(false);
 
-                                foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objVehicle.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children).ConfigureAwait(false))
                                 {
                                     if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         lstItems.Add(new ListItem(objGear.InternalId,

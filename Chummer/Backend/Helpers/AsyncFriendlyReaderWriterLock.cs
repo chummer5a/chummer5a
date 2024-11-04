@@ -247,7 +247,7 @@ namespace Chummer
                     }
                 }
 
-                if (objCurrentHelper.IsDisposed)
+                if (objCurrentHelper?.IsDisposed != false)
                     continue;
                 try
                 {

@@ -2330,8 +2330,7 @@ namespace Chummer
                 if (!tabOptions.TabPages.Contains(tabPlugins))
                     tabOptions.TabPages.Add(tabPlugins);
             }
-
-            if (tabOptions.TabPages.Contains(tabPlugins))
+            else if (tabOptions.TabPages.Contains(tabPlugins))
                 tabOptions.TabPages.Remove(tabPlugins);
         }
 

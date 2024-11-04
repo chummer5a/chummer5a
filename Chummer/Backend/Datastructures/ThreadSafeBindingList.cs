@@ -428,15 +428,15 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_lstData.Count > 0)
+                if (await _lstData.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    T objReturn = _lstData[0];
+                    T objReturn = await _lstData.GetValueAtAsync(0, token).ConfigureAwait(false);
                     IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        _lstData.RemoveAt(0);
+                        await _lstData.RemoveAtAsync(0, token).ConfigureAwait(false);
                     }
                     finally
                     {

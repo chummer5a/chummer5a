@@ -5007,7 +5007,7 @@ namespace Chummer
                 case ImprovementType.AttributeKarmaCostMultiplier:
                 case ImprovementType.AttributeKarmaCost:
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(token))
+                        foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                         {
                             if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
                             {

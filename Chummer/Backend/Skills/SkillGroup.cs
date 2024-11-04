@@ -2002,10 +2002,10 @@ namespace Chummer.Backend.Skills
                     lstProperties.Add(nameof(KarmaUnbroken));
                 }
             }
-            else if (e.PropertyNames.Contains(nameof(Skill.KarmaPoints)) || e.PropertyNames.Contains(nameof(Skill.FreeKarma)))
+            else if ((e.PropertyNames.Contains(nameof(Skill.KarmaPoints)) || e.PropertyNames.Contains(nameof(Skill.FreeKarma)))
+                     && !await GetIsDisabledAsync(token).ConfigureAwait(false) && SkillList.Count != 0)
             {
-                if (!await GetIsDisabledAsync(token).ConfigureAwait(false) && SkillList.Count != 0)
-                    lstProperties.Add(nameof(KarmaUnbroken));
+                lstProperties.Add(nameof(KarmaUnbroken));
             }
 
             if (e.PropertyNames.Contains(nameof(Skill.TotalBaseRating)) || e.PropertyNames.Contains(nameof(Skill.Enabled)))

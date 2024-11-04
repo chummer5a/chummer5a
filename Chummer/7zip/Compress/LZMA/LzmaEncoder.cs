@@ -363,7 +363,7 @@ namespace SevenZip.Compression.LZMA
 
         private const int kNumLenSpecSymbols = Base.kNumLowLenSymbols + Base.kNumMidLenSymbols;
 
-        private class LenPriceTableEncoder : LenEncoder
+        private sealed class LenPriceTableEncoder : LenEncoder
         {
             private readonly uint[] _prices = new uint[Base.kNumLenSymbols << Base.kNumPosStatesBitsEncodingMax];
             private int _tableSize;
