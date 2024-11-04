@@ -1703,7 +1703,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                if (_objCharacter?.IsLoading == false)
+                if (!_objCharacter.IsLoading)
                     _objCharacter.OnMultiplePropertyChanged(nameof(Character.ArmorEncumbrance),
                                                             nameof(Character.TotalCarriedWeight),
                                                             nameof(Character.TotalArmorRating));

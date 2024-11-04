@@ -16866,7 +16866,7 @@ namespace Chummer
                     }
                 }
 
-                foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children, GenericToken).SelectMany(x => x.Clips))
+                foreach (Clip objClip in (await objWeapon.Children.GetAllDescendantsAsync(x => x.Children, GenericToken).ConfigureAwait(false)).SelectMany(x => x.Clips))
                 {
                     if (objClip.AmmoGear != null)
                     {
