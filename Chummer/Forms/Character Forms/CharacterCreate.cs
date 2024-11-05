@@ -15042,17 +15042,17 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = CharacterObject.GenerateBlackMarketMappings(
-                                                                     (await CharacterObject
-                                                                               .LoadDataXPathAsync(
-                                                                                   objCyberware.SourceType
-                                                                                   == Improvement.ImprovementSource
-                                                                                       .Cyberware
-                                                                                       ? "cyberware.xml"
-                                                                                       : "bioware.xml", token: token)
-                                                                               .ConfigureAwait(false))
-                                                                           .SelectSingleNodeAndCacheExpression(
-                                                                               "/chummer", token: token), token)
+                                bool blnEnabled = (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                        (await CharacterObject
+                                            .LoadDataXPathAsync(
+                                                objCyberware.SourceType
+                                                == Improvement.ImprovementSource
+                                                    .Cyberware
+                                                    ? "cyberware.xml"
+                                                    : "bioware.xml", token: token)
+                                            .ConfigureAwait(false))
+                                        .SelectSingleNodeAndCacheExpression(
+                                            "/chummer", token: token), token).ConfigureAwait(false))
                                                                  .Contains(objCyberware.Category);
                                 bool blnChecked = !string.IsNullOrEmpty(objCyberware.ParentID)
                                     ? (await objCyberware.GetParentAsync(token).ConfigureAwait(false))?.DiscountCost == true
@@ -15218,16 +15218,16 @@ namespace Chummer
                                                       .ConfigureAwait(false);
                             await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false, token)
                                                  .ConfigureAwait(false);
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objGear.IncludedInParent && CharacterObject
-                                                                               .GenerateBlackMarketMappings(
-                                                                                   (await CharacterObject
-                                                                                           .LoadDataXPathAsync(
-                                                                                               "gear.xml", token: token)
-                                                                                           .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpression(
-                                                                                           "/chummer", token: token), token)
+                                bool blnEnabled = !objGear.IncludedInParent &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "gear.xml", token: token)
+                                                          .ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token), token).ConfigureAwait(false))
                                                                                .Contains(objGear.Category);
                                 await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -15488,15 +15488,15 @@ namespace Chummer
                                 x.Checked = objWeapon.IncludedInWeapon;
                             }, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objWeapon.IncludedInWeapon && CharacterObject
-                                    .GenerateBlackMarketMappings(
-                                        (await CharacterObject
-                                                     .LoadDataXPathAsync(
-                                                         "weapons.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpression(
-                                                  "/chummer", token: token), token)
+                                bool blnEnabled = !objWeapon.IncludedInWeapon &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "weapons.xml", token: token).ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token), token).ConfigureAwait(false))
                                     .Contains(objWeapon.Category);
                                 await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -15866,17 +15866,16 @@ namespace Chummer
                                 x.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
                                 x.Checked = objSelectedAccessory.IncludedInWeapon;
                             }, token).ConfigureAwait(false);
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
                                 bool blnEnabled = !objSelectedAccessory.IncludedInWeapon
-                                                  && CharacterObject
-                                                     .GenerateBlackMarketMappings(
-                                                         (await CharacterObject
-                                                                      .LoadDataXPathAsync("weapons.xml", token: token)
-                                                                      .ConfigureAwait(false))
-                                                               .SelectSingleNodeAndCacheExpression(
-                                                                   "/chummer", token: token),
-                                                         token)
+                                                  && (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync("weapons.xml", token: token)
+                                                          .ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token),
+                                                      token).ConfigureAwait(false))
                                                      .Contains(objSelectedAccessory.Parent?.Category);
                                 await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -16130,16 +16129,16 @@ namespace Chummer
                             await chkIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                      .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objGear.IncludedInParent && CharacterObject
-                                                                               .GenerateBlackMarketMappings(
-                                                                                   (await CharacterObject
-                                                                                           .LoadDataXPathAsync(
-                                                                                               "gear.xml", token: token)
-                                                                                           .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpression(
-                                                                                           "/chummer", token: token), token)
+                                bool blnEnabled = !objGear.IncludedInParent &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "gear.xml", token: token)
+                                                          .ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token), token).ConfigureAwait(false))
                                                                                .Contains(objGear.Category);
                                 await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -16344,14 +16343,13 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         await chkIncludedInArmor.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
-                        if (CharacterObject.BlackMarketDiscount)
+                        if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                         {
-                            bool blnEnabled = CharacterObject
-                                              .GenerateBlackMarketMappings(
-                                                  (await CharacterObject.LoadDataXPathAsync(
-                                                            "armor.xml", token: token).ConfigureAwait(false))
-                                                        .SelectSingleNodeAndCacheExpression(
-                                                            "/chummer", token: token), token)
+                            bool blnEnabled = (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                    (await CharacterObject.LoadDataXPathAsync(
+                                        "armor.xml", token: token).ConfigureAwait(false))
+                                    .SelectSingleNodeAndCacheExpression(
+                                        "/chummer", token: token), token).ConfigureAwait(false))
                                               .Contains(objArmor.Category);
                             await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -16514,15 +16512,15 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Checked = objArmorMod.IncludedInArmor;
                             }, token).ConfigureAwait(false);
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objArmorMod.IncludedInArmor && CharacterObject
-                                    .GenerateBlackMarketMappings(
-                                        (await CharacterObject
-                                                     .LoadDataXPathAsync(
-                                                         "armor.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpression(
-                                                  "/chummer/modcategories", token: token), token)
+                                bool blnEnabled = !objArmorMod.IncludedInArmor &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "armor.xml", token: token).ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer/modcategories", token: token), token).ConfigureAwait(false))
                                     .Contains(objArmorMod.Category);
                                 await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -16630,17 +16628,16 @@ namespace Chummer
                                         x.Visible = true;
                                         x.Checked = objSelectedGear.IncludedInParent;
                                     }, token).ConfigureAwait(false);
-                                    if (CharacterObject.BlackMarketDiscount)
+                                    if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                                     {
                                         bool blnEnabled = !objSelectedGear.IncludedInParent
-                                                          && CharacterObject
-                                                             .GenerateBlackMarketMappings(
-                                                                 (await CharacterObject
-                                                                              .LoadDataXPathAsync(
-                                                                                  "gear.xml", token: token)
-                                                                              .ConfigureAwait(false))
-                                                                       .SelectSingleNodeAndCacheExpression(
-                                                                           "/chummer", token: token), token)
+                                                          && (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                              (await CharacterObject
+                                                                  .LoadDataXPathAsync(
+                                                                      "gear.xml", token: token)
+                                                                  .ConfigureAwait(false))
+                                                              .SelectSingleNodeAndCacheExpression(
+                                                                  "/chummer", token: token), token).ConfigureAwait(false))
                                                              .Contains(objSelectedGear.Category);
                                         await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                                         {
@@ -17064,14 +17061,14 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                         {
-                            bool blnEnabled = !objGear.IncludedInParent && CharacterObject
-                                                                           .GenerateBlackMarketMappings(
-                                                                               (await CharacterObject
-                                                                                       .LoadDataXPathAsync(
-                                                                                           "gear.xml", token: token)
-                                                                                       .ConfigureAwait(false))
-                                                                                   .SelectSingleNodeAndCacheExpression(
-                                                                                       "/chummer", token: token), token)
+                            bool blnEnabled = !objGear.IncludedInParent &&
+                                              (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                  (await CharacterObject
+                                                      .LoadDataXPathAsync(
+                                                          "gear.xml", token: token)
+                                                      .ConfigureAwait(false))
+                                                  .SelectSingleNodeAndCacheExpression(
+                                                      "/chummer", token: token), token).ConfigureAwait(false))
                                                                            .Contains(objGear.Category);
                             await chkGearBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
@@ -18551,14 +18548,13 @@ namespace Chummer
                                                                     .ConfigureAwait(false);
                             await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = CharacterObject
-                                                  .GenerateBlackMarketMappings(
-                                                      (await CharacterObject.LoadDataXPathAsync(
-                                                                "vehicles.xml", token: token).ConfigureAwait(false))
-                                                            .SelectSingleNodeAndCacheExpression(
-                                                                "/chummer", token: token), token)
+                                bool blnEnabled = (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                        (await CharacterObject.LoadDataXPathAsync(
+                                            "vehicles.xml", token: token).ConfigureAwait(false))
+                                        .SelectSingleNodeAndCacheExpression(
+                                            "/chummer", token: token), token).ConfigureAwait(false))
                                                   .Contains(objVehicle.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -18846,15 +18842,16 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objWeaponMount.IncludedInVehicle && CharacterObject
-                                    .GenerateBlackMarketMappings(
-                                        (await CharacterObject.LoadDataXPathAsync("vehicles.xml", token: token)
-                                                                    .ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpression(
-                                                  "/chummer/weaponmountcategories", token: token),
-                                        token)
+                                bool blnEnabled = !objWeaponMount.IncludedInVehicle &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync("vehicles.xml", token: token)
+                                                          .ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer/weaponmountcategories", token: token),
+                                                      token).ConfigureAwait(false))
                                     .Contains(objWeaponMount.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -18959,19 +18956,19 @@ namespace Chummer
                             await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objMod.IncludedInVehicle && CharacterObject
-                                                                               .GenerateBlackMarketMappings(
-                                                                                  (await CharacterObject
-                                                                                           .LoadDataXPathAsync(
-                                                                                               "weapons.xml",
-                                                                                               token: token)
-                                                                                           .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpression(
-                                                                                           "/chummer/modcategories",
-                                                                                           token: token), token)
-                                                                               .Contains(objMod.Category);
+                                bool blnEnabled = !objMod.IncludedInVehicle &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "weapons.xml",
+                                                              token: token)
+                                                          .ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer/modcategories",
+                                                          token: token), token).ConfigureAwait(false))
+                                                  .Contains(objMod.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
                                     x.Enabled = blnEnabled;
@@ -19091,15 +19088,15 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Checked = objWeapon.IncludedInWeapon;
                             }, token).ConfigureAwait(false);
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objWeapon.IncludedInWeapon && CharacterObject
-                                    .GenerateBlackMarketMappings(
-                                        (await CharacterObject
-                                                     .LoadDataXPathAsync(
-                                                         "weapons.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpression(
-                                                  "/chummer", token: token), token)
+                                bool blnEnabled = !objWeapon.IncludedInWeapon &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "weapons.xml", token: token).ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token), token).ConfigureAwait(false))
                                     .Contains(objWeapon.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -19478,15 +19475,15 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Checked = objAccessory.IncludedInWeapon;
                             }, token).ConfigureAwait(false);
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objAccessory.IncludedInWeapon && CharacterObject
-                                    .GenerateBlackMarketMappings(
-                                        (await CharacterObject
-                                                     .LoadDataXPathAsync(
-                                                         "weapons.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpression(
-                                                  "/chummer", token: token), token)
+                                bool blnEnabled = !objAccessory.IncludedInWeapon &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "weapons.xml", token: token).ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token), token).ConfigureAwait(false))
                                     .Contains(objAccessory.Parent.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -19703,19 +19700,20 @@ namespace Chummer
                             await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            if (CharacterObject.BlackMarketDiscount && string.IsNullOrEmpty(objCyberware.ParentID))
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = CharacterObject.GenerateBlackMarketMappings(
-                                                                     (await CharacterObject
-                                                                               .LoadDataXPathAsync(
-                                                                                   objCyberware.SourceType
-                                                                                   == Improvement.ImprovementSource
-                                                                                       .Cyberware
-                                                                                       ? "cyberware.xml"
-                                                                                       : "bioware.xml", token: token)
-                                                                               .ConfigureAwait(false))
-                                                                           .SelectSingleNodeAndCacheExpression(
-                                                                               "/chummer", token: token), token)
+                                bool blnEnabled = string.IsNullOrEmpty(objCyberware.ParentID)
+                                                  && (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              objCyberware.SourceType
+                                                              == Improvement.ImprovementSource
+                                                                  .Cyberware
+                                                                  ? "cyberware.xml"
+                                                                  : "bioware.xml", token: token)
+                                                          .ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token), token).ConfigureAwait(false))
                                                                  .Contains(objCyberware.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {
@@ -19902,16 +19900,16 @@ namespace Chummer
                             await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token)
                                                             .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
-                            if (CharacterObject.BlackMarketDiscount)
+                            if (await CharacterObject.GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
                             {
-                                bool blnEnabled = !objGear.IncludedInParent && CharacterObject
-                                                                               .GenerateBlackMarketMappings(
-                                                                                   (await CharacterObject
-                                                                                           .LoadDataXPathAsync(
-                                                                                               "gear.xml", token: token)
-                                                                                           .ConfigureAwait(false))
-                                                                                       .SelectSingleNodeAndCacheExpression(
-                                                                                           "/chummer", token: token), token)
+                                bool blnEnabled = !objGear.IncludedInParent &&
+                                                  (await CharacterObject.GenerateBlackMarketMappingsAsync(
+                                                      (await CharacterObject
+                                                          .LoadDataXPathAsync(
+                                                              "gear.xml", token: token)
+                                                          .ConfigureAwait(false))
+                                                      .SelectSingleNodeAndCacheExpression(
+                                                          "/chummer", token: token), token).ConfigureAwait(false))
                                                                                .Contains(objGear.Category);
                                 await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
                                 {

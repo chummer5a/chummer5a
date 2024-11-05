@@ -528,7 +528,7 @@ namespace Chummer
                                 Arguments = strParams,
                                 WindowStyle = ProcessWindowStyle.Hidden
                             };
-                            objPdfProgramProcess.Start();
+                            await objPdfProgramProcess.StartAsync(_objGenericToken).ConfigureAwait(false);
                         }
                     }
                     catch (OperationCanceledException)
