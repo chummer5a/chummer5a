@@ -46643,12 +46643,10 @@ namespace Chummer
                                 if (!_blnCreated)
                                 {
                                     XPathNodeIterator xmlJournalEntries = xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal", token);
-                                    if (xmlJournalEntries.Count > 1)
-                                    {
-                                        _blnCreated = true;
-                                    }
-                                    else if (xmlJournalEntries.Count == 1 &&
-                                             xmlJournalEntries.Current.SelectSingleNodeAndCacheExpression("@name", token)?.Value != "Title")
+                                    if (xmlJournalEntries.Count > 1
+                                        || (xmlJournalEntries.Count == 1 &&
+                                            xmlJournalEntries.Current.SelectSingleNodeAndCacheExpression("@name", token)
+                                                ?.Value != "Title"))
                                     {
                                         _blnCreated = true;
                                     }

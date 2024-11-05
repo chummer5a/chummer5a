@@ -425,9 +425,10 @@ namespace Chummer
             float fltNewValue = Math.Min((float)(fltValue - 0.1302 + 0.14 * Math.Sqrt(fltValue - 0.1351)), 1.0f);
             // Now convert to Lightness so we can flip it
             float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
-            float fltNewSaturationHsl = fltNewLightness == 0
-                ? 0
-                : (fltNewValue - fltNewLightness) / Math.Min(fltNewLightness, 1 - fltNewLightness);
+            float fltDivisor = Math.Min(fltNewLightness, 1 - fltNewLightness);
+            float fltNewSaturationHsl = fltDivisor == 0
+                ? 1
+                : (fltNewValue - fltNewLightness) / fltDivisor;
             fltNewLightness = 1 - fltNewLightness;
             return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
