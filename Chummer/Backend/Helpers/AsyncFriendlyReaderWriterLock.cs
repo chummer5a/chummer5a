@@ -22,6 +22,8 @@
 //#define READERLOCKSTACKTRACEDEBUG
 // Uncomment this define to control whether stacktraces should be saved to the AsyncLocal every time it is explicitly written to (helpful to try to track down where disposed helpers are staying as part of the local)
 //#define ASYNCLOCALWRITEDEBUG
+// Uncomment this define if you are having a weird deadlock or crash that you cannot diagnose, which can often be caused by an improperly set or unset AsyncLocal earlier in the code
+//#define DEBUGBREAKONIMPROPERLOCALUNSET
 #endif
 
 using System;
@@ -194,7 +196,13 @@ namespace Chummer
                 {
                     // Emergency exit for odd cases where, for some reason, AsyncLocal assignment does not happen (in the right place?) when a locker release is disposed
                     // Let's just get the first ancestor lock that is not disposed. If this causes problems, it's because of the above-mentioned comment around AsyncLocal assignment
-#if DEBUG
+#if DEBUGBREAKONIMPROPERLOCALUNSET
+                    // If you are breaking here because of a mysterious crash or deadlock you cannot find the source of, check for the following:
+                    // - Synchronous upgradeable read or write locks acquired inside a scope where some locks are acquired asynchronously (can cause all sorts of weird issues).
+                    // - Disposal/unsetting of a locker (to release a lock) that is not in the same scope where it was set/created.
+                    // - Forgetting to dispose/unset a locker that has been set. If it is an asynchronous locker, it needs to have a try-finally disposal immediately after it is set, even if (and especially if) the next line is cancellation token check.
+                    Utils.BreakIfDebug();
+#elif DEBUG
                     Log.Warn("Ran into an improperly set AsyncLocal that needs to be reset, location: " + Environment.NewLine + EnhancedStackTrace.Current());
 #endif
                     while (objCurrentHelper != null && objCurrentHelper.IsDisposed)
