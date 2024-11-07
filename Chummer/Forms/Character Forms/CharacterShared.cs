@@ -10545,7 +10545,7 @@ namespace Chummer
                     {
                         if (objSelected.Level == 0)
                             await CharacterObject.MoveWeaponRootAsync(intNewIndex, nodDestination, objSelected, token).ConfigureAwait(false);
-                        else if (objSelected.Level == nodDestination?.Level)
+                        else
                             await CharacterObject.MoveWeaponNodeAsync(intNewIndex, nodDestination, objSelected, token: token).ConfigureAwait(false);
                         break;
                     }
@@ -10553,7 +10553,7 @@ namespace Chummer
                     {
                         if (objSelected.Level == 0)
                             await CharacterObject.MoveArmorRootAsync(intNewIndex, nodDestination, objSelected, token).ConfigureAwait(false);
-                        else if (objSelected.Level == nodDestination?.Level)
+                        else
                             await CharacterObject.MoveArmorNodeAsync(intNewIndex, nodDestination, objSelected, token: token).ConfigureAwait(false);
                         break;
                     }
@@ -10565,7 +10565,7 @@ namespace Chummer
                             case MouseButtons.Left:
                                 if (objSelected.Level == 0)
                                     await CharacterObject.MoveGearRootAsync(intNewIndex, nodDestination, objSelected, token).ConfigureAwait(false);
-                                else if (objSelected.Level == nodDestination?.Level)
+                                else
                                     await CharacterObject.MoveGearNodeAsync(intNewIndex, nodDestination, objSelected, token: token).ConfigureAwait(false);
                                 break;
                             case MouseButtons.Right:
