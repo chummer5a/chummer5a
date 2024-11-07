@@ -278,7 +278,7 @@ namespace SevenZip.Compression.RangeCoder
         public uint Code;
 
         // public Buffer.InBuffer Stream = new Buffer.InBuffer(1 << 16);
-        public Stream Stream;
+        public Stream Stream { get; private set; }
 
         public void Init(Stream stream)
         {
