@@ -198,9 +198,9 @@ namespace Chummer
                     // Let's just get the first ancestor lock that is not disposed. If this causes problems, it's because of the above-mentioned comment around AsyncLocal assignment
 #if DEBUGBREAKONIMPROPERLOCALUNSET
                     // If you are breaking here because of a mysterious crash or deadlock you cannot find the source of, check for the following:
-                    // - Synchronous upgradeable read or write locks acquired inside a scope where some locks are acquired asynchronously (can cause all sorts of weird issues).
-                    // - Disposal/unsetting of a locker (to release a lock) that is not in the same scope where it was set/created.
-                    // - Forgetting to dispose/unset a locker that has been set. If it is an asynchronous locker, it needs to have a try-finally disposal immediately after it is set, even if (and especially if) the next line is cancellation token check.
+                    // - Synchronous upgradeable read or write locks acquired inside a scope where some locks are acquired asynchronously. These won't always cause issues, but often will. Remember that using a foreach on a locking collection will acquire a lock synchronously (normally a non-upgradeable read lock, upgradeable read lock if already inside an upgradeable read lock or write lock).
+                    // - Disposal/unsetting of a locker (to release a lock) that is not in the same scope where it was set/created. Being forced to dispose lockers in the same scope is not ideal, but necessary to make sure the AsyncLocals that power this entire system update themselves properly.
+                    // - Forgetting to dispose/unset a locker that has been set. If it is an asynchronous locker, it needs to have a try-finally disposal immediately after it is set, even if (and especially if) the next line is cancellation token check, otherwise AsyncLocals won't update themselves properly even after a cancellation.
                     Utils.BreakIfDebug();
 #elif DEBUG
                     Log.Warn("Ran into an improperly set AsyncLocal that needs to be reset, location: " + Environment.NewLine + EnhancedStackTrace.Current());
