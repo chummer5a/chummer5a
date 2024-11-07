@@ -543,6 +543,11 @@ namespace Chummer
                 try
                 {
                     await objQuality.CreateAsync(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected, token: token).ConfigureAwait(false);
+                    if (objQuality.InternalId.IsEmptyGuid())
+                    {
+                        await objQuality.RemoveAsync(false, token).ConfigureAwait(false);
+                        continue;
+                    }
                     await _objLifestyle.LifestyleQualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
                 }
                 catch
