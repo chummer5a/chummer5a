@@ -32,6 +32,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Type used for unique keys in the internal dictionary</typeparam>
     /// <typeparam name="TValue">Type used for values in the internal dictionary</typeparam>
+    [Serializable]
     public class LockingTypedOrderedDictionary<TKey, TValue> :
         IAsyncDictionary<TKey, TValue>,
         IAsyncList<KeyValuePair<TKey, TValue>>,
@@ -3578,7 +3579,7 @@ namespace Chummer
             }
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             using (LockObject.EnterReadLock())
                 _dicUnorderedData.GetObjectData(info, context);

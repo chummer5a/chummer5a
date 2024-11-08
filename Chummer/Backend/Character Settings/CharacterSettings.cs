@@ -8695,16 +8695,7 @@ namespace Chummer
         /// </summary>
         public async Task<IReadOnlyCollection<string>> GetBooksAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                return _setBooks;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
+            return await GetBooksWritableAsync(token).ConfigureAwait(false);
         }
 
         /// <summary>

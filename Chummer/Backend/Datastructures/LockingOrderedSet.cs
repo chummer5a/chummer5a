@@ -27,7 +27,8 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IAsyncProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject, IAsyncEnumerableWithSideEffects<T>
+    [Serializable]
+    public sealed class LockingOrderedSet<T> : IAsyncSet<T>, IAsyncList<T>, IAsyncReadOnlyList<T>, IAsyncProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject, IAsyncEnumerableWithSideEffects<T>
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
@@ -667,7 +668,7 @@ namespace Chummer
 
         public bool IsDisposed => _intIsDisposed > 0;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -684,7 +685,7 @@ namespace Chummer
             GC.SuppressFinalize(this);
         }
 
-        protected virtual async ValueTask DisposeAsync(bool disposing)
+        private async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
             {

@@ -30,7 +30,8 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Type used for unique keys in the internal dictionary</typeparam>
     /// <typeparam name="TValue">Type used for values in the internal dictionary</typeparam>
-    public class TypedOrderedDictionary<TKey, TValue> :
+    [Serializable]
+    public sealed class TypedOrderedDictionary<TKey, TValue> :
         IDictionary<TKey, TValue>,
         IList<KeyValuePair<TKey, TValue>>,
         IDictionary,

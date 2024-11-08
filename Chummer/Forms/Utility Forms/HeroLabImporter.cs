@@ -355,15 +355,13 @@ namespace Chummer
                     {
                         XPathNodeIterator xmlJournalEntries
                             = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal", token: token);
-                        if (xmlJournalEntries?.Count > 1)
-                        {
-                            objCache.Created = true;
-                        }
-                        else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current != null
-                                                               && xmlJournalEntries.Current
-                                                                   .SelectSingleNodeAndCacheExpression(
-                                                                       "@name", token)?.Value
-                                                               != "Title")
+                        if (xmlJournalEntries?.Count > 1
+                            || (xmlJournalEntries?.Count == 1 &&
+                                xmlJournalEntries.Current != null
+                                && xmlJournalEntries.Current
+                                    .SelectSingleNodeAndCacheExpression(
+                                        "@name", token)?.Value
+                                != "Title"))
                         {
                             objCache.Created = true;
                         }

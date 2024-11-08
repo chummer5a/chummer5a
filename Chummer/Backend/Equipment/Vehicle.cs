@@ -710,7 +710,6 @@ namespace Chummer.Backend.Equipment
                         string strWeaponName = objXmlWeapon["name"]?.InnerText;
                         if (string.IsNullOrEmpty(strWeaponName))
                             continue;
-                        bool blnAttached = false;
                         Weapon objWeapon = new Weapon(_objCharacter);
 
                         List<Weapon> lstSubWeapons = new List<Weapon>(1);
@@ -2345,7 +2344,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCharacter?.DealerConnectionDiscount != true || string.IsNullOrEmpty(_strCategory))
                 return false;
-            string strUniqueToSearchFor = string.Empty;
+            string strUniqueToSearchFor;
             if (_strCategory.StartsWith("Drones", StringComparison.Ordinal))
             {
                 strUniqueToSearchFor = "Drones";
@@ -2373,6 +2372,9 @@ namespace Chummer.Backend.Equipment
                     case "Corpsec/Police/Military":
                         strUniqueToSearchFor = "Groundcraft";
                         break;
+
+                    default:
+                        return false;
                 }
             }
 
@@ -2390,7 +2392,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(_strCategory) || _objCharacter == null || !await _objCharacter.GetDealerConnectionDiscountAsync(token).ConfigureAwait(false))
                 return false;
-            string strUniqueToSearchFor = string.Empty;
+            string strUniqueToSearchFor;
             if (_strCategory.StartsWith("Drones", StringComparison.Ordinal))
             {
                 strUniqueToSearchFor = "Drones";
@@ -2418,6 +2420,9 @@ namespace Chummer.Backend.Equipment
                     case "Corpsec/Police/Military":
                         strUniqueToSearchFor = "Groundcraft";
                         break;
+
+                    default:
+                        return false;
                 }
             }
 
@@ -2637,18 +2642,8 @@ namespace Chummer.Backend.Equipment
             {
                 using (_objCharacter.LockObject.EnterReadLock())
                 {
-                    return OwnCost + Mods.Sum(objMod =>
-                    {
-                        // Do not include the price of Mods that are part of the base configuration.
-                        if (!objMod.IncludedInVehicle)
-                        {
-                            return objMod.TotalCost;
-                        }
-
-                        // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                        return objMod.Weapons.Sum(objWeapon => objWeapon.TotalCost)
-                               + objMod.Cyberware.Sum(objCyberware => objCyberware.TotalCost);
-                    }) + WeaponMounts.Sum(wm => wm.TotalCost) + GearChildren.Sum(objGear => objGear.TotalCost);
+                    return OwnCost + Mods.Sum(objMod => objMod.TotalCost) + WeaponMounts.Sum(wm => wm.TotalCost) +
+                           GearChildren.Sum(objGear => objGear.TotalCost);
                 }
             }
         }
@@ -2663,21 +2658,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetOwnCostAsync(token).ConfigureAwait(false) + await Mods.SumAsync(async objMod =>
-                       {
-                           // Do not include the price of Mods that are part of the base configuration.
-                           if (!objMod.IncludedInVehicle)
-                           {
-                               return await objMod.GetTotalCostAsync(token).ConfigureAwait(false);
-                           }
-
-                           // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                           return await objMod.Weapons.SumAsync(objWeapon => objWeapon.GetTotalCostAsync(token),
-                                      token).ConfigureAwait(false)
-                                  + await objMod.Cyberware.SumAsync(
-                                      objCyberware => objCyberware.GetTotalCostAsync(token),
-                                      token).ConfigureAwait(false);
-                       }, token).ConfigureAwait(false) + await WeaponMounts
+                return await GetOwnCostAsync(token).ConfigureAwait(false) +
+                       await Mods.SumAsync(objMod => objMod.GetTotalCostAsync(token), token).ConfigureAwait(false) +
+                       await WeaponMounts
                            .SumAsync(wm => wm.GetTotalCostAsync(token), token).ConfigureAwait(false)
                        + await GearChildren.SumAsync(objGear => objGear.GetTotalCostAsync(token), token)
                            .ConfigureAwait(false);
@@ -2695,24 +2678,9 @@ namespace Chummer.Backend.Equipment
         public decimal CalculatedStolenCost(bool blnStolen)
         {
             decimal decCost = Stolen == blnStolen ? OwnCost : 0;
-
-            decCost += Mods.Sum(objMod =>
-                       {
-                           // Do not include the price of Mods that are part of the base configureation.
-                           if (!objMod.IncludedInVehicle)
-                           {
-                               return objMod.CalculatedStolenTotalCost(blnStolen);
-                           }
-
-                           // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                           return objMod.Weapons.Sum(objWeapon => objWeapon.CalculatedStolenTotalCost(blnStolen))
-                                  + objMod.Cyberware.Sum(objCyberware =>
-                                                             objCyberware.CalculatedStolenTotalCost(blnStolen));
-                       })
-                       + WeaponMounts.Sum(wm => wm.CalculatedStolenTotalCost(blnStolen))
-                       + GearChildren.Sum(objGear => objGear.CalculatedStolenTotalCost(blnStolen));
-
-            return decCost;
+            return decCost + Mods.Sum(objMod => objMod.CalculatedStolenTotalCost(blnStolen))
+                           + WeaponMounts.Sum(wm => wm.CalculatedStolenTotalCost(blnStolen))
+                           + GearChildren.Sum(objGear => objGear.CalculatedStolenTotalCost(blnStolen));
         }
 
         public Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenCostAsync(true, token);
@@ -2722,33 +2690,14 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> CalculatedStolenCostAsync(bool blnStolen, CancellationToken token = default)
         {
             decimal decCost = Stolen == blnStolen ? await GetOwnCostAsync(token).ConfigureAwait(false) : 0;
-
-            decCost += await Mods.SumAsync(async objMod =>
-                       {
-                           // Do not include the price of Mods that are part of the base configureation.
-                           if (!objMod.IncludedInVehicle)
-                           {
-                               return await objMod.CalculatedStolenTotalCostAsync(blnStolen, token)
-                                                  .ConfigureAwait(false);
-                           }
-
-                           // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                           return await objMod.Weapons.SumAsync(
-                                      objWeapon => objWeapon.CalculatedStolenTotalCostAsync(blnStolen, token),
-                                      token).ConfigureAwait(false)
-                                  + await objMod.Cyberware.SumAsync(
-                                      objCyberware =>
-                                          objCyberware.CalculatedStolenTotalCostAsync(blnStolen, token),
-                                      token).ConfigureAwait(false);
-                       }, token).ConfigureAwait(false)
-                       + await WeaponMounts
+            return decCost + await Mods.SumAsync(objMod =>
+                               objMod.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false)
+                           + await WeaponMounts
                                .SumAsync(wm => wm.CalculatedStolenTotalCostAsync(blnStolen, token), token)
                                .ConfigureAwait(false)
-                       + await GearChildren
+                           + await GearChildren
                                .SumAsync(objGear => objGear.CalculatedStolenTotalCostAsync(blnStolen, token),
-                                         token).ConfigureAwait(false);
-
-            return decCost;
+                                   token).ConfigureAwait(false);
         }
 
         /// <summary>

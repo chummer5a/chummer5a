@@ -6484,11 +6484,11 @@ namespace Chummer.Backend.Equipment
                             break;
                         }
                     }
-                    if (decOldExtraESSAdditiveMultiplier != _decExtraESSAdditiveMultiplier
-                        || decOldExtraESSMultiplicativeMultiplier != _decExtraESSMultiplicativeMultiplier)
+                    if ((decOldExtraESSAdditiveMultiplier != _decExtraESSAdditiveMultiplier
+                         || decOldExtraESSMultiplicativeMultiplier != _decExtraESSMultiplicativeMultiplier)
+                        && (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
                     {
-                        if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
-                            _objCharacter.OnPropertyChanged(EssencePropertyName);
+                        _objCharacter.OnPropertyChanged(EssencePropertyName);
                     }
                 }
             }
@@ -6606,13 +6606,13 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    if (decOldExtraESSAdditiveMultiplier != _decExtraESSAdditiveMultiplier
-                        || decOldExtraESSMultiplicativeMultiplier != _decExtraESSMultiplicativeMultiplier)
+                    if ((decOldExtraESSAdditiveMultiplier != _decExtraESSAdditiveMultiplier
+                         || decOldExtraESSMultiplicativeMultiplier != _decExtraESSMultiplicativeMultiplier)
+                        && (await GetParentAsync(token).ConfigureAwait(false) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false))
+                        && string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
+                        await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
                     {
-                        if ((await GetParentAsync(token).ConfigureAwait(false) == null || await GetAddToParentESSAsync(token).ConfigureAwait(false))
-                            && string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
-                            await GetParentVehicleAsync(token).ConfigureAwait(false) == null)
-                            await _objCharacter.OnPropertyChangedAsync(await GetEssencePropertyNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await _objCharacter.OnPropertyChangedAsync(await GetEssencePropertyNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
                 finally

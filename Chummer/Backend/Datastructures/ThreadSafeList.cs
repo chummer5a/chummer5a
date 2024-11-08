@@ -808,7 +808,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindIndex(match);
+                return _lstData.FindLastIndex(match);
             }
             finally
             {
@@ -823,7 +823,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _lstData.FindIndex(startIndex, match);
+                return _lstData.FindLastIndex(startIndex, match);
             }
             finally
             {

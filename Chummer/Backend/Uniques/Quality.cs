@@ -592,12 +592,9 @@ namespace Chummer
                 _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerText);
                 _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
                 string strTemp = string.Empty;
-                if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp))
-                {
-                    _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
-                }
-                //Shim for characters files that have the old name for the metagenic flag.
-                else if (objNode.TryGetStringFieldQuickly("metagenetic", ref strTemp))
+                if (objNode.TryGetStringFieldQuickly("metagenic", ref strTemp)
+                    //Shim for characters files that have the old name for the metagenic flag.
+                    || objNode.TryGetStringFieldQuickly("metagenetic", ref strTemp))
                 {
                     _blnMetagenic = strTemp == bool.TrueString || strTemp == "yes";
                 }

@@ -404,10 +404,22 @@ namespace Chummer
         public async Task<bool> RemoveAsync(T item, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            int intIndex = IndexOf(item);
-            if (intIndex < 0)
-                return false;
-            await RemoveAtAsync(intIndex, token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = BindingListLock != null
+                ? await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
+                : null;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
+                if (intIndex < 0)
+                    return false;
+                await RemoveAtAsync(intIndex, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
             return true;
         }
 

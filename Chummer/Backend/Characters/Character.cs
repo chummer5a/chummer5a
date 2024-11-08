@@ -974,7 +974,7 @@ namespace Chummer
                             break;
 
                         case nameof(CharacterSettings.SpecialKarmaCostBasedOnShownValue):
-                            await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
+                            setPropertiesToRefresh.Add(nameof(EssenceAtSpecialStart)); // Proxy for refreshing Essence loss improvements
                             break;
 
                         case nameof(CharacterSettings.NuyenFormat):
@@ -1340,18 +1340,18 @@ namespace Chummer
                     {
                         case ListChangedType.Reset:
                         {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(PowerPointsUsed));
-                            strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                            strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
-                            dicChangedProperties.Add(this, strTemp);
+                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                            setTemp.Add(nameof(PowerPointsUsed));
+                            setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                            setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                            dicChangedProperties.Add(this, setTemp);
                             break;
                         }
                         case ListChangedType.ItemAdded:
                         {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(PowerPointsUsed));
-                            dicChangedProperties.Add(this, strTemp);
+                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                            setTemp.Add(nameof(PowerPointsUsed));
+                            dicChangedProperties.Add(this, setTemp);
                             IAsyncDisposable objLocker =
                                 await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                             try
@@ -1363,11 +1363,11 @@ namespace Chummer
                                 {
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
-                                    foreach (Improvement objImprovement in Improvements)
+                                    await Improvements.ForEachAsync(objImprovement =>
                                     {
                                         if (objImprovement.SourceName != objNewPower.InternalId
                                             || !objImprovement.Enabled)
-                                            continue;
+                                            return;
                                         foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
                                                      string strPropertyToUpdate) in
                                                  objImprovement.GetRelevantPropertyChangers())
@@ -1381,13 +1381,13 @@ namespace Chummer
 
                                             setChangedProperties.Add(strPropertyToUpdate);
                                         }
-                                    }
+                                    }, token).ConfigureAwait(false);
                                 }
 
-                                if (objNewPower.AdeptWayDiscountEnabled)
+                                if (await objNewPower.GetAdeptWayDiscountEnabledAsync(token).ConfigureAwait(false))
                                 {
-                                    strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                                    strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                    setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                    setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
                                 }
                             }
                             finally
@@ -1399,9 +1399,9 @@ namespace Chummer
                         }
                         case ListChangedType.ItemDeleted:
                         {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(PowerPointsUsed));
-                            dicChangedProperties.Add(this, strTemp);
+                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                            setTemp.Add(nameof(PowerPointsUsed));
+                            dicChangedProperties.Add(this, setTemp);
                             break;
                         }
                         case ListChangedType.ItemChanged:
@@ -1415,19 +1415,19 @@ namespace Chummer
                             {
                                 case nameof(Power.AdeptWayDiscountEnabled):
                                 {
-                                    HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                                    strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                                    strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
-                                    dicChangedProperties.Add(this, strTemp);
+                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                    setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                    setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                    dicChangedProperties.Add(this, setTemp);
                                     break;
                                 }
                                 case nameof(Power.DiscountedAdeptWay):
                                 {
-                                    HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                                    strTemp.Add(nameof(PowerPointsUsed));
-                                    strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
-                                    strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
-                                    dicChangedProperties.Add(this, strTemp);
+                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                    setTemp.Add(nameof(PowerPointsUsed));
+                                    setTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
+                                    setTemp.Add(nameof(AllowAdeptWayPowerDiscount));
+                                    dicChangedProperties.Add(this, setTemp);
                                     IAsyncDisposable objLocker =
                                         await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                                     try
@@ -1454,9 +1454,9 @@ namespace Chummer
                                 }
                                 case nameof(Power.PowerPoints):
                                 {
-                                    HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                                    strTemp.Add(nameof(PowerPointsUsed));
-                                    dicChangedProperties.Add(this, strTemp);
+                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                    setTemp.Add(nameof(PowerPointsUsed));
+                                    dicChangedProperties.Add(this, setTemp);
                                     break;
                                 }
                             }
@@ -1517,9 +1517,9 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                    strTemp.Add(nameof(MentorSpirits));
-                    dicChangedProperties.Add(this, strTemp);
+                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                    setTemp.Add(nameof(MentorSpirits));
+                    dicChangedProperties.Add(this, setTemp);
                     IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                     try
                     {
@@ -1528,16 +1528,16 @@ namespace Chummer
                         {
                             // Needed in order to properly process named sources where
                             // the tooltip was built before the object was added to the character
-                            foreach (Improvement objImprovement in Improvements)
+                            await Improvements.ForEachAsync(objImprovement =>
                             {
                                 if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                    continue;
+                                    return;
                                 foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                          string strPropertyToUpdate) in
+                                             string strPropertyToUpdate) in
                                          objImprovement.GetRelevantPropertyChangers())
                                 {
                                     if (!dicChangedProperties.TryGetValue(objItemToUpdate,
-                                                                          out HashSet<string> setChangedProperties))
+                                            out HashSet<string> setChangedProperties))
                                     {
                                         setChangedProperties = Utils.StringHashSetPool.Get();
                                         dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
@@ -1545,7 +1545,7 @@ namespace Chummer
 
                                     setChangedProperties.Add(strPropertyToUpdate);
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -1604,9 +1604,9 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                        strTemp.Add(nameof(Qualities));
-                        dicChangedProperties.Add(this, strTemp);
+                        HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                        setTemp.Add(nameof(Qualities));
+                        dicChangedProperties.Add(this, setTemp);
                         await Powers.ForEachAsync(objPower =>
                         {
                             HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
@@ -1705,9 +1705,9 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                        strTemp.Add(nameof(MartialArts));
-                        dicChangedProperties.Add(this, strTemp);
+                        HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                        setTemp.Add(nameof(MartialArts));
+                        dicChangedProperties.Add(this, setTemp);
                         foreach (MartialArt objNewItem in lstImprovementSourcesToProcess)
                         {
                             // Needed in order to properly process named sources where
@@ -1795,9 +1795,9 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                        strTemp.Add(nameof(Metamagics));
-                        dicChangedProperties.Add(this, strTemp);
+                        HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                        setTemp.Add(nameof(Metamagics));
+                        dicChangedProperties.Add(this, setTemp);
                         foreach (Metamagic objNewItem in lstImprovementSourcesToProcess)
                         {
                             // Needed in order to properly process named sources where
@@ -2440,6 +2440,9 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
+                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                    setTemp.Add(nameof(RedlinerBonus));
+                    dicChangedProperties.Add(this, setTemp);
                     IAsyncDisposable objLocker =
                         await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                     try
@@ -2449,9 +2452,6 @@ namespace Chummer
                         {
                             case NotifyCollectionChangedAction.Add:
                             {
-                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                                strTemp.Add(nameof(RedlinerBonus));
-                                dicChangedProperties.Add(this, strTemp);
                                 foreach (Cyberware objNewItem in e.NewItems)
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -2504,9 +2504,6 @@ namespace Chummer
                             }
                             case NotifyCollectionChangedAction.Remove:
                             {
-                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                                strTemp.Add(nameof(RedlinerBonus));
-                                dicChangedProperties.Add(this, strTemp);
                                 foreach (Cyberware objOldItem in e.OldItems)
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -2530,9 +2527,6 @@ namespace Chummer
                             }
                             case NotifyCollectionChangedAction.Replace:
                             {
-                                HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                                strTemp.Add(nameof(RedlinerBonus));
-                                dicChangedProperties.Add(this, strTemp);
                                 if (!Settings.DontUseCyberlimbCalculation)
                                 {
                                     foreach (Cyberware objOldItem in e.OldItems)
@@ -2591,7 +2585,6 @@ namespace Chummer
                                     dicChangedProperties.Add(this, setChangedProperties);
                                 }
 
-                                setChangedProperties.Add(nameof(RedlinerBonus));
                                 setChangedProperties.Add(nameof(PrototypeTranshumanEssenceUsed));
                                 setChangedProperties.Add(nameof(BiowareEssence));
                                 setChangedProperties.Add(nameof(CyberwareEssence));
@@ -3450,7 +3443,7 @@ namespace Chummer
                 await AttributeSection.CreateAsync(charNode, intForce, token: token).ConfigureAwait(false);
                 MetatypeGuid = new Guid(strMetatypeId);
                 Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
-                MetatypeCategory = strSelectedMetatypeCategory;
+                await SetMetatypeCategoryAsync(strSelectedMetatypeCategory, token).ConfigureAwait(false);
                 MetavariantGuid = string.IsNullOrEmpty(strMetavariantId) ? Guid.Empty : new Guid(strMetavariantId);
                 Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? string.Empty : string.Empty;
                 // We only reverted to the base metatype to get the attributes.
@@ -10328,6 +10321,106 @@ namespace Chummer
                                 }
                             }
 
+                            if (LastSavedVersion <= new Version(5, 225, 686))
+                            {
+                                // Fix legacy cases where characters have dealer connection improvement keys saved in non-English
+                                using (Timekeeper.StartSyncron("load_char_nonenglishdealerconnectionfix", loadActivity))
+                                {
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable MethodHasAsyncOverload
+                                        List<Improvement> lstDealerConnectionImprovements = ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                this, Improvement.ImprovementType.DealerConnection, token: token);
+                                        foreach (Improvement objImprovement in lstDealerConnectionImprovements)
+                                        {
+                                            string strCategory = objImprovement.UniqueName;
+                                            if (!string.IsNullOrEmpty(
+                                                    LanguageManager.GetString("String_DealerConnection_" + strCategory,
+                                                        false, token)))
+                                                continue;
+                                            if (LanguageManager.GetString("String_DealerConnection_Drones",
+                                                    token: token) ==
+                                                strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Drones";
+                                                objImprovement.UniqueName = "Drones";
+                                            }
+                                            else if (LanguageManager.GetString(
+                                                         "String_DealerConnection_Groundcraft", token: token) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Groundcraft";
+                                                objImprovement.UniqueName = "Groundcraft";
+                                            }
+                                            else if (LanguageManager.GetString(
+                                                         "String_DealerConnection_Aircraft", token: token) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Aircraft";
+                                                objImprovement.UniqueName = "Aircraft";
+                                            }
+                                            else if (LanguageManager.GetString(
+                                                         "String_DealerConnection_Watercraft", token: token) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Watercraft";
+                                                objImprovement.UniqueName = "Watercraft";
+                                            }
+                                        }
+                                        // ReSharper enable MethodHasAsyncOverload
+                                    }
+                                    else
+                                    {
+                                        List<Improvement> lstDealerConnectionImprovements = await ImprovementManager
+                                            .GetCachedImprovementListForValueOfAsync(
+                                                this, Improvement.ImprovementType.DealerConnection, token: token)
+                                            .ConfigureAwait(false);
+                                        foreach (Improvement objImprovement in lstDealerConnectionImprovements)
+                                        {
+                                            string strCategory = objImprovement.UniqueName;
+                                            if (!string.IsNullOrEmpty(
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_DealerConnection_" + strCategory,
+                                                        false, token).ConfigureAwait(false)))
+                                                continue;
+                                            if (await LanguageManager
+                                                    .GetStringAsync("String_DealerConnection_Drones", token: token)
+                                                    .ConfigureAwait(false) ==
+                                                strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Drones";
+                                                objImprovement.UniqueName = "Drones";
+                                            }
+                                            else if (await LanguageManager
+                                                         .GetStringAsync("String_DealerConnection_Groundcraft",
+                                                             token: token).ConfigureAwait(false) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Groundcraft";
+                                                objImprovement.UniqueName = "Groundcraft";
+                                            }
+                                            else if (await LanguageManager
+                                                         .GetStringAsync("String_DealerConnection_Aircraft",
+                                                             token: token).ConfigureAwait(false) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Aircraft";
+                                                objImprovement.UniqueName = "Aircraft";
+                                            }
+                                            else if (await LanguageManager
+                                                         .GetStringAsync("String_DealerConnection_Watercraft",
+                                                             token: token).ConfigureAwait(false) ==
+                                                     strCategory)
+                                            {
+                                                objImprovement.ImprovedName = "Watercraft";
+                                                objImprovement.UniqueName = "Watercraft";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             if (frmLoadingForm != null)
                             {
                                 if (blnSync)
@@ -10410,23 +10503,47 @@ namespace Chummer
                                     setAlwaysChangedProperties.Add(nameof(Encumbrance));
                                     setAlwaysChangedProperties.Add(nameof(ArmorEncumbrance));
 
-                                    foreach (Improvement objImprovement in Improvements)
+                                    if (blnSync)
                                     {
-                                        if (!objImprovement.Enabled)
-                                            continue;
-                                        foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                  string strPropertyToUpdate) in objImprovement
-                                                     .GetRelevantPropertyChangers())
+                                        foreach (Improvement objImprovement in Improvements)
                                         {
-                                            if (!dicChangedProperties.TryGetValue(
-                                                    objItemToUpdate, out HashSet<string> setChangedProperties))
+                                            if (!objImprovement.Enabled)
+                                                continue;
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in objImprovement
+                                                         .GetRelevantPropertyChangers())
                                             {
-                                                setChangedProperties = Utils.StringHashSetPool.Get();
-                                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                            }
+                                                if (!dicChangedProperties.TryGetValue(
+                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
 
-                                            setChangedProperties.Add(strPropertyToUpdate);
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        await Improvements.ForEachAsync(objImprovement =>
+                                        {
+                                            if (!objImprovement.Enabled)
+                                                return;
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in objImprovement
+                                                         .GetRelevantPropertyChangers())
+                                            {
+                                                if (!dicChangedProperties.TryGetValue(
+                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }, token).ConfigureAwait(false);
                                     }
 
                                     foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
@@ -22837,10 +22954,10 @@ namespace Chummer
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>(
                                     await Improvements.GetCountAsync(token).ConfigureAwait(false));
-                            foreach (Improvement objImprovement in Improvements)
+                            await Improvements.ForEachAsync(async objImprovement =>
                             {
                                 if (!objImprovement.Enabled)
-                                    continue;
+                                    return;
                                 bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
                                                            || objImprovement.ImproveSource
                                                            == Improvement.ImprovementSource.Metatype
@@ -22934,7 +23051,7 @@ namespace Chummer
                                                 decLoopEssencePenalty);
                                     }
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (dicImprovementEssencePenalties.Count > 0)
                                 await SetEssenceAtSpecialStartAsync(
@@ -24213,10 +24330,10 @@ namespace Chummer
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>(
                                     await Improvements.GetCountAsync(token).ConfigureAwait(false));
-                            foreach (Improvement objImprovement in Improvements)
+                            await Improvements.ForEachAsync(async objImprovement =>
                             {
                                 if (!objImprovement.Enabled)
-                                    continue;
+                                    return;
                                 bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
                                                            || objImprovement.ImproveSource
                                                            == Improvement.ImprovementSource.Metatype
@@ -24310,7 +24427,7 @@ namespace Chummer
                                                 decLoopEssencePenalty);
                                     }
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (dicImprovementEssencePenalties.Count > 0)
                                 await SetEssenceAtSpecialStartAsync(
@@ -24736,10 +24853,10 @@ namespace Chummer
                             Dictionary<string, decimal> dicImprovementEssencePenalties =
                                 new Dictionary<string, decimal>(
                                     await Improvements.GetCountAsync(token).ConfigureAwait(false));
-                            foreach (Improvement objImprovement in Improvements)
+                            await Improvements.ForEachAsync(async objImprovement =>
                             {
                                 if (!objImprovement.Enabled)
-                                    continue;
+                                    return;
                                 bool blnCountImprovement = !blnCountOnlyPriorityOrMetatypeGivenBonuses
                                                            || objImprovement.ImproveSource
                                                            == Improvement.ImprovementSource.Metatype
@@ -24833,7 +24950,7 @@ namespace Chummer
                                                 decLoopEssencePenalty);
                                     }
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
 
                             if (dicImprovementEssencePenalties.Count > 0)
                                 await SetEssenceAtSpecialStartAsync(
@@ -25422,7 +25539,7 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _decEssenceAtSpecialStart = value;
-                        RefreshEssenceLossImprovements();
+                        OnPropertyChanged();
                     }
                 }
             }
@@ -25461,7 +25578,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     _decEssenceAtSpecialStart = value;
-                    await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
+                    await OnPropertyChangedAsync(nameof(EssenceAtSpecialStart), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -35695,9 +35812,11 @@ namespace Chummer
                     string strOldValue = Interlocked.Exchange(ref _strMetatypeCategory, value);
                     if (strOldValue == value)
                         return;
-                    OnPropertyChanged();
                     if (strOldValue == "Cyberzombie" || value == "Cyberzombie")
-                        RefreshEssenceLossImprovements();
+                        this.OnMultiplePropertyChanged(nameof(MetatypeCategory),
+                            nameof(EssenceAtSpecialStart)); // Proxy for refreshing Essence loss improvements
+                    else
+                        OnPropertyChanged();
                 }
             }
         }
@@ -35712,6 +35831,30 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return _strMetatypeCategory;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Metatype Category.
+        /// </summary>
+        public async Task SetMetatypeCategoryAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strOldValue = Interlocked.Exchange(ref _strMetatypeCategory, value);
+                if (strOldValue == value)
+                    return;
+                if (strOldValue == "Cyberzombie" || value == "Cyberzombie")
+                    await this.OnMultiplePropertyChangedAsync(token, nameof(MetatypeCategory),
+                        nameof(EssenceAtSpecialStart)).ConfigureAwait(false); // Proxy for refreshing Essence loss improvements
+                else
+                    await OnPropertyChangedAsync(nameof(MetatypeCategory), token).ConfigureAwait(false);
             }
             finally
             {
@@ -45604,9 +45747,11 @@ namespace Chummer
                         RefreshBlackMarketDiscounts();
                     if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                         RefreshRedlinerImprovements();
-                    if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                    if (setNamesOfChangedProperties.Contains(nameof(Essence)) ||
+                        setNamesOfChangedProperties.Contains(nameof(EssenceAtSpecialStart)))
                     {
-                        ResetCachedEssence();
+                        if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                            ResetCachedEssence();
                         RefreshEssenceLossImprovements();
                     }
                     if (setNamesOfChangedProperties.Contains(nameof(Encumbrance)))
@@ -45893,9 +46038,11 @@ namespace Chummer
                         await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(RedlinerBonus)))
                         await RefreshRedlinerImprovementsAsync(token).ConfigureAwait(false);
-                    if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                    if (setNamesOfChangedProperties.Contains(nameof(Essence)) ||
+                        setNamesOfChangedProperties.Contains(nameof(EssenceAtSpecialStart)))
                     {
-                        await ResetCachedEssenceAsync(token).ConfigureAwait(false);
+                        if (setNamesOfChangedProperties.Contains(nameof(Essence)))
+                            await ResetCachedEssenceAsync(token).ConfigureAwait(false);
                         await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                     }
 
@@ -46496,12 +46643,10 @@ namespace Chummer
                                 if (!_blnCreated)
                                 {
                                     XPathNodeIterator xmlJournalEntries = xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal", token);
-                                    if (xmlJournalEntries.Count > 1)
-                                    {
-                                        _blnCreated = true;
-                                    }
-                                    else if (xmlJournalEntries.Count == 1 &&
-                                             xmlJournalEntries.Current.SelectSingleNodeAndCacheExpression("@name", token)?.Value != "Title")
+                                    if (xmlJournalEntries.Count > 1
+                                        || (xmlJournalEntries.Count == 1 &&
+                                            xmlJournalEntries.Current.SelectSingleNodeAndCacheExpression("@name", token)
+                                                ?.Value != "Title"))
                                     {
                                         _blnCreated = true;
                                     }
@@ -49130,23 +49275,47 @@ namespace Chummer
                                     setAlwaysChangedProperties.Add(nameof(Encumbrance));
                                     setAlwaysChangedProperties.Add(nameof(ArmorEncumbrance));
 
-                                    foreach (Improvement objImprovement in Improvements)
+                                    if (blnSync)
                                     {
-                                        if (!objImprovement.Enabled)
-                                            continue;
-                                        foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
-                                                  string strPropertyToUpdate) in objImprovement
-                                                     .GetRelevantPropertyChangers())
+                                        foreach (Improvement objImprovement in Improvements)
                                         {
-                                            if (!dicChangedProperties.TryGetValue(
-                                                    objItemToUpdate, out HashSet<string> setChangedProperties))
+                                            if (!objImprovement.Enabled)
+                                                continue;
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in objImprovement
+                                                         .GetRelevantPropertyChangers())
                                             {
-                                                setChangedProperties = Utils.StringHashSetPool.Get();
-                                                dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
-                                            }
+                                                if (!dicChangedProperties.TryGetValue(
+                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
 
-                                            setChangedProperties.Add(strPropertyToUpdate);
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        await Improvements.ForEachAsync(objImprovement =>
+                                        {
+                                            if (!objImprovement.Enabled)
+                                                return;
+                                            foreach ((INotifyMultiplePropertiesChangedAsync objItemToUpdate,
+                                                         string strPropertyToUpdate) in objImprovement
+                                                         .GetRelevantPropertyChangers())
+                                            {
+                                                if (!dicChangedProperties.TryGetValue(
+                                                        objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }, token).ConfigureAwait(false);
                                     }
 
                                     foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>>
@@ -50417,7 +50586,7 @@ namespace Chummer
                 }
 
                 // Change the MetatypeCategory to Cyberzombie.
-                MetatypeCategory = "Cyberzombie";
+                await SetMetatypeCategoryAsync("Cyberzombie", token).ConfigureAwait(false);
 
                 // Gain access to Critter Powers.
                 CritterEnabled = true;

@@ -5451,7 +5451,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.MyForm.SelectedItem);
+                    SelectedValue = frmPickItem.MyForm.SelectedItem;
                 }
 
                 // Create the Improvement.

@@ -363,7 +363,7 @@ namespace SevenZip.Compression.LZMA
 
         private const int kNumLenSpecSymbols = Base.kNumLowLenSymbols + Base.kNumMidLenSymbols;
 
-        private class LenPriceTableEncoder : LenEncoder
+        private sealed class LenPriceTableEncoder : LenEncoder
         {
             private readonly uint[] _prices = new uint[Base.kNumLenSymbols << Base.kNumPosStatesBitsEncodingMax];
             private int _tableSize;
@@ -751,14 +751,11 @@ namespace SevenZip.Compression.LZMA
                 _longestMatchWasFound = false;
             }
 
-            int numAvailableBytes = _matchFinder.GetNumAvailableBytes() + 1;
-            if (numAvailableBytes < 2)
+            if (_matchFinder.GetNumAvailableBytes() + 1 < 2)
             {
                 backRes = 0x7FFFFFFF;
                 return 1;
             }
-            if (numAvailableBytes > Base.kMatchMaxLen)
-                numAvailableBytes = Base.kMatchMaxLen;
 
             int repMaxIndex = 0;
             int i;
@@ -1041,12 +1038,9 @@ namespace SevenZip.Compression.LZMA
 
                     int numAvailableBytesFull = _matchFinder.GetNumAvailableBytes() + 1;
                     numAvailableBytesFull = Math.Min(kNumOpts - 1 - cur, numAvailableBytesFull);
-                    numAvailableBytes = numAvailableBytesFull;
-
-                    if (numAvailableBytes < 2)
+                    if (numAvailableBytesFull < 2)
                         continue;
-                    if (numAvailableBytes > _numFastBytes)
-                        numAvailableBytes = _numFastBytes;
+                    int numAvailableBytes = Math.Min(numAvailableBytesFull, _numFastBytes);
                     if (!nextIsChar && matchByte != currentByte)
                     {
                         // try Literal + rep0
@@ -1276,13 +1270,10 @@ namespace SevenZip.Compression.LZMA
                 _longestMatchWasFound = false;
             }
 
-            int numAvailableBytes = _matchFinder.GetNumAvailableBytes() + 1;
-            if (numAvailableBytes < 2)
+            if (_matchFinder.GetNumAvailableBytes() + 1 < 2)
             {
                 return new Tuple<int, int>(1, 0x7FFFFFFF);
             }
-            if (numAvailableBytes > Base.kMatchMaxLen)
-                numAvailableBytes = Base.kMatchMaxLen;
 
             int repMaxIndex = 0;
             int i;
@@ -1559,12 +1550,9 @@ namespace SevenZip.Compression.LZMA
 
                     int numAvailableBytesFull = _matchFinder.GetNumAvailableBytes() + 1;
                     numAvailableBytesFull = Math.Min(kNumOpts - 1 - cur, numAvailableBytesFull);
-                    numAvailableBytes = numAvailableBytesFull;
-
-                    if (numAvailableBytes < 2)
+                    if (numAvailableBytesFull < 2)
                         continue;
-                    if (numAvailableBytes > _numFastBytes)
-                        numAvailableBytes = _numFastBytes;
+                    int numAvailableBytes = Math.Min(numAvailableBytesFull, _numFastBytes);
                     if (!nextIsChar && matchByte != currentByte)
                     {
                         // try Literal + rep0
@@ -2293,8 +2281,7 @@ namespace SevenZip.Compression.LZMA
             ReleaseOutStream();
         }
 
-        private void SetStreams(Stream inStream, Stream outStream,
-                long inSize, long outSize, CancellationToken token = default)
+        private void SetStreams(Stream inStream, Stream outStream, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             _inStream = inStream;
@@ -2324,23 +2311,22 @@ namespace SevenZip.Compression.LZMA
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            Chummer.Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None), CancellationToken.None);
+            Chummer.Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, progress, null, CancellationToken.None), CancellationToken.None);
         }
 
         public Task CodeAsync(Stream inStream, Stream outStream,
                          long inSize, long outSize, IAsyncCodeProgress progress, CancellationToken token = default)
         {
-            return CodeCoreAsync(false, inStream, outStream, inSize, outSize, null, progress, token);
+            return CodeCoreAsync(false, inStream, outStream, null, progress, token);
         }
 
-        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream,
-                         long inSize, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
+        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             _needReleaseMFStream = false;
             try
             {
-                SetStreams(inStream, outStream, inSize, outSize, token);
+                SetStreams(inStream, outStream, token);
                 while (true)
                 {
                     long processedInSize;

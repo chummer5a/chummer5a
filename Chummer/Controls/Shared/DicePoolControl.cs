@@ -50,7 +50,7 @@ namespace Chummer.UI.Shared.Components
             if (Program.MainForm == null)
                 return;
             Character objCharacter = null;
-            if (this.DoThreadSafeFunc(x => x.ParentForm) is CharacterShared frmParent)
+            if (await this.DoThreadSafeFuncAsync(x => x.ParentForm).ConfigureAwait(false) is CharacterShared frmParent)
                 objCharacter = frmParent.CharacterObject;
             await Program.MainForm.OpenDiceRollerWithPool(objCharacter, DicePool).ConfigureAwait(false);
         }

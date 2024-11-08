@@ -306,7 +306,7 @@ namespace Chummer.UI.Shared
             string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
             if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
                 return;
-            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
+            LimitModifier objLimitModifier = await _objCharacter.LimitModifiers.FindByIdAsync(strGuid, token).ConfigureAwait(false);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {

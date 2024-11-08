@@ -38,13 +38,9 @@ namespace Chummer
             if (intA == 0)
                 return 0;
             // Adding 1 if modulo > 0 would require a separate modulo operation that is as slow as division
-            if (intA > 0)
-            {
-                --intA;
-                return (intB > 0 ? intA + intB : intA - intB) / intB;
-            }
-            ++intA;
-            return (intB > 0 ? intA - intB : intA + intB) / intB;
+            int intParityA = intA > 0 ? 1 : -1;
+            int intParityB = intB > 0 ? 1 : -1;
+            return (intA - intParityA + intParityA * intParityB * intB) / intB;
         }
 
         /// <summary>

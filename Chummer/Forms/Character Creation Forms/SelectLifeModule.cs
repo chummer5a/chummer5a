@@ -112,11 +112,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (_rgxSearchExpression != null)
                     {
-                        if (_rgxSearchExpression.IsMatch(treNode.Text))
-                        {
-                            lstTreeNodes.Add(treNode);
-                        }
-                        else if (treNode.Nodes.Count != 0)
+                        if (_rgxSearchExpression.IsMatch(treNode.Text) || treNode.Nodes.Count != 0)
                         {
                             lstTreeNodes.Add(treNode);
                         }

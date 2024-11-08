@@ -247,8 +247,19 @@ namespace Chummer
             int intDragLevel = nodSelected.Level;
             if (treView == treGear)
             {
-                if ((intDragLevel == 0) != (e.Button == MouseButtons.Left))
-                    return;
+                switch (e.Button)
+                {
+                    case MouseButtons.Left:
+                        if (intDragLevel < 0 || intDragLevel > 1)
+                            return;
+                        break;
+                    case MouseButtons.Right:
+                        if (intDragLevel == 0)
+                            return;
+                        break;
+                    default:
+                        return;
+                }
             }
             else if (treView == treVehicles)
             {
@@ -6128,7 +6139,7 @@ namespace Chummer
 
                 await CharacterObject.CritterPowers.AddAsync(objPower, GenericToken).ConfigureAwait(false);
 
-                CharacterObject.MetatypeCategory = "Free Sprite";
+                await CharacterObject.SetMetatypeCategoryAsync("Free Sprite", GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -8490,8 +8501,8 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children, GenericToken)
-                                                          .SelectMany(x => x.Clips))
+                        foreach (Clip objClip in (await objWeapon.Children.GetAllDescendantsAsync(x => x.Children, GenericToken).ConfigureAwait(false))
+                                 .SelectMany(x => x.Clips))
                         {
                             if (objClip.AmmoGear != null)
                             {
@@ -16855,7 +16866,7 @@ namespace Chummer
                     }
                 }
 
-                foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children, GenericToken).SelectMany(x => x.Clips))
+                foreach (Clip objClip in (await objWeapon.Children.GetAllDescendantsAsync(x => x.Children, GenericToken).ConfigureAwait(false)).SelectMany(x => x.Clips))
                 {
                     if (objClip.AmmoGear != null)
                     {

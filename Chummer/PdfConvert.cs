@@ -459,7 +459,7 @@ namespace Codaxy.WkHtmlToPdf
                         }
                     }
                 }
-                if (woutput.OutputCallback != null || woutput.OutputCallbackAsync != null)
+                else if (woutput.OutputCallback != null || woutput.OutputCallbackAsync != null)
                 {
                     byte[] pdfFileBytes = await FileExtensions.ReadAllBytesAsync(outputPdfFilePath, token).ConfigureAwait(false);
                     woutput.OutputCallback?.Invoke(document, pdfFileBytes);

@@ -88,56 +88,12 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
-        {
-            get
-            {
-                do
-                {
-                    try
-                    {
-                        if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
-                            < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                            LoadCharacterSettings();
-                    }
-                    catch
-                    {
-                        _intDicLoadedCharacterSettingsLoadedStatus = -1;
-                        throw;
-                    }
-
-                    while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
-                           && _intDicLoadedCharacterSettingsLoadedStatus >= 0)
-                        Utils.SafeSleep();
-                }
-                while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
-                return s_DicLoadedCharacterSettings;
-            }
-        }
+        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings => LoadedCharacterSettingsAsModifiable;
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
         public static async Task<IReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
         {
-            do
-            {
-                try
-                {
-                    if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
-                        < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                        await LoadCharacterSettingsAsync(token).ConfigureAwait(false);
-                }
-                catch
-                {
-                    _intDicLoadedCharacterSettingsLoadedStatus = -1;
-                    throw;
-                }
-
-                while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
-                       && _intDicLoadedCharacterSettingsLoadedStatus >= 0)
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-            } while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
-
-            return s_DicLoadedCharacterSettings;
+            return await GetLoadedCharacterSettingsAsModifiableAsync(token).ConfigureAwait(false);
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
