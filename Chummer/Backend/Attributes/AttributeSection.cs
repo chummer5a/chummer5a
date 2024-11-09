@@ -2568,28 +2568,29 @@ namespace Chummer.Backend.Attributes
                 string strReturn = strInput;
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
+                    string strNeedleCommon = '{' + strCharAttributeName;
                     strReturn = strReturn
-                                .CheapReplace('{' + strCharAttributeName + '}', () =>
+                                .CheapReplace(strNeedleCommon + '}', () =>
                                                   (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
                                                       ? intOverride
                                                       : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace('{' + strCharAttributeName + "Unaug}", () =>
+                                .CheapReplace(strNeedleCommon + "Unaug}", () =>
                                                   (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
                                                       ? intOverride
                                                       : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace('{' + strCharAttributeName + "Base}", () =>
+                                .CheapReplace(strNeedleCommon + "Base}", () =>
                                                   (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
                                                       ? intOverride
                                                       : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
                                                   .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace('{' + strCharAttributeName + "Minimum}", () =>
+                                .CheapReplace(strNeedleCommon + "Minimum}", () =>
                                     (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
                                         ? intOverride
                                         : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMinimum)
                                     .ToString(GlobalSettings.InvariantCultureInfo))
-                                .CheapReplace('{' + strCharAttributeName + "Maximum}", () =>
+                                .CheapReplace(strNeedleCommon + "Maximum}", () =>
                                     (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
                                         ? intOverride
                                         : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMaximum)
@@ -2610,27 +2611,28 @@ namespace Chummer.Backend.Attributes
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () =>
+                    string strNeedleCommon = '{' + strCharAttributeName;
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + '}', () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
                             ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalValue)
                         .ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Unaug}", () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
                             ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).Value)
                         .ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Base}", () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
                             ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalBase)
                         .ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Minimum}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Minimum}", () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
                             ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMinimum)
                         .ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Maximum}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Maximum}", () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
                             ? intOverride
                             : _objCharacter.GetAttribute(strCharAttributeName, token: token).TotalMaximum)
@@ -2652,30 +2654,31 @@ namespace Chummer.Backend.Attributes
                 {
                     CharacterAttrib objAttribute = await _objCharacter
                         .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
+                    string strNeedleCommon = '{' + strCharAttributeName;
                     strReturn = await (await (await (await (await strReturn
-                                        .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
+                                        .CheapReplaceAsync(strNeedleCommon + '}', async () =>
                                             (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
                                                 ? intOverride
                                                 : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                         .ConfigureAwait(false))
-                                    .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
+                                    .CheapReplaceAsync(strNeedleCommon + "Unaug}", async () =>
                                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
                                             ? intOverride
                                             : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
                                         .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                     .ConfigureAwait(false))
-                                .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
+                                .CheapReplaceAsync(strNeedleCommon + "Base}", async () =>
                                     (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
                                         ? intOverride
                                         : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
                                     .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
-                            .CheapReplaceAsync('{' + strCharAttributeName + "Minimum}", async () =>
+                            .CheapReplaceAsync(strNeedleCommon + "Minimum}", async () =>
                                 (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
                                     ? intOverride
                                     : await objAttribute.GetTotalMinimumAsync(token).ConfigureAwait(false))
                                 .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
-                        .CheapReplaceAsync('{' + strCharAttributeName + "Maximum}", async () =>
+                        .CheapReplaceAsync(strNeedleCommon + "Maximum}", async () =>
                             (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
                                 ? intOverride
                                 : await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false))
@@ -2704,27 +2707,28 @@ namespace Chummer.Backend.Attributes
                 {
                     CharacterAttrib objAttribute = await _objCharacter
                         .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
+                    string strNeedleCommon = '{' + strCharAttributeName;
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + '}', async () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName, out int intOverride)
                             ? intOverride
                             : await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Unaug}", async () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug", out int intOverride)
                             ? intOverride
                             : await objAttribute.GetValueAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Base}", async () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Base", out int intOverride)
                             ? intOverride
                             : await objAttribute.GetTotalBaseAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Minimum}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Minimum}", async () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Minimum", out int intOverride)
                             ? intOverride
                             : await objAttribute.GetTotalMinimumAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Maximum}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Maximum}", async () =>
                         (dicValueOverrides != null && dicValueOverrides.TryGetValue(strCharAttributeName + "Maximum", out int intOverride)
                             ? intOverride
                             : await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false))
@@ -2751,8 +2755,9 @@ namespace Chummer.Backend.Attributes
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
+                    string strNeedleCommon = '{' + strCharAttributeName;
                     strReturn = strReturn
-                                .CheapReplace('{' + strCharAttributeName + '}', () =>
+                                .CheapReplace(strNeedleCommon + '}', () =>
                                 {
                                     string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                          .DisplayNameShort(strLanguage);
@@ -2769,7 +2774,7 @@ namespace Chummer.Backend.Attributes
 
                                     return strInnerReturn;
                                 })
-                                .CheapReplace('{' + strCharAttributeName + "Unaug}", () =>
+                                .CheapReplace(strNeedleCommon + "Unaug}", () =>
                                 {
                                     string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                          .DisplayNameShort(strLanguage);
@@ -2787,7 +2792,7 @@ namespace Chummer.Backend.Attributes
                                                          LanguageManager.GetString(
                                                              "String_NaturalAttribute", strLanguage, token: token), strInnerReturn);
                                 })
-                                .CheapReplace('{' + strCharAttributeName + "Base}", () =>
+                                .CheapReplace(strNeedleCommon + "Base}", () =>
                                 {
                                     string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                                          .DisplayNameShort(strLanguage);
@@ -2806,7 +2811,7 @@ namespace Chummer.Backend.Attributes
                                                          LanguageManager.GetString("String_BaseAttribute", strLanguage, token: token),
                                                          strInnerReturn);
                                 })
-                                .CheapReplace('{' + strCharAttributeName + "Minimum}", () =>
+                                .CheapReplace(strNeedleCommon + "Minimum}", () =>
                                 {
                                     string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                         .DisplayNameShort(strLanguage);
@@ -2825,7 +2830,7 @@ namespace Chummer.Backend.Attributes
                                         LanguageManager.GetString("String_MinimumAttribute", strLanguage, token: token),
                                         strInnerReturn);
                                 })
-                                .CheapReplace('{' + strCharAttributeName + "Maximum}", () =>
+                                .CheapReplace(strNeedleCommon + "Maximum}", () =>
                                 {
                                     string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                         .DisplayNameShort(strLanguage);
@@ -2865,7 +2870,8 @@ namespace Chummer.Backend.Attributes
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () =>
+                    string strNeedleCommon = '{' + strCharAttributeName;
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + '}', () =>
                     {
                         string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                              .DisplayNameShort(strLanguage);
@@ -2879,7 +2885,7 @@ namespace Chummer.Backend.Attributes
 
                         return strInnerReturn;
                     });
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Unaug}", () =>
                     {
                         string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                              .DisplayNameShort(strLanguage);
@@ -2896,7 +2902,7 @@ namespace Chummer.Backend.Attributes
                                              LanguageManager.GetString("String_NaturalAttribute", strLanguage, token: token),
                                              strInnerReturn);
                     });
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Base}", () =>
                     {
                         string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                                                              .DisplayNameShort(strLanguage);
@@ -2913,7 +2919,7 @@ namespace Chummer.Backend.Attributes
                                              LanguageManager.GetString("String_BaseAttribute", strLanguage, token: token),
                                              strInnerReturn);
                     });
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Minimum}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Minimum}", () =>
                     {
                         string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                             .DisplayNameShort(strLanguage);
@@ -2930,7 +2936,7 @@ namespace Chummer.Backend.Attributes
                             LanguageManager.GetString("String_MinimumAttribute", strLanguage, token: token),
                             strInnerReturn);
                     });
-                    sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Maximum}", () =>
+                    sbdInput.CheapReplace(strOriginal, strNeedleCommon + "Maximum}", () =>
                     {
                         string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName, token: token)
                             .DisplayNameShort(strLanguage);
@@ -2967,8 +2973,9 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
+                    string strNeedleCommon = '{' + strCharAttributeName;
                     strReturn = await strReturn
-                        .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
+                        .CheapReplaceAsync(strNeedleCommon + '}', async () =>
                         {
                             string strInnerReturn = await (await _objCharacter
                                     .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -2989,7 +2996,7 @@ namespace Chummer.Backend.Attributes
 
                             return strInnerReturn;
                         }, token: token)
-                        .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
+                        .CheapReplaceAsync(strNeedleCommon + "Unaug}", async () =>
                         {
                             string strInnerReturn = await (await _objCharacter
                                     .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3013,7 +3020,7 @@ namespace Chummer.Backend.Attributes
                                     "String_NaturalAttribute", strLanguage, token: token).ConfigureAwait(false),
                                 strInnerReturn);
                         }, token: token)
-                        .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
+                        .CheapReplaceAsync(strNeedleCommon + "Base}", async () =>
                         {
                             string strInnerReturn = await (await _objCharacter
                                     .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3037,7 +3044,7 @@ namespace Chummer.Backend.Attributes
                                     "String_BaseAttribute", strLanguage, token: token).ConfigureAwait(false),
                                 strInnerReturn);
                         }, token: token)
-                        .CheapReplaceAsync('{' + strCharAttributeName + "Minimum}", async () =>
+                        .CheapReplaceAsync(strNeedleCommon + "Minimum}", async () =>
                         {
                             string strInnerReturn = await (await _objCharacter
                                     .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3061,7 +3068,7 @@ namespace Chummer.Backend.Attributes
                                     "String_MinimumAttribute", strLanguage, token: token).ConfigureAwait(false),
                                 strInnerReturn);
                         }, token: token)
-                        .CheapReplaceAsync('{' + strCharAttributeName + "Maximum}", async () =>
+                        .CheapReplaceAsync(strNeedleCommon + "Maximum}", async () =>
                         {
                             string strInnerReturn = await (await _objCharacter
                                     .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3115,7 +3122,8 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
+                    string strNeedleCommon = '{' + strCharAttributeName;
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + '}', async () =>
                     {
                         string strInnerReturn = await (await _objCharacter
                                 .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3132,7 +3140,7 @@ namespace Chummer.Backend.Attributes
 
                         return strInnerReturn;
                     }, token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Unaug}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter
                                 .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3153,7 +3161,7 @@ namespace Chummer.Backend.Attributes
                                 .ConfigureAwait(false),
                             strInnerReturn);
                     }, token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Base}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter
                                 .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3174,7 +3182,7 @@ namespace Chummer.Backend.Attributes
                                 .ConfigureAwait(false),
                             strInnerReturn);
                     }, token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Minimum}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Minimum}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter
                                 .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))
@@ -3195,7 +3203,7 @@ namespace Chummer.Backend.Attributes
                                 .ConfigureAwait(false),
                             strInnerReturn);
                     }, token: token).ConfigureAwait(false);
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Maximum}", async () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, strNeedleCommon + "Maximum}", async () =>
                     {
                         string strInnerReturn = await (await _objCharacter
                                 .GetAttributeAsync(strCharAttributeName, token: token).ConfigureAwait(false))

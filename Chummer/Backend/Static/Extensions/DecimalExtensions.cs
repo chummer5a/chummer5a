@@ -56,7 +56,7 @@ namespace Chummer
         /// </summary>
         /// <param name="decBase">Number to exponentiate.</param>
         /// <param name="decPower">Power to which to raise <paramref name="decBase"/>.</param>
-        /// <param name="decEpsilon">If <paramref name="decPower"/> is not an integer, the margin of error to target for approximating the answer past double-precision. Set this a large number if no iterations are desired.</param>
+        /// <param name="decEpsilon">If <paramref name="decPower"/> is not an integer, the margin of error to target for approximating the answer past double-precision. Set this to decimal.MaxValue if no iterations are desired.</param>
         /// <returns><paramref name="decBase"/> to the power of <paramref name="decPower"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static decimal RaiseToPower(this decimal decBase, decimal decPower, decimal decEpsilon = 0.0m)
