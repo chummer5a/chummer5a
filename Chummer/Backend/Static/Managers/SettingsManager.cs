@@ -571,9 +571,10 @@ namespace Chummer
             using (new FetchSafelyFromPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {
-                setDummyBooks.AddRange(objBaselineSettings.Books);
-                int intExtraBooks = objOptionsToCheck.Books.Count(x => setDummyBooks.Remove(x));
-                setDummyBooks.IntersectWith(objOptionsToCheck.Books);
+                setDummyBooks.AddRange(await objBaselineSettings.GetBooksAsync(token).ConfigureAwait(false));
+                IReadOnlyCollection<string> setNewBooks = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
+                int intExtraBooks = setNewBooks.Count(x => !setDummyBooks.Remove(x));
+                setDummyBooks.IntersectWith(setNewBooks);
                 intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                               + intExtraBooks) * intBaseline;
             }

@@ -6566,7 +6566,7 @@ namespace Chummer
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
-                                            int intExtraBooks = objOptionsToCheck.Books.Count(x => setDummyBooks.Remove(x));
+                                            int intExtraBooks = objOptionsToCheck.Books.Count(x => !setDummyBooks.Remove(x));
                                             setDummyBooks.IntersectWith(objOptionsToCheck.Books);
                                             intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                                                           + intExtraBooks) * intBaseline;
@@ -6664,7 +6664,7 @@ namespace Chummer
                                             setDummyBooks.AddRange(setSavedBooks);
                                             IReadOnlyCollection<string> setOtherBooks
                                                 = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
-                                            int intExtraBooks = setOtherBooks.Count(x => setDummyBooks.Remove(x));
+                                            int intExtraBooks = setOtherBooks.Count(x => !setDummyBooks.Remove(x));
                                             setDummyBooks.IntersectWith(setOtherBooks);
                                             intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                                                           + intExtraBooks) * intBaseline;
