@@ -1828,7 +1828,7 @@ namespace Translator
                 xmlRootContactFileNode.AppendChild(xmlPersonalLifeNodesParent);
             }
 
-            XPathNavigator xmlDataPersonalLifeNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("personallives");
+            XPathNavigator xmlDataPersonalLifeNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("personallives");
             if (xmlDataPersonalLifeNodeList != null)
             {
                 foreach (XPathNavigator xmlDataPersonalLifeNode in xmlDataPersonalLifeNodeList.Select("personallife"))
@@ -6544,7 +6544,7 @@ namespace Translator
                 xmlRootSkillFileNode.AppendChild(xmlKnowledgeSkillNodesParent);
             }
 
-            XPathNavigator xmlDataKnowledgeSkillNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("knowledgeskills");
+            XPathNavigator xmlDataKnowledgeSkillNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("knowledgeskills");
             if (xmlDataKnowledgeSkillNodeList != null)
             {
                 foreach (XPathNavigator xmlDataKnowledgeSkillNode in xmlDataKnowledgeSkillNodeList.Select("skill"))
@@ -7973,7 +7973,7 @@ namespace Translator
                 xmlRootVehicleFileNode.AppendChild(xmlVehicleModNodesParent);
             }
 
-            XPathNavigator xmlDataVehicleModNodeList = xmlDataDocumentBaseChummerNode.SelectSingleNode("mods");
+            XPathNavigator xmlDataVehicleModNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("mods");
             if (xmlDataVehicleModNodeList != null)
             {
                 foreach (XPathNavigator xmlDataVehicleModNode in xmlDataVehicleModNodeList.Select("mod"))

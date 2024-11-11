@@ -1155,10 +1155,9 @@ namespace SevenZip.Compression.LZMA
                     if (newLen > numAvailableBytes)
                     {
                         newLen = numAvailableBytes;
-                        for (numDistancePairs = 0; newLen > _matchDistances[numDistancePairs]; numDistancePairs += 2)
-                        {
-                        }
-
+                        numDistancePairs = 0;
+                        while (newLen > _matchDistances[numDistancePairs])
+                            numDistancePairs += 2;
                         _matchDistances[numDistancePairs] = newLen;
                         numDistancePairs += 2;
                     }
@@ -1667,10 +1666,9 @@ namespace SevenZip.Compression.LZMA
                     if (newLen > numAvailableBytes)
                     {
                         newLen = numAvailableBytes;
-                        for (numDistancePairs = 0; newLen > _matchDistances[numDistancePairs]; numDistancePairs += 2)
-                        {
-                        }
-
+                        numDistancePairs = 0;
+                        while (newLen > _matchDistances[numDistancePairs])
+                            numDistancePairs += 2;
                         _matchDistances[numDistancePairs] = newLen;
                         numDistancePairs += 2;
                     }
