@@ -223,11 +223,11 @@ namespace Chummer
                     objCharacterSettings.EnabledCustomDataDirectoryInfoGuids;
                 int intMyLoadOrderPosition
                     = lstEnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
+                List<CustomDataDirectoryInfo> lstEnabledCustomData
+                    = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
-                    List<CustomDataDirectoryInfo> lstEnabledCustomData
-                        = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
                     foreach (DirectoryDependency dependency in DependenciesList)
                     {
                         lstEnabledCustomData.Clear();
@@ -323,11 +323,11 @@ namespace Chummer
                     await objCharacterSettings.GetEnabledCustomDataDirectoryInfoGuidsAsync(token).ConfigureAwait(false);
                 int intMyLoadOrderPosition
                     = lstEnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
+                List<CustomDataDirectoryInfo> lstEnabledCustomData
+                    = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
-                    List<CustomDataDirectoryInfo> lstEnabledCustomData
-                        = new List<CustomDataDirectoryInfo>(DependenciesList.Count);
                     foreach (DirectoryDependency dependency in DependenciesList)
                     {
                         lstEnabledCustomData.Clear();
@@ -422,17 +422,17 @@ namespace Chummer
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
         public string CheckIncompatibility(CharacterSettings objCharacterSettings)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdReturn))
+            List<CustomDataDirectoryInfo> lstEnabledCustomData
+                = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
+            using (objCharacterSettings.LockObject.EnterReadLock())
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData
-                    = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
-                using (objCharacterSettings.LockObject.EnterReadLock())
+                IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
+                    objCharacterSettings.EnabledCustomDataDirectoryInfos;
+                IReadOnlyCollection<Guid> lstEnabledCustomDataDirectoryInfoGuids =
+                    objCharacterSettings.EnabledCustomDataDirectoryInfoGuids;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdReturn))
                 {
-                    IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
-                        objCharacterSettings.EnabledCustomDataDirectoryInfos;
-                    IReadOnlyCollection<Guid> lstEnabledCustomDataDirectoryInfoGuids =
-                        objCharacterSettings.EnabledCustomDataDirectoryInfoGuids;
                     foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
                     {
                         Guid objIncompatibilityGuid = incompatibility.UniqueIdentifier;
@@ -476,9 +476,9 @@ namespace Chummer
                                 objInfoToDisplay.DisplayName, incompatibility.DisplayName).AppendLine();
                         }
                     }
-                }
 
-                return sbdReturn.ToString();
+                    return sbdReturn.ToString();
+                }
             }
         }
 
@@ -489,21 +489,22 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
         public async Task<string> CheckIncompatibilityAsync(CharacterSettings objCharacterSettings,
-                                                                 CancellationToken token = default)
+            CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdReturn))
+            List<CustomDataDirectoryInfo> lstEnabledCustomData
+                = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
+            IAsyncDisposable objLocker =
+                await objCharacterSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                List<CustomDataDirectoryInfo> lstEnabledCustomData
-                    = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
-                IAsyncDisposable objLocker = await objCharacterSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                token.ThrowIfCancellationRequested();
+                IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
+                    await objCharacterSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
+                IReadOnlyCollection<Guid> lstEnabledCustomDataDirectoryInfoGuids =
+                    await objCharacterSettings.GetEnabledCustomDataDirectoryInfoGuidsAsync(token).ConfigureAwait(false);
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                           out StringBuilder sbdReturn))
                 {
-                    token.ThrowIfCancellationRequested();
-                    IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
-                        await objCharacterSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
-                    IReadOnlyCollection<Guid> lstEnabledCustomDataDirectoryInfoGuids =
-                        await objCharacterSettings.GetEnabledCustomDataDirectoryInfoGuidsAsync(token).ConfigureAwait(false);
                     foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
                     {
                         Guid objIncompatibilityGuid = incompatibility.UniqueIdentifier;
@@ -551,13 +552,13 @@ namespace Chummer
                                 await incompatibility.GetDisplayNameAsync(token).ConfigureAwait(false)).AppendLine();
                         }
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
 
-                return sbdReturn.ToString();
+                    return sbdReturn.ToString();
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -742,8 +743,7 @@ namespace Chummer
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
                 if (string.IsNullOrEmpty(_strDisplayAuthors) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
                 {
-                    _strDisplayAuthorsLanguage = GlobalSettings.Language;
-                    _strDisplayAuthors = GetDisplayAuthors(GlobalSettings.Language, GlobalSettings.CultureInfo);
+                    _strDisplayAuthors = GetDisplayAuthors(_strDisplayAuthorsLanguage = GlobalSettings.Language, GlobalSettings.CultureInfo);
                 }
 
                 return _strDisplayAuthors;
