@@ -5891,11 +5891,11 @@ namespace Chummer
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
+        public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
             bool blnLoadFile = false, CancellationToken token = default)
         {
-            return XmlManager.LoadXPathAsync(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage,
-                blnLoadFile, token);
+            return await XmlManager.LoadXPathAsync(strFileName, await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false), strLanguage,
+                blnLoadFile, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5920,9 +5920,9 @@ namespace Chummer
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return XmlManager.LoadAsync(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile, token);
+            return await XmlManager.LoadAsync(strFileName, await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false), strLanguage, blnLoadFile, token).ConfigureAwait(false);
         }
 
         private int _intIsLoading;
@@ -6786,7 +6786,9 @@ namespace Chummer
                                                         ? SettingsManager.LoadedCharacterSettings
                                                         : await SettingsManager.GetLoadedCharacterSettingsAsync(token)
                                                             .ConfigureAwait(false)).FirstOrDefault().Value;
-                                                strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                                strReplacementSettingsKey = blnSync
+                                                    ? objProspectiveSettings.DictionaryKey
+                                                    : await objProspectiveSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                                             }
                                         }
 
@@ -6893,7 +6895,9 @@ namespace Chummer
                                                         ? SettingsManager.LoadedCharacterSettings
                                                         : await SettingsManager.GetLoadedCharacterSettingsAsync(token)
                                                             .ConfigureAwait(false)).FirstOrDefault().Value;
-                                                strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                                strReplacementSettingsKey = blnSync
+                                                    ? objProspectiveSettings.DictionaryKey
+                                                    : await objProspectiveSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                                             }
                                         }
 

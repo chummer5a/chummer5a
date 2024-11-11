@@ -792,7 +792,7 @@ namespace Chummer
             if (intIndex <= 0)
                 return;
             await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex - 1, 2).ConfigureAwait(false);
-            await _objCharacterSettings.CustomDataDirectoryKeys.ReverseAsync(intIndex - 1, 2).ConfigureAwait(false);
+            await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(intIndex - 1, 2).ConfigureAwait(false);
             await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.CustomDataDirectoryKeys)).ConfigureAwait(false);
             await PopulateCustomDataDirectoryTreeView().ConfigureAwait(false);
         }
@@ -806,7 +806,7 @@ namespace Chummer
             int intIndex = nodSelected.Index;
             if (intIndex <= 0)
                 return;
-            IAsyncDisposable objLocker = await _objCharacterSettings.CustomDataDirectoryKeys.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 IAsyncDisposable objLocker2
@@ -816,7 +816,7 @@ namespace Chummer
                     for (int i = intIndex; i > 0; --i)
                     {
                         await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(i - 1, 2).ConfigureAwait(false);
-                        await _objCharacterSettings.CustomDataDirectoryKeys.ReverseAsync(i - 1, 2).ConfigureAwait(false);
+                        await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(i - 1, 2).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -859,7 +859,7 @@ namespace Chummer
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
-                await _objCharacterSettings.CustomDataDirectoryKeys.ReverseAsync(intIndex, 2).ConfigureAwait(false);
+                await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(intIndex, 2).ConfigureAwait(false);
             }
             finally
             {
@@ -885,7 +885,7 @@ namespace Chummer
                 int intCount = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false);
                 if (intIndex >= intCount - 1)
                     return;
-                IAsyncDisposable objLocker2 = await _objCharacterSettings.CustomDataDirectoryKeys.LockObject
+                IAsyncDisposable objLocker2 = await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).LockObject
                     .EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
@@ -896,7 +896,7 @@ namespace Chummer
                         for (int i = intIndex; i < intCount - 1; ++i)
                         {
                             await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(i, 2).ConfigureAwait(false);
-                            await _objCharacterSettings.CustomDataDirectoryKeys.ReverseAsync(i, 2)
+                            await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(i, 2)
                                 .ConfigureAwait(false);
                         }
                     }
@@ -931,11 +931,11 @@ namespace Chummer
             switch (objNode.Tag)
             {
                 case CustomDataDirectoryInfo objCustomDataDirectoryInfo:
-                    if (await _objCharacterSettings.CustomDataDirectoryKeys.TryUpdateAsync(objCustomDataDirectoryInfo.CharacterSettingsSaveKey, blnChecked).ConfigureAwait(false))
+                    if (await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).TryUpdateAsync(objCustomDataDirectoryInfo.CharacterSettingsSaveKey, blnChecked).ConfigureAwait(false))
                         await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.CustomDataDirectoryKeys)).ConfigureAwait(false);
                     break;
                 case string strCustomDataDirectoryKey:
-                    if (await _objCharacterSettings.CustomDataDirectoryKeys.TryUpdateAsync(strCustomDataDirectoryKey, blnChecked).ConfigureAwait(false))
+                    if (await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).TryUpdateAsync(strCustomDataDirectoryKey, blnChecked).ConfigureAwait(false))
                         await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.CustomDataDirectoryKeys)).ConfigureAwait(false);
                     break;
             }
@@ -1201,7 +1201,7 @@ namespace Chummer
                 _setPermanentSourcebooks.Clear();
                 foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync(
                                                                 "books.xml",
-                                                                _objCharacterSettings.EnabledCustomDataDirectoryPaths,
+                                                                await _objCharacterSettings.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                                 token: token).ConfigureAwait(false))
                                                             .SelectAndCacheExpression(
                                                                 "/chummer/books/book", token: token))
@@ -1211,7 +1211,7 @@ namespace Chummer
                     string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
                     if (string.IsNullOrEmpty(strCode))
                         continue;
-                    bool blnChecked = _objCharacterSettings.Books.Contains(strCode);
+                    bool blnChecked = (await _objCharacterSettings.GetBooksAsync(token).ConfigureAwait(false)).Contains(strCode);
                     if (objXmlBook.SelectSingleNodeAndCacheExpression("permanent", token: token) != null)
                     {
                         _setPermanentSourcebooks.Add(strCode);
@@ -1471,8 +1471,8 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                        .LoadXPathAsync("priorities.xml",
-                                                                           _objCharacterSettings
-                                                                               .EnabledCustomDataDirectoryPaths,
+                                                                           await _objCharacterSettings
+                                                                               .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                                            token: token).ConfigureAwait(false))
                                                                 .SelectAndCacheExpression(
                                                                     "/chummer/prioritytables/prioritytable",
@@ -1537,8 +1537,8 @@ namespace Chummer
                     {
                         foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                            .LoadXPathAsync("options.xml",
-                                                                               _objCharacterSettings
-                                                                                   .EnabledCustomDataDirectoryPaths,
+                                                                               await _objCharacterSettings
+                                                                                   .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                                                token: token).ConfigureAwait(false))
                                                                     .SelectAndCacheExpression(
                                                                         "/chummer/limbcounts/limb", token: token))
@@ -1602,8 +1602,8 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                        .LoadXPathAsync("bioware.xml",
-                                                                           _objCharacterSettings
-                                                                               .EnabledCustomDataDirectoryPaths,
+                                                                           await _objCharacterSettings
+                                                                               .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                                            token: token).ConfigureAwait(false))
                                                                 .SelectAndCacheExpression(
                                                                     "/chummer/grades/grade[not(hide)]", token: token))
@@ -1632,8 +1632,8 @@ namespace Chummer
 
                     foreach (XPathNavigator objXmlNode in (await XmlManager
                                                                        .LoadXPathAsync("cyberware.xml",
-                                                                           _objCharacterSettings
-                                                                               .EnabledCustomDataDirectoryPaths,
+                                                                           await _objCharacterSettings
+                                                                               .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                                            token: token).ConfigureAwait(false))
                                                                 .SelectAndCacheExpression(
                                                                     "/chummer/grades/grade[not(hide)]", token: token))
@@ -1728,7 +1728,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 await _dicCharacterCustomDataDirectoryInfos.ClearAsync(token).ConfigureAwait(false);
-                await _objCharacterSettings.CustomDataDirectoryKeys.ForEachAsync(kvpCustomDataDirectory =>
+                await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false)).ForEachAsync(kvpCustomDataDirectory =>
                     {
                         CustomDataDirectoryInfo objLoopInfo
                             = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(

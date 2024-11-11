@@ -969,14 +969,14 @@ namespace Chummer
             using (objOther.LockObject.EnterReadLock(token))
             using (LockObject.EnterReadLock(token))
             {
-                if (!_guiSourceId.Equals(objOther._guiSourceId))
+                if (!_guiSourceId.Equals(objOther.SourceId))
                 {
                     yield return nameof(SourceIdString);
                 }
 
                 token.ThrowIfCancellationRequested();
 
-                if (!_strFileName.Equals(objOther._strFileName))
+                if (!_strFileName.Equals(objOther.FileName))
                 {
                     yield return nameof(FileName);
                 }
@@ -1001,14 +1001,14 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                if (!_setBooks.SetEquals(objOther._setBooks))
+                if (!_setBooks.SetEquals(objOther.BooksWritable))
                 {
                     yield return nameof(Books);
                 }
 
                 token.ThrowIfCancellationRequested();
 
-                if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
+                if (!_setBannedWareGrades.SetEquals(objOther.BannedWareGrades))
                 {
                     yield return nameof(BannedWareGrades);
                 }
@@ -1070,21 +1070,21 @@ namespace Chummer
                         lstReturn.Add(objProperty.Name);
                     }
 
-                    if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                    if (!_dicCustomDataDirectoryKeys.SequenceEqual(await objOther.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false)))
                     {
                         lstReturn.Add(nameof(CustomDataDirectoryKeys));
                     }
 
                     token.ThrowIfCancellationRequested();
 
-                    if (!_setBooks.SetEquals(objOther._setBooks))
+                    if (!_setBooks.SetEquals(await objOther.GetBooksWritableAsync(token).ConfigureAwait(false)))
                     {
                         lstReturn.Add(nameof(Books));
                     }
 
                     token.ThrowIfCancellationRequested();
 
-                    if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
+                    if (!_setBannedWareGrades.SetEquals(await objOther.GetBannedWareGradesAsync(token).ConfigureAwait(false)))
                     {
                         lstReturn.Add(nameof(BannedWareGrades));
                     }
@@ -2961,7 +2961,7 @@ namespace Chummer
 
                         XPathNodeIterator lstAllowedBooksCodes = (await XmlManager
                                 .LoadXPathAsync("books.xml",
-                                    EnabledCustomDataDirectoryPaths,
+                                    await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                     token: token).ConfigureAwait(false))
                             .SelectAndCacheExpression(
                                 "/chummer/books/book[not(hide)]/code", token);
@@ -4603,7 +4603,7 @@ namespace Chummer
 
                 await RecalculateEnabledCustomDataDirectoriesAsync(token).ConfigureAwait(false);
 
-                foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", EnabledCustomDataDirectoryPaths, token: token).ConfigureAwait(false))
+                foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", await GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                                                          .SelectAndCacheExpression(
                                                              "/chummer/books/book[permanent]/code", token))
                 {
@@ -5338,6 +5338,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Blocked grades of cyber/bioware in Create mode.
+        /// </summary>
+        public async Task<HashSet<string>> GetBannedWareGradesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _setBannedWareGrades;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Limb types excluded by redliner.
         /// </summary>
         public HashSet<string> RedlinerExcludes
@@ -5346,6 +5363,23 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return _setRedlinerExcludes;
+            }
+        }
+
+        /// <summary>
+        /// Limb types excluded by redliner.
+        /// </summary>
+        public async Task<HashSet<string>> GetRedlinerExcludesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _setRedlinerExcludes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

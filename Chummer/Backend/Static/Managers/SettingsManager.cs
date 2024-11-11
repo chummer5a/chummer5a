@@ -532,40 +532,38 @@ namespace Chummer
                 }
             }
 
-            int intBaselineCustomDataCount = objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+            IReadOnlyList<CustomDataDirectoryInfo> setBaselineCustomDataDirectoryInfos = await objBaselineSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
+            IReadOnlyList<CustomDataDirectoryInfo> setCheckCustomDataDirectoryInfos = await objOptionsToCheck.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
+            int intBaselineCustomDataCount = setCheckCustomDataDirectoryInfos.Count;
             if (intBaselineCustomDataCount == 0)
             {
-                intBaselineCustomDataCount = objBaselineSettings.EnabledCustomDataDirectoryInfos.Count;
+                intBaselineCustomDataCount = setBaselineCustomDataDirectoryInfos.Count;
                 if (intBaselineCustomDataCount > 0)
                 {
                     intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
                 }
             }
-            else if (objBaselineSettings.EnabledCustomDataDirectoryInfos.Count == 0)
+            else if (setBaselineCustomDataDirectoryInfos.Count == 0)
             {
                 intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
             }
             else
             {
-                intBaselineCustomDataCount
-                    = Math.Max(objBaselineSettings.EnabledCustomDataDirectoryInfos.Count,
-                               intBaselineCustomDataCount);
+                intBaselineCustomDataCount = Math.Max(setBaselineCustomDataDirectoryInfos.Count, intBaselineCustomDataCount);
                 for (int i = 0;
-                     i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+                     i < setCheckCustomDataDirectoryInfos.Count;
                      ++i)
                 {
-                    string strLoopCustomDataName =
-                        objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
-                    int intLoopIndex =
-                        objBaselineSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Name == strLoopCustomDataName);
+                    string strLoopCustomDataName = setCheckCustomDataDirectoryInfos[i].Name;
+                    int intLoopIndex = setBaselineCustomDataDirectoryInfos.FindIndex(x => x.Name == strLoopCustomDataName);
                     if (intLoopIndex < 0)
                         intReturn -= intBaselineCustomDataCount * intBaseline;
                     else
                         intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
                 }
 
-                int intMismatchCount = objBaselineSettings.EnabledCustomDataDirectoryInfos.Count(x =>
-                    objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(y => y.Name != x.Name));
+                int intMismatchCount = setBaselineCustomDataDirectoryInfos.Count(x =>
+                    setCheckCustomDataDirectoryInfos.All(y => y.Name != x.Name));
                 if (intMismatchCount != 0)
                     intReturn -= intMismatchCount * intBaselineCustomDataCount * intBaseline;
             }
