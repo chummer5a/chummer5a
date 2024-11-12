@@ -2713,13 +2713,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
             List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
-            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
+                    continue;
+
                 XPathDocument xmlDocument;
                 try
                 {
-                    xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(filePath, token: token)
+                    xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token)
                                                                .ConfigureAwait(false);
                 }
                 catch (IOException)
@@ -2733,20 +2737,14 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                XPathNavigator node = xmlDocument.CreateNavigator()
+                string strLanguageName = xmlDocument?.CreateNavigator()
                     .SelectSingleNodeAndCacheExpression(
-                        "/chummer/name", token: token);
-
-                if (node == null)
+                        "/chummer/name", token: token)?.Value ?? string.Empty;
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
 
                 token.ThrowIfCancellationRequested();
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
-                }
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
             }
 
             token.ThrowIfCancellationRequested();
