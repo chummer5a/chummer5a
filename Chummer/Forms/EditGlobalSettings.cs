@@ -690,7 +690,7 @@ namespace Chummer
                     != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewCustomDataDirectory
-                    = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue, strSelectedPath);
+                    = await CustomDataDirectoryInfo.CreateAsync(frmSelectCustomDirectoryName.MyForm.SelectedValue, strSelectedPath).ConfigureAwait(false);
                 if (objNewCustomDataDirectory.XmlException != default)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
@@ -821,8 +821,7 @@ namespace Chummer
                     != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewInfo
-                    = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue,
-                                                  objInfoToRename.DirectoryPath);
+                    = await CustomDataDirectoryInfo.CreateAsync(frmSelectCustomDirectoryName.MyForm.SelectedValue, objInfoToRename.DirectoryPath).ConfigureAwait(false);
                 if (!objNewInfo.HasManifest)
                     objNewInfo.CopyGuid(objInfoToRename);
                 if (objNewInfo.XmlException != default)
@@ -2057,29 +2056,12 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                XPathDocument xmlDocument;
-                try
-                {
-                    xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token)
-                        .ConfigureAwait(false);
-                }
-                catch (IOException)
-                {
+                if (strFilePath.EndsWith("_data.xml"))
                     continue;
-                }
-                catch (XmlException)
-                {
+                string strLanguageName = await LanguageManager.GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
-                }
-
                 token.ThrowIfCancellationRequested();
-
-                string strLanguageName = xmlDocument?.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token: token)?.Value ?? string.Empty;
-                if (!string.IsNullOrEmpty(strLanguageName))
-                    continue;
-
-                token.ThrowIfCancellationRequested();
-
                 _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), x => strLanguageName, (x, y) => strLanguageName);
             }
         }

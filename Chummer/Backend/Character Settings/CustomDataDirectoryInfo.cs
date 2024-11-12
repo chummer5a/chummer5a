@@ -35,12 +35,12 @@ namespace Chummer
     public sealed class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>,
         IComparable<CustomDataDirectoryInfo>, IHasInternalId
     {
-        private readonly Version _objMyVersion = new Version(1, 0);
+        private Version _objMyVersion = new Version(1, 0);
         private Guid _guid = Guid.NewGuid();
 
-        public Exception XmlException { get; }
+        public Exception XmlException { get; private set; }
 
-        public bool HasManifest { get; }
+        public bool HasManifest { get; private set; }
 
         private readonly List<DirectoryDependency> _lstDependencies = new List<DirectoryDependency>();
         private readonly List<DirectoryDependency> _lstIncompatibilities = new List<DirectoryDependency>();
@@ -52,7 +52,27 @@ namespace Chummer
         {
             Name = strName;
             DirectoryPath = strDirectoryPath;
+            LoadConstructorData();
+        }
 
+        private CustomDataDirectoryInfo(string strName, string strDirectoryPath, CancellationToken _)
+        {
+            Name = strName;
+            DirectoryPath = strDirectoryPath;
+        }
+
+        public static async Task<CustomDataDirectoryInfo> CreateAsync(string strName, string strDirectoryPath,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            CustomDataDirectoryInfo objReturn = new CustomDataDirectoryInfo(strName, strDirectoryPath);
+            await objReturn.LoadConstructorDataAsync(token).ConfigureAwait(false);
+            return objReturn;
+        }
+
+        #region Constructor Helper Methods
+        private void LoadConstructorData()
+        {
             //Load all the needed data from xml and form the correct strings
             try
             {
@@ -69,10 +89,10 @@ namespace Chummer
                         _objMyVersion = new Version(1, 0);
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
-                    GetManifestDescriptions(xmlNode);
-                    GetManifestAuthors(xmlNode);
-                    GetDependencies(xmlNode);
-                    GetIncompatibilities(xmlNode);
+                    ConstructorGetManifestDescriptions(xmlNode);
+                    ConstructorGetManifestAuthors(xmlNode);
+                    ConstructorGetDependencies(xmlNode);
+                    ConstructorGetIncompatibilities(xmlNode);
                 }
             }
             catch (Exception ex)
@@ -81,97 +101,126 @@ namespace Chummer
                 XmlException = ex;
                 HasManifest = false;
             }
-
-            #region Local Methods
-
-            void GetManifestDescriptions(XPathNavigator xmlDocument)
-            {
-                foreach (XPathNavigator descriptionNode in xmlDocument.SelectAndCacheExpression(
-                             "descriptions/description"))
-                {
-                    string language = string.Empty;
-                    descriptionNode.TryGetStringFieldQuickly("lang", ref language);
-
-                    if (!string.IsNullOrEmpty(language))
-                    {
-                        string text = string.Empty;
-                        if (descriptionNode.TryGetStringFieldQuickly("text", ref text))
-                            _dicDescriptionDictionary.Add(language, text);
-                    }
-                }
-            }
-            //Must be called after DisplayDictionary was populated!
-
-            void GetManifestAuthors(XPathNavigator xmlDocument)
-            {
-                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("authors/author"))
-                {
-                    string authorName = string.Empty;
-                    bool isMain = false;
-
-                    objXmlNode.TryGetStringFieldQuickly("name", ref authorName);
-                    objXmlNode.TryGetBoolFieldQuickly("main", ref isMain);
-
-                    if (!string.IsNullOrEmpty(authorName) && !_dicAuthorDictionary.ContainsKey(authorName))
-                        //Maybe a stupid idea? But who would add two authors with the same name anyway?
-                        _dicAuthorDictionary.Add(authorName, isMain);
-                }
-                //After the list is fully formed, set the display author
-                //SetDisplayAuthors();
-            }
-            //Must be called after AuthorDictionary was populated!
-
-            void GetDependencies(XPathNavigator xmlDocument)
-            {
-                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("dependencies/dependency"))
-                {
-                    Guid guidId = Guid.Empty;
-                    string strDependencyName = string.Empty;
-
-                    objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
-                    objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
-
-                    //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
-                    if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
-                        continue;
-
-                    objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
-                    objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
-
-                    DirectoryDependency objDependency
-                        = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
-                                                  objNewMaximumVersion);
-                    _lstDependencies.Add(objDependency);
-                }
-            }
-
-            void GetIncompatibilities(XPathNavigator xmlDocument)
-            {
-                foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression(
-                             "incompatibilities/incompatibility"))
-                {
-                    Guid guidId = Guid.Empty;
-                    string strDependencyName = string.Empty;
-
-                    objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
-                    objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
-
-                    //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
-                    if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
-                        continue;
-
-                    objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
-                    objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
-
-                    DirectoryDependency objIncompatibility
-                        = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
-                                                  objNewMaximumVersion);
-                    _lstIncompatibilities.Add(objIncompatibility);
-                }
-            }
-
-            #endregion Local Methods
         }
+
+        private async Task LoadConstructorDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            //Load all the needed data from xml and form the correct strings
+            try
+            {
+                string strFullDirectory = Path.Combine(DirectoryPath, "manifest.xml");
+
+                if (File.Exists(strFullDirectory))
+                {
+                    HasManifest = true;
+                    XPathDocument xmlObjManifest = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFullDirectory, token: token).ConfigureAwait(false);
+                    XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
+                                                           .SelectSingleNodeAndCacheExpression("manifest", token);
+
+                    if (!xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion))
+                        _objMyVersion = new Version(1, 0);
+                    xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
+
+                    ConstructorGetManifestDescriptions(xmlNode, token);
+                    ConstructorGetManifestAuthors(xmlNode, token);
+                    ConstructorGetDependencies(xmlNode, token);
+                    ConstructorGetIncompatibilities(xmlNode, token);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Save the exception to show it later
+                XmlException = ex;
+                HasManifest = false;
+            }
+        }
+
+        private void ConstructorGetManifestDescriptions(XPathNavigator xmlDocument, CancellationToken token = default)
+        {
+            foreach (XPathNavigator descriptionNode in xmlDocument.SelectAndCacheExpression(
+                         "descriptions/description", token))
+            {
+                string language = string.Empty;
+                descriptionNode.TryGetStringFieldQuickly("lang", ref language);
+
+                if (!string.IsNullOrEmpty(language))
+                {
+                    string text = string.Empty;
+                    if (descriptionNode.TryGetStringFieldQuickly("text", ref text))
+                        _dicDescriptionDictionary.Add(language, text);
+                }
+            }
+        }
+        //Must be called after DisplayDictionary was populated!
+
+        private void ConstructorGetManifestAuthors(XPathNavigator xmlDocument, CancellationToken token = default)
+        {
+            foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("authors/author", token))
+            {
+                string authorName = string.Empty;
+                bool isMain = false;
+
+                objXmlNode.TryGetStringFieldQuickly("name", ref authorName);
+                objXmlNode.TryGetBoolFieldQuickly("main", ref isMain);
+
+                if (!string.IsNullOrEmpty(authorName) && !_dicAuthorDictionary.ContainsKey(authorName))
+                    //Maybe a stupid idea? But who would add two authors with the same name anyway?
+                    _dicAuthorDictionary.Add(authorName, isMain);
+            }
+        }
+        //Must be called after AuthorDictionary was populated!
+
+        private void ConstructorGetDependencies(XPathNavigator xmlDocument, CancellationToken token = default)
+        {
+            foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression("dependencies/dependency", token))
+            {
+                Guid guidId = Guid.Empty;
+                string strDependencyName = string.Empty;
+
+                objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
+                objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
+
+                //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
+                if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
+                    continue;
+
+                objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
+                objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
+
+                DirectoryDependency objDependency
+                    = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
+                                              objNewMaximumVersion);
+                _lstDependencies.Add(objDependency);
+            }
+        }
+
+        private void ConstructorGetIncompatibilities(XPathNavigator xmlDocument, CancellationToken token = default)
+        {
+            foreach (XPathNavigator objXmlNode in xmlDocument.SelectAndCacheExpression(
+                         "incompatibilities/incompatibility", token))
+            {
+                Guid guidId = Guid.Empty;
+                string strDependencyName = string.Empty;
+
+                objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
+                objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
+
+                //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
+                if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
+                    continue;
+
+                objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
+                objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
+
+                DirectoryDependency objIncompatibility
+                    = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
+                                              objNewMaximumVersion);
+                _lstIncompatibilities.Add(objIncompatibility);
+            }
+        }
+
+        #endregion Constructor Helper Methods
 
         /* This is unused right now, but maybe we need it later for some reason.
         /// <summary>
