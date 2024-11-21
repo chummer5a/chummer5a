@@ -1539,108 +1539,109 @@ namespace Chummer
 
                 case "ess":
                 {
-                    string strEssNodeGradeAttributeText
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@grade", token)?.Value
-                          ?? string.Empty;
-                    if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
-                    {
-                        decimal decGrade;
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string>
                                        setEssNodeGradeAttributeText))
                         {
+                            string strEssNodeGradeAttributeText = xmlNode.SelectSingleNodeAndCacheExpression("@grade", token)?.Value ?? string.Empty;
+                            string strEssNodeTypeAttributeText = xmlNode.SelectSingleNodeAndCacheExpression("@type", token)?.Value ?? string.Empty;
                             setEssNodeGradeAttributeText.AddRange(
                                 strEssNodeGradeAttributeText.SplitNoAlloc(
                                     ',', StringSplitOptions.RemoveEmptyEntries));
-                            decGrade = blnSync
-                                ? objCharacter.Cyberware.Sum(
-                                    x => x.Grade.Name.ContainsAny(setEssNodeGradeAttributeText), x => x.CalculatedESS,
-                                    token)
-                                : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).SumAsync(
-                                    async x =>
-                                        (await x.GetGradeAsync(token).ConfigureAwait(false)).Name.ContainsAny(
-                                            setEssNodeGradeAttributeText),
-                                    x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
+
+                            decimal decEssenceToCompare = 0m;
+                            string strMessageKey = string.Empty;
+                            // Sum the essence based on matching grade and type
+                            if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText) && !string.IsNullOrEmpty(strEssNodeTypeAttributeText))
+                            {
+                                // If both grade and type are provided, sum the essence where either matches
+                                decEssenceToCompare = blnSync
+                                    ? objCharacter.Cyberware.Where(x => setEssNodeGradeAttributeText.Contains(x.Grade.Name) && x.EssencePropertyName.StartsWith(strEssNodeTypeAttributeText)).Sum(x => x.CalculatedESS)
+                                    : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).Where(x => setEssNodeGradeAttributeText.Contains(x.Grade.Name) && x.EssencePropertyName.StartsWith(strEssNodeTypeAttributeText)).SumAsync(x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
+                                if (blnShowMessage)
+                                {
+                                    // Message_SelectQuality_RequireESSGradeTypeBelow
+                                    // Less than {0} Essence consumed by {1} Grade {2}: You have {3}
+                                    // Message_SelectQuality_RequireESSGradeTypeAbove
+                                    // At least {0} Essence consumed by {1} Grade {2}: You have {3}
+                                    strMessageKey = strNodeInnerText.StartsWith('-') ? "Message_SelectQuality_RequireESSGradeTypeBelow" : "Message_SelectQuality_RequireESSGradeTypeAbove";
+                                    strName = Environment.NewLine + '\t' +
+                                              string.Format(GlobalSettings.CultureInfo, blnSync
+                                                      ? LanguageManager.GetString(strMessageKey, token: token)
+                                                      : await LanguageManager.GetStringAsync(strMessageKey, token: token).ConfigureAwait(false),
+                                                  strNodeInnerText, strEssNodeGradeAttributeText, strEssNodeTypeAttributeText, decEssenceToCompare.ToString(GlobalSettings.CultureInfo));
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(strEssNodeGradeAttributeText))
+                            {
+                                // If only grade is provided, sum essence based on matching grade
+                                decEssenceToCompare = blnSync
+                                    ? objCharacter.Cyberware.Where(x => setEssNodeGradeAttributeText.Contains(x.Grade.Name)).Sum(x => x.CalculatedESS)
+                                    : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).Where(x => setEssNodeGradeAttributeText.Contains(x.Grade.Name)).SumAsync(x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
+
+                                if (blnShowMessage)
+                                {
+                                    // Message_SelectQuality_RequireESSGradeTypeBelow
+                                    // Less than {0} Essence consumed by {1} Grade {2}: You have {3}
+                                    // Message_SelectQuality_RequireESSGradeTypeAbove
+                                    // At least {0} Essence consumed by {1} Grade {2}: You have {3}
+                                    strMessageKey = strNodeInnerText.StartsWith('-') ? "Message_SelectQuality_RequireESSGradeBelow" : "Message_SelectQuality_RequireESSGradeAbove";
+                                    strName = Environment.NewLine + '\t' +
+                                              string.Format(GlobalSettings.CultureInfo, blnSync
+                                                      ? LanguageManager.GetString(strMessageKey, token: token)
+                                                      : await LanguageManager.GetStringAsync(strMessageKey, token: token).ConfigureAwait(false),
+                                                  strNodeInnerText, strEssNodeGradeAttributeText, decEssenceToCompare.ToString(GlobalSettings.CultureInfo));
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(strEssNodeTypeAttributeText))
+                            {
+                                // If only type is provided, sum essence based on matching type.
+                                decEssenceToCompare = blnSync
+                                    ? objCharacter.Cyberware.Where(x => x.EssencePropertyName.StartsWith(strEssNodeTypeAttributeText)).Sum(x => x.CalculatedESS)
+                                    : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).Where(x => x.EssencePropertyName.StartsWith(strEssNodeTypeAttributeText)).SumAsync(x => x.GetCalculatedESSAsync(token), token).ConfigureAwait(false);
+
+                                if (blnShowMessage)
+                                {
+                                    // Message_SelectQuality_RequireESSGradeBelow
+                                    // Less than {0} Essence consumed by {1}: You have {2}
+                                    // Message_SelectQuality_RequireESSGradeAbove
+                                    // At least {0} Essence consumed by {1}: You have {2}
+                                    strMessageKey = strNodeInnerText.StartsWith('-') ? "Message_SelectQuality_RequireESSTypeBelow" : "Message_SelectQuality_RequireESSTypeAbove";
+                                    strName = Environment.NewLine + '\t' +
+                                              string.Format(GlobalSettings.CultureInfo, blnSync
+                                                      ? LanguageManager.GetString(strMessageKey, token: token)
+                                                      : await LanguageManager.GetStringAsync(strMessageKey, token: token).ConfigureAwait(false),
+                                                  strNodeInnerText, strEssNodeTypeAttributeText, decEssenceToCompare.ToString(GlobalSettings.CultureInfo));
+                                }
+                            }
+                            else
+                            {
+                                // If no type or grade is provided, just sum essence lost
+                                decEssenceToCompare = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? objCharacter.Essence(token: token)
+                                    : await objCharacter.EssenceAsync(token: token).ConfigureAwait(false);
+
+                                if (blnShowMessage)
+                                {
+                                    // Message_SelectQuality_RequireESSBelow
+                                    // Essence below {0}: You have {1}
+                                    // Message_SelectQuality_RequireESSAbove
+                                    // Essence above {0}: You have {1}
+                                    strMessageKey = strNodeInnerText.StartsWith('-') ? "Message_SelectQuality_RequireESSBelow" : "Message_SelectQuality_RequireESSAbove";
+                                    strName = Environment.NewLine + '\t' +
+                                              string.Format(GlobalSettings.CultureInfo, blnSync
+                                                      ? LanguageManager.GetString(strMessageKey, token: token)
+                                                      : await LanguageManager.GetStringAsync(strMessageKey, token: token).ConfigureAwait(false),
+                                                  strNodeInnerText, decEssenceToCompare.ToString(GlobalSettings.CultureInfo));
+                                }
+                            }
+                            // Check if essence must be less than or greater than the specified value
+                            return strNodeInnerText.StartsWith('-')
+                                ? new Tuple<bool, string>(decEssenceToCompare < Convert.ToDecimal(strNodeInnerText.TrimStart('-'), GlobalSettings.InvariantCultureInfo), strName)
+                                : new Tuple<bool, string>(decEssenceToCompare >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo), strName);
                         }
-
-                        if (strNodeInnerText.StartsWith('-'))
-                        {
-                            // Essence must be less than the value.
-                            if (blnShowMessage)
-                                strName = Environment.NewLine + '\t' +
-                                          string.Format(GlobalSettings.CultureInfo, blnSync
-                                                  // ReSharper disable once MethodHasAsyncOverload
-                                                  ? LanguageManager.GetString(
-                                                      "Message_SelectQuality_RequireESSGradeBelow",
-                                                      token: token)
-                                                  : await LanguageManager.GetStringAsync(
-                                                      "Message_SelectQuality_RequireESSGradeBelow",
-                                                      token: token).ConfigureAwait(false), strNodeInnerText,
-                                              strEssNodeGradeAttributeText,
-                                              decGrade.ToString(GlobalSettings.CultureInfo));
-                            return new Tuple<bool, string>(decGrade
-                                                           < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
-                                                               GlobalSettings.InvariantCultureInfo), strName);
-                        }
-
-                        // Essence must be equal to or greater than the value.
-                        if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' +
-                                      string.Format(GlobalSettings.CultureInfo, blnSync
-                                              // ReSharper disable once MethodHasAsyncOverload
-                                              ? LanguageManager.GetString(
-                                                  "Message_SelectQuality_RequireESSAbove",
-                                                  token: token)
-                                              : await LanguageManager.GetStringAsync(
-                                                  "Message_SelectQuality_RequireESSAbove",
-                                                  token: token).ConfigureAwait(false), strNodeInnerText,
-                                          strEssNodeGradeAttributeText, decGrade.ToString(GlobalSettings.CultureInfo));
-                        return new Tuple<bool, string>(
-                            decGrade >= Convert.ToDecimal(strNodeInnerText, GlobalSettings.InvariantCultureInfo),
-                            strName);
                     }
-
-                    decimal decEssence = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.Essence(token: token)
-                        : await objCharacter.EssenceAsync(token: token).ConfigureAwait(false);
-
-                    // Check Essence requirement.
-                    if (strNodeInnerText.StartsWith('-'))
-                    {
-                        // Essence must be less than the value.
-                        if (blnShowMessage)
-                            strName = Environment.NewLine + '\t' +
-                                      string.Format(GlobalSettings.CultureInfo, blnSync
-                                              // ReSharper disable once MethodHasAsyncOverload
-                                              ? LanguageManager.GetString(
-                                                  "Message_SelectQuality_RequireESSBelow",
-                                                  token: token)
-                                              : await LanguageManager.GetStringAsync(
-                                                  "Message_SelectQuality_RequireESSBelow",
-                                                  token: token).ConfigureAwait(false), strNodeInnerText,
-                                          decEssence.ToString(GlobalSettings.CultureInfo));
-                        return new Tuple<bool, string>(decEssence
-                                                       < Convert.ToDecimal(strNodeInnerText.TrimStart('-'),
-                                                           GlobalSettings.InvariantCultureInfo), strName);
-                    }
-
-                    // Essence must be equal to or greater than the value.
-                    if (blnShowMessage)
-                        strName = Environment.NewLine + '\t' +
-                                  string.Format(GlobalSettings.CultureInfo, blnSync
-                                          // ReSharper disable once MethodHasAsyncOverload
-                                          ? LanguageManager.GetString(
-                                              "Message_SelectQuality_RequireESSAbove",
-                                              token: token)
-                                          : await LanguageManager.GetStringAsync(
-                                              "Message_SelectQuality_RequireESSAbove",
-                                              token: token).ConfigureAwait(false), strNodeInnerText,
-                                      decEssence.ToString(GlobalSettings.CultureInfo));
-                    return new Tuple<bool, string>(decEssence
-                                                   >= Convert.ToDecimal(strNodeInnerText,
-                                                       GlobalSettings.InvariantCultureInfo), strName);
-                }
                 case "echo":
                 {
                     Metamagic objMetamagic = blnSync

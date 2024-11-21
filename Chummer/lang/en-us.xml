@@ -9212,6 +9212,22 @@
       <text>At least {0} Essence consumed by {1} Grade: You have {2}</text>
     </string>
     <string>
+      <key>Message_SelectQuality_RequireESSGradeTypeBelow</key>
+      <text>Less than {0} Essence consumed by {1} Grade {2}: You have {3}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSGradeTypeAbove</key>
+      <text>At least {0} Essence consumed by {1} Grade {2}: You have {3}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSTypeBelow</key>
+      <text>Less than {0} Essence consumed by {1}: You have {2}</text>
+    </string>
+    <string>
+      <key>Message_SelectQuality_RequireESSTypeAbove</key>
+      <text>At least {0} Essence consumed by {1}: You have {2}</text>
+    </string>
+    <string>
       <key>MessageTitle_SelectQuality_QualityRequirement</key>
       <text>Quality Requirement</text>
     </string>
