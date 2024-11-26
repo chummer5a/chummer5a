@@ -28953,7 +28953,7 @@ namespace Chummer
         {
             if (IsRefreshing || SkipUpdate)
                 return;
-            if (treGear.SelectedNode.Tag is IHasWirelessBonus obj)
+            if (treGear.SelectedNode?.Tag is IHasWirelessBonus obj)
             {
                 obj.WirelessOn = chkGearWireless.Checked;
             }
