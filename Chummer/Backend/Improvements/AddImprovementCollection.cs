@@ -6555,36 +6555,54 @@ namespace Chummer
                 throw new AbortedException();
             string strRating = bonusNode["rating"]?.InnerText;
             int intRating = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, _intRating);
-
-            // Create the new piece of ware.
-            Cyberware objCyberware = new Cyberware(_objCharacter);
-            List<Weapon> lstWeapons = new List<Weapon>(1);
-            List<Vehicle> lstVehicles = new List<Vehicle>(1);
-
-            Grade objGrade = Grade.ConvertToCyberwareGrade(bonusNode["grade"]?.InnerText, _objImprovementSource, _objCharacter);
-            objCyberware.Create(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, ForcedValue);
-
-            if (objCyberware.InternalId.IsEmptyGuid())
+            string strSourceId = node["id"]?.InnerText;
+            Cyberware objCyberware;
+            if (string.Equals(strSourceId, Cyberware.EssenceAntiHoleGuidString, StringComparison.OrdinalIgnoreCase))
             {
-                objCyberware.Dispose();
-                throw new AbortedException();
+                _objCharacter.DecreaseEssenceHole(intRating);
+                objCyberware = _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID)
+                               ?? _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceAntiHoleGUID);
+            }
+            else if (string.Equals(strSourceId, Cyberware.EssenceHoleGuidString, StringComparison.OrdinalIgnoreCase))
+            {
+                _objCharacter.IncreaseEssenceHole(intRating);
+                objCyberware = _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceAntiHoleGUID)
+                               ?? _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID);
+            }
+            else
+            {
+                // Create the new piece of ware.
+                objCyberware = new Cyberware(_objCharacter);
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                List<Vehicle> lstVehicles = new List<Vehicle>(1);
+
+                Grade objGrade = Grade.ConvertToCyberwareGrade(bonusNode["grade"]?.InnerText, _objImprovementSource,
+                    _objCharacter);
+                objCyberware.Create(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
+                    ForcedValue);
+
+                if (objCyberware.InternalId.IsEmptyGuid())
+                {
+                    objCyberware.Dispose();
+                    throw new AbortedException();
+                }
+
+                objCyberware.Cost = "0";
+                // Create any Weapons that came with this ware.
+                foreach (Weapon objWeapon in lstWeapons)
+                    _objCharacter.Weapons.Add(objWeapon);
+                // Create any Vehicles that came with this ware.
+                foreach (Vehicle objVehicle in lstVehicles)
+                    _objCharacter.Vehicles.Add(objVehicle);
+
+                objCyberware.ParentID = SourceName;
+
+                _objCharacter.Cyberware.Add(objCyberware);
             }
 
-            objCyberware.Cost = "0";
-            // Create any Weapons that came with this ware.
-            foreach (Weapon objWeapon in lstWeapons)
-                _objCharacter.Weapons.Add(objWeapon);
-            // Create any Vehicles that came with this ware.
-            foreach (Vehicle objVehicle in lstVehicles)
-                _objCharacter.Vehicles.Add(objVehicle);
-
-            objCyberware.ParentID = SourceName;
-
-            _objCharacter.Cyberware.Add(objCyberware);
-
-            CreateImprovement(objCyberware.InternalId, _objImprovementSource, SourceName,
+            CreateImprovement(objCyberware?.InternalId ?? strName, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.FreeWare,
-                _strUnique);
+                _strUnique, intRating: intRating);
         }
 
         public void weaponaccuracy(XmlNode bonusNode)

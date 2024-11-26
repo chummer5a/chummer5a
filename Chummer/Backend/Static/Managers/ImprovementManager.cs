@@ -3248,14 +3248,15 @@ namespace Chummer
                                 ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Cyberware.FirstOrDefaultAsync(
                                     o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
-                            if (objCyberware != null)
+                            if (objCyberware != null && objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
+                                objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCyberware.ChangeModularEquip(true);
                                 else
                                     await objCyberware.ChangeModularEquipAsync(true, token: token)
-                                                      .ConfigureAwait(false);
+                                        .ConfigureAwait(false);
                             }
                         }
                             break;
@@ -3951,7 +3952,8 @@ namespace Chummer
                                 ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Cyberware.FirstOrDefaultAsync(
                                     o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
-                            if (objCyberware != null)
+                            if (objCyberware != null && objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
+                                objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -5423,16 +5425,83 @@ namespace Chummer
                             Cyberware objCyberware = blnSync
                                 ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Cyberware
-                                                    .FirstOrDefaultAsync(o => o.InternalId == strImprovedName, token)
-                                                    .ConfigureAwait(false);
+                                    .FirstOrDefaultAsync(o => o.InternalId == strImprovedName, token)
+                                    .ConfigureAwait(false);
                             if (objCyberware != null)
                             {
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    decReturn += objCyberware.TotalCost + objCyberware.DeleteCyberware();
+                                {
+                                    if (objCyberware.SourceID == Cyberware.EssenceHoleGUID)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objCharacter.DecreaseEssenceHole(objImprovement.Rating);
+                                    }
+                                    else if (objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objCharacter.IncreaseEssenceHole(objImprovement.Rating);
+                                    }
+                                    else
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        decReturn += objCyberware.TotalCost + objCyberware.DeleteCyberware();
+                                    }
+                                }
+                                else if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceHoleGUID)
+                                {
+                                    await objCharacter.DecreaseEssenceHoleAsync(objImprovement.Rating,
+                                        token: token).ConfigureAwait(false);
+                                }
+                                else if (await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == Cyberware.EssenceAntiHoleGUID)
+                                {
+                                    await objCharacter.IncreaseEssenceHoleAsync(objImprovement.Rating,
+                                        token: token).ConfigureAwait(false);
+                                }
                                 else
-                                    decReturn += await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false) + await objCyberware
-                                        .DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                                {
+                                    decReturn += await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false) +
+                                                 await objCyberware
+                                                     .DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                                }
+                            }
+                            // Check for the specific case where we added an essence hole or antihole and it perfectly canceled out an existing antihole or hole, leaving no cyberware to record in the improvement
+                            else if (!string.IsNullOrEmpty(strImprovedName))
+                            {
+                                XPathNavigator objDataNode =
+                                    (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? objCharacter.LoadDataXPath("bioware.xml", token: token)
+                                        : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token)
+                                            .ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/biowares/bioware",
+                                        strImprovedName) ??
+                                    (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
+                                        : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
+                                            .ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/cyberwares/cyberware",
+                                        strImprovedName);
+                                if (objDataNode != null)
+                                {
+                                    switch (objDataNode.SelectSingleNodeAndCacheExpression("id", token)?.Value)
+                                    {
+                                        case Cyberware.EssenceHoleGuidString when blnSync:
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objCharacter.DecreaseEssenceHole(objImprovement.Rating);
+                                            break;
+                                        case Cyberware.EssenceHoleGuidString:
+                                            await objCharacter.DecreaseEssenceHoleAsync(objImprovement.Rating,
+                                                token: token).ConfigureAwait(false);
+                                            break;
+                                        case Cyberware.EssenceAntiHoleGuidString when blnSync:
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            objCharacter.IncreaseEssenceHole(objImprovement.Rating);
+                                            break;
+                                        case Cyberware.EssenceAntiHoleGuidString:
+                                            await objCharacter.IncreaseEssenceHoleAsync(objImprovement.Rating,
+                                                token: token).ConfigureAwait(false);
+                                            break;
+                                    }
+                                }
                             }
                         }
                             break;
