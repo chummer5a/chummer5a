@@ -6556,23 +6556,19 @@ namespace Chummer
             string strRating = bonusNode["rating"]?.InnerText;
             int intRating = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, _intRating);
             string strSourceId = node["id"]?.InnerText;
-            Cyberware objCyberware;
+            string strImprovedName = strSourceId;
             if (string.Equals(strSourceId, Cyberware.EssenceAntiHoleGuidString, StringComparison.OrdinalIgnoreCase))
             {
                 _objCharacter.DecreaseEssenceHole(intRating);
-                objCyberware = _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID)
-                               ?? _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceAntiHoleGUID);
             }
             else if (string.Equals(strSourceId, Cyberware.EssenceHoleGuidString, StringComparison.OrdinalIgnoreCase))
             {
                 _objCharacter.IncreaseEssenceHole(intRating);
-                objCyberware = _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceAntiHoleGUID)
-                               ?? _objCharacter.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID);
             }
             else
             {
                 // Create the new piece of ware.
-                objCyberware = new Cyberware(_objCharacter);
+                Cyberware objCyberware = new Cyberware(_objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 List<Vehicle> lstVehicles = new List<Vehicle>(1);
 
@@ -6598,9 +6594,10 @@ namespace Chummer
                 objCyberware.ParentID = SourceName;
 
                 _objCharacter.Cyberware.Add(objCyberware);
+                strImprovedName = objCyberware.InternalId;
             }
 
-            CreateImprovement(objCyberware?.InternalId ?? strName, _objImprovementSource, SourceName,
+            CreateImprovement(strImprovedName, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.FreeWare,
                 _strUnique, intRating: intRating);
         }
