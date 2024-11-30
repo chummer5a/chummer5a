@@ -34713,6 +34713,39 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Number of Build Points put into Nuyen.
+        /// </summary>
+        public async Task ModifyNuyenBPAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decNewValue = Math.Max(Math.Min(_decNuyenBP + value, await GetTotalNuyenMaximumBPAsync(token).ConfigureAwait(false)), 0);
+                if (_decNuyenBP == decNewValue)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyenBP = decNewValue;
+                    await OnPropertyChangedAsync(nameof(NuyenBP), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public decimal TotalNuyenMaximumBP
         {
             get
