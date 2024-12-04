@@ -8004,70 +8004,83 @@ namespace Chummer
                     {
                         Gear objGear;
                         lstWeapons.Clear();
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                                                     () => new SelectGear(CharacterObject, 0, 1,
-                                                                         objSensor, strCategories), GenericToken)
-                                                                 .ConfigureAwait(false))
-                        {
-                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                     && (!objSensor.Capacity.Contains('[')
-                                                                         || objSensor.Capacity.Contains("/[")))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            // Open the Gear XML file and locate the selected piece.
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            objGear = new Gear(CharacterObject);
-                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                false, token: GenericToken).ConfigureAwait(false);
-
-                            if (objGear.InternalId.IsEmptyGuid())
-                                continue;
-                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
-                            {
-                                objGear.Cost = "0";
-                            }
-                        }
-
-                        IsRefreshing = true;
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
                         try
                         {
-                            nudVehicleGearQty.Increment = objGear.CostFor;
-                            //nudVehicleGearQty.Minimum = objGear.CostFor;
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                           () => new SelectGear(CharacterObject, 0, 1,
+                                               objSensor, strCategories), GenericToken)
+                                       .ConfigureAwait(false))
+                            {
+                                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                         && (!objSensor.Capacity.Contains('[')
+                                                                             || objSensor.Capacity.Contains("/[")))
+                                    frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                                // Open the Gear XML file and locate the selected piece.
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                objGear = new Gear(CharacterObject);
+                                await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    false, token: GenericToken).ConfigureAwait(false);
+
+                                if (objGear.InternalId.IsEmptyGuid())
+                                    continue;
+                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
+                                {
+                                    objGear.Cost = "0";
+                                }
+                            }
+
+                            IsRefreshing = true;
+                            try
+                            {
+                                nudVehicleGearQty.Increment = objGear.CostFor;
+                                //nudVehicleGearQty.Minimum = objGear.CostFor;
+                            }
+                            finally
+                            {
+                                IsRefreshing = false;
+                            }
+
+                            await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+
+                            if (lstWeapons.Count > 0)
+                            {
+                                Vehicle objVehicle =
+                                    (await CharacterObject.Vehicles.FindVehicleGearAsync(objSensor.InternalId,
+                                        GenericToken).ConfigureAwait(false)).Item2;
+                                if (objVehicle != null)
+                                {
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                    {
+                                        await objVehicle.Weapons.AddAsync(objWeapon, GenericToken)
+                                            .ConfigureAwait(false);
+                                    }
+                                }
+                            }
                         }
                         finally
                         {
-                            IsRefreshing = false;
-                        }
-
-                        await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
-
-                        if (lstWeapons.Count > 0)
-                        {
-                            Vehicle objVehicle =
-                                (await CharacterObject.Vehicles.FindVehicleGearAsync(objSensor.InternalId,
-                                    GenericToken).ConfigureAwait(false)).Item2;
-                            if (objVehicle != null)
-                            {
-                                foreach (Weapon objWeapon in lstWeapons)
-                                {
-                                    await objVehicle.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                                }
-                            }
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -9273,90 +9286,105 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
+                    string strCategories = string.Empty;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCategories))
+                    {
+                        using (XmlNodeList xmlGearCategoryList
+                               = objCyberware.AllowGear?.SelectNodes("gearcategory"))
+                        {
+                            if (xmlGearCategoryList != null)
+                            {
+                                foreach (XmlNode objXmlCategory in xmlGearCategoryList)
+                                    sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                                if (sbdCategories.Length > 0)
+                                    --sbdCategories.Length;
+                                strCategories = sbdCategories.ToString();
+                            }
+                        }
+                    }
+
+                    string strGearNames = string.Empty;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdGearNames))
+                    {
+                        using (XmlNodeList xmlGearNameList = objCyberware.AllowGear?.SelectNodes("gearname"))
+                        {
+                            if (xmlGearNameList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlName in xmlGearNameList)
+                                    sbdGearNames.Append(objXmlName.InnerText).Append(',');
+                                --sbdGearNames.Length;
+                                strGearNames = sbdGearNames.ToString();
+                            }
+                        }
+                    }
                     bool blnAddAgain;
                     do
                     {
-                        string strCategories = string.Empty;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdCategories))
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            using (XmlNodeList xmlGearCategoryList
-                                   = objCyberware.AllowGear?.SelectNodes("gearcategory"))
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                       () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories,
+                                           strGearNames), GenericToken).ConfigureAwait(false))
                             {
-                                if (xmlGearCategoryList != null)
+                                if (!string.IsNullOrEmpty(strCategories) &&
+                                    !string.IsNullOrEmpty(objCyberware.Capacity) &&
+                                    objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
+                                                                     objCyberware.Capacity.Contains("/[")))
+                                    frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objNewGear = new Gear(CharacterObject);
+                                await objNewGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    await objCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)
+                                        .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
+                                objNewGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                objNewGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                if (objNewGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objNewGear.Cost = '(' + objNewGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
                                 {
-                                    foreach (XmlNode objXmlCategory in xmlGearCategoryList)
-                                        sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                                    if (sbdCategories.Length > 0)
-                                        --sbdCategories.Length;
-                                    strCategories = sbdCategories.ToString();
+                                    objNewGear.Cost = "0";
                                 }
+
+                                // Create any Weapons that came with this Gear.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
+
+                                await objCyberware.GearChildren.AddAsync(objNewGear, GenericToken)
+                                    .ConfigureAwait(false);
                             }
                         }
-
-                        string strGearNames = string.Empty;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdGearNames))
+                        finally
                         {
-                            using (XmlNodeList xmlGearNameList = objCyberware.AllowGear?.SelectNodes("gearname"))
-                            {
-                                if (xmlGearNameList?.Count > 0)
-                                {
-                                    foreach (XmlNode objXmlName in xmlGearNameList)
-                                        sbdGearNames.Append(objXmlName.InnerText).Append(',');
-                                    --sbdGearNames.Length;
-                                    strGearNames = sbdGearNames.ToString();
-                                }
-                            }
-                        }
-
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                   () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories,
-                                                        strGearNames), GenericToken).ConfigureAwait(false))
-                        {
-                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
-                                objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
-                                                                 objCyberware.Capacity.Contains("/[")))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objNewGear = new Gear(CharacterObject);
-                            await objNewGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                await objCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
-                            objNewGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            objNewGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            if (objNewGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objNewGear.Cost = '(' + objNewGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
-                            {
-                                objNewGear.Cost = "0";
-                            }
-
-                            // Create any Weapons that came with this Gear.
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                            }
-
-                            await objCyberware.GearChildren.AddAsync(objNewGear, GenericToken).ConfigureAwait(false);
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -9402,68 +9430,82 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
+                    string strCategories;
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                               out StringBuilder sbdCategories))
+                    {
+                        foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
+                            sbdCategories.Append(objXmlCategory.InnerText).Append(',');
+                        if (sbdCategories.Length > 0)
+                            --sbdCategories.Length;
+                        strCategories = sbdCategories.ToString();
+                    }
                     bool blnAddAgain;
                     do
                     {
-                        string strCategories;
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdCategories))
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
-                                sbdCategories.Append(objXmlCategory.InnerText).Append(',');
-                            if (sbdCategories.Length > 0)
-                                --sbdCategories.Length;
-                            strCategories = sbdCategories.ToString();
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                           () => new SelectGear(CharacterObject, 0, 1,
+                                               objCyberware, strCategories), GenericToken)
+                                       .ConfigureAwait(false))
+                            {
+                                if (!string.IsNullOrEmpty(strCategories) &&
+                                    !string.IsNullOrEmpty(objCyberware.Capacity) &&
+                                    objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
+                                                                     objCyberware.Capacity.Contains("/[")))
+                                    frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
+
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objNewGear = new Gear(CharacterObject);
+                                await objNewGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    false, token: GenericToken).ConfigureAwait(false);
+                                objNewGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                objNewGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                if (objNewGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objNewGear.Cost = '(' + objNewGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
+                                {
+                                    objNewGear.Cost = "0";
+                                }
+
+                                // Create any Weapons that came with this Gear.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
+
+                                await objCyberware.GearChildren.AddAsync(objNewGear, GenericToken)
+                                    .ConfigureAwait(false);
+                            }
                         }
-
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                                                     () => new SelectGear(CharacterObject, 0, 1,
-                                                                         objCyberware, strCategories), GenericToken)
-                                                                 .ConfigureAwait(false))
+                        finally
                         {
-                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
-                                objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
-                                                                 objCyberware.Capacity.Contains("/[")))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objNewGear = new Gear(CharacterObject);
-                            await objNewGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                false, token: GenericToken).ConfigureAwait(false);
-                            objNewGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            objNewGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            if (objNewGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objNewGear.Cost = '(' + objNewGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
-                            {
-                                objNewGear.Cost = "0";
-                            }
-
-                            // Create any Weapons that came with this Gear.
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                            }
-
-                            await objCyberware.GearChildren.AddAsync(objNewGear, GenericToken).ConfigureAwait(false);
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -9530,55 +9572,70 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                                                     () => new SelectGear(CharacterObject, 0, 1,
-                                                                         objSensor, strCategories), GenericToken)
-                                                                 .ConfigureAwait(false))
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                     && (!objSensor.Capacity.Contains('[')
-                                                                         || objSensor.Capacity.Contains("/[")))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objGear = new Gear(CharacterObject);
-                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                (objSensor.Parent as Gear)?.Equipped
-                                ?? objCyberware != null && await objCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
-
-                            if (objGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                           () => new SelectGear(CharacterObject, 0, 1,
+                                               objSensor, strCategories), GenericToken)
+                                       .ConfigureAwait(false))
                             {
-                                objGear.Cost = "0";
-                            }
+                                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                         && (!objSensor.Capacity.Contains('[')
+                                                                             || objSensor.Capacity.Contains("/[")))
+                                    frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                            await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
 
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objGear = new Gear(CharacterObject);
+                                await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    (objSensor.Parent as Gear)?.Equipped
+                                    ?? objCyberware != null && await objCyberware
+                                        .GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false),
+                                    token: GenericToken).ConfigureAwait(false);
+
+                                if (objGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
+                                {
+                                    objGear.Cost = "0";
+                                }
+
+                                await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
                             }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -9643,54 +9700,67 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                                                     () => new SelectGear(CharacterObject, 0, 1,
-                                                                         objSensor, strCategories), GenericToken)
-                                                                 .ConfigureAwait(false))
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                     && (!objSensor.Capacity.Contains('[')
-                                                                         || objSensor.Capacity.Contains("/[")))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objGear = new Gear(CharacterObject);
-                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                false, token: GenericToken).ConfigureAwait(false);
-
-                            if (objGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                           () => new SelectGear(CharacterObject, 0, 1,
+                                               objSensor, strCategories), GenericToken)
+                                       .ConfigureAwait(false))
                             {
-                                objGear.Cost = "0";
-                            }
+                                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                         && (!objSensor.Capacity.Contains('[')
+                                                                             || objSensor.Capacity.Contains("/[")))
+                                    frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                            await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
 
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objGear = new Gear(CharacterObject);
+                                await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    false, token: GenericToken).ConfigureAwait(false);
+
+                                if (objGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
+                                {
+                                    objGear.Cost = "0";
+                                }
+
+                                await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
                             }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -9741,49 +9811,62 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                   () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
-                                   GenericToken).ConfigureAwait(false))
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objGear = new Gear(CharacterObject);
-                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                objAccessory.Equipped, token: GenericToken).ConfigureAwait(false);
-
-                            if (objGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                       () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
+                                       GenericToken).ConfigureAwait(false))
                             {
-                                objGear.Cost = "0";
-                            }
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
 
-                            await objAccessory.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
 
-                            // Create any Weapons that came with this Gear.
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objGear = new Gear(CharacterObject);
+                                await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    objAccessory.Equipped, token: GenericToken).ConfigureAwait(false);
+
+                                if (objGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
+                                {
+                                    objGear.Cost = "0";
+                                }
+
+                                await objAccessory.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+
+                                // Create any Weapons that came with this Gear.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
                             }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -9842,55 +9925,69 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                                                     () => new SelectGear(CharacterObject, 0, 1,
-                                                                         objSensor, strCategories), GenericToken)
-                                                                 .ConfigureAwait(false))
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                     && (!objSensor.Capacity.Contains('[')
-                                                                         || objSensor.Capacity.Contains("/[")))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objGear = new Gear(CharacterObject);
-                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true, token: GenericToken).ConfigureAwait(false);
-
-                            if (objGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                           () => new SelectGear(CharacterObject, 0, 1,
+                                               objSensor, strCategories), GenericToken)
+                                       .ConfigureAwait(false))
                             {
-                                objGear.Cost = "0";
-                            }
+                                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                         && (!objSensor.Capacity.Contains('[')
+                                                                             || objSensor.Capacity.Contains("/[")))
+                                    frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                            await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
 
-                            // Create any Weapons that came with this Gear.
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objGear = new Gear(CharacterObject);
+                                await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true,
+                                    token: GenericToken).ConfigureAwait(false);
+
+                                if (objGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
+                                {
+                                    objGear.Cost = "0";
+                                }
+
+                                await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+
+                                // Create any Weapons that came with this Gear.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
                             }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -9947,16 +10044,26 @@ namespace Chummer
         {
             try
             {
-                using (ThreadSafeForm<CreateNaturalWeapon> frmCreateNaturalWeapon
-                       = await ThreadSafeForm<CreateNaturalWeapon>.GetAsync(
-                           () => new CreateNaturalWeapon(CharacterObject), GenericToken).ConfigureAwait(false))
+                IAsyncDisposable objLocker =
+                    await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                try
                 {
-                    if (await frmCreateNaturalWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
-                        return;
+                    GenericToken.ThrowIfCancellationRequested();
+                    using (ThreadSafeForm<CreateNaturalWeapon> frmCreateNaturalWeapon
+                           = await ThreadSafeForm<CreateNaturalWeapon>.GetAsync(
+                               () => new CreateNaturalWeapon(CharacterObject), GenericToken).ConfigureAwait(false))
+                    {
+                        if (await frmCreateNaturalWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                            return;
 
-                    Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
-                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                        Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
+                        await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -10004,62 +10111,75 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        using (ThreadSafeForm<SelectGear> frmPickGear
-                               = await ThreadSafeForm<SelectGear>.GetAsync(
-                                                                     () => new SelectGear(CharacterObject, 0, 1,
-                                                                         objSensor, strCategories), GenericToken)
-                                                                 .ConfigureAwait(false))
+                        IAsyncDisposable objLocker =
+                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
-                                                                     && (!objSensor.Capacity.Contains('[')
-                                                                         || objSensor.Capacity.Contains("/[")))
-                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
-
-                            if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickGear.MyForm.AddAgain;
-
-                            // Open the Gear XML file and locate the selected piece.
-                            XmlNode objXmlGear
-                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
-
-                            // Create the new piece of Gear.
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                            Gear objGear = new Gear(CharacterObject);
-                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
-                                false, token: GenericToken).ConfigureAwait(false);
-
-                            if (objGear.InternalId.IsEmptyGuid())
-                                continue;
-
-                            objGear.Quantity = frmPickGear.MyForm.SelectedQty;
-
-                            objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
-
-                            // Reduce the cost for Do It Yourself components.
-                            if (frmPickGear.MyForm.DoItYourself)
-                                objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                            // If the item was marked as free, change its cost.
-                            if (frmPickGear.MyForm.FreeCost)
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectGear> frmPickGear
+                                   = await ThreadSafeForm<SelectGear>.GetAsync(
+                                           () => new SelectGear(CharacterObject, 0, 1,
+                                               objSensor, strCategories), GenericToken)
+                                       .ConfigureAwait(false))
                             {
-                                objGear.Cost = "0";
-                            }
+                                if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
+                                                                         && (!objSensor.Capacity.Contains('[')
+                                                                             || objSensor.Capacity.Contains("/[")))
+                                    frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                            await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+                                if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickGear.MyForm.AddAgain;
 
-                            // Create any Weapons that came with this Gear.
-                            if (lstWeapons.Count > 0)
-                            {
-                                Vehicle objVehicle =
-                                    (await CharacterObject.Vehicles.FindVehicleGearAsync(objGear.InternalId,
-                                        GenericToken).ConfigureAwait(false)).Item2;
-                                foreach (Weapon objWeapon in lstWeapons)
+                                // Open the Gear XML file and locate the selected piece.
+                                XmlNode objXmlGear
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear",
+                                        frmPickGear.MyForm.SelectedGear);
+
+                                // Create the new piece of Gear.
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+
+                                Gear objGear = new Gear(CharacterObject);
+                                await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                    string.Empty,
+                                    false, token: GenericToken).ConfigureAwait(false);
+
+                                if (objGear.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+
+                                objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                                // Reduce the cost for Do It Yourself components.
+                                if (frmPickGear.MyForm.DoItYourself)
+                                    objGear.Cost = '(' + objGear.Cost + ") * 0.5";
+                                // If the item was marked as free, change its cost.
+                                if (frmPickGear.MyForm.FreeCost)
                                 {
-                                    await objVehicle.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                    objGear.Cost = "0";
+                                }
+
+                                await objSensor.Children.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+
+                                // Create any Weapons that came with this Gear.
+                                if (lstWeapons.Count > 0)
+                                {
+                                    Vehicle objVehicle =
+                                        (await CharacterObject.Vehicles.FindVehicleGearAsync(objGear.InternalId,
+                                            GenericToken).ConfigureAwait(false)).Item2;
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                    {
+                                        await objVehicle.Weapons.AddAsync(objWeapon, GenericToken)
+                                            .ConfigureAwait(false);
+                                    }
                                 }
                             }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -21816,49 +21936,65 @@ namespace Chummer
                                                CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // Create the Cyberware object.
-            List<Weapon> lstWeapons = new List<Weapon>(1);
-            List<Vehicle> lstVehicles = new List<Vehicle>(1);
-            Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ?? string.Empty;
-
-            await objCyberware.CreateAsync(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
-                strForced, token: token).ConfigureAwait(false);
-            objCyberware.Suite = true;
-
-            foreach (Weapon objWeapon in lstWeapons)
+            IAsyncDisposable objLocker =
+                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-            }
+                token.ThrowIfCancellationRequested();
+                // Create the Cyberware object.
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                Cyberware objCyberware = new Cyberware(CharacterObject);
+                string strForced =
+                    xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ??
+                    string.Empty;
 
-            foreach (Vehicle objVehicle in lstVehicles)
-            {
-                await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
-            }
+                await objCyberware.CreateAsync(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles,
+                    true, true,
+                    strForced, token: token).ConfigureAwait(false);
+                objCyberware.Suite = true;
 
-            string strType = eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
-            using (XmlNodeList xmlChildrenList = xmlSuiteNode.SelectNodes(strType + "s/" + strType))
-            {
-                if (xmlChildrenList?.Count > 0)
+                foreach (Weapon objWeapon in lstWeapons)
                 {
-                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml", token: token).ConfigureAwait(false);
-                    foreach (XmlNode objXmlChild in xmlChildrenList)
-                    {
-                        string strName = objXmlChild["name"]?.InnerText;
-                        if (string.IsNullOrEmpty(strName))
-                            continue;
-                        XmlNode objXmlChildCyberware = objXmlDocument.TryGetNodeByNameOrId(
-                            "/chummer/" + strType + "s/" + strType, strName);
-                        int intChildRating
-                            = Convert.ToInt32(objXmlChild["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+                    await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                }
 
-                        await objCyberware.Children.AddAsync(await CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade,
-                            intChildRating, eSource, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+                }
+
+                string strType = eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
+                using (XmlNodeList xmlChildrenList = xmlSuiteNode.SelectNodes(strType + "s/" + strType))
+                {
+                    if (xmlChildrenList?.Count > 0)
+                    {
+                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml", token: token)
+                            .ConfigureAwait(false);
+                        foreach (XmlNode objXmlChild in xmlChildrenList)
+                        {
+                            string strName = objXmlChild["name"]?.InnerText;
+                            if (string.IsNullOrEmpty(strName))
+                                continue;
+                            XmlNode objXmlChildCyberware = objXmlDocument.TryGetNodeByNameOrId(
+                                "/chummer/" + strType + "s/" + strType, strName);
+                            int intChildRating
+                                = Convert.ToInt32(objXmlChild["rating"]?.InnerText,
+                                    GlobalSettings.InvariantCultureInfo);
+
+                            await objCyberware.Children.AddAsync(await CreateSuiteCyberware(objXmlChild,
+                                objXmlChildCyberware, objGrade,
+                                intChildRating, eSource, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        }
                     }
                 }
-            }
 
-            return objCyberware;
+                return objCyberware;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -23305,48 +23441,63 @@ namespace Chummer
         private async Task AddCyberwareSuite(Improvement.ImprovementSource objSource,
                                                   CancellationToken token = default)
         {
-            using (ThreadSafeForm<SelectCyberwareSuite> frmPickCyberwareSuite
-                   = await ThreadSafeForm<SelectCyberwareSuite>
+            IAsyncDisposable objLocker =
+                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (ThreadSafeForm<SelectCyberwareSuite> frmPickCyberwareSuite
+                       = await ThreadSafeForm<SelectCyberwareSuite>
                            .GetAsync(() => new SelectCyberwareSuite(CharacterObject, objSource), token)
                            .ConfigureAwait(false))
-            {
-                if (await frmPickCyberwareSuite.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
-                    == DialogResult.Cancel)
-                    return;
-
-                string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
-                XmlDocument objXmlDocument = await CharacterObject
-                                                   .LoadDataAsync(strType + ".xml", string.Empty, true, token)
-                                                   .ConfigureAwait(false);
-                XmlNode xmlSuite = objXmlDocument.TryGetNodeByNameOrId("/chummer/suites/suite", frmPickCyberwareSuite.MyForm.SelectedSuite);
-                if (xmlSuite == null)
-                    return;
-                Grade objGrade
-                    = await Grade.ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerText, objSource, CharacterObject, token).ConfigureAwait(false);
-
-                string strXPathPrefix = strType + "s/" + strType;
-                // Run through each of the items in the Suite and add them to the character.
-                using (XmlNodeList xmlItemList = xmlSuite.SelectNodes(strXPathPrefix))
                 {
-                    if (xmlItemList?.Count > 0)
-                    {
-                        foreach (XmlNode xmlItem in xmlItemList)
-                        {
-                            string strName = xmlItem["name"]?.InnerText;
-                            if (string.IsNullOrEmpty(strName))
-                                continue;
-                            XmlNode objXmlCyberware
-                                = objXmlDocument.TryGetNodeByNameOrId(
-                                    "/chummer/" + strXPathPrefix, strName);
-                            int intRating
-                                = Convert.ToInt32(xmlItem["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+                    if (await frmPickCyberwareSuite.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                        == DialogResult.Cancel)
+                        return;
 
-                            Cyberware objCyberware
-                                = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating, objSource, token).ConfigureAwait(false);
-                            await CharacterObject.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                    string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
+                    XmlDocument objXmlDocument = await CharacterObject
+                        .LoadDataAsync(strType + ".xml", string.Empty, true, token)
+                        .ConfigureAwait(false);
+                    XmlNode xmlSuite = objXmlDocument.TryGetNodeByNameOrId("/chummer/suites/suite",
+                        frmPickCyberwareSuite.MyForm.SelectedSuite);
+                    if (xmlSuite == null)
+                        return;
+                    Grade objGrade
+                        = await Grade
+                            .ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerText, objSource, CharacterObject,
+                                token).ConfigureAwait(false);
+
+                    string strXPathPrefix = strType + "s/" + strType;
+                    // Run through each of the items in the Suite and add them to the character.
+                    using (XmlNodeList xmlItemList = xmlSuite.SelectNodes(strXPathPrefix))
+                    {
+                        if (xmlItemList?.Count > 0)
+                        {
+                            foreach (XmlNode xmlItem in xmlItemList)
+                            {
+                                string strName = xmlItem["name"]?.InnerText;
+                                if (string.IsNullOrEmpty(strName))
+                                    continue;
+                                XmlNode objXmlCyberware
+                                    = objXmlDocument.TryGetNodeByNameOrId(
+                                        "/chummer/" + strXPathPrefix, strName);
+                                int intRating
+                                    = Convert.ToInt32(xmlItem["rating"]?.InnerText,
+                                        GlobalSettings.InvariantCultureInfo);
+
+                                Cyberware objCyberware
+                                    = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating,
+                                        objSource, token).ConfigureAwait(false);
+                                await CharacterObject.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -23484,77 +23635,128 @@ namespace Chummer
                                        XmlDocument xmlGearDocument, XmlNode xmlCyberware, object objParentObject,
                                        bool blnCreateChildren, CancellationToken token = default)
         {
-            Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(xmlCyberware["grade"]?.InnerText,
-                Improvement.ImprovementSource.Cyberware, CharacterObject, token).ConfigureAwait(false);
-
-            int intRating = Convert.ToInt32(xmlCyberware["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-
-            Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware;
-            string strName = xmlCyberware["name"]?.InnerText;
-            if (string.IsNullOrEmpty(strName))
-                return;
-
-            XmlNode objXmlCyberwareNode = xmlCyberwareDocument.TryGetNodeByNameOrId(
-                "/chummer/cyberwares/cyberware", strName,
-                await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
-            if (objXmlCyberwareNode == null)
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                eSource = Improvement.ImprovementSource.Bioware;
-                objXmlCyberwareNode = xmlBiowareDocument.TryGetNodeByNameOrId(
-                    "/chummer/biowares/bioware", strName,
+                token.ThrowIfCancellationRequested();
+                Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(xmlCyberware["grade"]?.InnerText,
+                    Improvement.ImprovementSource.Cyberware, CharacterObject, token).ConfigureAwait(false);
+
+                int intRating = Convert.ToInt32(xmlCyberware["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+
+                Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware;
+                string strName = xmlCyberware["name"]?.InnerText;
+                if (string.IsNullOrEmpty(strName))
+                    return;
+
+                XmlNode objXmlCyberwareNode = xmlCyberwareDocument.TryGetNodeByNameOrId(
+                    "/chummer/cyberwares/cyberware", strName,
                     await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
                 if (objXmlCyberwareNode == null)
                 {
-                    return;
+                    eSource = Improvement.ImprovementSource.Bioware;
+                    objXmlCyberwareNode = xmlBiowareDocument.TryGetNodeByNameOrId(
+                        "/chummer/biowares/bioware", strName,
+                        await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
+                    if (objXmlCyberwareNode == null)
+                    {
+                        return;
+                    }
                 }
-            }
 
-            List<Weapon> lstWeapons = new List<Weapon>(1);
-            List<Vehicle> lstVehicles = new List<Vehicle>(1);
-            Cyberware objCyberware = new Cyberware(CharacterObject);
-            try
-            {
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                Cyberware objCyberware = new Cyberware(CharacterObject);
                 try
                 {
-                    await objCyberware.CreateAsync(objXmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles,
-                        true,
-                        blnCreateChildren, token: token).ConfigureAwait(false);
-
-                    switch (objParentObject)
+                    try
                     {
-                        case Character objParentCharacter:
-                            await objParentCharacter.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
-                            break;
+                        await objCyberware.CreateAsync(objXmlCyberwareNode, objGrade, eSource, intRating, lstWeapons,
+                            lstVehicles,
+                            true,
+                            blnCreateChildren, token: token).ConfigureAwait(false);
 
-                        case Cyberware objParentCyberware:
-                            await objParentCyberware.Children.AddAsync(objCyberware, token).ConfigureAwait(false);
-                            break;
-
-                        case VehicleMod objParentVehicleMod:
-                            await objParentVehicleMod.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
-                            break;
-                    }
-
-                    // Add any children.
-                    using (XmlNodeList xmlCyberwareList = xmlCyberware.SelectNodes("cyberwares/cyberware"))
-                    {
-                        if (xmlCyberwareList?.Count > 0)
+                        switch (objParentObject)
                         {
-                            foreach (XmlNode objXmlChild in xmlCyberwareList)
-                                await AddPACKSCyberwareAsync(xmlCyberwareDocument, xmlBiowareDocument, xmlGearDocument,
-                                                             objXmlChild,
-                                                             objCyberware, blnCreateChildren, token).ConfigureAwait(false);
+                            case Character objParentCharacter:
+                                await objParentCharacter.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                                break;
+
+                            case Cyberware objParentCyberware:
+                                await objParentCyberware.Children.AddAsync(objCyberware, token).ConfigureAwait(false);
+                                break;
+
+                            case VehicleMod objParentVehicleMod:
+                                await objParentVehicleMod.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                                break;
+                        }
+
+                        // Add any children.
+                        using (XmlNodeList xmlCyberwareList = xmlCyberware.SelectNodes("cyberwares/cyberware"))
+                        {
+                            if (xmlCyberwareList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlChild in xmlCyberwareList)
+                                    await AddPACKSCyberwareAsync(xmlCyberwareDocument, xmlBiowareDocument,
+                                        xmlGearDocument,
+                                        objXmlChild,
+                                        objCyberware, blnCreateChildren, token).ConfigureAwait(false);
+                            }
+                        }
+
+                        using (XmlNodeList xmlGearList = xmlCyberware.SelectNodes("gears/gear"))
+                        {
+                            if (xmlGearList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlGear in xmlGearList)
+                                    await AddPACKSGearAsync(xmlGearDocument, objXmlGear, objCyberware,
+                                        blnCreateChildren,
+                                        token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                        throw;
+                    }
+                }
+                catch
+                {
+                    if (lstWeapons.Count > 0)
+                    {
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await objWeapon.DisposeAsync().ConfigureAwait(false);
                         }
                     }
 
-                    using (XmlNodeList xmlGearList = xmlCyberware.SelectNodes("gears/gear"))
+                    if (lstVehicles.Count > 0)
                     {
-                        if (xmlGearList?.Count > 0)
+                        foreach (Vehicle objVehicle in lstVehicles)
                         {
-                            foreach (XmlNode objXmlGear in xmlGearList)
-                                await AddPACKSGearAsync(xmlGearDocument, objXmlGear, objCyberware, blnCreateChildren,
-                                                        token).ConfigureAwait(false);
+                            await objVehicle.DisposeAsync().ConfigureAwait(false);
                         }
+                    }
+
+                    throw;
+                }
+
+                try
+                {
+                    if (lstWeapons.Count > 0)
+                    {
+                        await lstWeapons.ForEachAsync(objWeapon => CharacterObject.Weapons.AddAsync(objWeapon, token),
+                            token).ConfigureAwait(false);
+                    }
+
+                    if (lstVehicles.Count > 0)
+                    {
+                        await lstVehicles.ForEachAsync(
+                            objVehicle => CharacterObject.Vehicles.AddAsync(objVehicle, token),
+                            token).ConfigureAwait(false);
                     }
                 }
                 catch
@@ -23563,44 +23765,9 @@ namespace Chummer
                     throw;
                 }
             }
-            catch
+            finally
             {
-                if (lstWeapons.Count > 0)
-                {
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        await objWeapon.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-
-                if (lstVehicles.Count > 0)
-                {
-                    foreach (Vehicle objVehicle in lstVehicles)
-                    {
-                        await objVehicle.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                throw;
-            }
-
-            try
-            {
-                if (lstWeapons.Count > 0)
-                {
-                    await lstWeapons.ForEachAsync(objWeapon => CharacterObject.Weapons.AddAsync(objWeapon, token),
-                                                  token).ConfigureAwait(false);
-                }
-
-                if (lstVehicles.Count > 0)
-                {
-                    await lstVehicles.ForEachAsync(objVehicle => CharacterObject.Vehicles.AddAsync(objVehicle, token),
-                                                   token).ConfigureAwait(false);
-                }
-            }
-            catch
-            {
-                await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
-                throw;
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

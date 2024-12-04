@@ -274,32 +274,45 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         private async Task ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren, CancellationToken token = default)
         {
-            // Run through all of the items in the Suite list.
-            using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
+            IAsyncDisposable objLocker =
+                await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (xmlChildrenList?.Count > 0)
+                token.ThrowIfCancellationRequested();
+                // Run through all of the items in the Suite list.
+                using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
                 {
-                    foreach (XmlNode xmlChildItem in xmlChildrenList)
+                    if (xmlChildrenList?.Count > 0)
                     {
-                        int intRating = 0;
-                        xmlChildItem.TryGetInt32FieldQuickly("rating", ref intRating);
-                        string strName = string.Empty;
-                        xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
+                        foreach (XmlNode xmlChildItem in xmlChildrenList)
+                        {
+                            int intRating = 0;
+                            xmlChildItem.TryGetInt32FieldQuickly("rating", ref intRating);
+                            string strName = string.Empty;
+                            xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
 
-                        // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
-                        XmlNode objXmlCyberware = _objXmlDocument.TryGetNodeByNameOrId("/chummer/" + _strType + "s/" + _strType, strName.CleanXPath());
+                            // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
+                            XmlNode objXmlCyberware =
+                                _objXmlDocument.TryGetNodeByNameOrId("/chummer/" + _strType + "s/" + _strType,
+                                    strName.CleanXPath());
 
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        List<Vehicle> lstVehicles = new List<Vehicle>(1);
-                        Cyberware objCyberware = new Cyberware(_objCharacter);
-                        await objCyberware.CreateAsync(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false, token: token).ConfigureAwait(false);
-                        objCyberware.Suite = true;
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                            Cyberware objCyberware = new Cyberware(_objCharacter);
+                            await objCyberware.CreateAsync(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons,
+                                lstVehicles, false, false, token: token).ConfigureAwait(false);
+                            objCyberware.Suite = true;
 
-                        lstChildren.Add(objCyberware);
+                            lstChildren.Add(objCyberware);
 
-                        await ParseNode(xmlChildItem, objGrade, objCyberware.Children, token).ConfigureAwait(false);
+                            await ParseNode(xmlChildItem, objGrade, objCyberware.Children, token).ConfigureAwait(false);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
