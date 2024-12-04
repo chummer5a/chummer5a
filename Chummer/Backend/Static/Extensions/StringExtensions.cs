@@ -50,12 +50,12 @@ namespace Chummer
                 foreach (Task<string> tskString in lstStringTasks)
                 {
                     token.ThrowIfCancellationRequested();
-                    sbdReturn.Append(await tskString.ConfigureAwait(false));
-                    token.ThrowIfCancellationRequested();
                     if (blnAddSeparator)
                         sbdReturn.Append(strSeparator);
                     else
                         blnAddSeparator = true;
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(await tskString.ConfigureAwait(false));
                 }
 
                 return sbdReturn.ToString();
