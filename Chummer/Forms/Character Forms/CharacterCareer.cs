@@ -11966,6 +11966,12 @@ namespace Chummer
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
+
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                                 switch (chrAvail)
@@ -14849,6 +14855,12 @@ namespace Chummer
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
+
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                                 switch (chrAvail)
@@ -15000,6 +15012,12 @@ namespace Chummer
                             if (!frmPickGear.MyForm.FreeCost)
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -15161,6 +15179,12 @@ namespace Chummer
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
+
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                                 switch (chrAvail)
@@ -15306,6 +15330,12 @@ namespace Chummer
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
+
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                                 switch (chrAvail)
@@ -15445,6 +15475,12 @@ namespace Chummer
                             if (!frmPickGear.MyForm.FreeCost)
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -15593,6 +15629,12 @@ namespace Chummer
                             if (!frmPickGear.MyForm.FreeCost)
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -15800,6 +15842,12 @@ namespace Chummer
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
+
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                                 switch (chrAvail)
@@ -15945,6 +15993,12 @@ namespace Chummer
                             if (!frmPickGear.MyForm.FreeCost)
                             {
                                 decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+
+                                // Apply a markup if applicable.
+                                if (frmPickGear.MyForm.Markup != 0)
+                                {
+                                    decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                                }
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -23703,26 +23757,6 @@ namespace Chummer
                         if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
-                        decimal decCost;
-                        if (objGear.Cost.Contains("Gear Cost"))
-                        {
-                            string strCost = objGear.Cost.Replace("Gear Cost",
-                                (objSelectedGear != null
-                                    ? await objSelectedGear.GetCalculatedCostAsync(token).ConfigureAwait(false)
-                                    : 0).ToString(
-                                    GlobalSettings.InvariantCultureInfo));
-                            (bool blnIsSuccess, object objProcess)
-                                = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
-                                    .ConfigureAwait(false);
-                            decCost = blnIsSuccess
-                                ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
-                                : await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
-                        }
-
                         Gear objStackWith = null;
                         // See if the character already has the item on them if they chose to stack.
                         if (frmPickGear.MyForm.Stack)
@@ -23730,62 +23764,83 @@ namespace Chummer
                             objStackWith = objStackGear
                                            ?? CharacterObject.Gear.FirstOrDefault(x => x.Location == objLocation
                                                && objGear.IsIdenticalToOtherGear(x));
-                        }
-
-                        if (objStackWith != null)
-                        {
-                            if (objStackWith.InternalId.IsEmptyGuid())
+                            if (objStackWith != null && objStackWith.InternalId.IsEmptyGuid())
                                 return frmPickGear.MyForm.AddAgain;
-                            // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
-                            decCost += await objStackWith.Children.SumAsync(x => x.GetTotalCostAsync(token), token)
-                                           .ConfigureAwait(false)
-                                       * frmPickGear.MyForm.SelectedQty;
                         }
 
-                        // Apply a markup if applicable.
-                        if (frmPickGear.MyForm.Markup != 0)
+                        // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
+                        if (!blnNullParent && objStackWith == null &&
+                            await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) &&
+                            await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false) <
+                            await objGear.GetPluginCapacityAsync(token).ConfigureAwait(false))
                         {
-                            decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
-                        }
-
-                        // Multiply the cost if applicable.
-                        switch ((await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
-
-                        if (!blnNullParent && objStackWith == null)
-                        {
-                            // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-                            if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false) &&
-                                await objSelectedGear.GetCapacityRemainingAsync(token).ConfigureAwait(false) <
-                                await objGear.GetPluginCapacityAsync(token).ConfigureAwait(false))
-                            {
-                                await Program.ShowScrollableMessageBoxAsync(
-                                    this,
-                                    await LanguageManager.GetStringAsync("Message_CapacityReached", token: token)
-                                        .ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token)
-                                        .ConfigureAwait(false),
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                                return frmPickGear.MyForm.AddAgain;
-                            }
-
-                            // Multiply cost by parent gear's quantity
-                            decCost *= objSelectedGear.Quantity;
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_CapacityReached", token: token)
+                                    .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token)
+                                    .ConfigureAwait(false),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            return frmPickGear.MyForm.AddAgain;
                         }
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.MyForm.FreeCost)
                         {
+                            decimal decCost;
+                            if (objGear.Cost.Contains("Gear Cost"))
+                            {
+                                string strCost = objGear.Cost.Replace("Gear Cost",
+                                    (objSelectedGear != null
+                                        ? await objSelectedGear.GetCalculatedCostAsync(token).ConfigureAwait(false)
+                                        : 0).ToString(
+                                        GlobalSettings.InvariantCultureInfo));
+                                (bool blnIsSuccess, object objProcess)
+                                    = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token)
+                                        .ConfigureAwait(false);
+                                decCost = blnIsSuccess
+                                    ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
+                                    : await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
+                            }
+
+                            if (objStackWith != null)
+                            {
+                                // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
+                                decCost += await objStackWith.Children.SumAsync(x => x.GetTotalCostAsync(token), token)
+                                               .ConfigureAwait(false)
+                                           * frmPickGear.MyForm.SelectedQty;
+                            }
+
+                            // Apply a markup if applicable.
+                            if (frmPickGear.MyForm.Markup != 0)
+                            {
+                                decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                            }
+
+                            // Multiply the cost if applicable.
+                            switch ((await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (!blnNullParent && objStackWith == null)
+                            {
+                                // Multiply cost by parent gear's quantity
+                                decCost *= objSelectedGear.Quantity;
+                            }
+
                             if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
                             {
                                 await Program.ShowScrollableMessageBoxAsync(
@@ -24017,26 +24072,6 @@ namespace Chummer
                         if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
-                        // Apply a markup if applicable.
-                        decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
-                        if (frmPickGear.MyForm.Markup != 0)
-                        {
-                            decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
-                        }
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
-
                         Gear objMatchingGear = null;
                         // If this is Ammunition, see if the character already has it on them.
                         if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
@@ -24133,6 +24168,26 @@ namespace Chummer
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.MyForm.FreeCost)
                         {
+                            // Apply a markup if applicable.
+                            decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
+                            if (frmPickGear.MyForm.Markup != 0)
+                            {
+                                decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+                            }
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
                             {
                                 // Remove the added gear
