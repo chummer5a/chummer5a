@@ -7344,53 +7344,66 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod
-                               = await ThreadSafeForm<SelectArmorMod>.GetAsync(
-                                   () => new SelectArmorMod(CharacterObject, objArmor)
-                                   {
-                                       ArmorCost = objArmor.OwnCost,
-                                       ArmorCapacity
-                                           = Convert.ToDecimal(
-                                               objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo),
-                                               GlobalSettings.InvariantCultureInfo),
-                                       AllowedCategories = strAllowedCategories,
-                                       ExcludeGeneralCategory = blnExcludeGeneralCategory,
-                                       CapacityDisplayStyle = objArmor.CapacityDisplayStyle
-                                   }, GenericToken).ConfigureAwait(false))
+                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            if (await frmPickArmorMod.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                break;
-                            blnAddAgain = frmPickArmorMod.MyForm.AddAgain;
-
-                            // Locate the selected piece.
-                            objXmlArmor = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickArmorMod.MyForm.SelectedArmorMod);
-
-                            ArmorMod objMod = new ArmorMod(CharacterObject);
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            int intRating
-                                = Convert.ToInt32(objXmlArmor?["maxrating"]?.InnerText,
-                                                  GlobalSettings.InvariantCultureInfo)
-                                  > 1
-                                    ? frmPickArmorMod.MyForm.SelectedRating
-                                    : 0;
-
-                            await objMod.CreateAsync(objXmlArmor, intRating, lstWeapons, token: GenericToken).ConfigureAwait(false);
-                            if (objMod.InternalId.IsEmptyGuid())
-                                continue;
-
-                            if (frmPickArmorMod.MyForm.FreeCost)
+                            GenericToken.ThrowIfCancellationRequested();
+                            decimal decArmorCost = await objArmor.GetOwnCostAsync(GenericToken).ConfigureAwait(false);
+                            decimal decArmorCapacity = Convert.ToDecimal(
+                                await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo).ConfigureAwait(false),
+                                GlobalSettings.InvariantCultureInfo);
+                            using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod
+                                   = await ThreadSafeForm<SelectArmorMod>.GetAsync(
+                                       () => new SelectArmorMod(CharacterObject, objArmor)
+                                       {
+                                           ArmorCost = decArmorCost,
+                                           ArmorCapacity = decArmorCapacity,
+                                           AllowedCategories = strAllowedCategories,
+                                           ExcludeGeneralCategory = blnExcludeGeneralCategory,
+                                           CapacityDisplayStyle = objArmor.CapacityDisplayStyle
+                                       }, GenericToken).ConfigureAwait(false))
                             {
-                                objMod.Cost = "0";
-                            }
+                                if (await frmPickArmorMod.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    break;
+                                blnAddAgain = frmPickArmorMod.MyForm.AddAgain;
 
-                            await objArmor.ArmorMods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
+                                // Locate the selected piece.
+                                objXmlArmor = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod",
+                                    frmPickArmorMod.MyForm.SelectedArmorMod);
 
-                            // Add any Weapons created by the Mod.
-                            foreach (Weapon objWeapon in lstWeapons)
-                            {
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                ArmorMod objMod = new ArmorMod(CharacterObject);
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+                                int intRating
+                                    = Convert.ToInt32(objXmlArmor?["maxrating"]?.InnerText,
+                                          GlobalSettings.InvariantCultureInfo)
+                                      > 1
+                                        ? frmPickArmorMod.MyForm.SelectedRating
+                                        : 0;
+
+                                await objMod.CreateAsync(objXmlArmor, intRating, lstWeapons, token: GenericToken)
+                                    .ConfigureAwait(false);
+                                if (objMod.InternalId.IsEmptyGuid())
+                                    continue;
+
+                                if (frmPickArmorMod.MyForm.FreeCost)
+                                {
+                                    objMod.Cost = "0";
+                                }
+
+                                await objArmor.ArmorMods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
+
+                                // Add any Weapons created by the Mod.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                {
+                                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
                             }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -7610,50 +7623,67 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
-                                   () => new SelectWeapon(CharacterObject)
-                                   {
-                                       LimitToCategories = objMod != null
-                                           ? objMod.WeaponMountCategories
-                                           : objWeaponMount?.AllowedWeaponCategories ?? string.Empty
-                                   }, GenericToken).ConfigureAwait(false))
+                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                        try
                         {
-                            if (await frmPickWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
-                                return;
-
-                            // Open the Weapons XML file and locate the selected piece.
-                            XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
-
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            Weapon objWeapon = new Weapon(CharacterObject);
-                            if (objMod != null)
-                                await objWeapon.SetParentVehicleModAsync(objMod, GenericToken).ConfigureAwait(false);
-                            else
-                                await objWeapon.SetParentMountAsync(objWeaponMount, GenericToken).ConfigureAwait(false);
-                            await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
-                            objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
-
-                            if (frmPickWeapon.MyForm.FreeCost)
+                            GenericToken.ThrowIfCancellationRequested();
+                            using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>
+                                       .GetAsync(
+                                           () => new SelectWeapon(CharacterObject)
+                                           {
+                                               LimitToCategories = objMod != null
+                                                   ? objMod.WeaponMountCategories
+                                                   : objWeaponMount?.AllowedWeaponCategories ?? string.Empty
+                                           }, GenericToken).ConfigureAwait(false))
                             {
-                                objWeapon.Cost = "0";
-                            }
+                                if (await frmPickWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                    return;
 
-                            if (objMod != null)
-                                await objMod.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                            else
-                                await objWeaponMount.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                // Open the Weapons XML file and locate the selected piece.
+                                XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                                    frmPickWeapon.MyForm.SelectedWeapon);
 
-                            foreach (Weapon objLoopWeapon in lstWeapons)
-                            {
-                                if (objMod == null)
-                                    await objWeaponMount.Weapons.AddAsync(objLoopWeapon, GenericToken).ConfigureAwait(false);
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+                                Weapon objWeapon = new Weapon(CharacterObject);
+                                if (objMod != null)
+                                    await objWeapon.SetParentVehicleModAsync(objMod, GenericToken)
+                                        .ConfigureAwait(false);
                                 else
-                                    await objMod.Weapons.AddAsync(objLoopWeapon, GenericToken).ConfigureAwait(false);
-                            }
+                                    await objWeapon.SetParentMountAsync(objWeaponMount, GenericToken)
+                                        .ConfigureAwait(false);
+                                await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken)
+                                    .ConfigureAwait(false);
+                                objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
-                            blnAddAgain = frmPickWeapon.MyForm.AddAgain
-                                          && (objMod != null || !objWeaponMount.IsWeaponsFull);
+                                if (frmPickWeapon.MyForm.FreeCost)
+                                {
+                                    objWeapon.Cost = "0";
+                                }
+
+                                if (objMod != null)
+                                    await objMod.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                else
+                                    await objWeaponMount.Weapons.AddAsync(objWeapon, GenericToken)
+                                        .ConfigureAwait(false);
+
+                                foreach (Weapon objLoopWeapon in lstWeapons)
+                                {
+                                    if (objMod == null)
+                                        await objWeaponMount.Weapons.AddAsync(objLoopWeapon, GenericToken)
+                                            .ConfigureAwait(false);
+                                    else
+                                        await objMod.Weapons.AddAsync(objLoopWeapon, GenericToken)
+                                            .ConfigureAwait(false);
+                                }
+
+                                blnAddAgain = frmPickWeapon.MyForm.AddAgain
+                                              && (objMod != null || !objWeaponMount.IsWeaponsFull);
+                            }
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -7780,48 +7810,62 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
-                    using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
-                               () => new SelectWeapon(CharacterObject)
-                               {
-                                   LimitToCategories = "Underbarrel Weapons",
-                                   ParentWeapon = objSelectedWeapon
-                               },  GenericToken).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                    try
                     {
-                        frmPickWeapon.MyForm.Mounts.UnionWith(
-                            objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-
-                        // Make sure the dialogue window was not canceled.
-                        if (await frmPickWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
-                            return;
-
-                        // Open the Weapons XML file and locate the selected piece.
-                        XmlNode objXmlWeapon
-                            = (await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken)
-                                                    .ConfigureAwait(false))
-                            .TryGetNodeByNameOrId(
-                                "/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
-
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Weapon objWeapon = new Weapon(CharacterObject);
-                        await objWeapon.SetParentAsync(objSelectedWeapon).ConfigureAwait(false);
-                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
-                        objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
-
-                        if (frmPickWeapon.MyForm.FreeCost)
+                        GenericToken.ThrowIfCancellationRequested();
+                        using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
+                                   () => new SelectWeapon(CharacterObject)
+                                   {
+                                       LimitToCategories = "Underbarrel Weapons",
+                                       ParentWeapon = objSelectedWeapon
+                                   }, GenericToken).ConfigureAwait(false))
                         {
-                            objWeapon.Cost = "0";
-                        }
+                            frmPickWeapon.MyForm.Mounts.UnionWith(
+                                objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/',
+                                    StringSplitOptions.RemoveEmptyEntries));
 
-                        await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                        if (!objSelectedWeapon.AllowAccessory)
-                            objWeapon.AllowAccessory = false;
+                            // Make sure the dialogue window was not canceled.
+                            if (await frmPickWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) ==
+                                DialogResult.Cancel)
+                                return;
 
-                        foreach (Weapon objLoopWeapon in lstWeapons)
-                        {
-                            await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon, GenericToken).ConfigureAwait(false);
+                            // Open the Weapons XML file and locate the selected piece.
+                            XmlNode objXmlWeapon
+                                = (await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken)
+                                    .ConfigureAwait(false))
+                                .TryGetNodeByNameOrId(
+                                    "/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
+
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            Weapon objWeapon = new Weapon(CharacterObject);
+                            await objWeapon.SetParentAsync(objSelectedWeapon).ConfigureAwait(false);
+                            await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken)
+                                .ConfigureAwait(false);
+                            objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
+
+                            if (frmPickWeapon.MyForm.FreeCost)
+                            {
+                                objWeapon.Cost = "0";
+                            }
+
+                            await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon, GenericToken)
+                                .ConfigureAwait(false);
                             if (!objSelectedWeapon.AllowAccessory)
-                                objLoopWeapon.AllowAccessory = false;
+                                objWeapon.AllowAccessory = false;
+
+                            foreach (Weapon objLoopWeapon in lstWeapons)
+                            {
+                                await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon, GenericToken)
+                                    .ConfigureAwait(false);
+                                if (!objSelectedWeapon.AllowAccessory)
+                                    objLoopWeapon.AllowAccessory = false;
+                            }
                         }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
@@ -8337,39 +8381,53 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
-                    using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
-                               () => new SelectWeapon(CharacterObject)
-                               {
-                                   LimitToCategories = "Underbarrel Weapons",
-                                   ParentWeapon = objSelectedWeapon
-                               }, GenericToken).ConfigureAwait(false))
+                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
+                    try
                     {
-                        frmPickWeapon.MyForm.Mounts.UnionWith(
-                            objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-
-                        // Make sure the dialogue window was not canceled.
-                        if (await frmPickWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
-                            return;
-
-                        // Open the Weapons XML file and locate the selected piece.
-                        XmlNode objXmlWeapon
-                            = (await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken).ConfigureAwait(false))
-                            .TryGetNodeByNameOrId(
-                                "/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
-
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Weapon objWeapon = new Weapon(CharacterObject);
-                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken).ConfigureAwait(false);
-                        objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
-                        await objWeapon.SetParentAsync(objSelectedWeapon, GenericToken).ConfigureAwait(false);
-                        objWeapon.AllowAccessory = objSelectedWeapon.AllowAccessory;
-
-                        if (frmPickWeapon.MyForm.FreeCost)
+                        GenericToken.ThrowIfCancellationRequested();
+                        using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
+                                   () => new SelectWeapon(CharacterObject)
+                                   {
+                                       LimitToCategories = "Underbarrel Weapons",
+                                       ParentWeapon = objSelectedWeapon
+                                   }, GenericToken).ConfigureAwait(false))
                         {
-                            objWeapon.Cost = "0";
-                        }
+                            frmPickWeapon.MyForm.Mounts.UnionWith(
+                                objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/',
+                                    StringSplitOptions.RemoveEmptyEntries));
 
-                        await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                            // Make sure the dialogue window was not canceled.
+                            if (await frmPickWeapon.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) ==
+                                DialogResult.Cancel)
+                                return;
+
+                            // Open the Weapons XML file and locate the selected piece.
+                            XmlNode objXmlWeapon
+                                = (await CharacterObject.LoadDataAsync("weapons.xml", token: GenericToken)
+                                    .ConfigureAwait(false))
+                                .TryGetNodeByNameOrId(
+                                    "/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
+
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            Weapon objWeapon = new Weapon(CharacterObject);
+                            await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: GenericToken)
+                                .ConfigureAwait(false);
+                            objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
+                            await objWeapon.SetParentAsync(objSelectedWeapon, GenericToken).ConfigureAwait(false);
+                            objWeapon.AllowAccessory = objSelectedWeapon.AllowAccessory;
+
+                            if (frmPickWeapon.MyForm.FreeCost)
+                            {
+                                objWeapon.Cost = "0";
+                            }
+
+                            await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon, GenericToken)
+                                .ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
