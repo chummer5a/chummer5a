@@ -5654,11 +5654,11 @@
     </string>
     <string>
       <key>Label_CreateImprovementMinimum</key>
-      <text>最大：</text>
+      <text>最小：</text>
     </string>
     <string>
       <key>Label_CreateImprovementMaximum</key>
-      <text>最小：</text>
+      <text>最大：</text>
     </string>
     <string>
       <key>Label_CreateImprovementAugmented</key>
