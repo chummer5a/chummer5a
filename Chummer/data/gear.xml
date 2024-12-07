@@ -21026,6 +21026,47 @@
       <cost>20</cost>
     </gear>
     <!-- End Region -->
+    <!-- Region Chrome Flesh Transgenetic Art and Chimera Pets -->
+    <gear>
+      <id>27b41217-6580-4ed8-8033-09b3b31075b7</id>
+      <name>DNArt (Commercial)</name>
+      <category>Custom</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>167</page>
+      <avail>10</avail>
+      <cost>Variable(30000-1000000)</cost>
+    </gear>
+    <gear>
+      <id>1d3ab826-04dc-4d5c-acf6-2c6f39580118</id>
+      <name>DNArt (Custom)</name>
+      <category>Custom</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>167</page>
+      <avail>20</avail>
+      <cost>Variable(150000-1000000)</cost>
+    </gear>
+    <gear>
+      <id>e8683b6c-da8c-4aa0-bb63-6bded1c74f33</id>
+      <name>Chimera Pets (Commercial)</name>
+      <category>Custom</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>167</page>
+      <avail>6</avail>
+      <cost>Variable(15000-1000000)</cost>
+    </gear>
+    <gear>
+      <id>c08fd5ce-43b3-42a2-8567-a650c6e047a4</id>
+      <name>Chimera Pets (Custom)</name>
+      <category>Custom</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>167</page>
+      <avail>12</avail>
+      <cost>Variable(100000-1000000)</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Krime Katalog -->
     <gear>
