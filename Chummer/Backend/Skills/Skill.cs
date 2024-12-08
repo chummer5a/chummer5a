@@ -3596,33 +3596,26 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
         }
 
-        private string _strDictionaryKey;
+        protected string _strDictionaryKey;
 
-        public string DictionaryKey
+        public virtual string DictionaryKey
         {
             get
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return _strDictionaryKey = _strDictionaryKey
-                                               ?? (this is ExoticSkill objExoticSkill
-                                                   ? Name + " (" + objExoticSkill.Specific + ')'
-                                                   : Name);
+                    return _strDictionaryKey = _strDictionaryKey ?? Name;
                 }
             }
         }
 
-        public async Task<string> GetDictionaryKeyAsync(CancellationToken token = default)
+        public virtual async Task<string> GetDictionaryKeyAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _strDictionaryKey = _strDictionaryKey
-                                           ?? (this is ExoticSkill objExoticSkill
-                                               ? await GetNameAsync(token).ConfigureAwait(false) + " (" +
-                                                 await objExoticSkill.GetSpecificAsync(token).ConfigureAwait(false) + ')'
-                                               : await GetNameAsync(token).ConfigureAwait(false));
+                return _strDictionaryKey = _strDictionaryKey ?? await GetNameAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -6845,70 +6838,61 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (_intSkipSpecializationRefresh > 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                // Needed to make sure we don't call this method another time when we set the specialization's Parent
+                if (Interlocked.Increment(ref _intSkipSpecializationRefresh) != 1)
+                {
+                    Interlocked.Decrement(ref _intSkipSpecializationRefresh);
+                    return;
+                }
+
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    // Needed to make sure we don't call this method another time when we set the specialization's Parent
-                    if (Interlocked.Increment(ref _intSkipSpecializationRefresh) != 1)
+                    _dicCachedStringSpec.Clear();
+                    if (IsExoticSkill)
+                        _strDictionaryKey = null;
+                    switch (e.Action)
                     {
-                        Interlocked.Decrement(ref _intSkipSpecializationRefresh);
-                        return;
-                    }
+                        case NotifyCollectionChangedAction.Add:
+                            foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
+                                objSkillSpecialization.Parent = this;
+                            break;
 
-                    try
-                    {
-                        _dicCachedStringSpec.Clear();
-                        if (IsExoticSkill)
-                            _strDictionaryKey = null;
-                        switch (e.Action)
-                        {
-                            case NotifyCollectionChangedAction.Add:
-                                foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
-                                    objSkillSpecialization.Parent = this;
-                                break;
+                        case NotifyCollectionChangedAction.Remove:
+                            foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                            {
+                                if (objSkillSpecialization.Parent == this)
+                                    objSkillSpecialization.Parent = null;
+                                await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
+                            }
 
-                            case NotifyCollectionChangedAction.Remove:
-                                foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
-                                {
-                                    if (objSkillSpecialization.Parent == this)
-                                        objSkillSpecialization.Parent = null;
-                                    await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
-                                }
+                            break;
 
-                                break;
+                        case NotifyCollectionChangedAction.Replace:
+                            foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                            {
+                                if (objSkillSpecialization.Parent == this)
+                                    objSkillSpecialization.Parent = null;
+                                await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
+                            }
 
-                            case NotifyCollectionChangedAction.Replace:
-                                foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
-                                {
-                                    if (objSkillSpecialization.Parent == this)
-                                        objSkillSpecialization.Parent = null;
-                                    await objSkillSpecialization.DisposeAsync().ConfigureAwait(false);
-                                }
+                            foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
+                                objSkillSpecialization.Parent = this;
+                            break;
 
-                                foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
-                                    objSkillSpecialization.Parent = this;
-                                break;
-
-                            case NotifyCollectionChangedAction.Reset:
-                                await Specializations
-                                    .ForEachAsync(objSkillSpecialization => objSkillSpecialization.Parent = this,
-                                        token: token).ConfigureAwait(false);
-                                break;
-                        }
-                    }
-                    finally
-                    {
-                        Interlocked.Decrement(ref _intSkipSpecializationRefresh);
+                        case NotifyCollectionChangedAction.Reset:
+                            await Specializations
+                                .ForEachAsync(objSkillSpecialization => objSkillSpecialization.Parent = this,
+                                    token: token).ConfigureAwait(false);
+                            break;
                     }
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                 }
 
                 await OnPropertyChangedAsync(nameof(Specializations), token).ConfigureAwait(false);

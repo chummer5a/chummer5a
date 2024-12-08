@@ -489,11 +489,13 @@ namespace Chummer
             {
                 do
                 {
-                } while (await comparer(lstCollection[++i], key).ConfigureAwait(false) < 0);
+                    ++i;
+                } while (await comparer(lstCollection[i], key).ConfigureAwait(false) < 0);
 
                 do
                 {
-                } while (await comparer(key, lstCollection[--j]).ConfigureAwait(false) < 0);
+                    --j;
+                } while (await comparer(key, lstCollection[j]).ConfigureAwait(false) < 0);
 
                 if (i < j)
                     await SwapAsync(lstCollection, i, j, token).ConfigureAwait(false);

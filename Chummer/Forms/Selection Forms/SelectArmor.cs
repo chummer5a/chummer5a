@@ -246,107 +246,118 @@ namespace Chummer
                             xmlArmor = _objXmlDocument.TryGetNodeByNameOrId("/chummer/armors/armor", strSelectedId);
                         if (xmlArmor != null)
                         {
-                            // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
-                            Armor objArmor = new Armor(_objCharacter);
+                            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                             try
                             {
-                                List<Weapon> lstWeapons = new List<Weapon>(1);
-                                await objArmor.CreateAsync(xmlArmor, 0, lstWeapons, true, true, true, true, token)
-                                    .ConfigureAwait(false);
-
-                                Armor objOldArmor = Interlocked.Exchange(ref _objSelectedArmor, objArmor);
-                                if (objOldArmor != null)
-                                    await objOldArmor.DisposeAsync().ConfigureAwait(false);
-
-                                int intRating = 0;
-                                if (xmlArmor.TryGetInt32FieldQuickly("rating", ref intRating))
+                                token.ThrowIfCancellationRequested();
+                                // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
+                                Armor objArmor = new Armor(_objCharacter);
+                                try
                                 {
-                                    await nudRating.DoThreadSafeAsync(x => x.Maximum = intRating, token)
+                                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                                    await objArmor.CreateAsync(xmlArmor, 0, lstWeapons, true, true, true, true, token)
                                         .ConfigureAwait(false);
-                                    if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                            .ConfigureAwait(false))
+
+                                    Armor objOldArmor = Interlocked.Exchange(ref _objSelectedArmor, objArmor);
+                                    if (objOldArmor != null)
+                                        await objOldArmor.DisposeAsync().ConfigureAwait(false);
+
+                                    int intRating = 0;
+                                    if (xmlArmor.TryGetInt32FieldQuickly("rating", ref intRating))
                                     {
-                                        int intMaximum = await nudRating
-                                            .DoThreadSafeFuncAsync(x => x.MaximumAsInt, token).ConfigureAwait(false);
-                                        while (intMaximum > 1 && !await SelectionShared
-                                                   .CheckAvailRestrictionAsync(xmlArmor, _objCharacter, intMaximum,
-                                                       token: token).ConfigureAwait(false))
+                                        await nudRating.DoThreadSafeAsync(x => x.Maximum = intRating, token)
+                                            .ConfigureAwait(false);
+                                        if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                .ConfigureAwait(false))
                                         {
-                                            --intMaximum;
+                                            int intMaximum = await nudRating
+                                                .DoThreadSafeFuncAsync(x => x.MaximumAsInt, token)
+                                                .ConfigureAwait(false);
+                                            while (intMaximum > 1 && !await SelectionShared
+                                                       .CheckAvailRestrictionAsync(xmlArmor, _objCharacter, intMaximum,
+                                                           token: token).ConfigureAwait(false))
+                                            {
+                                                --intMaximum;
+                                            }
+
+                                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token)
+                                                .ConfigureAwait(false);
                                         }
 
-                                        await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token)
-                                            .ConfigureAwait(false);
-                                    }
-
-                                    if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                            .ConfigureAwait(false)
-                                        && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                            .ConfigureAwait(false))
-                                    {
-                                        decimal decCostMultiplier =
-                                            1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token)
-                                                .ConfigureAwait(false) / 100.0m;
-                                        if (_setBlackMarketMaps.Contains(xmlArmor["category"]?.InnerText))
-                                            decCostMultiplier *= 0.9m;
-                                        int intMaximum = await nudRating
-                                            .DoThreadSafeFuncAsync(x => x.MaximumAsInt, token).ConfigureAwait(false);
-                                        while (intMaximum > 1 && !await SelectionShared
-                                                   .CheckNuyenRestrictionAsync(xmlArmor, _objCharacter.Nuyen,
-                                                       decCostMultiplier, intMaximum, token).ConfigureAwait(false))
+                                        if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                .ConfigureAwait(false)
+                                            && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                .ConfigureAwait(false))
                                         {
-                                            --intMaximum;
+                                            decimal decCostMultiplier =
+                                                1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token)
+                                                    .ConfigureAwait(false) / 100.0m;
+                                            if (_setBlackMarketMaps.Contains(xmlArmor["category"]?.InnerText))
+                                                decCostMultiplier *= 0.9m;
+                                            int intMaximum = await nudRating
+                                                .DoThreadSafeFuncAsync(x => x.MaximumAsInt, token)
+                                                .ConfigureAwait(false);
+                                            while (intMaximum > 1 && !await SelectionShared
+                                                       .CheckNuyenRestrictionAsync(xmlArmor, _objCharacter.Nuyen,
+                                                           decCostMultiplier, intMaximum, token).ConfigureAwait(false))
+                                            {
+                                                --intMaximum;
+                                            }
+
+                                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token)
+                                                .ConfigureAwait(false);
                                         }
 
-                                        await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token)
+                                        await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                            .ConfigureAwait(false);
+                                        await nudRating.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Minimum = 1;
+                                            x.Value = 1;
+                                            x.Enabled = x.Minimum != x.Maximum;
+                                            x.Visible = true;
+                                        }, token).ConfigureAwait(false);
+                                        await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                             .ConfigureAwait(false);
                                     }
-
-                                    await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                        .ConfigureAwait(false);
-                                    await nudRating.DoThreadSafeAsync(x =>
+                                    else
                                     {
-                                        x.Minimum = 1;
-                                        x.Value = 1;
-                                        x.Enabled = x.Minimum != x.Maximum;
-                                        x.Visible = true;
-                                    }, token).ConfigureAwait(false);
-                                    await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token)
+                                        await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                            .ConfigureAwait(false);
+                                        await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token)
+                                            .ConfigureAwait(false);
+                                        await nudRating.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Minimum = 0;
+                                            x.Maximum = 0;
+                                            x.Value = 0;
+                                            x.Enabled = false;
+                                            x.Visible = false;
+                                        }, token).ConfigureAwait(false);
+                                    }
+
+                                    string strRatingLabel = xmlArmor["ratinglabel"]?.InnerText;
+                                    strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
+                                        ? string.Format(GlobalSettings.CultureInfo,
+                                            await LanguageManager.GetStringAsync("Label_RatingFormat", token: token)
+                                                .ConfigureAwait(false),
+                                            await LanguageManager.GetStringAsync(strRatingLabel, token: token)
+                                                .ConfigureAwait(false))
+                                        : await LanguageManager.GetStringAsync("Label_Rating", token: token)
+                                            .ConfigureAwait(false);
+                                    await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token)
                                         .ConfigureAwait(false);
                                 }
-                                else
+                                catch
                                 {
-                                    await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                        .ConfigureAwait(false);
-                                    await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token)
-                                        .ConfigureAwait(false);
-                                    await nudRating.DoThreadSafeAsync(x =>
-                                    {
-                                        x.Minimum = 0;
-                                        x.Maximum = 0;
-                                        x.Value = 0;
-                                        x.Enabled = false;
-                                        x.Visible = false;
-                                    }, token).ConfigureAwait(false);
+                                    Interlocked.CompareExchange(ref _objSelectedArmor, null, objArmor);
+                                    await objArmor.DisposeAsync().ConfigureAwait(false);
+                                    throw;
                                 }
-
-                                string strRatingLabel = xmlArmor["ratinglabel"]?.InnerText;
-                                strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
-                                    ? string.Format(GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("Label_RatingFormat", token: token)
-                                            .ConfigureAwait(false),
-                                        await LanguageManager.GetStringAsync(strRatingLabel, token: token)
-                                            .ConfigureAwait(false))
-                                    : await LanguageManager.GetStringAsync("Label_Rating", token: token)
-                                        .ConfigureAwait(false);
-                                await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token)
-                                    .ConfigureAwait(false);
                             }
-                            catch
+                            finally
                             {
-                                Interlocked.CompareExchange(ref _objSelectedArmor, null, objArmor);
-                                await objArmor.DisposeAsync().ConfigureAwait(false);
-                                throw;
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
                             }
                         }
                         else
@@ -652,59 +663,85 @@ namespace Chummer
                     tabArmor.Columns.Add("Cost");
                     tabArmor.Columns["Cost"].DataType = typeof(NuyenString);
 
-                    // Populate the Armor list.
-                    foreach (XmlNode objXmlArmor in objXmlArmorList)
+                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        decimal decCostMultiplier = decBaseMarkup;
-                        if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
-                            decCostMultiplier *= 0.9m;
-                        if (!blnHideOverAvailLimit
-                            || await SelectionShared.CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, token: token).ConfigureAwait(false) && (blnFreeItem
-                                || !blnShowOnlyAffordItems
-                                || await SelectionShared.CheckNuyenRestrictionAsync(
-                                    objXmlArmor, _objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
+                        token.ThrowIfCancellationRequested();
+                        // Populate the Armor list.
+                        foreach (XmlNode objXmlArmor in objXmlArmorList)
                         {
-                            Armor objArmor = new Armor(_objCharacter);
-                            try
+                            decimal decCostMultiplier = decBaseMarkup;
+                            if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
+                                decCostMultiplier *= 0.9m;
+                            if (!blnHideOverAvailLimit
+                                || await SelectionShared
+                                    .CheckAvailRestrictionAsync(objXmlArmor, _objCharacter, token: token)
+                                    .ConfigureAwait(false) && (blnFreeItem
+                                                               || !blnShowOnlyAffordItems
+                                                               || await SelectionShared.CheckNuyenRestrictionAsync(
+                                                                   objXmlArmor, _objCharacter.Nuyen, decCostMultiplier,
+                                                                   token: token).ConfigureAwait(false)))
                             {
-                                List<Weapon> lstWeapons = new List<Weapon>(1);
-                                await objArmor.CreateAsync(objXmlArmor, 0, lstWeapons, true, true, true, true, token).ConfigureAwait(false);
-
-                                string strArmorGuid = objArmor.SourceIDString;
-                                string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                int intArmor = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
-                                decimal decCapacity
-                                    = Convert.ToDecimal(await objArmor.CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
-                                AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdAccessories))
+                                Armor objArmor = new Armor(_objCharacter);
+                                try
                                 {
-                                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                                    await objArmor
+                                        .CreateAsync(objXmlArmor, 0, lstWeapons, true, true, true, true, token)
+                                        .ConfigureAwait(false);
+
+                                    string strArmorGuid = objArmor.SourceIDString;
+                                    string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token)
+                                        .ConfigureAwait(false);
+                                    int intArmor = await objArmor.GetTotalArmorAsync(token).ConfigureAwait(false);
+                                    decimal decCapacity
+                                        = Convert.ToDecimal(
+                                            await objArmor
+                                                .CalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token)
+                                                .ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
+                                    AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token)
+                                        .ConfigureAwait(false);
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdAccessories))
                                     {
-                                        sbdAccessories.AppendLine(await objMod.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                        {
+                                            sbdAccessories.AppendLine(await objMod.GetCurrentDisplayNameAsync(token)
+                                                .ConfigureAwait(false));
+                                        }
+
+                                        foreach (Gear objGear in objArmor.GearChildren)
+                                        {
+                                            sbdAccessories.AppendLine(await objGear.GetCurrentDisplayNameAsync(token)
+                                                .ConfigureAwait(false));
+                                        }
+
+                                        if (sbdAccessories.Length > 0)
+                                            sbdAccessories.Length -= Environment.NewLine.Length;
+                                        SourceString strSource = await SourceString.GetSourceStringAsync(
+                                                objArmor.Source,
+                                                await objArmor.DisplayPageAsync(GlobalSettings.Language, token)
+                                                    .ConfigureAwait(false),
+                                                GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter,
+                                                token)
+                                            .ConfigureAwait(false);
+                                        NuyenString strCost =
+                                            new NuyenString(objArmor.DisplayCost(out decimal _, false));
+
+                                        tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
+                                            sbdAccessories.ToString(), strSource, strCost);
                                     }
-
-                                    foreach (Gear objGear in objArmor.GearChildren)
-                                    {
-                                        sbdAccessories.AppendLine(await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                    }
-
-                                    if (sbdAccessories.Length > 0)
-                                        sbdAccessories.Length -= Environment.NewLine.Length;
-                                    SourceString strSource = await SourceString.GetSourceStringAsync(
-                                        objArmor.Source, await objArmor.DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
-                                        GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
-                                    NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
-
-                                    tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
-                                                      sbdAccessories.ToString(), strSource, strCost);
+                                }
+                                finally
+                                {
+                                    await objArmor.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
-                            finally
-                            {
-                                await objArmor.DisposeAsync().ConfigureAwait(false);
-                            }
                         }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
                     DataSet set = new DataSet("armor");

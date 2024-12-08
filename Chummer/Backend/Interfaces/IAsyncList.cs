@@ -1251,11 +1251,15 @@ namespace Chummer
             {
                 do
                 {
-                } while (await comparer(await lstCollection.GetValueAtAsync(++i, token).ConfigureAwait(false), key).ConfigureAwait(false) < 0);
+                    ++i;
+                } while (await comparer(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false), key)
+                             .ConfigureAwait(false) < 0);
 
                 do
                 {
-                } while (await comparer(key, await lstCollection.GetValueAtAsync(--j, token).ConfigureAwait(false)).ConfigureAwait(false) < 0);
+                    --j;
+                } while (await comparer(key, await lstCollection.GetValueAtAsync(j, token).ConfigureAwait(false))
+                             .ConfigureAwait(false) < 0);
 
                 if (i < j)
                     await SwapAsync(lstCollection, i, j, token).ConfigureAwait(false);

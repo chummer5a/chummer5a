@@ -90,6 +90,33 @@ namespace Chummer.Backend.Skills
 
         public override bool IsExoticSkill => true;
 
+        public override string DictionaryKey
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    return _strDictionaryKey = _strDictionaryKey ?? Name + " (" + Specific + ')';
+                }
+            }
+        }
+
+        public override async Task<string> GetDictionaryKeyAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strDictionaryKey = _strDictionaryKey
+                                           ?? await GetNameAsync(token).ConfigureAwait(false) + " (" +
+                                           await GetSpecificAsync(token).ConfigureAwait(false) + ')';
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public override bool AllowDelete
         {
             get

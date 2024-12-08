@@ -5891,11 +5891,11 @@ namespace Chummer
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
+        public async Task<XPathNavigator> LoadDataXPathAsync(string strFileName, string strLanguage = "",
             bool blnLoadFile = false, CancellationToken token = default)
         {
-            return XmlManager.LoadXPathAsync(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage,
-                blnLoadFile, token);
+            return await XmlManager.LoadXPathAsync(strFileName, await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false), strLanguage,
+                blnLoadFile, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -5920,9 +5920,9 @@ namespace Chummer
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
+        public async Task<XmlDocument> LoadDataAsync(string strFileName, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return XmlManager.LoadAsync(strFileName, Settings.EnabledCustomDataDirectoryPaths, strLanguage, blnLoadFile, token);
+            return await XmlManager.LoadAsync(strFileName, await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false), strLanguage, blnLoadFile, token).ConfigureAwait(false);
         }
 
         private int _intIsLoading;
@@ -6566,7 +6566,7 @@ namespace Chummer
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
-                                            int intExtraBooks = objOptionsToCheck.Books.Count(x => setDummyBooks.Remove(x));
+                                            int intExtraBooks = objOptionsToCheck.Books.Count(x => !setDummyBooks.Remove(x));
                                             setDummyBooks.IntersectWith(objOptionsToCheck.Books);
                                             intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                                                           + intExtraBooks) * intBaseline;
@@ -6664,7 +6664,7 @@ namespace Chummer
                                             setDummyBooks.AddRange(setSavedBooks);
                                             IReadOnlyCollection<string> setOtherBooks
                                                 = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
-                                            int intExtraBooks = setOtherBooks.Count(x => setDummyBooks.Remove(x));
+                                            int intExtraBooks = setOtherBooks.Count(x => !setDummyBooks.Remove(x));
                                             setDummyBooks.IntersectWith(setOtherBooks);
                                             intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
                                                           + intExtraBooks) * intBaseline;
@@ -6786,7 +6786,9 @@ namespace Chummer
                                                         ? SettingsManager.LoadedCharacterSettings
                                                         : await SettingsManager.GetLoadedCharacterSettingsAsync(token)
                                                             .ConfigureAwait(false)).FirstOrDefault().Value;
-                                                strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                                strReplacementSettingsKey = blnSync
+                                                    ? objProspectiveSettings.DictionaryKey
+                                                    : await objProspectiveSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                                             }
                                         }
 
@@ -6893,7 +6895,9 @@ namespace Chummer
                                                         ? SettingsManager.LoadedCharacterSettings
                                                         : await SettingsManager.GetLoadedCharacterSettingsAsync(token)
                                                             .ConfigureAwait(false)).FirstOrDefault().Value;
-                                                strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
+                                                strReplacementSettingsKey = blnSync
+                                                    ? objProspectiveSettings.DictionaryKey
+                                                    : await objProspectiveSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                                             }
                                         }
 
@@ -34696,6 +34700,39 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     _decNuyenBP = value;
+                    await OnPropertyChangedAsync(nameof(NuyenBP), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number of Build Points put into Nuyen.
+        /// </summary>
+        public async Task ModifyNuyenBPAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                decimal decNewValue = Math.Max(Math.Min(_decNuyenBP + value, await GetTotalNuyenMaximumBPAsync(token).ConfigureAwait(false)), 0);
+                if (_decNuyenBP == decNewValue)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decNuyenBP = decNewValue;
                     await OnPropertyChangedAsync(nameof(NuyenBP), token).ConfigureAwait(false);
                 }
                 finally

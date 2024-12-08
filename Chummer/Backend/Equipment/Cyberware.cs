@@ -1805,105 +1805,111 @@ namespace Chummer.Backend.Equipment
         private void CreateChildren(XmlNode objParentNode, Grade objGrade, IList<Weapon> lstWeapons,
             IList<Vehicle> objVehicles, bool blnCreateImprovements = true)
         {
-            // If we've just added a new base item, see if there are any subsystems that should automatically be added.
-            XmlElement xmlSubsystemsNode = objParentNode["subsystems"];
-            if (xmlSubsystemsNode != null)
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                // Load Cyberware subsystems first
-                using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
+                // If we've just added a new base item, see if there are any subsystems that should automatically be added.
+                XmlElement xmlSubsystemsNode = objParentNode["subsystems"];
+                if (xmlSubsystemsNode != null)
                 {
-                    if (objXmlSubSystemNameList?.Count > 0)
+                    // Load Cyberware subsystems first
+                    using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
                     {
-                        XmlDocument objXmlDocument = _objCharacter.LoadData("cyberware.xml");
-                        foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                        if (objXmlSubSystemNameList?.Count > 0)
                         {
-                            string strName = objXmlSubsystemNode["name"]?.InnerText;
-                            if (string.IsNullOrEmpty(strName))
-                                continue;
-                            XmlNode objXmlSubsystem =
-                                objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
-
-                            if (objXmlSubsystem != null)
+                            XmlDocument objXmlDocument = _objCharacter.LoadData("cyberware.xml");
+                            foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                             {
-                                Cyberware objSubsystem = new Cyberware(_objCharacter);
-                                int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Cyberware,
-                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
-                                objSubsystem.ParentID = InternalId;
-                                objSubsystem.Cost = "0";
-                                // If the <subsystem> tag itself contains extra children, add those, too
-                                objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                    blnCreateImprovements);
+                                string strName = objXmlSubsystemNode["name"]?.InnerText;
+                                if (string.IsNullOrEmpty(strName))
+                                    continue;
+                                XmlNode objXmlSubsystem =
+                                    objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
 
-                                _lstChildren.Add(objSubsystem);
+                                if (objXmlSubsystem != null)
+                                {
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
+                                        GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                    objSubsystem.Create(objXmlSubsystem, objGrade,
+                                        Improvement.ImprovementSource.Cyberware,
+                                        intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                        objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                    objSubsystem.ParentID = InternalId;
+                                    objSubsystem.Cost = "0";
+                                    // If the <subsystem> tag itself contains extra children, add those, too
+                                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
+                                        blnCreateImprovements);
+
+                                    _lstChildren.Add(objSubsystem);
+                                }
+                            }
+                        }
+                    }
+
+                    // Load bioware subsystems next
+                    using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("bioware"))
+                    {
+                        if (objXmlSubSystemNameList?.Count > 0)
+                        {
+                            XmlDocument objXmlDocument = _objCharacter.LoadData("bioware.xml");
+                            foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                            {
+                                string strName = objXmlSubsystemNode["name"]?.InnerText;
+                                if (string.IsNullOrEmpty(strName))
+                                    continue;
+                                XmlNode objXmlSubsystem =
+                                    objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
+
+                                if (objXmlSubsystem != null)
+                                {
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
+                                        GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                    objSubsystem.Create(objXmlSubsystem, objGrade,
+                                        Improvement.ImprovementSource.Bioware,
+                                        intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                        objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                                    objSubsystem.ParentID = InternalId;
+                                    objSubsystem.Cost = "0";
+                                    // If the <subsystem> tag itself contains extra children, add those, too
+                                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
+                                        blnCreateImprovements);
+
+                                    _lstChildren.Add(objSubsystem);
+                                }
                             }
                         }
                     }
                 }
 
-                // Load bioware subsystems next
-                using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("bioware"))
+                // Check to see if there are any child elements.
+                if (objParentNode["gears"] != null)
                 {
-                    if (objXmlSubSystemNameList?.Count > 0)
+                    using (XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear"))
                     {
-                        XmlDocument objXmlDocument = _objCharacter.LoadData("bioware.xml");
-                        foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                        if (objXmlGearList?.Count > 0)
                         {
-                            string strName = objXmlSubsystemNode["name"]?.InnerText;
-                            if (string.IsNullOrEmpty(strName))
-                                continue;
-                            XmlNode objXmlSubsystem =
-                                objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
-
-                            if (objXmlSubsystem != null)
+                            XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
+                            List<Weapon> lstChildWeapons = new List<Weapon>(1);
+                            foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
-                                Cyberware objSubsystem = new Cyberware(_objCharacter);
-                                int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Bioware,
-                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
-                                objSubsystem.ParentID = InternalId;
-                                objSubsystem.Cost = "0";
-                                // If the <subsystem> tag itself contains extra children, add those, too
-                                objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                    blnCreateImprovements);
+                                Gear objGear = new Gear(_objCharacter);
+                                if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
+                                        blnCreateImprovements))
+                                    continue;
+                                foreach (Weapon objWeapon in lstChildWeapons)
+                                {
+                                    objWeapon.ParentID = InternalId;
+                                }
 
-                                _lstChildren.Add(objSubsystem);
+                                objGear.Parent = this;
+                                objGear.ParentID = InternalId;
+                                GearChildren.Add(objGear);
+                                lstChildWeapons.AddRange(lstWeapons);
                             }
-                        }
-                    }
-                }
-            }
 
-            // Check to see if there are any child elements.
-            if (objParentNode["gears"] != null)
-            {
-                using (XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear"))
-                {
-                    if (objXmlGearList?.Count > 0)
-                    {
-                        XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
-                        List<Weapon> lstChildWeapons = new List<Weapon>(1);
-                        foreach (XmlNode objXmlVehicleGear in objXmlGearList)
-                        {
-                            Gear objGear = new Gear(_objCharacter);
-                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
-                                    blnCreateImprovements))
-                                continue;
-                            foreach (Weapon objWeapon in lstChildWeapons)
-                            {
-                                objWeapon.ParentID = InternalId;
-                            }
-                            objGear.Parent = this;
-                            objGear.ParentID = InternalId;
-                            GearChildren.Add(objGear);
-                            lstChildWeapons.AddRange(lstWeapons);
+                            lstWeapons.AddRange(lstChildWeapons);
                         }
-
-                        lstWeapons.AddRange(lstChildWeapons);
                     }
                 }
             }
@@ -1913,108 +1919,130 @@ namespace Chummer.Backend.Equipment
             IList<Vehicle> objVehicles, bool blnCreateImprovements = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // If we've just added a new base item, see if there are any subsystems that should automatically be added.
-            XmlElement xmlSubsystemsNode = objParentNode["subsystems"];
-            if (xmlSubsystemsNode != null)
+            IAsyncDisposable objLocker =
+                await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                // Load Cyberware subsystems first
-                using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
+                token.ThrowIfCancellationRequested();
+                // If we've just added a new base item, see if there are any subsystems that should automatically be added.
+                XmlElement xmlSubsystemsNode = objParentNode["subsystems"];
+                if (xmlSubsystemsNode != null)
                 {
-                    if (objXmlSubSystemNameList?.Count > 0)
+                    // Load Cyberware subsystems first
+                    using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("cyberware"))
                     {
-                        XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false);
-                        foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                        if (objXmlSubSystemNameList?.Count > 0)
                         {
-                            string strName = objXmlSubsystemNode["name"]?.InnerText;
-                            if (string.IsNullOrEmpty(strName))
-                                continue;
-                            XmlNode objXmlSubsystem =
-                                objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
-
-                            if (objXmlSubsystem != null)
+                            XmlDocument objXmlDocument = await _objCharacter
+                                .LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false);
+                            foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
                             {
-                                Cyberware objSubsystem = new Cyberware(_objCharacter);
-                                int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                await objSubsystem.CreateAsync(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Cyberware,
-                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this, token: token).ConfigureAwait(false);
-                                objSubsystem.ParentID = InternalId;
-                                objSubsystem.Cost = "0";
-                                // If the <subsystem> tag itself contains extra children, add those, too
-                                await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                    blnCreateImprovements, token).ConfigureAwait(false);
+                                string strName = objXmlSubsystemNode["name"]?.InnerText;
+                                if (string.IsNullOrEmpty(strName))
+                                    continue;
+                                XmlNode objXmlSubsystem =
+                                    objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
 
-                                await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                if (objXmlSubsystem != null)
+                                {
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
+                                        GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                    await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
+                                            Improvement.ImprovementSource.Cyberware,
+                                            intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                            objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                    objSubsystem.ParentID = InternalId;
+                                    objSubsystem.Cost = "0";
+                                    // If the <subsystem> tag itself contains extra children, add those, too
+                                    await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons,
+                                        objVehicles,
+                                        blnCreateImprovements, token).ConfigureAwait(false);
+
+                                    await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                    }
+
+                    // Load bioware subsystems next
+                    using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("bioware"))
+                    {
+                        if (objXmlSubSystemNameList?.Count > 0)
+                        {
+                            XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("bioware.xml", token: token)
+                                .ConfigureAwait(false);
+                            foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                            {
+                                string strName = objXmlSubsystemNode["name"]?.InnerText;
+                                if (string.IsNullOrEmpty(strName))
+                                    continue;
+                                XmlNode objXmlSubsystem =
+                                    objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
+
+                                if (objXmlSubsystem != null)
+                                {
+                                    Cyberware objSubsystem = new Cyberware(_objCharacter);
+                                    int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
+                                        GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
+                                    await objSubsystem.CreateAsync(objXmlSubsystem, objGrade,
+                                            Improvement.ImprovementSource.Bioware,
+                                            intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
+                                            objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                    objSubsystem.ParentID = InternalId;
+                                    objSubsystem.Cost = "0";
+                                    // If the <subsystem> tag itself contains extra children, add those, too
+                                    await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons,
+                                        objVehicles,
+                                        blnCreateImprovements, token).ConfigureAwait(false);
+
+                                    await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                }
                             }
                         }
                     }
                 }
 
-                // Load bioware subsystems next
-                using (XmlNodeList objXmlSubSystemNameList = xmlSubsystemsNode.SelectNodes("bioware"))
+                // Check to see if there are any child elements.
+                if (objParentNode["gears"] != null)
                 {
-                    if (objXmlSubSystemNameList?.Count > 0)
+                    using (XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear"))
                     {
-                        XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false);
-                        foreach (XmlNode objXmlSubsystemNode in objXmlSubSystemNameList)
+                        if (objXmlGearList?.Count > 0)
                         {
-                            string strName = objXmlSubsystemNode["name"]?.InnerText;
-                            if (string.IsNullOrEmpty(strName))
-                                continue;
-                            XmlNode objXmlSubsystem =
-                                objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
-
-                            if (objXmlSubsystem != null)
+                            XmlDocument objXmlGearDocument = await _objCharacter.LoadDataAsync("gear.xml", token: token)
+                                .ConfigureAwait(false);
+                            List<Weapon> lstChildWeapons = new List<Weapon>(1);
+                            foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
-                                Cyberware objSubsystem = new Cyberware(_objCharacter);
-                                int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
-                                    GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
-                                await objSubsystem.CreateAsync(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Bioware,
-                                    intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
-                                    objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this, token: token).ConfigureAwait(false);
-                                objSubsystem.ParentID = InternalId;
-                                objSubsystem.Cost = "0";
-                                // If the <subsystem> tag itself contains extra children, add those, too
-                                await objSubsystem.CreateChildrenAsync(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles,
-                                    blnCreateImprovements, token).ConfigureAwait(false);
+                                Gear objGear = new Gear(_objCharacter);
+                                if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlVehicleGear,
+                                        lstChildWeapons,
+                                        blnCreateImprovements, token: token).ConfigureAwait(false))
+                                    continue;
+                                foreach (Weapon objWeapon in lstChildWeapons)
+                                {
+                                    objWeapon.ParentID = InternalId;
+                                }
 
-                                await _lstChildren.AddAsync(objSubsystem, token).ConfigureAwait(false);
+                                await objGear.SetParentAsync(this, token).ConfigureAwait(false);
+                                objGear.ParentID = InternalId;
+                                await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
+                                lstChildWeapons.AddRange(lstWeapons);
                             }
+
+                            lstWeapons.AddRange(lstChildWeapons);
                         }
                     }
                 }
             }
-
-            // Check to see if there are any child elements.
-            if (objParentNode["gears"] != null)
+            finally
             {
-                using (XmlNodeList objXmlGearList = objParentNode["gears"].SelectNodes("usegear"))
-                {
-                    if (objXmlGearList?.Count > 0)
-                    {
-                        XmlDocument objXmlGearDocument = await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
-                        List<Weapon> lstChildWeapons = new List<Weapon>(1);
-                        foreach (XmlNode objXmlVehicleGear in objXmlGearList)
-                        {
-                            Gear objGear = new Gear(_objCharacter);
-                            if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
-                                    blnCreateImprovements, token: token).ConfigureAwait(false))
-                                continue;
-                            foreach (Weapon objWeapon in lstChildWeapons)
-                            {
-                                objWeapon.ParentID = InternalId;
-                            }
-
-                            await objGear.SetParentAsync(this, token).ConfigureAwait(false);
-                            objGear.ParentID = InternalId;
-                            await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
-                            lstChildWeapons.AddRange(lstWeapons);
-                        }
-
-                        lstWeapons.AddRange(lstChildWeapons);
-                    }
-                }
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

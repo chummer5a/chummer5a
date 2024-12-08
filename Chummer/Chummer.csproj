@@ -163,6 +163,9 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Point Priority Chargen\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Shapeshifter Provisional Run Faster Errata\amend_shapeshifter_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -25798,6 +25801,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="customdata\German Data Changes\amend_martialarts.xml" />
+    <None Remove="customdata\Point Priority Chargen\amend_gear.xml" />
     <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\amend_shapeshifter_metatypes.xml" />
     <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml" />
   </ItemGroup>

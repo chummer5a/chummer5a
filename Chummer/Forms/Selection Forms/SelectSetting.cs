@@ -19,16 +19,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.XPath;
 
 namespace Chummer
 {
     public partial class SelectSetting : Form
     {
-        private string _strSettingsFile = "default.xml";
+        private string _strSettingsKey = GlobalSettings.DefaultCharacterSetting;
 
         #region Control Events
 
@@ -44,26 +41,12 @@ namespace Chummer
             // Build the list of XML files found in the settings directory.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSettings))
             {
-                foreach (string strFileName in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
+                foreach (KeyValuePair<string, CharacterSettings> kvpSetting in await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false))
                 {
-                    // Load the file so we can get the Setting name.
-                    XPathDocument objXmlDocument;
-                    try
-                    {
-                        objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFileName).ConfigureAwait(false);
-                    }
-                    catch (IOException)
-                    {
-                        continue;
-                    }
-                    catch (XmlException)
-                    {
-                        continue;
-                    }
-
-                    lstSettings.Add(new ListItem(Path.GetFileName(strFileName),
-                                                 objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/settings/name")
-                                                               ?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
+                    string strDisplayName = await kvpSetting.Value.GetCurrentDisplayNameAsync().ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strDisplayName))
+                        strDisplayName = await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                    lstSettings.Add(new ListItem(kvpSetting.Key, strDisplayName));
                 }
 
                 lstSettings.Sort(CompareListItems.CompareNames);
@@ -86,7 +69,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strSettingsFile = cboSetting.SelectedValue.ToString();
+            _strSettingsKey = cboSetting.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -98,7 +81,7 @@ namespace Chummer
         /// <summary>
         /// Settings file that was selected in the dialogue.
         /// </summary>
-        public string SettingsFile => _strSettingsFile;
+        public string SettingsKey => _strSettingsKey;
 
         #endregion Properties
     }

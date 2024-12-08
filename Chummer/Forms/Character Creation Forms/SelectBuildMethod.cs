@@ -433,16 +433,13 @@ namespace Chummer
                             x.Text = strNone;
                     }, token).ConfigureAwait(false);
 
-                    List<string> lstCustomData = new List<string>();
-                    foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption
-                                 .EnabledCustomDataDirectoryInfos)
-                        lstCustomData.Add(objLoopInfo.DisplayName);
-                    lstCustomData.Sort();
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdCustomDataDirectories))
+                               out StringBuilder sbdCustomDataDirectories))
                     {
-                        foreach (string strName in lstCustomData)
-                            sbdCustomDataDirectories.AppendLine(strName);
+                        foreach (CustomDataDirectoryInfo objLoopInfo in await objSelectedGameplayOption
+                                     .GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false))
+                            sbdCustomDataDirectories.AppendLine(await objLoopInfo.GetDisplayNameAsync(token)
+                                .ConfigureAwait(false));
 
                         await lblCustomData.DoThreadSafeAsync(x =>
                         {

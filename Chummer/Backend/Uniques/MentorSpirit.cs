@@ -193,11 +193,11 @@ namespace Chummer
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice1))
-                            _strExtraChoice1 = strChoice1;
+                            _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
                     }
                     else
                     {
-                        _strExtraChoice1 = strChoice1;
+                        _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
                     }
                 }
                 else
@@ -236,11 +236,11 @@ namespace Chummer
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice2))
-                            _strExtraChoice2 = strChoice2;
+                            _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
                     }
                     else
                     {
-                        _strExtraChoice2 = strChoice2;
+                        _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
                     }
                 }
                 else
@@ -375,11 +375,11 @@ namespace Chummer
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice1))
-                            _strExtraChoice1 = strChoice1;
+                            _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
                     }
                     else
                     {
-                        _strExtraChoice1 = strChoice1;
+                        _strExtraChoice1 = string.IsNullOrEmpty(strForceValue) ? strChoice1 : strForceValue;
                     }
                 }
                 else
@@ -418,11 +418,11 @@ namespace Chummer
                         }
 
                         if (string.IsNullOrWhiteSpace(_strExtraChoice2))
-                            _strExtraChoice2 = strChoice2;
+                            _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
                     }
                     else
                     {
-                        _strExtraChoice2 = strChoice2;
+                        _strExtraChoice2 = string.IsNullOrEmpty(strForceValue) ? strChoice2 : strForceValue;
                     }
                 }
                 else

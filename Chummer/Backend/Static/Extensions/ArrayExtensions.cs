@@ -101,15 +101,20 @@ namespace Chummer
             {
                 do
                 {
-                } while (await comparer(keys[++i], key).ConfigureAwait(false) < 0);
+                    ++i;
+                } while (await comparer(keys[i], key).ConfigureAwait(false) < 0);
+
                 do
                 {
-                } while (await comparer(key, keys[--j]).ConfigureAwait(false) < 0);
+                    --j;
+                } while (await comparer(key, keys[j]).ConfigureAwait(false) < 0);
+
                 if (i < j)
                     await SwapAsync(keys, i, j, token).ConfigureAwait(false);
                 else
                     break;
             }
+
             await SwapAsync(keys, i, hi - 1, token).ConfigureAwait(false);
             return i;
         }

@@ -11534,16 +11534,17 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    XmlDocument objXmlDocument =
-                        await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
-                    bool blnAddAgain;
+                XmlDocument objXmlDocument =
+                    await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
+                bool blnAddAgain;
 
-                    do
+                do
+                {
+                    IAsyncDisposable objLocker =
+                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
+                        token.ThrowIfCancellationRequested();
                         using (ThreadSafeForm<SelectGear> frmPickGear
                                = await ThreadSafeForm<SelectGear>.GetAsync(
                                        () => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token)
@@ -11610,7 +11611,8 @@ namespace Chummer
                                                 await LanguageManager.GetStringAsync(
                                                     "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                                 await LanguageManager.GetStringAsync(
-                                                    "MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                                        "MessageTitle_NotEnoughNuyen", token: token)
+                                                    .ConfigureAwait(false),
                                                 MessageBoxButtons.OK,
                                                 MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                                             continue;
@@ -11624,12 +11626,15 @@ namespace Chummer
                                                 .ConfigureAwait(false) +
                                             await LanguageManager.GetStringAsync("String_Space", token: token)
                                                 .ConfigureAwait(false) +
-                                            await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                            await objGear.GetCurrentDisplayNameShortAsync(token)
+                                                .ConfigureAwait(false),
                                             ExpenseType.Nuyen,
                                             DateTime.Now);
-                                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                        await CharacterObject.ExpenseEntries
+                                            .AddWithSortAsync(objExpense, token: token)
                                             .ConfigureAwait(false);
-                                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+                                        await CharacterObject.ModifyNuyenAsync(-decCost, token)
+                                            .ConfigureAwait(false);
 
                                         ExpenseUndo objUndo = new ExpenseUndo();
                                         objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId, 1);
@@ -11664,8 +11669,10 @@ namespace Chummer
                                     foreach (Weapon objWeapon in lstWeapons)
                                     {
                                         if (objLocation != null)
-                                            await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
-                                        await objWeapon.SetParentVehicleAsync(objSelectedVehicle, token).ConfigureAwait(false);
+                                            await objLocation.Children.AddAsync(objGear, token)
+                                                .ConfigureAwait(false);
+                                        await objWeapon.SetParentVehicleAsync(objSelectedVehicle, token)
+                                            .ConfigureAwait(false);
                                         await objSelectedVehicle.Weapons.AddAsync(objWeapon, token)
                                             .ConfigureAwait(false);
                                     }
@@ -11678,12 +11685,12 @@ namespace Chummer
                         }
 
                         await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
-                    } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                } while (blnAddAgain);
             }
             finally
             {

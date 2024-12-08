@@ -471,7 +471,7 @@ namespace Chummer
                                 if (_objSelectedSetting != null)
                                 {
                                     foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync(
-                                                     "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths,
+                                                     "books.xml", await _objSelectedSetting.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                      token: token).ConfigureAwait(false))
                                                  .SelectAndCacheExpression(
                                                      "/chummer/books/book/code", token: token))
@@ -479,7 +479,7 @@ namespace Chummer
                                         setValidCodes.Add(xmlBookNode.Value);
                                     }
 
-                                    setValidCodes.IntersectWith(_objSelectedSetting.Books);
+                                    setValidCodes.IntersectWith(await _objSelectedSetting.GetBooksAsync(token).ConfigureAwait(false));
                                 }
 
                                 strSourceFilter = setValidCodes.Count > 0
@@ -503,17 +503,17 @@ namespace Chummer
                                         // Preload all data first to prevent weird locking issues with the rest of the program
                                         await Task.WhenAll(_astrFileNames.Select(
                                                                x => Task.Run(
-                                                                   () => XmlManager.LoadXPathAsync(
+                                                                   async () => await XmlManager.LoadXPathAsync(
                                                                        x,
-                                                                       _objSelectedSetting
-                                                                           .EnabledCustomDataDirectoryPaths,
-                                                                       token: token), token))).ConfigureAwait(false);
+                                                                       await _objSelectedSetting
+                                                                           .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
+                                                                       token: token).ConfigureAwait(false), token))).ConfigureAwait(false);
                                         await Task.WhenAll(_astrFileNames.Select(strFileName => Task.Run(async () =>
                                         {
                                             XPathNavigator xmlBaseNode
                                                 = await XmlManager.LoadXPathAsync(strFileName,
-                                                    _objSelectedSetting
-                                                        .EnabledCustomDataDirectoryPaths,
+                                                    await _objSelectedSetting
+                                                        .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
                                                     token: token).ConfigureAwait(false);
                                             xmlBaseNode
                                                 = xmlBaseNode.SelectSingleNodeAndCacheExpression(

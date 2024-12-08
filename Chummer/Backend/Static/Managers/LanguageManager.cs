@@ -249,7 +249,7 @@ namespace Chummer
             {
                 objNewLanguage = await s_DicLanguageData
                     .GetOrAddAsync(
-                        strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
+                        strKey, x => Task.Run(() => LanguageData.CreateAsync(strLanguage, token), token), token)
                     .ConfigureAwait(false);
             }
 
@@ -1662,6 +1662,14 @@ namespace Chummer
 
                         string strTemp = string.Empty;
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
+                        IReadOnlyList<string> lstCustomDataPaths = null;
+                        if (objCharacter != null)
+                        {
+                            if (blnSync)
+                                lstCustomDataPaths = objCharacter.Settings.EnabledCustomDataDirectoryPaths;
+                            else
+                                lstCustomDataPaths = await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+                        }
                         using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
                         {
                             bool blnEnglishLanguageLoaded;
@@ -1723,8 +1731,8 @@ namespace Chummer
                                         try
                                         {
                                             strTemp = blnSync
-                                                ? FindString(strPreferFile, objCombinedToken)
-                                                : await FindStringAsync(strPreferFile, objCombinedToken)
+                                                ? FindString(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                                : await FindStringAsync(strPreferFile, lstCustomDataPaths, objCombinedToken)
                                                     .ConfigureAwait(false);
                                         }
                                         catch (OperationCanceledException) when (!token.IsCancellationRequested)
@@ -1791,8 +1799,8 @@ namespace Chummer
                                 try
                                 {
                                     strTemp = blnSync
-                                        ? FindString(innerToken: objCombinedToken)
-                                        : await FindStringAsync(innerToken: objCombinedToken).ConfigureAwait(false);
+                                        ? FindString(string.Empty, lstCustomDataPaths, objCombinedToken)
+                                        : await FindStringAsync(string.Empty, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
                                 }
                                 catch (OperationCanceledException) when (!token.IsCancellationRequested)
                                 {
@@ -1800,12 +1808,11 @@ namespace Chummer
                                 }
                             }
 
-                            string FindString(string strPreferredFileName = "",
+                            string FindString(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
                                 string strInnerReturn = string.Empty;
-                                IReadOnlyList<string> lstCustomDataPaths = objCharacter?.Settings.EnabledCustomDataDirectoryPaths;
                                 foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
@@ -1832,7 +1839,7 @@ namespace Chummer
                                         {
                                             xmlDocument = XmlManager.LoadXPath(
                                                 objXPathPair.Item1,
-                                                lstCustomDataPaths,
+                                                lstInnerCustomDataPaths,
                                                 strIntoLanguage, token: innerToken);
                                         }
                                         catch (OperationCanceledException)
@@ -1895,16 +1902,10 @@ namespace Chummer
                                 return strInnerReturn;
                             }
 
-                            async Task<string> FindStringAsync(string strPreferredFileName = "",
+                            async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
                                 CancellationToken innerToken = default)
                             {
                                 innerToken.ThrowIfCancellationRequested();
-                                IReadOnlyList<string> lstCustomDataPaths = objCharacter != null
-                                    ? await (await objCharacter.GetSettingsAsync(innerToken)
-                                            .ConfigureAwait(false))
-                                        .GetEnabledCustomDataDirectoryPathsAsync(innerToken)
-                                        .ConfigureAwait(false)
-                                    : null;
                                 List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
                                 foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
@@ -1922,7 +1923,7 @@ namespace Chummer
                                                  Func<XPathNavigator, string>> tupLoop in lstToSearch)
                                     {
                                         lstTasks.Add(Task.Run(
-                                            () => FetchAndReturnString(tupLoop.Item1, lstCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                            () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
                                                 tupLoop.Item4, innerToken), innerToken));
                                         if (++i == Utils.MaxParallelBatchSize)
                                         {
@@ -1989,7 +1990,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths, string strExpression,
+                                    async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths2, string strExpression,
                                         Func<XPathNavigator, string> funcEnglish,
                                         Func<XPathNavigator, string> funcTranslated,
                                         CancellationToken innerToken2)
@@ -1997,7 +1998,7 @@ namespace Chummer
                                         innerToken2.ThrowIfCancellationRequested();
                                         XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
                                             strDoc,
-                                            lstInnerCustomDataPaths,
+                                            lstInnerCustomDataPaths2,
                                             strIntoLanguage, token: innerToken2).ConfigureAwait(false);
 
                                         foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
@@ -2232,6 +2233,14 @@ namespace Chummer
 
             string strTemp = string.Empty;
             string strExtraNoQuotes = strReturn.FastEscape('\"');
+            IReadOnlyList<string> lstCustomDataPaths = null;
+            if (objCharacter != null)
+            {
+                if (blnSync)
+                    lstCustomDataPaths = objCharacter.Settings.EnabledCustomDataDirectoryPaths;
+                else
+                    lstCustomDataPaths = await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            }
             using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
             {
                 CancellationToken objFoundItemToken = objFoundItemSource.Token;
@@ -2286,8 +2295,8 @@ namespace Chummer
                             try
                             {
                                 strTemp = blnSync
-                                    ? FindString(strPreferFile, objCombinedToken)
-                                    : await FindStringAsync(strPreferFile, objCombinedToken).ConfigureAwait(false);
+                                    ? FindString(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                    : await FindStringAsync(strPreferFile, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
                             }
                             catch (OperationCanceledException) when (!token.IsCancellationRequested)
                             {
@@ -2348,10 +2357,8 @@ namespace Chummer
                     try
                     {
                         strTemp = blnSync
-                            ? FindString(innerToken: token)
-                            : await Task.Run(
-                                () => FindString(innerToken: objCombinedToken),
-                                objCombinedToken).ConfigureAwait(false);
+                            ? FindString(string.Empty, lstCustomDataPaths, objCombinedToken)
+                            : await FindStringAsync(string.Empty, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException) when (!token.IsCancellationRequested)
                     {
@@ -2359,11 +2366,10 @@ namespace Chummer
                     }
                 }
 
-                string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
+                string FindString(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null, CancellationToken innerToken = default)
                 {
                     innerToken.ThrowIfCancellationRequested();
                     string strInnerReturn = string.Empty;
-                    IReadOnlyList<string> lstCustomDataPaths = objCharacter?.Settings.EnabledCustomDataDirectoryPaths;
                     foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                      Func<XPathNavigator, string>>>
                                  aobjPaths
@@ -2391,7 +2397,7 @@ namespace Chummer
                             {
                                 xmlDocument = XmlManager.LoadXPath(
                                     objXPathPair.Item1,
-                                    lstCustomDataPaths,
+                                    lstInnerCustomDataPaths,
                                     strFromLanguage, token: innerToken);
                             }
                             catch (OperationCanceledException)
@@ -2454,17 +2460,11 @@ namespace Chummer
                     return strInnerReturn;
                 }
 
-                async Task<string> FindStringAsync(string strPreferredFileName = "",
+                async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyList<string> lstInnerCustomDataPaths = null,
                                 CancellationToken innerToken = default)
                 {
                     innerToken.ThrowIfCancellationRequested();
                     List<Task<string>> lstTasks = new List<Task<string>>(Utils.MaxParallelBatchSize);
-                    IReadOnlyList<string> lstCustomDataPaths = objCharacter != null
-                        ? await (await objCharacter.GetSettingsAsync(innerToken)
-                                .ConfigureAwait(false))
-                            .GetEnabledCustomDataDirectoryPathsAsync(innerToken)
-                            .ConfigureAwait(false)
-                        : null;
                     foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
                                  Func<XPathNavigator, string>>> aobjPaths
                              in s_LstAXPathsToSearch)
@@ -2481,7 +2481,7 @@ namespace Chummer
                                      Func<XPathNavigator, string>> tupLoop in lstToSearch)
                         {
                             lstTasks.Add(Task.Run(
-                                () => FetchAndReturnString(tupLoop.Item1, lstCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                () => FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
                                     tupLoop.Item4, innerToken), innerToken));
                             if (++i == Utils.MaxParallelBatchSize)
                             {
@@ -2548,14 +2548,14 @@ namespace Chummer
                             }
                         }
 
-                        async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths, string strExpression,
+                        async Task<string> FetchAndReturnString(string strDoc, IReadOnlyList<string> lstInnerCustomDataPaths2, string strExpression,
                             Func<XPathNavigator, string> funcEnglish,
                             Func<XPathNavigator, string> funcTranslated,
                             CancellationToken innerToken2)
                         {
                             innerToken2.ThrowIfCancellationRequested();
                             XPathNavigator xmlDocument = await XmlManager
-                                .LoadXPathAsync(strDoc, lstInnerCustomDataPaths, strFromLanguage, token: innerToken2)
+                                .LoadXPathAsync(strDoc, lstInnerCustomDataPaths2, strFromLanguage, token: innerToken2)
                                 .ConfigureAwait(false);
 
                             foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
@@ -2669,37 +2669,19 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
             List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
-            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                XPathDocument xmlDocument;
-                try
-                {
-                    xmlDocument = XPathDocumentExtensions.LoadStandardFromFile(filePath, token: token);
-                }
-                catch (IOException)
-                {
+                if (strFilePath.EndsWith("_data.xml"))
                     continue;
-                }
-                catch (XmlException)
-                {
+                string strLanguageName = GetLanguageNameFromFileName(strFilePath, token: token);
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
-                }
-
                 token.ThrowIfCancellationRequested();
-
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token);
-
-                if (node == null)
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse, token))
                     continue;
-
-                token.ThrowIfCancellationRequested();
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse, token))
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
-                }
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
             }
 
             token.ThrowIfCancellationRequested();
@@ -2713,45 +2695,129 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
             List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
-            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                XPathDocument xmlDocument;
-                try
-                {
-                    xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(filePath, token: token)
-                                                               .ConfigureAwait(false);
-                }
-                catch (IOException)
-                {
+                if (strFilePath.EndsWith("_data.xml"))
                     continue;
-                }
-                catch (XmlException)
-                {
+                string strLanguageName = await GetLanguageNameFromFileNameAsync(strFilePath, token:token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
-                }
-
                 token.ThrowIfCancellationRequested();
-
-                XPathNavigator node = xmlDocument.CreateNavigator()
-                    .SelectSingleNodeAndCacheExpression(
-                        "/chummer/name", token: token);
-
-                if (node == null)
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
                     continue;
-
-                token.ThrowIfCancellationRequested();
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
-                }
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
             }
 
             token.ThrowIfCancellationRequested();
             lstLanguages.Sort(CompareListItems.CompareNames);
             return lstLanguages;
+        }
+
+        /// <summary>
+        /// Memory-efficient way of opening up a language xml file for the sole purpose of reading its name.
+        /// </summary>
+        /// <param name="strFilePath">File path of the language xml file.</param>
+        /// <param name="blnSafe">Whether to use safe or unsafe xml reader settings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Name of the language associated with <paramref name="strFilePath"/> if one is found, empty string otherwise.</returns>
+        public static string GetLanguageNameFromFileName(string strFilePath, bool blnSafe = true, CancellationToken token = default)
+        {
+            using (FileStream objFileStream
+                   = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                               blnSafe
+                                   ? GlobalSettings.SafeXmlReaderSettings
+                                   : GlobalSettings.UnSafeXmlReaderSettings))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objReader.MoveToContent();
+                        token.ThrowIfCancellationRequested();
+                        do
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                continue;
+                            while (objReader.Read())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
+                                    continue;
+                                while (objReader.Read())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objReader.NodeType == XmlNodeType.Text)
+                                    {
+                                        return objReader.Value;
+                                    }
+                                }
+                            }
+                        } while (objReader.Read());
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Memory-efficient way of opening up a language xml file for the sole purpose of reading its name.
+        /// </summary>
+        /// <param name="strFilePath">File path of the language xml file.</param>
+        /// <param name="blnSafe">Whether to use safe or unsafe xml reader settings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Name of the language associated with <paramref name="strFilePath"/> if one is found, empty string otherwise.</returns>
+        public static Task<string> GetLanguageNameFromFileNameAsync(string strFilePath, bool blnSafe = true, CancellationToken token = default)
+        {
+            return Task.Run(async () =>
+            {
+                using (FileStream objFileStream
+                       = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                   blnSafe
+                                       ? GlobalSettings.SafeXmlReaderAsyncSettings
+                                       : GlobalSettings.UnSafeXmlReaderAsyncSettings))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _ = await objReader.MoveToContentAsync().ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            do
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                    continue;
+                                while (await objReader.ReadAsync().ConfigureAwait(false))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
+                                        continue;
+                                    while (await objReader.ReadAsync().ConfigureAwait(false))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (objReader.NodeType == XmlNodeType.Text)
+                                        {
+                                            return objReader.Value;
+                                        }
+                                    }
+                                }
+                            } while (await objReader.ReadAsync().ConfigureAwait(false));
+                        }
+                    }
+                }
+
+                return string.Empty;
+            }, token);
         }
 
         #endregion Methods
@@ -2760,12 +2826,12 @@ namespace Chummer
     public class LanguageData
     {
         private readonly Dictionary<string, string> _dicTranslatedStrings = new Dictionary<string, string>();
-        public bool IsRightToLeftScript { get; }
+        public bool IsRightToLeftScript { get; private set; }
 
         public IReadOnlyDictionary<string, string> TranslatedStrings => _dicTranslatedStrings;
 
-        public XPathDocument DataDocument { get; }
-        public string ErrorMessage { get; } = string.Empty;
+        public XPathDocument DataDocument { get; private set; }
+        public string ErrorMessage { get; private set; } = string.Empty;
         public bool ErrorAlreadyShown { get; set; }
 
         public LanguageData(string strLanguage)
@@ -2882,6 +2948,129 @@ namespace Chummer
                     ErrorMessage += Environment.NewLine;
                 ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.";
             }
+        }
+
+        private LanguageData()
+        {
+        }
+
+        public static async Task<LanguageData> CreateAsync(string strLanguage, CancellationToken token = default)
+        {
+            LanguageData objReturn = new LanguageData();
+            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            if (!File.Exists(strFilePath))
+                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
+            if (File.Exists(strFilePath))
+            {
+                try
+                {
+                    XPathDocument objLanguageDocument;
+                    string strExtraMessage = string.Empty;
+                    try
+                    {
+                        objLanguageDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage = ex.ToString();
+                    }
+                    catch (XmlException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage = ex.ToString();
+                    }
+
+                    if (objLanguageDocument != null)
+                    {
+                        XPathNavigator objLanguageDocumentNavigator = objLanguageDocument.CreateNavigator();
+                        objReturn.IsRightToLeftScript
+                            = objLanguageDocumentNavigator.SelectSingleNodeAndCacheExpression("/chummer/righttoleft", token)
+                                                          ?.Value == bool.TrueString;
+                        XPathNodeIterator xmlStringList =
+                            objLanguageDocumentNavigator.SelectAndCacheExpression("/chummer/strings/string", token);
+                        if (xmlStringList.Count > 0)
+                        {
+                            foreach (XPathNavigator objNode in xmlStringList)
+                            {
+                                // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                                // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                                string strText = objNode.SelectSingleNodeAndCacheExpression("text", token)?.Value;
+                                if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                                    objReturn._dicTranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
+                            }
+                        }
+                        else
+                        {
+                            objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage
+                                                                              + ".xml into an XmlDocument: "
+                                                                              + strExtraMessage + '.';
+                        }
+                    }
+                    else
+                    {
+                        objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: "
+                                                 + strExtraMessage + '.';
+                    }
+                }
+                catch (Exception ex)
+                {
+                    objReturn.ErrorMessage = "Encountered the following the exception while loading " + strLanguage
+                        + ".xml into an XmlDocument: " + ex + '.';
+                }
+            }
+            else
+            {
+                objReturn.ErrorMessage = "Could not find the strings file " + strLanguage + ".xml.";
+            }
+
+            // Check to see if the data translation file for the selected language exists.
+            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            if (!File.Exists(strDataPath))
+                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
+            if (File.Exists(strDataPath))
+            {
+                try
+                {
+                    try
+                    {
+                        objReturn.DataDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strDataPath, token: token).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        objReturn.DataDocument = null;
+                        if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                            objReturn.ErrorMessage += Environment.NewLine;
+                        objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
+                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                    }
+                    catch (XmlException ex)
+                    {
+                        objReturn.DataDocument = null;
+                        if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                            objReturn.ErrorMessage += Environment.NewLine;
+                        objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
+                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                    }
+                }
+                catch (Exception ex)
+                {
+                    objReturn.DataDocument = null;
+                    if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                        objReturn.ErrorMessage += Environment.NewLine;
+                    objReturn.ErrorMessage += "Encountered the following the exception while loading " + strLanguage
+                        + "_data.xml into an XmlDocument: " + ex + '.';
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                    objReturn.ErrorMessage += Environment.NewLine;
+                objReturn.ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.";
+            }
+
+            return objReturn;
         }
     }
 }

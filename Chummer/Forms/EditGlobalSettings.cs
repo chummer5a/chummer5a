@@ -60,6 +60,8 @@ namespace Chummer
 
         private readonly ConcurrentDictionary<string, HashSet<string>> _dicCachedPdfAppNames
             = new ConcurrentDictionary<string, HashSet<string>>();
+        private readonly ConcurrentDictionary<string, string> _dicCachedLanguageDocumentNames =
+            new ConcurrentDictionary<string, string>();
 
         #region Form Events
 
@@ -105,6 +107,7 @@ namespace Chummer
             await PopulateChum5lzCompressionLevelOptions().ConfigureAwait(false);
             await SetToolTips().ConfigureAwait(false);
             await PopulateOptions().ConfigureAwait(false);
+            await RefreshLanguageDocumentNames().ConfigureAwait(false);
             await PopulateLanguageList().ConfigureAwait(false);
             await SetDefaultValueForLanguageList().ConfigureAwait(false);
             await PopulateSheetLanguageList().ConfigureAwait(false);
@@ -687,7 +690,7 @@ namespace Chummer
                     != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewCustomDataDirectory
-                    = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue, strSelectedPath);
+                    = await CustomDataDirectoryInfo.CreateAsync(frmSelectCustomDirectoryName.MyForm.SelectedValue, strSelectedPath).ConfigureAwait(false);
                 if (objNewCustomDataDirectory.XmlException != default)
                 {
                     await Program.ShowScrollableMessageBoxAsync(this,
@@ -818,8 +821,7 @@ namespace Chummer
                     != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewInfo
-                    = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue,
-                                                  objInfoToRename.DirectoryPath);
+                    = await CustomDataDirectoryInfo.CreateAsync(frmSelectCustomDirectoryName.MyForm.SelectedValue, objInfoToRename.DirectoryPath).ConfigureAwait(false);
                 if (!objNewInfo.HasManifest)
                     objNewInfo.CopyGuid(objInfoToRename);
                 if (objNewInfo.XmlException != default)
@@ -2046,38 +2048,33 @@ namespace Chummer
                                                                          .WordWrap(), token).ConfigureAwait(false);
         }
 
+        private async Task RefreshLanguageDocumentNames(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _dicCachedLanguageDocumentNames.Clear();
+            token.ThrowIfCancellationRequested();
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strFilePath.EndsWith("_data.xml"))
+                    continue;
+                string strLanguageName = await LanguageManager.GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
+                    continue;
+                token.ThrowIfCancellationRequested();
+                _dicCachedLanguageDocumentNames.AddOrUpdate(Path.GetFileNameWithoutExtension(strFilePath), x => strLanguageName, (x, y) => strLanguageName);
+            }
+        }
+
         private async Task PopulateLanguageList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
             {
-                foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+                foreach (KeyValuePair<string, string> kvpLanguages in _dicCachedLanguageDocumentNames)
                 {
                     token.ThrowIfCancellationRequested();
-                    XPathDocument xmlDocument;
-                    try
-                    {
-                        xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token)
-                                                                   .ConfigureAwait(false);
-                    }
-                    catch (IOException)
-                    {
-                        continue;
-                    }
-                    catch (XmlException)
-                    {
-                        continue;
-                    }
-
-                    token.ThrowIfCancellationRequested();
-
-                    XPathNavigator node = xmlDocument?.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token: token);
-                    if (node == null)
-                        continue;
-
-                    token.ThrowIfCancellationRequested();
-
-                    lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(strFilePath), node.Value));
+                    lstLanguages.Add(new ListItem(kvpLanguages.Key, kvpLanguages.Value));
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -2107,38 +2104,13 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstSheetLanguages))
                 {
-                    foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+                    foreach (KeyValuePair<string, string> kvpLanguages in _dicCachedLanguageDocumentNames)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strLanguageName = Path.GetFileNameWithoutExtension(strFilePath);
+                        string strLanguageName = kvpLanguages.Key;
                         if (!setLanguagesWithSheets.Contains(strLanguageName))
                             continue;
-
-                        XPathDocument xmlDocument;
-                        try
-                        {
-                            xmlDocument = await XPathDocumentExtensions
-                                                .LoadStandardFromFileAsync(strFilePath, token: token)
-                                                .ConfigureAwait(false);
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (XmlException)
-                        {
-                            continue;
-                        }
-
-                        token.ThrowIfCancellationRequested();
-
-                        XPathNavigator node = xmlDocument?.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token: token);
-                        if (node == null)
-                            continue;
-
-                        token.ThrowIfCancellationRequested();
-
-                        lstSheetLanguages.Add(new ListItem(strLanguageName, node.Value));
+                        lstSheetLanguages.Add(new ListItem(strLanguageName, kvpLanguages.Value));
                     }
 
                     token.ThrowIfCancellationRequested();
