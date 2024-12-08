@@ -14144,25 +14144,33 @@ namespace Chummer
         {
             try
             {
-                TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x =>
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
                 {
                     TreeNode objReturn = x.SelectedNode;
                     while (objReturn?.Level > 1)
                         objReturn = objReturn.Parent;
                     return objReturn;
                 }, GenericToken).ConfigureAwait(false);
+
                 // Make sure a parent item is selected.
-                if (objSelectedNode == null || objSelectedNode.Level == 0)
+                if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 {
                     await Program.ShowScrollableMessageBoxAsync(
                         this, await LanguageManager.GetStringAsync("Message_SelectVehicleName", token: GenericToken).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle", token: GenericToken).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
                     return;
                 }
 
+                // Get the information for the currently selected Vehicle.
                 if (!(objSelectedNode.Tag is IHasCustomName objRename))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this, await LanguageManager.GetStringAsync("Message_SelectVehicleName", token: GenericToken).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle", token: GenericToken).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken).ConfigureAwait(false);
                     return;
+                }
 
                 string strDescription
                     = await LanguageManager.GetStringAsync("String_VehicleName", token: GenericToken).ConfigureAwait(false);
@@ -14174,8 +14182,7 @@ namespace Chummer
                                AllowEmptyString = true
                            }, GenericToken).ConfigureAwait(false))
                 {
-                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
+                    if (await frmPickText.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                         return;
 
                     objRename.CustomName = frmPickText.MyForm.SelectedValue;
@@ -14184,8 +14191,6 @@ namespace Chummer
                 string strText = await objRename.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                 await treVehicles.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                  .ConfigureAwait(false);
-
-                await SetDirty(true).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
