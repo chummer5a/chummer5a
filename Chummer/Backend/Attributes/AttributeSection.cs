@@ -95,6 +95,16 @@ namespace Chummer.Backend.Attributes
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
+                    if (setNamesOfChangedProperties.Contains(nameof(AttributeCategory)))
+                    {
+                        if (_objCharacter.Created)
+                        {
+                            ResetBindings();
+                            ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
+                                nameof(CharacterAttrib.MetatypeMinimum));
+                        }
+                    }
+
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
@@ -200,6 +210,17 @@ namespace Chummer.Backend.Attributes
 
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
+
+                    if (setNamesOfChangedProperties.Contains(nameof(AttributeCategory)))
+                    {
+                        if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                        {
+                            await ResetBindingsAsync(token).ConfigureAwait(false);
+                            await ForceAttributePropertyChangedNotificationAllAsync(token,
+                                nameof(CharacterAttrib.MetatypeMaximum),
+                                nameof(CharacterAttrib.MetatypeMinimum)).ConfigureAwait(false);
+                        }
+                    }
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
@@ -2025,7 +2046,7 @@ namespace Chummer.Backend.Attributes
                 {
                     token.ThrowIfCancellationRequested();
                     Tuple<string, CharacterAttrib.AttributeCategory> tupKey =
-                        new Tuple<string, CharacterAttrib.AttributeCategory>(abbrev, AttributeCategory);
+                        new Tuple<string, CharacterAttrib.AttributeCategory>(abbrev, await GetAttributeCategoryAsync(token).ConfigureAwait(false));
                     if (_dicAttributes.TryGetValue(tupKey, out objReturn))
                         return objReturn;
                     _dicAttributes.TryGetValue(
@@ -3356,6 +3377,24 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 _objCharacter.RefreshAttributeBindings(token);
+                foreach (CharacterAttrib objAttribute in AttributeList)
+                {
+                    token.ThrowIfCancellationRequested();
+                    objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    if (objAttribute == GetAttributeByName(objAttribute.Abbrev, token))
+                    {
+                        objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    }
+                }
+                foreach (CharacterAttrib objAttribute in SpecialAttributeList)
+                {
+                    token.ThrowIfCancellationRequested();
+                    objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    if (objAttribute == GetAttributeByName(objAttribute.Abbrev, token))
+                    {
+                        objAttribute.MultiplePropertiesChangedAsync += RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    }
+                }
                 List<string> lstProperties = typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).Select(x => x.Name).ToList();
                 foreach (string strAbbrev in AttributeStrings)
                 {
@@ -3413,6 +3452,24 @@ namespace Chummer.Backend.Attributes
             {
                 token.ThrowIfCancellationRequested();
                 await _objCharacter.RefreshAttributeBindingsAsync(token).ConfigureAwait(false);
+                await (await GetAttributeListAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objAttribute =>
+                {
+                    objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                    {
+                        objAttribute.MultiplePropertiesChangedAsync +=
+                            RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    }
+                }, token).ConfigureAwait(false);
+                await (await GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objAttribute =>
+                {
+                    objAttribute.MultiplePropertiesChangedAsync -= RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    if (objAttribute == await GetAttributeByNameAsync(objAttribute.Abbrev, token).ConfigureAwait(false))
+                    {
+                        objAttribute.MultiplePropertiesChangedAsync +=
+                            RunExtraAsyncPropertyChanged(objAttribute.Abbrev);
+                    }
+                }, token).ConfigureAwait(false);
                 List<string> lstProperties = typeof(CharacterAttrib).GetProperties().Where(x => x.CanRead).Select(x => x.Name).ToList();
                 foreach (string strAbbrev in AttributeStrings)
                 {
@@ -3603,14 +3660,6 @@ namespace Chummer.Backend.Attributes
                     // No need to write lock because interlocked guarantees safety
                     if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) == value)
                         return;
-
-                    if (_objCharacter.Created)
-                    {
-                        ResetBindings();
-                        ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
-                                                                     nameof(CharacterAttrib.MetatypeMinimum));
-                    }
-
                     OnPropertyChanged();
                 }
             }
@@ -3639,15 +3688,6 @@ namespace Chummer.Backend.Attributes
                 // No need to write lock because interlocked guarantees safety
                 if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) == value)
                     return;
-
-                if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                {
-                    await ResetBindingsAsync(token).ConfigureAwait(false);
-                    await ForceAttributePropertyChangedNotificationAllAsync(token,
-                        nameof(CharacterAttrib.MetatypeMaximum),
-                        nameof(CharacterAttrib.MetatypeMinimum)).ConfigureAwait(false);
-                }
-
                 await OnPropertyChangedAsync(nameof(AttributeCategory), token).ConfigureAwait(false);
             }
             finally

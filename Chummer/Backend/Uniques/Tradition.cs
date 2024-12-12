@@ -1315,14 +1315,14 @@ namespace Chummer.Backend.Uniques
                             {
                                 if (!value.Contains(strAttribute))
                                 {
-                                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                                    objAttrib.PropertyChangedAsync -= RefreshDrainValue;
+                                    _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                        RefreshDrainValue);
                                 }
                             }
                             else if (value.Contains(strAttribute))
                             {
-                                CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                                objAttrib.PropertyChangedAsync += RefreshDrainValue;
+                                _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                    RefreshDrainValue);
                             }
                         }
                     }
@@ -1379,16 +1379,14 @@ namespace Chummer.Backend.Uniques
                         {
                             if (!value.Contains(strAttribute))
                             {
-                                CharacterAttrib objAttrib = await _objCharacter
-                                    .GetAttributeAsync(strAttribute, token: token).ConfigureAwait(false);
-                                objAttrib.PropertyChangedAsync -= RefreshDrainValue;
+                                _objCharacter.AttributeSection.DeregisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                    RefreshDrainValue);
                             }
                         }
                         else if (value.Contains(strAttribute))
                         {
-                            CharacterAttrib objAttrib = await _objCharacter
-                                .GetAttributeAsync(strAttribute, token: token).ConfigureAwait(false);
-                            objAttrib.PropertyChangedAsync += RefreshDrainValue;
+                            _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(strAttribute,
+                                RefreshDrainValue);
                         }
                     }
                 }
@@ -1608,18 +1606,28 @@ namespace Chummer.Backend.Uniques
         {
             token.ThrowIfCancellationRequested();
             if ((e.PropertyNames.Contains(nameof(Character.AdeptEnabled)) ||
-                 e.PropertyNames.Contains(nameof(Character.MagicianEnabled))) &&
-                await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.MAG)
+                 e.PropertyNames.Contains(nameof(Character.MagicianEnabled)))
+                && await GetTypeAsync(token).ConfigureAwait(false) == TraditionType.MAG)
                 await OnPropertyChangedAsync(nameof(DrainExpression), token).ConfigureAwait(false);
         }
 
-        public async Task RefreshDrainValue(object sender, PropertyChangedEventArgs e,
+        public async Task RefreshDrainValue(object sender, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue) &&
-                await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None)
+            if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None
+                && (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)) &&
+                        (await GetDrainExpressionAsync(token)).Contains("Unaug}"))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalBase)) &&
+                        (await GetDrainExpressionAsync(token)).Contains("Base}"))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMinimum)) &&
+                        (await GetDrainExpressionAsync(token)).Contains("Minimum}"))
+                    || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMaximum)) &&
+                        (await GetDrainExpressionAsync(token)).Contains("Maximum}"))))
+            {
                 await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
+            }
         }
 
         public IReadOnlyList<string> AvailableSpirits => _lstAvailableSpirits;
