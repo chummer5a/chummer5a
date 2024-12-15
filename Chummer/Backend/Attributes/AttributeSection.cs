@@ -95,14 +95,11 @@ namespace Chummer.Backend.Attributes
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (setNamesOfChangedProperties.Contains(nameof(AttributeCategory)))
+                    if (setNamesOfChangedProperties.Contains(nameof(AttributeCategory)) && _objCharacter.Created)
                     {
-                        if (_objCharacter.Created)
-                        {
-                            ResetBindings();
-                            ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
-                                nameof(CharacterAttrib.MetatypeMinimum));
-                        }
+                        ResetBindings();
+                        ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
+                            nameof(CharacterAttrib.MetatypeMinimum));
                     }
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
@@ -211,15 +208,12 @@ namespace Chummer.Backend.Attributes
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (setNamesOfChangedProperties.Contains(nameof(AttributeCategory)))
+                    if (setNamesOfChangedProperties.Contains(nameof(AttributeCategory)) && await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
-                        if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                        {
-                            await ResetBindingsAsync(token).ConfigureAwait(false);
-                            await ForceAttributePropertyChangedNotificationAllAsync(token,
-                                nameof(CharacterAttrib.MetatypeMaximum),
-                                nameof(CharacterAttrib.MetatypeMinimum)).ConfigureAwait(false);
-                        }
+                        await ResetBindingsAsync(token).ConfigureAwait(false);
+                        await ForceAttributePropertyChangedNotificationAllAsync(token,
+                            nameof(CharacterAttrib.MetatypeMaximum),
+                            nameof(CharacterAttrib.MetatypeMinimum)).ConfigureAwait(false);
                     }
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)

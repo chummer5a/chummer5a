@@ -67,7 +67,7 @@ namespace Chummer
 
             _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _lstGrades = _objCharacter.GetGradesList(Improvement.ImprovementSource.Drug);
-            _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));
         }
 
@@ -112,12 +112,12 @@ namespace Chummer
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            await PopulateGrades(null, true, _objForcedGrade?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo) ?? string.Empty).ConfigureAwait(false);
+            await PopulateGrades(null, true, _objForcedGrade?.SourceIDString ?? string.Empty).ConfigureAwait(false);
 
             await cboGrade.DoThreadSafeAsync(x =>
             {
                 if (_objForcedGrade != null)
-                    x.SelectedValue = _objForcedGrade.SourceID.ToString();
+                    x.SelectedValue = _objForcedGrade.SourceIDString;
                 else if (!string.IsNullOrEmpty(_sStrSelectGrade))
                     x.SelectedValue = _sStrSelectGrade;
                 if (x.SelectedIndex == -1 && x.Items.Count > 0)
@@ -326,15 +326,14 @@ namespace Chummer
                                 x.Enabled = false;
                         }).ConfigureAwait(false);
                         Grade objForcedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
-                        strForceGrade = objForcedGrade?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+                        strForceGrade = objForcedGrade?.SourceIDString;
                     }
                     else
                     {
                         await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade).ConfigureAwait(false);
                         if (_blnLockGrade)
                         {
-                            strForceGrade = _objForcedGrade?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                            ?? cboGrade.SelectedValue?.ToString();
+                            strForceGrade = _objForcedGrade?.SourceIDString ?? cboGrade.SelectedValue?.ToString();
                         }
                     }
 
@@ -392,7 +391,7 @@ namespace Chummer
                     strForceGrade = string.Empty;
                     if (_blnLockGrade)
                     {
-                        strForceGrade = _objForcedGrade?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo)
+                        strForceGrade = _objForcedGrade?.SourceIDString
                                         ?? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
                                                          .ConfigureAwait(false);
                     }
@@ -777,8 +776,7 @@ namespace Chummer
                                              .ConfigureAwait(false);
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
                 ? null
-                : _lstGrades.Find(x => x.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                       == strCurrentGradeId);
+                : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
@@ -971,12 +969,12 @@ namespace Chummer
             {
                 strForceGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strForceGrade))
-                    SelectedGrade = _lstGrades.Find(x => x.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
+                    SelectedGrade = _lstGrades.Find(x => x.SourceIDString == strForceGrade);
                 else
                     return;
             }
 
-            _sStrSelectGrade = SelectedGrade?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedDrug = strSelectedId;
             SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
             BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
@@ -1014,7 +1012,7 @@ namespace Chummer
                 {
                     foreach (Grade objWareGrade in _lstGrades)
                     {
-                        if (objWareGrade.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo) == _strNoneGradeId
+                        if (objWareGrade.SourceIDString == _strNoneGradeId
                             && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
                             continue;
                         //if (ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableDrugGrade).Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
