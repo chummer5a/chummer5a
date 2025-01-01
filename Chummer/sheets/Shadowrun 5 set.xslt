@@ -3055,6 +3055,19 @@
           </td>
         </tr>
       </xsl:if>
+
+      <xsl:if test="notes != '' and $ProduceNotes">
+        <tr>
+          <xsl:if test="position() mod 2 != 1">
+            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+          </xsl:if>
+          <td colspan="100%" class="notesrow2">
+            <xsl:call-template name="PreserveLineBreaks">
+              <xsl:with-param name="text" select="notes"/>
+            </xsl:call-template>
+          </td>
+        </tr>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
 
