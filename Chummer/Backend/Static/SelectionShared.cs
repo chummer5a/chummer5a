@@ -2799,56 +2799,95 @@ namespace Chummer
                             ? objCharacter.RESEnabled
                             : await objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false), strName);
 
-                case "skill":
-                {
-                    string strSpec
-                        = xmlNode.SelectSingleNodeAndCacheExpression("spec", token)?.Value;
-                    string strValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.Value;
-                    int intValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
-                    Skill objSkill = null;
-                    SkillsSection objSkillsSection = blnSync
-                        ? objCharacter.SkillsSection
-                        : await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
-                    // Check if the character has the required Skill.
-                    // ReSharper disable once MethodHasAsyncOverload
-                    if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
+                    case "skill":
                     {
-                        if (blnSync)
+                        string strSpec
+                            = xmlNode.SelectSingleNodeAndCacheExpression("spec", token)?.Value;
+                        string strValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.Value;
+                        bool blnCheckEnabled = xmlNode.SelectSingleNodeAndCacheExpression("enabled", token) != null;
+                        bool blnEnabled = xmlNode.SelectSingleNodeAndCacheExpression("enabled", token)?.ValueAsBoolean == true; // Assume we want enabled skills by default.
+                        int intValue = xmlNode.SelectSingleNodeAndCacheExpression("val", token)?.ValueAsInt ?? 0;
+                        Skill objSkill = null;
+                        SkillsSection objSkillsSection = blnSync
+                            ? objCharacter.SkillsSection
+                            : await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                        // Check if the character has the required Skill.
+                        // ReSharper disable once MethodHasAsyncOverload
+                        if (xmlNode.SelectSingleNodeAndCacheExpression("type", token) != null)
                         {
-                            objSkill = string.IsNullOrEmpty(strSpec)
-                                ? objSkillsSection.KnowledgeSkills.FirstOrDefault(
-                                    x => (string.Equals(x.SourceIDString, strNodeId,
-                                             StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
-                                         && x.TotalBaseRating >= intValue)
-                                : objSkillsSection.KnowledgeSkills.FirstOrDefault(
-                                    x => (string.Equals(x.SourceIDString, strNodeId,
-                                             StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
-                                         && x.HasSpecialization(strSpec, token)
-                                         && x.TotalBaseRating >= intValue);
+                            // Type indicates that we're looking for a knowledge skill.
+                            if (blnSync)
+                            {
+                                objSkill = string.IsNullOrEmpty(strSpec)
+                                    ? objSkillsSection.KnowledgeSkills.FirstOrDefault(
+                                        x => (string.Equals(x.SourceIDString, strNodeId,
+                                                 StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName))
+                                    : objSkillsSection.KnowledgeSkills.FirstOrDefault(
+                                        x => (string.Equals(x.SourceIDString, strNodeId,
+                                                 StringComparison.OrdinalIgnoreCase) || x.DictionaryKey == strNodeName)
+                                             && x.HasSpecialization(strSpec, token));
+                            }
+                            else
+                            {
+                                objSkill = string.IsNullOrEmpty(strSpec)
+                                    ? await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
+                                        async x => (string.Equals(x.SourceIDString, strNodeId,
+                                                        StringComparison.OrdinalIgnoreCase) ||
+                                                    x.DictionaryKey == strNodeName)
+                                                   && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >=
+                                                   intValue, token).ConfigureAwait(false)
+                                    : await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
+                                        async x =>
+                                            (string.Equals(x.SourceIDString, strNodeId,
+                                                 StringComparison.OrdinalIgnoreCase) ||
+                                             await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strNodeName)
+                                            && await x.HasSpecializationAsync(strSpec, token).ConfigureAwait(false), token: token);
+                            }
                         }
                         else
                         {
-                            objSkill = string.IsNullOrEmpty(strSpec)
-                                ? await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x => (string.Equals(x.SourceIDString, strNodeId,
-                                                    StringComparison.OrdinalIgnoreCase) ||
-                                                x.DictionaryKey == strNodeName)
-                                               && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >=
-                                               intValue, token).ConfigureAwait(false)
-                                : await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x =>
-                                        (string.Equals(x.SourceIDString, strNodeId,
-                                             StringComparison.OrdinalIgnoreCase) ||
-                                         await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strNodeName)
-                                        && await x.HasSpecializationAsync(strSpec, token).ConfigureAwait(false)
-                                        && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >= intValue,
-                                    token).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strNodeId))
+                            {
+                                objSkill = blnSync
+                                    ? objSkillsSection.Skills.FirstOrDefault(
+                                        x => string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase))
+                                    : await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false))
+                                        .FirstOrDefaultAsync(
+                                            x => string.Equals(x.SourceIDString, strNodeId,
+                                                StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            }
+                            else if (!string.IsNullOrEmpty(strNodeName))
+                            {
+                                objSkill = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? objSkillsSection.GetActiveSkill(strNodeName, token)
+                                    : await objSkillsSection.GetActiveSkillAsync(strNodeName, token).ConfigureAwait(false);
+                                // Exotic Skill
+                                if (objSkill == null && !string.IsNullOrEmpty(strSpec))
+                                    objSkill = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? objSkillsSection.GetActiveSkill(strNodeName + strSpace + '(' + strSpec + ')',
+                                            token)
+                                        : await objSkillsSection.GetActiveSkillAsync(
+                                            strNodeName + strSpace + '(' + strSpec + ')', token).ConfigureAwait(false);
+                            }
                         }
 
                         if (objSkill != null)
                         {
-                            if (blnShowMessage)
+                            bool blnSpecMet = string.IsNullOrEmpty(strSpec) || (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objSkill.HasSpecialization(strSpec, token)
+                                : await objSkill.HasSpecializationAsync(strSpec, token).ConfigureAwait(false));
+                            bool blnEnabledMet = blnSync
+                                ? objSkill.Enabled
+                                : await objSkill.GetEnabledAsync(token).ConfigureAwait(false);
+
+                            if (blnEnabledMet && blnSpecMet && (blnSync
+                                    ? objSkill.TotalBaseRating
+                                    : await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false)) >= intValue)
                             {
+                                if (!blnShowMessage) return new Tuple<bool, string>(true, strName);
                                 strName = blnSync
                                     ? objSkill.CurrentDisplayName
                                     : await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -2876,140 +2915,66 @@ namespace Chummer
                                 {
                                     strName += strSpace + strValue;
                                 }
-                            }
-
-                            return new Tuple<bool, string>(true, strName);
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(strNodeId))
-                        {
-                            objSkill = blnSync
-                                ? objSkillsSection.Skills.FirstOrDefault(
-                                    x => string.Equals(x.SourceIDString, strNodeId, StringComparison.OrdinalIgnoreCase))
-                                : await (await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false))
-                                    .FirstOrDefaultAsync(
-                                        x => string.Equals(x.SourceIDString, strNodeId,
-                                            StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
-                        }
-                        else if (!string.IsNullOrEmpty(strNodeName))
-                        {
-                            objSkill = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objSkillsSection.GetActiveSkill(strNodeName, token)
-                                : await objSkillsSection.GetActiveSkillAsync(strNodeName, token).ConfigureAwait(false);
-                            // Exotic Skill
-                            if (objSkill == null && !string.IsNullOrEmpty(strSpec))
-                                objSkill = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objSkillsSection.GetActiveSkill(strNodeName + strSpace + '(' + strSpec + ')',
-                                        token)
-                                    : await objSkillsSection.GetActiveSkillAsync(
-                                        strNodeName + strSpace + '(' + strSpec + ')', token).ConfigureAwait(false);
-                        }
-
-                        if (objSkill != null)
-                        {
-                            bool blnSpecMet = string.IsNullOrEmpty(strSpec) || (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objSkill.HasSpecialization(strSpec, token)
-                                : await objSkill.HasSpecializationAsync(strSpec, token).ConfigureAwait(false));
-                            if (blnSpecMet && (blnSync
-                                    ? objSkill.TotalBaseRating
-                                    : await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false)) >= intValue)
-                            {
-                                if (blnShowMessage)
-                                {
-                                    strName = blnSync
-                                        ? objSkill.CurrentDisplayName
-                                        : await objSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                    if (!string.IsNullOrEmpty(strSpec) && (blnSync
-                                            ? ImprovementManager
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                .GetCachedImprovementListForValueOf(
-                                                    objCharacter,
-                                                    Improvement.ImprovementType
-                                                        .DisableSpecializationEffects,
-                                                    objSkill.DictionaryKey, token: token)
-                                            : await ImprovementManager
-                                                .GetCachedImprovementListForValueOfAsync(
-                                                    objCharacter,
-                                                    Improvement.ImprovementType
-                                                        .DisableSpecializationEffects,
-                                                    await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false),
-                                                    token: token).ConfigureAwait(false)).Count
-                                        == 0)
-                                    {
-                                        strName += strSpace + '(' + strSpec + ')';
-                                    }
-
-                                    if (!string.IsNullOrEmpty(strValue))
-                                    {
-                                        strName += strSpace + strValue;
-                                    }
-                                }
 
                                 return new Tuple<bool, string>(true, strName);
                             }
                         }
-                    }
 
-                    if (blnShowMessage)
-                    {
-                        XPathNavigator xmlSkillDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("skills.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
-                        string strSkillId
-                            = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value;
-                        string strSkillName
-                            = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
-                        string strTranslate
-                            = xmlSkillDoc.SelectSingleNode("/chummer/skills/skill[id = " + strSkillId.CleanXPath()
-                                  + "]/translate")?.Value
-                              ?? xmlSkillDoc
-                                  .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
+                        if (blnShowMessage)
+                        {
+                            XPathNavigator xmlSkillDoc = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.LoadDataXPath("skills.xml", token: token)
+                                : await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false);
+                            string strSkillId
+                                = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value;
+                            string strSkillName
+                                = xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                            string strTranslate
+                                = xmlSkillDoc.SelectSingleNode("/chummer/skills/skill[id = " + strSkillId.CleanXPath()
                                       + "]/translate")?.Value
-                              ?? xmlSkillDoc
-                                  .SelectSingleNode("/chummer/skills/skill[name = " + strSkillName.CleanXPath()
-                                      + "]/translate")?.Value
-                              ?? xmlSkillDoc
-                                  .SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath()
-                                      + "]/translate")?.Value;
-                        if (string.IsNullOrEmpty(strTranslate) && string.IsNullOrEmpty(strSkillName))
-                            strSkillName
-                                = xmlSkillDoc.SelectSingleNode(
-                                      "/chummer/skills/skill[id = " + strSkillId.CleanXPath() + "]/name")?.Value
                                   ?? xmlSkillDoc
                                       .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
-                                          + "]/name")?.Value;
-                        strName = Environment.NewLine + '\t'
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strSkillName);
-                        if (!string.IsNullOrEmpty(strSpec))
-                        {
-                            strName += strSpace + '(' + strSpec + ')';
+                                          + "]/translate")?.Value
+                                  ?? xmlSkillDoc
+                                      .SelectSingleNode("/chummer/skills/skill[name = " + strSkillName.CleanXPath()
+                                          + "]/translate")?.Value
+                                  ?? xmlSkillDoc
+                                      .SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath()
+                                          + "]/translate")?.Value;
+                            if (string.IsNullOrEmpty(strTranslate) && string.IsNullOrEmpty(strSkillName))
+                                strSkillName
+                                    = xmlSkillDoc.SelectSingleNode(
+                                          "/chummer/skills/skill[id = " + strSkillId.CleanXPath() + "]/name")?.Value
+                                      ?? xmlSkillDoc
+                                          .SelectSingleNode("/chummer/knowledgeskills/skill[id = " + strSkillId.CleanXPath()
+                                              + "]/name")?.Value;
+                            strName = Environment.NewLine + '\t'
+                                                          + (!string.IsNullOrEmpty(strTranslate)
+                                                              ? strTranslate
+                                                              : strSkillName);
+                            if (!string.IsNullOrEmpty(strSpec))
+                            {
+                                strName += strSpace + '(' + strSpec + ')';
+                            }
+
+                            if (!string.IsNullOrEmpty(strValue))
+                            {
+                                strName += strSpace + strValue;
+                            }
+
+                            strName += strSpace + '(' + (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString(
+                                    "Tab_Skills",
+                                    token: token)
+                                : await LanguageManager.GetStringAsync(
+                                    "Tab_Skills",
+                                    token: token).ConfigureAwait(false)) + ')';
                         }
 
-                        if (!string.IsNullOrEmpty(strValue))
-                        {
-                            strName += strSpace + strValue;
-                        }
-
-                        strName += strSpace + '(' + (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString(
-                                "Tab_Skills",
-                                token: token)
-                            : await LanguageManager.GetStringAsync(
-                                "Tab_Skills",
-                                token: token).ConfigureAwait(false)) + ')';
+                        return new Tuple<bool, string>(false, strName);
                     }
-
-                    return new Tuple<bool, string>(false, strName);
-                }
                 case "skilltotal":
                 {
                     // Check if the total combined Ratings of Skills adds up to a particular total.

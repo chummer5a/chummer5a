@@ -3646,6 +3646,10 @@
         <oneof>
           <quality>Aspected Magician</quality>
           <quality>Magician</quality>
+          <skill>
+            <name>Spellcasting</name>
+            <enabled>true</enabled>
+          </skill>
         </oneof>
       </required>
       <source>RF</source>
