@@ -289,7 +289,9 @@
     <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_paragons.xml" />
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_paragons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_powers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -323,7 +325,9 @@
     <Content Include="customdata\Delnar Skills Remake\amend_lifemodules.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Delnar Skills Remake\amend_paragons.xml" />
+    <Content Include="customdata\Delnar Skills Remake\amend_paragons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -645,7 +649,9 @@
     <Content Include="customdata\Shadowrun Missions Rules\custom_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Shadowrun Missions Rules\custom_weapons.xml" />
+    <Content Include="customdata\Shadowrun Missions Rules\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1160,7 +1166,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\tips.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -25720,6 +25726,16 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.cs" />
+    <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.Designer.cs" />
+    <Compile Remove="Forms\Dashboard Forms\PlayerDashboard.cs" />
+    <Compile Remove="Forms\Dashboard Forms\PlayerDashboard.Designer.cs" />
+    <Compile Remove="Forms\Selection Forms\SelectProgramOption.cs" />
+    <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
+    <Compile Remove="InheritedListView.cs" />
+    <Compile Remove="packages\Codaxy.WkHtmlToPdf.0.5.8\content\PdfConvert.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
     <PackageReference Include="HtmlRenderer.Core" Version="1.5.0.6" />
@@ -25788,22 +25804,6 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="XoshiroPRNG.Net" Version="1.6.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.cs" />
-    <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.Designer.cs" />
-    <Compile Remove="Forms\Dashboard Forms\PlayerDashboard.cs" />
-    <Compile Remove="Forms\Dashboard Forms\PlayerDashboard.Designer.cs" />
-    <Compile Remove="Forms\Selection Forms\SelectProgramOption.cs" />
-    <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
-    <Compile Remove="InheritedListView.cs" />
-    <Compile Remove="packages\Codaxy.WkHtmlToPdf.0.5.8\content\PdfConvert.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="customdata\German Data Changes\amend_martialarts.xml" />
-    <None Remove="customdata\Point Priority Chargen\amend_gear.xml" />
-    <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\amend_shapeshifter_metatypes.xml" />
-    <None Remove="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
