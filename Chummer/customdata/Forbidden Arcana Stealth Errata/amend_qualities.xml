@@ -23,7 +23,7 @@
       <!-- Mystic adept -->
       <id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
       <bonus>
-        <unlockskills xpathfilter=". = Magician" amendoperation="remove"/>
+        <unlockskills xpathfilter=". = 'Magician'" amendoperation="remove"/>
         <unlockskills amendoperation="addnode">Sorcery</unlockskills>
         <unlockskills amendoperation="addnode">Conjuring</unlockskills>
       </bonus>
