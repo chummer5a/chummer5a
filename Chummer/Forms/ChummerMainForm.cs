@@ -94,9 +94,6 @@ namespace Chummer
         public ChummerMainForm(bool blnIsUnitTest = false, bool blnIsUnitTestForUI = false)
         {
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-#if !DEBUG
-            Disposed += (sender, args) => _objVersionUpdaterCancellationTokenSource?.Dispose();
-#endif
             Utils.IsUnitTest = blnIsUnitTest;
             Utils.IsUnitTestForUI = blnIsUnitTestForUI;
             InitializeComponent();
@@ -119,6 +116,9 @@ namespace Chummer
 
             Disposed += (sender, args) =>
             {
+#if !DEBUG
+                _objVersionUpdaterCancellationTokenSource?.Dispose();
+#endif
                 _tmrCharactersToOpenCheck.Dispose();
                 _objGenericCancellationTokenSource.Dispose();
                 _objFormOpeningSemaphore.Dispose();
@@ -768,14 +768,14 @@ namespace Chummer
                                             DateTime objOldAutosaveTimeThreshold =
                                                 DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
                                             foreach (string strAutosave in Directory
-                                                                           .EnumerateFiles(
-                                                                               Utils.GetAutosavesFolderPath,
-                                                                               "*.chum5",
-                                                                               SearchOption.AllDirectories)
-                                                                           .Concat(Directory.EnumerateFiles(
-                                                                               Utils.GetAutosavesFolderPath,
-                                                                               "*.chum5lz",
-                                                                               SearchOption.AllDirectories)))
+                                                         .EnumerateFiles(
+                                                             Utils.GetAutosavesFolderPath,
+                                                             "*.chum5",
+                                                             SearchOption.AllDirectories)
+                                                         .Concat(Directory.EnumerateFiles(
+                                                             Utils.GetAutosavesFolderPath,
+                                                             "*.chum5lz",
+                                                             SearchOption.AllDirectories)))
                                             {
                                                 FileInfo objAutosave;
                                                 try
@@ -1030,7 +1030,7 @@ namespace Chummer
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
                             Log.Warn(
-                                "Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
                         }
                         catch (System.Configuration.ConfigurationErrorsException ex)
                         {
@@ -1038,7 +1038,7 @@ namespace Chummer
                             Properties.Settings.Default.Reset();
                             Properties.Settings.Default.Save();
                             Log.Warn(
-                                "Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                                "Configuration Settings were invalid and had to be reset. Exception: " + ex.Message);
                         }
 
                         if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0
@@ -4265,8 +4265,7 @@ namespace Chummer
                     {
                         // Extract the file name
                         NativeMethods.CopyDataStruct objReceivedData
-                            = (NativeMethods.CopyDataStruct) Marshal.PtrToStructure(
-                                m.LParam, typeof(NativeMethods.CopyDataStruct));
+                            = Marshal.PtrToStructure<NativeMethods.CopyDataStruct>(m.LParam);
                         _objGenericToken.ThrowIfCancellationRequested();
                         if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                         {

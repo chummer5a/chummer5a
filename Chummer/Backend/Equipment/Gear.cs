@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
     /// Standard Character Gear.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{CurrentDisplayName}")]
     public sealed class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasMatrixAttributes,
         IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertiesChangedAsync, ICanSort,
         IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
@@ -3504,7 +3504,7 @@ namespace Chummer.Backend.Equipment
                 if (intPos != -1)
                 {
                     string strFirstHalf = strReturn.Substring(0, intPos);
-                    string strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
+                    string strSecondHalf = strReturn.Substring(intPos + 1);
                     bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
@@ -3587,7 +3587,7 @@ namespace Chummer.Backend.Equipment
             if (intPos != -1)
             {
                 string strFirstHalf = strReturn.Substring(0, intPos);
-                string strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
+                string strSecondHalf = strReturn.Substring(intPos + 1);
                 bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                 if (blnSquareBrackets && strFirstHalf.Length > 2)
                     strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
@@ -3663,7 +3663,7 @@ namespace Chummer.Backend.Equipment
                 if (intPos != -1)
                 {
                     string strFirstHalf = strReturn.Substring(0, intPos);
-                    string strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
+                    string strSecondHalf = strReturn.Substring(intPos + 1);
                     bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                     if (blnSquareBrackets && strFirstHalf.Length > 2)
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
@@ -3729,7 +3729,7 @@ namespace Chummer.Backend.Equipment
             if (intPos != -1)
             {
                 string strFirstHalf = strReturn.Substring(0, intPos);
-                string strSecondHalf = strReturn.Substring(intPos + 1, strReturn.Length - intPos - 1);
+                string strSecondHalf = strReturn.Substring(intPos + 1);
                 bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                 if (blnSquareBrackets && strFirstHalf.Length > 2)
                     strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);

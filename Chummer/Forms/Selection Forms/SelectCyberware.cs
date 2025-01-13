@@ -1342,8 +1342,7 @@ namespace Chummer
                                 if (intPos != -1)
                                 {
                                     string strFirstHalf = strCapacity.Substring(0, intPos);
-                                    string strSecondHalf
-                                        = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
+                                    string strSecondHalf = strCapacity.Substring(intPos + 1);
 
                                     blnSquareBrackets = strFirstHalf.StartsWith('[');
                                     if (blnSquareBrackets && strFirstHalf.Length > 1)

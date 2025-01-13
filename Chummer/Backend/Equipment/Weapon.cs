@@ -44,7 +44,7 @@ namespace Chummer.Backend.Equipment
     /// A Weapon.
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
-    [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{CurrentDisplayName}")]
     public sealed class Weapon : IHasChildren<Weapon>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort,
         IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating, ICanBlackMarketDiscount, IDisposable,
@@ -4489,7 +4489,7 @@ namespace Chummer.Backend.Equipment
                         if (intPos != -1)
                         {
                             strPrepend = strThisAmmo.Substring(0, intPos + 1);
-                            strThisAmmo = strThisAmmo.Substring(intPos + 1, strThisAmmo.Length - (intPos + 1));
+                            strThisAmmo = strThisAmmo.Substring(intPos + 1);
                         }
 
                         if (WeaponAccessories.Count != 0)
@@ -5576,7 +5576,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     strRCBase = strRC.Substring(0, intPos);
-                    strRCFull = strRC.Substring(intPos, strRC.Length - intPos);
+                    strRCFull = strRC.Substring(intPos);
                 }
             }
             else

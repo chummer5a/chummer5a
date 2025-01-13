@@ -31,7 +31,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
     public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private readonly ConcurrentDictionary<string, string> _dicEnglishTexts = new ConcurrentDictionary<string, string>();

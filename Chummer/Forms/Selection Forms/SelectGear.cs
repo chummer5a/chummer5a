@@ -957,8 +957,7 @@ namespace Chummer
                             if (intPos != -1)
                             {
                                 string strFirstHalf = strCapacityText.Substring(0, intPos);
-                                string strSecondHalf
-                                    = strCapacityText.Substring(intPos + 1, strCapacityText.Length - intPos - 1);
+                                string strSecondHalf = strCapacityText.Substring(intPos + 1);
 
                                 if (strFirstHalf == "[*]")
                                     await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);

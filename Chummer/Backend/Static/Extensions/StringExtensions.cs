@@ -897,8 +897,7 @@ namespace Chummer
                                                 && (blnOmitCheck
                                                     || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
-                int intTrimLength = strToTrim.Length;
-                return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
+                return strInput.Substring(strToTrim.Length);
             }
 
             return strInput;
@@ -946,12 +945,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, char chrToTrim)
         {
-            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
-            {
-                return strInput.Substring(1, strInput.Length - 1);
-            }
-
-            return strInput;
+            return !string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim
+                ? strInput.Substring(1)
+                : strInput;
         }
 
         /// <summary>
@@ -963,9 +959,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
         {
-            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
-                return strInput.Substring(1, strInput.Length - 1);
-            return strInput;
+            return !string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim)
+                ? strInput.Substring(1)
+                : strInput;
         }
 
         /// <summary>
