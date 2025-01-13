@@ -441,8 +441,8 @@ namespace Chummer
 
                                 if (!blnFoundTag && line.Contains("tag_name"))
                                 {
-                                    _strLatestVersion = line.SplitNoAlloc(':').ElementAtOrDefault(1);
-                                    LatestVersion = _strLatestVersion.SplitNoAlloc('}').FirstOrDefault().FastEscape('\"').Trim();
+                                    LatestVersion = (_strLatestVersion = line.SplitNoAlloc(':').ElementAtOrDefault(1))
+                                        .SplitNoAlloc('}').FirstOrDefault().FastEscape('\"').Trim();
                                     blnFoundTag = true;
                                     if (blnFoundArchive)
                                         break;
@@ -450,10 +450,10 @@ namespace Chummer
 
                                 if (!blnFoundArchive && line.Contains("browser_download_url"))
                                 {
-                                    _strDownloadFile = line.SplitNoAlloc(':').ElementAtOrDefault(2) ?? string.Empty;
-                                    _strDownloadFile = _strDownloadFile.Substring(2);
-                                    _strDownloadFile = _strDownloadFile.SplitNoAlloc('}').FirstOrDefault().FastEscape('\"');
-                                    _strDownloadFile = "https://" + _strDownloadFile;
+                                    _strDownloadFile = "https://" +
+                                                       (line.SplitNoAlloc(':').ElementAtOrDefault(2) ?? string.Empty)
+                                                       .Substring(2).SplitNoAlloc('}').FirstOrDefault()
+                                                       .FastEscape('\"');
                                     blnFoundArchive = true;
                                     if (blnFoundTag)
                                         break;
