@@ -435,23 +435,23 @@ namespace Chummer
 
                             bool blnFoundTag = false;
                             bool blnFoundArchive = false;
-                            foreach (string line in responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                            foreach (string strLine in responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 token.ThrowIfCancellationRequested();
 
-                                if (!blnFoundTag && line.Contains("tag_name"))
+                                if (!blnFoundTag && strLine.Contains("tag_name"))
                                 {
-                                    LatestVersion = (_strLatestVersion = line.SplitNoAlloc(':').ElementAtOrDefault(1))
+                                    LatestVersion = (_strLatestVersion = strLine.SplitNoAlloc(':').ElementAtOrDefault(1))
                                         .SplitNoAlloc('}').FirstOrDefault().FastEscape('\"').Trim();
                                     blnFoundTag = true;
                                     if (blnFoundArchive)
                                         break;
                                 }
 
-                                if (!blnFoundArchive && line.Contains("browser_download_url"))
+                                if (!blnFoundArchive && strLine.Contains("browser_download_url"))
                                 {
                                     _strDownloadFile = "https://" +
-                                                       (line.SplitNoAlloc(':').ElementAtOrDefault(2) ?? string.Empty)
+                                                       (strLine.SplitNoAlloc(':').ElementAtOrDefault(2) ?? string.Empty)
                                                        .Substring(2).SplitNoAlloc('}').FirstOrDefault()
                                                        .FastEscape('\"');
                                     blnFoundArchive = true;
