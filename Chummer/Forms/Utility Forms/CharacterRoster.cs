@@ -64,7 +64,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
                 _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5");
+                _watcherCharacterRosterFolderRawSaves.IncludeSubdirectories = true;
                 _watcherCharacterRosterFolderCompressedSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5lz");
+                _watcherCharacterRosterFolderCompressedSaves.IncludeSubdirectories = true;
 
                 Disposed += (sender, args) =>
                 {
@@ -158,14 +160,20 @@ namespace Chummer
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (_watcherCharacterRosterFolderRawSaves != null)
                 {
+                    _watcherCharacterRosterFolderRawSaves.BeginInit();
                     _watcherCharacterRosterFolderRawSaves.Changed += RefreshSingleWatchNode;
                     _watcherCharacterRosterFolderRawSaves.Created += RefreshWatchList;
                     _watcherCharacterRosterFolderRawSaves.Deleted += DeleteSingleWatchNode;
                     _watcherCharacterRosterFolderRawSaves.Renamed += RefreshWatchList;
+                    _watcherCharacterRosterFolderRawSaves.EnableRaisingEvents = true;
+                    _watcherCharacterRosterFolderRawSaves.EndInit();
+                    _watcherCharacterRosterFolderCompressedSaves.BeginInit();
                     _watcherCharacterRosterFolderCompressedSaves.Changed += RefreshSingleWatchNode;
                     _watcherCharacterRosterFolderCompressedSaves.Created += RefreshWatchList;
                     _watcherCharacterRosterFolderCompressedSaves.Deleted += DeleteSingleWatchNode;
                     _watcherCharacterRosterFolderCompressedSaves.Renamed += RefreshWatchList;
+                    _watcherCharacterRosterFolderCompressedSaves.EnableRaisingEvents = true;
+                    _watcherCharacterRosterFolderCompressedSaves.EndInit();
                 }
             }
             else
@@ -201,10 +209,12 @@ namespace Chummer
 
                 if (_watcherCharacterRosterFolderRawSaves != null)
                 {
+                    _watcherCharacterRosterFolderRawSaves.EnableRaisingEvents = false;
                     _watcherCharacterRosterFolderRawSaves.Changed -= RefreshSingleWatchNode;
                     _watcherCharacterRosterFolderRawSaves.Created -= RefreshWatchList;
                     _watcherCharacterRosterFolderRawSaves.Deleted -= DeleteSingleWatchNode;
                     _watcherCharacterRosterFolderRawSaves.Renamed -= RefreshWatchList;
+                    _watcherCharacterRosterFolderCompressedSaves.EnableRaisingEvents = false;
                     _watcherCharacterRosterFolderCompressedSaves.Changed -= RefreshSingleWatchNode;
                     _watcherCharacterRosterFolderCompressedSaves.Created -= RefreshWatchList;
                     _watcherCharacterRosterFolderCompressedSaves.Deleted -= DeleteSingleWatchNode;

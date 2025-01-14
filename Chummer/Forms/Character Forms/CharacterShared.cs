@@ -99,7 +99,11 @@ namespace Chummer
             if (GlobalSettings.LiveUpdateCleanCharacterFiles && !string.IsNullOrEmpty(strCharacterFileName) && File.Exists(strCharacterFileName))
             {
                 _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strCharacterFileName) ?? Path.GetPathRoot(strCharacterFileName), Path.GetFileName(strCharacterFileName));
+                _objCharacterFileWatcher.BeginInit();
                 _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                _objCharacterFileWatcher.IncludeSubdirectories = true;
+                _objCharacterFileWatcher.EnableRaisingEvents = true;
+                _objCharacterFileWatcher.EndInit();
             }
             _tmrCharacterUpdateRequestTimer.Elapsed += CharacterUpdateRequestTimerOnElapsed;
             _tmrCharacterUpdateRequestTimer.Start();
@@ -161,7 +165,11 @@ namespace Chummer
                         objNewWatcher = new FileSystemWatcher(
                             Path.GetDirectoryName(strCharacterFileName)
                             ?? Path.GetPathRoot(strCharacterFileName), strFileName);
+                        objNewWatcher.BeginInit();
                         objNewWatcher.Changed += LiveUpdateFromCharacterFile;
+                        objNewWatcher.IncludeSubdirectories = true;
+                        objNewWatcher.EnableRaisingEvents = true;
+                        objNewWatcher.EndInit();
                     }
                 }
                 Interlocked.Exchange(ref _objCharacterFileWatcher, objNewWatcher)?.Dispose();
