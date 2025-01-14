@@ -112,6 +112,7 @@ Data Changes:
 - Added missing Imaging Scope to the Parashield Dart Rifle.
 - Removed Aware from discount for Dedicated Spellslinger.
 - Added Adept to discount for Dedicated Spellslinger.
+- Actioneer Business Clothes' integrated holster is now properly a concealable holster.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
