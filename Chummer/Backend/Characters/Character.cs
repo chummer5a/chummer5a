@@ -35818,7 +35818,7 @@ namespace Chummer
                     strLanguage = GlobalSettings.Language;
                 string strMetatype = await DisplayMetatypeAsync(strLanguage, token).ConfigureAwait(false);
 
-                if (MetavariantGuid != Guid.Empty)
+                if (await GetMetavariantGuidAsync(token).ConfigureAwait(false) != Guid.Empty)
                 {
                     strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
                         + await DisplayMetavariantAsync(strLanguage, token).ConfigureAwait(false) + ')';
@@ -45040,6 +45040,15 @@ namespace Chummer
                                     new DependencyGraphNode<string, Character>(nameof(IsAI))
                                 )
                             )
+                        )
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(FormattedMetatype),
+                        new DependencyGraphNode<string, Character>(nameof(DisplayMetatype),
+                            new DependencyGraphNode<string, Character>(nameof(Metatype))
+                        ),
+                        new DependencyGraphNode<string, Character>(nameof(MetavariantGuid)),
+                        new DependencyGraphNode<string, Character>(nameof(DisplayMetavariant),
+                            new DependencyGraphNode<string, Character>(nameof(Metavariant))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(IsSprite),
