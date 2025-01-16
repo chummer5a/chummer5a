@@ -6878,9 +6878,9 @@ namespace Chummer
                         };
                         try
                         {
-                            using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
-                                   = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
-                                           () => new SelectLifestyleAdvanced(
+                            using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
+                                   = await ThreadSafeForm<SelectLifestyle>.GetAsync(
+                                           () => new SelectLifestyle(
                                                CharacterObject, objLifestyle, false),
                                            GenericToken)
                                        .ConfigureAwait(false))
@@ -6897,7 +6897,6 @@ namespace Chummer
                                 blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
 
                                 Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
-                                objNewLifestyle.StyleType = LifestyleType.Advanced;
 
                                 await CharacterObject.Lifestyles.AddAsync(objNewLifestyle, GenericToken)
                                     .ConfigureAwait(false);
@@ -12845,9 +12844,9 @@ namespace Chummer
                         };
                         try
                         {
-                            using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
-                                   = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
-                                           () => new SelectLifestyleAdvanced(
+                            using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
+                                   = await ThreadSafeForm<SelectLifestyle>.GetAsync(
+                                           () => new SelectLifestyle(
                                                CharacterObject, objLifestyle),
                                            GenericToken)
                                        .ConfigureAwait(false))
@@ -12864,7 +12863,6 @@ namespace Chummer
                                 blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
 
                                 Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
-                                objNewLifestyle.StyleType = LifestyleType.Advanced;
 
                                 await CharacterObject.Lifestyles.AddAsync(objNewLifestyle, GenericToken)
                                     .ConfigureAwait(false);
@@ -16517,10 +16515,10 @@ namespace Chummer
                             = await objLifestyle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                         Lifestyle objLifestyleLocal = objLifestyle;
-                        using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
-                               = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
-                                       () => new SelectLifestyleAdvanced(
-                                           CharacterObject, objLifestyleLocal, objLifestyleLocal.StyleType != LifestyleType.Standard),
+                        using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
+                               = await ThreadSafeForm<SelectLifestyle>.GetAsync(
+                                       () => new SelectLifestyle(
+                                           CharacterObject, objLifestyleLocal),
                                        GenericToken)
                                    .ConfigureAwait(false))
                         {
