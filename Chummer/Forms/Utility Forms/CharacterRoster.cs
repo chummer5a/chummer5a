@@ -63,10 +63,14 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
-                _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5");
-                _watcherCharacterRosterFolderRawSaves.IncludeSubdirectories = true;
-                _watcherCharacterRosterFolderCompressedSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5lz");
-                _watcherCharacterRosterFolderCompressedSaves.IncludeSubdirectories = true;
+                _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5")
+                    {
+                        IncludeSubdirectories = true
+                    };
+                _watcherCharacterRosterFolderCompressedSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5lz")
+                    {
+                        IncludeSubdirectories = true
+                    };
 
                 Disposed += (sender, args) =>
                 {
@@ -1364,7 +1368,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
 
                         FileInfo objInfo = new FileInfo(strFile);
-                        string strDirectoryFullName = objInfo.Directory?.FullName;
+                        string strDirectoryFullName = objInfo.Directory?.FullName ?? string.Empty;
                         if (string.IsNullOrEmpty(strDirectoryFullName)
                             || strDirectoryFullName == GlobalSettings.CharacterRosterPath)
                         {

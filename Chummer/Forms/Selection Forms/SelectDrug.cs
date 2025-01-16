@@ -644,7 +644,7 @@ namespace Chummer
                 if (chrPrefix == '+' || chrPrefix == '-')
                 {
                     strPrefix = chrPrefix.ToString(GlobalSettings.InvariantCultureInfo);
-                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                    strAvailExpr = strAvailExpr.Substring(1);
                 }
 
                 strAvailExpr = await strAvailExpr.CheapReplaceAsync("MinRating",
