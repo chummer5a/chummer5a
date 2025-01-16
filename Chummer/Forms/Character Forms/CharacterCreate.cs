@@ -5577,24 +5577,42 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        Lifestyle objLifestyle;
-                        using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
-                               = await ThreadSafeForm<SelectLifestyle>.GetAsync(
-                                   () => new SelectLifestyle(CharacterObject), GenericToken).ConfigureAwait(false))
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject)
                         {
-                            // Make sure the dialogue window was not canceled.
-                            if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                == DialogResult.Cancel)
+                            StyleType = LifestyleType.Standard
+                        };
+                        try
+                        {
+                            using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                                   = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
+                                           () => new SelectLifestyleAdvanced(
+                                               CharacterObject, objLifestyle, false),
+                                           GenericToken)
+                                       .ConfigureAwait(false))
                             {
-                                await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync().ConfigureAwait(false);
-                                return;
+                                // Make sure the dialogue window was not canceled.
+                                if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                {
+                                    //And if it was, remove Improvements that was already added based on the lifestyle
+                                    await objLifestyle.RemoveAsync(false, GenericToken).ConfigureAwait(false);
+                                    return;
+                                }
+
+                                blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
+
+                                Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                                objNewLifestyle.StyleType = LifestyleType.Advanced;
+
+                                await CharacterObject.Lifestyles.AddAsync(objNewLifestyle, GenericToken)
+                                    .ConfigureAwait(false);
                             }
-
-                            blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
-                            objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                         }
-
-                        await CharacterObject.Lifestyles.AddAsync(objLifestyle, GenericToken).ConfigureAwait(false);
+                        catch
+                        {
+                            await objLifestyle.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
                     } while (blnAddAgain);
                 }
                 finally
@@ -11076,54 +11094,26 @@ namespace Chummer
                                 GenericToken)
                             .ConfigureAwait(false);
 
-                        if (await objLifestyle.GetStyleTypeAsync(GenericToken).ConfigureAwait(false) !=
-                            LifestyleType.Standard)
+                        Lifestyle objLifestyleLocal = objLifestyle;
+                        using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                               = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
+                                       () => new SelectLifestyleAdvanced(
+                                           CharacterObject, objLifestyleLocal, objLifestyleLocal.StyleType != LifestyleType.Standard),
+                                       GenericToken)
+                                   .ConfigureAwait(false))
                         {
-                            // Edit Advanced Lifestyle.
-                            Lifestyle objLifestyleLocal = objLifestyle;
-                            using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
-                                   = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
-                                           () => new SelectLifestyleAdvanced(
-                                               CharacterObject, objLifestyleLocal),
-                                           GenericToken)
-                                       .ConfigureAwait(false))
+                            DialogResult eResult = await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken)
+                                .ConfigureAwait(false);
+                            Lifestyle objSelected = frmPickLifestyle.MyForm.SelectedLifestyle;
+                            if (eResult == DialogResult.Cancel)
                             {
-                                DialogResult eResult = await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken)
-                                    .ConfigureAwait(false);
-                                Lifestyle objSelected = frmPickLifestyle.MyForm.SelectedLifestyle;
-                                if (eResult == DialogResult.Cancel)
-                                {
-                                    if (objSelected != null && !ReferenceEquals(objLifestyle, objSelected))
-                                        await objSelected.DisposeAsync().ConfigureAwait(false);
-                                    return;
-                                }
-
-                                // Update the selected Lifestyle and refresh the list.
-                                objLifestyle = objSelected;
+                                if (objSelected != null && !ReferenceEquals(objLifestyle, objSelected))
+                                    await objSelected.DisposeAsync().ConfigureAwait(false);
+                                return;
                             }
-                        }
-                        else
-                        {
-                            // Edit Basic Lifestyle.
-                            using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
-                                   = await ThreadSafeForm<SelectLifestyle>
-                                       .GetAsync(() => new SelectLifestyle(CharacterObject), GenericToken)
-                                       .ConfigureAwait(false))
-                            {
-                                frmPickLifestyle.MyForm.SetLifestyle(objLifestyle);
-                                DialogResult eResult = await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken)
-                                    .ConfigureAwait(false);
-                                Lifestyle objSelected = frmPickLifestyle.MyForm.SelectedLifestyle;
-                                if (eResult == DialogResult.Cancel)
-                                {
-                                    if (objSelected != null && !ReferenceEquals(objLifestyle, objSelected))
-                                        await objSelected.DisposeAsync().ConfigureAwait(false);
-                                    return;
-                                }
 
-                                // Update the selected Lifestyle and refresh the list.
-                                objLifestyle = objSelected;
-                            }
+                            // Update the selected Lifestyle and refresh the list.
+                            objLifestyle = objSelected;
                         }
 
                         await objLifestyle.SetIncrementsAsync(intMonths, GenericToken).ConfigureAwait(false);

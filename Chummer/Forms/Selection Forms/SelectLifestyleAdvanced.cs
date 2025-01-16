@@ -33,6 +33,7 @@ namespace Chummer
     // ReSharper disable once InconsistentNaming
     public partial class SelectLifestyleAdvanced : Form
     {
+        private readonly bool _blnAdvancedMode;
         private readonly Character _objCharacter;
         private readonly Lifestyle _objLifestyle;
         private readonly XmlDocument _xmlDocument;
@@ -47,14 +48,37 @@ namespace Chummer
 
         #region Control Events
 
-        public SelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle)
+        public SelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle, bool blnAdvancedMode = true)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _blnAdvancedMode = blnAdvancedMode;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objLifestyle = objLifestyle ?? new Lifestyle(objCharacter);
-            _objLifestyle.StyleType = LifestyleType.Advanced;
+            _objLifestyle.StyleType = blnAdvancedMode ? LifestyleType.Advanced : LifestyleType.Standard;
+            if (!blnAdvancedMode)
+            {
+                lblAreaLabel.Visible = false;
+                lblArea.Visible = false;
+                nudArea.Visible = false;
+                lblAreaTotal.Visible = false;
+                lblComfortsLabel.Visible = false;
+                lblComforts.Visible = false;
+                nudComforts.Visible = false;
+                lblComfortTotal.Visible = false;
+                lblSecurityLabel.Visible = false;
+                lblSecurity.Visible = false;
+                nudSecurity.Visible = false;
+                lblSecurityTotal.Visible = false;
+                chkBonusLPRandomize.Visible = false;
+                chkQualityUseLPCost.Visible = false;
+                lblBonusLP.Visible = false;
+                lblQualityLPLabel.Visible = false;
+                lblTotalLP.Visible = false;
+                lblTotalLPLabel.Visible = false;
+                nudBonusLP.Visible = false;
+            }
             // Load the Lifestyles information.
             _xmlDocument = _objCharacter.LoadData("lifestyles.xml");
             _tmrCityChangeTimer = new Timer { Interval = 1000 };
@@ -428,9 +452,11 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstLifestyles))
             {
+                string strFilter = await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false);
+                if (!_blnAdvancedMode)
+                    strFilter += " and (source = \"SR5\" or category = \"Contracts\")";
                 using (XmlNodeList xmlLifestyleList
-                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false)
-                                                  + ']'))
+                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + strFilter + ']'))
                 {
                     if (xmlLifestyleList?.Count > 0)
                     {
@@ -439,11 +465,7 @@ namespace Chummer
                             string strLifestyleName = objXmlLifestyle["name"]?.InnerText;
 
                             if (!string.IsNullOrEmpty(strLifestyleName) &&
-                                strLifestyleName != "ID ERROR. Re-add life style to fix" &&
-                                (StyleType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove")
-                                &&
-                                !strLifestyleName.Contains("Hospitalized") &&
-                                await _objCharacter.Settings.BookEnabledAsync(objXmlLifestyle["source"]?.InnerText).ConfigureAwait(false))
+                                strLifestyleName != "ID ERROR. Re-add life style to fix")
                             {
                                 lstLifestyles.Add(new ListItem(strLifestyleName,
                                                                objXmlLifestyle["translate"]?.InnerText
@@ -453,18 +475,23 @@ namespace Chummer
                     }
                 }
 
-                await chkBonusLPRandomize.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
-                    _objLifestyle,
-                    nameof(Lifestyle.AllowBonusLP),
-                    (x, y) => x.CheckedChanged += y,
-                    async x => !await x.GetAllowBonusLPAsync().ConfigureAwait(false),
-                    (x, y) => x.SetAllowBonusLPAsync(!y)).ConfigureAwait(false);
-                await nudBonusLP.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
-                    _objLifestyle,
-                    nameof(Lifestyle.BonusLP),
-                    (x, y) => x.ValueChanged += y,
-                    x => x.GetBonusLPAsync(),
-                    (x, y) => x.SetBonusLPAsync(y), 250).ConfigureAwait(false);
+                if (_blnAdvancedMode)
+                {
+                    await chkBonusLPRandomize.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                        _objLifestyle,
+                        nameof(Lifestyle.AllowBonusLP),
+                        (x, y) => x.CheckedChanged += y,
+                        async x => !await x.GetAllowBonusLPAsync().ConfigureAwait(false),
+                        (x, y) => x.SetAllowBonusLPAsync(!y)).ConfigureAwait(false);
+                    await nudBonusLP.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
+                        (x, y) => x.ValueAsInt = y,
+                        _objLifestyle,
+                        nameof(Lifestyle.BonusLP),
+                        (x, y) => x.ValueChanged += y,
+                        x => x.GetBonusLPAsync(),
+                        (x, y) => x.SetBonusLPAsync(y), 250).ConfigureAwait(false);
+                }
+
                 await ResetLifestyleQualitiesTree().ConfigureAwait(false);
                 await cboBaseLifestyle.PopulateWithListItemsAsync(lstLifestyles).ConfigureAwait(false);
             }
@@ -487,36 +514,40 @@ namespace Chummer
                 (x, y) => x.ValueChanged += y,
                 x => x.GetPercentageAsync(),
                 (x, y) => x.SetPercentageAsync(y), 250).ConfigureAwait(false);
-            await nudArea.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
-                _objLifestyle,
-                nameof(Lifestyle.Area),
-                (x, y) => x.ValueChanged += y,
-                x => x.GetAreaAsync(),
-                (x, y) => x.SetAreaAsync(y), 250).ConfigureAwait(false);
-            await nudComforts.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
-                _objLifestyle,
-                nameof(Lifestyle.Comforts),
-                (x, y) => x.ValueChanged += y,
-                x => x.GetComfortsAsync(),
-                (x, y) => x.SetComfortsAsync(y), 250).ConfigureAwait(false);
-            await nudSecurity.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
-                _objLifestyle,
-                nameof(Lifestyle.Security),
-                (x, y) => x.ValueChanged += y,
-                x => x.GetSecurityAsync(),
-                (x, y) => x.SetSecurityAsync(y), 250).ConfigureAwait(false);
-            await nudArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
-                                                         nameof(Lifestyle.AreaDelta),
-                                                         x => x.GetAreaDeltaAsync())
-                         .ConfigureAwait(false);
-            await nudComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
-                                                             nameof(Lifestyle.ComfortsDelta),
-                                                             x => x.GetComfortsDeltaAsync())
-                             .ConfigureAwait(false);
-            await nudSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
-                                                             nameof(Lifestyle.SecurityDelta),
-                                                             x => x.GetSecurityDeltaAsync())
-                             .ConfigureAwait(false);
+            if (_blnAdvancedMode)
+            {
+                await nudArea.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objLifestyle,
+                    nameof(Lifestyle.Area),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetAreaAsync(),
+                    (x, y) => x.SetAreaAsync(y), 250).ConfigureAwait(false);
+                await nudComforts.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objLifestyle,
+                    nameof(Lifestyle.Comforts),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetComfortsAsync(),
+                    (x, y) => x.SetComfortsAsync(y), 250).ConfigureAwait(false);
+                await nudSecurity.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objLifestyle,
+                    nameof(Lifestyle.Security),
+                    (x, y) => x.ValueChanged += y,
+                    x => x.GetSecurityAsync(),
+                    (x, y) => x.SetSecurityAsync(y), 250).ConfigureAwait(false);
+                await nudArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
+                        nameof(Lifestyle.AreaDelta),
+                        x => x.GetAreaDeltaAsync())
+                    .ConfigureAwait(false);
+                await nudComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
+                        nameof(Lifestyle.ComfortsDelta),
+                        x => x.GetComfortsDeltaAsync())
+                    .ConfigureAwait(false);
+                await nudSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
+                        nameof(Lifestyle.SecurityDelta),
+                        x => x.GetSecurityDeltaAsync())
+                    .ConfigureAwait(false);
+            }
+
             await cboBaseLifestyle.RegisterAsyncDataBindingWithDelayAsync(x => x.SelectedValue?.ToString(),
                 (x, y) =>
                 {
@@ -546,38 +577,45 @@ namespace Chummer
                 x => x.GetPrimaryTenantAsync(),
                 (x, y) => x.SetPrimaryTenantAsync(y)).ConfigureAwait(false);
             await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
-                                                         nameof(Lifestyle.DisplayTotalMonthlyCost),
-                                                         x => x.GetDisplayTotalMonthlyCostAsync())
-                         .ConfigureAwait(false);
-            await lblArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
-                                                              nameof(Lifestyle.FormattedArea),
-                                                              x => x.GetFormattedAreaAsync())
-                              .ConfigureAwait(false);
-            await lblComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
-                                                                 nameof(Lifestyle.FormattedComforts),
-                                                                 x => x.GetFormattedComfortsAsync())
-                                 .ConfigureAwait(false);
-            await lblSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y,
-                                                             _objLifestyle,
-                                                             nameof(Lifestyle.FormattedSecurity),
-                                                             x => x.GetFormattedSecurityAsync())
-                             .ConfigureAwait(false);
-            await lblAreaTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
-                                                              nameof(Lifestyle.TotalArea),
-                                                              x => x.GetTotalAreaAsync())
-                              .ConfigureAwait(false);
-            await lblComfortTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
-                                                                 nameof(Lifestyle.TotalComforts),
-                                                                 x => x.GetTotalComfortsAsync())
-                                 .ConfigureAwait(false);
-            await lblSecurityTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
-                                                                  nameof(Lifestyle.TotalSecurity),
-                                                                  x => x.GetTotalSecurityAsync())
-                                  .ConfigureAwait(false);
-            await lblTotalLP.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
-                                                            nameof(Lifestyle.TotalLP),
-                                                            x => x.GetTotalLPAsync())
-                            .ConfigureAwait(false);
+                    nameof(Lifestyle.DisplayTotalMonthlyCost),
+                    x => x.GetDisplayTotalMonthlyCostAsync())
+                .ConfigureAwait(false);
+            if (_blnAdvancedMode)
+            {
+                await lblArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
+                        nameof(Lifestyle.FormattedArea),
+                        x => x.GetFormattedAreaAsync())
+                    .ConfigureAwait(false);
+                await lblComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
+                        nameof(Lifestyle.FormattedComforts),
+                        x => x.GetFormattedComfortsAsync())
+                    .ConfigureAwait(false);
+                await lblSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y,
+                        _objLifestyle,
+                        nameof(Lifestyle.FormattedSecurity),
+                        x => x.GetFormattedSecurityAsync())
+                    .ConfigureAwait(false);
+                await lblAreaTotal.RegisterOneWayAsyncDataBindingAsync(
+                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                        nameof(Lifestyle.TotalArea),
+                        x => x.GetTotalAreaAsync())
+                    .ConfigureAwait(false);
+                await lblComfortTotal.RegisterOneWayAsyncDataBindingAsync(
+                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                        nameof(Lifestyle.TotalComforts),
+                        x => x.GetTotalComfortsAsync())
+                    .ConfigureAwait(false);
+                await lblSecurityTotal.RegisterOneWayAsyncDataBindingAsync(
+                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                        nameof(Lifestyle.TotalSecurity),
+                        x => x.GetTotalSecurityAsync())
+                    .ConfigureAwait(false);
+                await lblTotalLP.RegisterOneWayAsyncDataBindingAsync(
+                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                        nameof(Lifestyle.TotalLP),
+                        x => x.GetTotalLPAsync())
+                    .ConfigureAwait(false);
+            }
 
             await cboBaseLifestyle.DoThreadSafeAsync(x =>
             {
@@ -770,28 +808,34 @@ namespace Chummer
         {
             if (await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality)
             {
-                bool blnUseLpCostEnabled = !await objQuality.GetFreeAsync().ConfigureAwait(false) &&
-                                  await objQuality.GetCanBeFreeByLifestyleAsync().ConfigureAwait(false);
-                bool blnUseLpCost = blnUseLpCostEnabled
-                    ? await objQuality.GetUseLPCostAsync().ConfigureAwait(false)
-                    : !await objQuality.GetFreeAsync().ConfigureAwait(false) && !await objQuality.GetCanBeFreeByLifestyleAsync().ConfigureAwait(false);
-                await chkQualityUseLPCost.DoThreadSafeAsync(x =>
+                if (_blnAdvancedMode)
                 {
-                    x.Enabled = blnUseLpCostEnabled;
-                    Interlocked.Increment(ref _intSkipRefresh);
-                    try
+                    bool blnUseLpCostEnabled = !await objQuality.GetFreeAsync().ConfigureAwait(false) &&
+                                               await objQuality.GetCanBeFreeByLifestyleAsync().ConfigureAwait(false);
+                    bool blnUseLpCost = blnUseLpCostEnabled
+                        ? await objQuality.GetUseLPCostAsync().ConfigureAwait(false)
+                        : !await objQuality.GetFreeAsync().ConfigureAwait(false) &&
+                          !await objQuality.GetCanBeFreeByLifestyleAsync().ConfigureAwait(false);
+                    await chkQualityUseLPCost.DoThreadSafeAsync(x =>
                     {
-                        x.Checked = blnUseLpCost;
-                    }
-                    finally
-                    {
-                        Interlocked.Decrement(ref _intSkipRefresh);
-                    }
-                }).ConfigureAwait(false);
+                        x.Enabled = blnUseLpCostEnabled;
+                        Interlocked.Increment(ref _intSkipRefresh);
+                        try
+                        {
+                            x.Checked = blnUseLpCost;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipRefresh);
+                        }
+                    }).ConfigureAwait(false);
 
-                string strLp = (await objQuality.GetLPCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
-                string strCost = (await objQuality.GetCostAsync().ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+                    string strLp =
+                        (await objQuality.GetLPCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
+                    await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
+                }
+
+                string strCost = await objQuality.GetCurrentDisplayCostAsync().ConfigureAwait(false);
                 await lblQualityCost.DoThreadSafeAsync(x => x.Text = strCost).ConfigureAwait(false);
                 await objQuality.SetSourceDetailAsync(lblQualitySource).ConfigureAwait(false);
                 bool blnCanDelete = await objQuality.GetOriginSourceAsync().ConfigureAwait(false) != QualitySource.BuiltIn;
@@ -807,19 +851,21 @@ namespace Chummer
 
         private async void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
-            if (_intSkipRefresh > 0)
+            if (_intSkipRefresh > 0 || !_blnAdvancedMode)
                 return;
             if (!(await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality))
                 return;
             await objQuality.SetUseLPCostAsync(await chkQualityUseLPCost.DoThreadSafeFuncAsync(x => !x.Enabled || x.Checked).ConfigureAwait(false)).ConfigureAwait(false);
             string strLp = (await objQuality.GetLPCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
-            string strCost = (await objQuality.GetCostAsync().ConfigureAwait(false)).ToString(await _objCharacter.Settings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+            string strCost = await objQuality.GetCurrentDisplayCostAsync().ConfigureAwait(false);
             await lblQualityCost.DoThreadSafeAsync(x => x.Text = strCost).ConfigureAwait(false);
         }
 
         private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
         {
+            if (!_blnAdvancedMode)
+                return;
             if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
                 int intRandom = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
@@ -936,7 +982,7 @@ namespace Chummer
         /// <summary>
         /// Type of Lifestyle to create.
         /// </summary>
-        public LifestyleType StyleType { get; } = LifestyleType.Advanced;
+        public LifestyleType StyleType => _blnAdvancedMode ? LifestyleType.Advanced : LifestyleType.Standard;
 
         #endregion Properties
 
@@ -953,7 +999,7 @@ namespace Chummer
                 await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
-            if (await _objLifestyle.GetTotalLPAsync(token).ConfigureAwait(false) < 0)
+            if (!_blnAdvancedMode && await _objLifestyle.GetTotalLPAsync(token).ConfigureAwait(false) < 0)
             {
                 await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_OverLPLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
@@ -969,13 +1015,26 @@ namespace Chummer
             await _objLifestyle.SetCostAsync(Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
             await _objLifestyle.SetPercentageAsync(await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetBaseLifestyleAsync(strBaseLifestyle, token).ConfigureAwait(false);
-            await _objLifestyle.SetAreaAsync(await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
-            await _objLifestyle.SetComfortsAsync(await nudComforts.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
-            await _objLifestyle.SetSecurityAsync(await nudSecurity.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            if (_blnAdvancedMode)
+            {
+                await _objLifestyle
+                    .SetAreaAsync(await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false),
+                        token).ConfigureAwait(false);
+                await _objLifestyle
+                    .SetComfortsAsync(
+                        await nudComforts.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
+                await _objLifestyle
+                    .SetSecurityAsync(
+                        await nudSecurity.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
+            }
+
             await _objLifestyle.SetTrustFundAsync(await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetRoommatesAsync(await _objLifestyle.GetTrustFundAsync(token).ConfigureAwait(false) ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false) ;
             await _objLifestyle.SetPrimaryTenantAsync(await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
-            await _objLifestyle.SetBonusLPAsync(await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            if (_blnAdvancedMode)
+                await _objLifestyle.SetBonusLPAsync(await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             // Get the starting Nuyen information.
             await _objLifestyle.SetDiceAsync(Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
@@ -1038,6 +1097,9 @@ namespace Chummer
                     x.Visible = false;
                 }, token).ConfigureAwait(false);
             }
+
+            if (!_blnAdvancedMode)
+                return;
 
             if (await _objLifestyle.GetAllowBonusLPAsync(token).ConfigureAwait(false))
             {

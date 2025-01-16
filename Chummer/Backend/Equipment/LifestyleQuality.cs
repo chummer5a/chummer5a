@@ -35,7 +35,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    [DebuggerDisplay("{CurrentDisplayName}")]
     public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, INotifyMultiplePropertiesChangedAsync, IHasLockObject, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -1175,23 +1175,9 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterReadLock())
             {
-                string strReturn = DisplayName(strLanguage);
-                string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-
-                int intMultiplier = Multiplier;
-                if (intMultiplier > 0)
-                    strReturn += strSpace + "[+" + intMultiplier.ToString(objCulture) + "%]";
-                else if (intMultiplier < 0)
-                    strReturn += strSpace + '[' + intMultiplier.ToString(objCulture) + "%]";
-
-                decimal decCost = Cost;
-                if (decCost > 0)
-                    strReturn += strSpace + "[+" + decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
-                                 + LanguageManager.GetString("String_NuyenSymbol") + ']';
-                else if (decCost < 0)
-                    strReturn += strSpace + '[' + decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
-                                 + LanguageManager.GetString("String_NuyenSymbol") + ']';
-                return strReturn;
+                return DisplayName(strLanguage)
+                    + LanguageManager.GetString("String_Space", strLanguage)
+                    + '[' + DisplayCost(objCulture, strLanguage) + ']';
             }
         }
 
@@ -1201,26 +1187,9 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strReturn = await DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                       .ConfigureAwait(false);
-
-                int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
-                if (intMultiplier > 0)
-                    strReturn += strSpace + "[+" + intMultiplier.ToString(objCulture) + "%]";
-                else if (intMultiplier < 0)
-                    strReturn += strSpace + '[' + intMultiplier.ToString(objCulture) + "%]";
-
-                decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
-                if (decCost > 0)
-                    strReturn += strSpace + "[+" + decCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture)
-                                 + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
-                                                        .ConfigureAwait(false) + ']';
-                else if (decCost < 0)
-                    strReturn += strSpace + '[' + decCost.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false), objCulture)
-                                 + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
-                                                        .ConfigureAwait(false) + ']';
-                return strReturn;
+                return await DisplayNameAsync(strLanguage, token).ConfigureAwait(false)
+                       + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                       + '[' + await DisplayCostAsync(objCulture, strLanguage, token).ConfigureAwait(false) + ']';
             }
             finally
             {
@@ -1353,6 +1322,78 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return decReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public string CurrentDisplayCost => DisplayCost(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        public Task<string> GetCurrentDisplayCostAsync(CancellationToken token = default) => DisplayCostAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        public string DisplayCost(CultureInfo objCulture, string strLanguage)
+        {
+            using (LockObject.EnterReadLock())
+            {
+                if (CostFree)
+                    return LanguageManager.GetString("Checkbox_Free", strLanguage);
+                string strReturn = string.Empty;
+                int intMultiplier = Multiplier;
+                if (intMultiplier != 0)
+                {
+                    if (intMultiplier > 0)
+                        strReturn = "+";
+                    strReturn += intMultiplier.ToString(objCulture) + '%';
+                }
+
+                decimal decCost = Cost;
+                if (decCost != 0)
+                {
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage);
+                    if (decCost > 0)
+                        strReturn = "+";
+                    strReturn += decCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture)
+                                 + LanguageManager.GetString("String_NuyenSymbol", strLanguage);
+                }
+
+                return string.IsNullOrEmpty(strReturn) ? LanguageManager.GetString("String_None") : strReturn;
+            }
+        }
+
+        public async Task<string> DisplayCostAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetCostFreeAsync(token))
+                    return await LanguageManager.GetStringAsync("Checkbox_Free", strLanguage, token: token);
+                string strReturn = string.Empty;
+                int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
+                if (intMultiplier != 0)
+                {
+                    if (intMultiplier > 0)
+                        strReturn = "+";
+                    strReturn += intMultiplier.ToString(objCulture) + '%';
+                }
+
+                decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
+                if (decCost != 0)
+                {
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+                    if (decCost > 0)
+                        strReturn = "+";
+                    strReturn += decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token: token).ConfigureAwait(false), objCulture)
+                                 + await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token).ConfigureAwait(false);
+                }
+
+                return string.IsNullOrEmpty(strReturn)
+                    ? await LanguageManager.GetStringAsync("String_None", strLanguage, token: token).ConfigureAwait(false)
+                    : strReturn;
             }
             finally
             {
@@ -2242,19 +2283,21 @@ namespace Chummer.Backend.Equipment
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(CurrentFormattedDisplayName),
                     new DependencyGraphNode<string, LifestyleQuality>(nameof(FormattedDisplayName),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(DisplayName)),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(Cost),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree),
-                                new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
-                                new DependencyGraphNode<string, LifestyleQuality>(nameof(IsFreeByLifestyle),
-                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(OriginSource)),
-                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => x.OriginSource != QualitySource.BuiltIn, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn),
-                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => x.OriginSource != QualitySource.BuiltIn && x.UseLPCost, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn && !await x.GetUseLPCostAsync(t).ConfigureAwait(false))
-                                )
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(DisplayCost),
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(Cost),
+                                new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree),
+                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
+                                    new DependencyGraphNode<string, LifestyleQuality>(nameof(IsFreeByLifestyle),
+                                        new DependencyGraphNode<string, LifestyleQuality>(nameof(OriginSource)),
+                                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => x.OriginSource != QualitySource.BuiltIn, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn),
+                                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => x.OriginSource != QualitySource.BuiltIn && x.UseLPCost, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn && !await x.GetUseLPCostAsync(t).ConfigureAwait(false))
+                                    )
+                                ),
+                                new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.CostFree, async (x, t) => !await x.GetCostFreeAsync(t).ConfigureAwait(false))
                             ),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.CostFree, async (x, t) => !await x.GetCostFreeAsync(t).ConfigureAwait(false))
-                        ),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(Multiplier),
-                            new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree))
+                            new DependencyGraphNode<string, LifestyleQuality>(nameof(Multiplier),
+                                new DependencyGraphNode<string, LifestyleQuality>(nameof(CostFree))
+                            )
                         )
                     )
                 ),

@@ -6866,28 +6866,54 @@ namespace Chummer
         {
             try
             {
-                bool blnAddAgain;
-
-                do
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
-                           = await ThreadSafeForm<SelectLifestyle>.GetAsync(
-                               () => new SelectLifestyle(CharacterObject), GenericToken).ConfigureAwait(false))
+                    bool blnAddAgain;
+                    do
                     {
-                        // Make sure the dialogue window was not canceled.
-                        if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                            == DialogResult.Cancel)
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject)
                         {
-                            await frmPickLifestyle.MyForm.SelectedLifestyle.DisposeAsync().ConfigureAwait(false);
-                            return;
-                        }
+                            StyleType = LifestyleType.Standard
+                        };
+                        try
+                        {
+                            using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                                   = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
+                                           () => new SelectLifestyleAdvanced(
+                                               CharacterObject, objLifestyle, false),
+                                           GenericToken)
+                                       .ConfigureAwait(false))
+                            {
+                                // Make sure the dialogue window was not canceled.
+                                if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                    == DialogResult.Cancel)
+                                {
+                                    //And if it was, remove Improvements that was already added based on the lifestyle
+                                    await objLifestyle.RemoveAsync(false, GenericToken).ConfigureAwait(false);
+                                    return;
+                                }
 
-                        blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
-                        Lifestyle objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
-                        await objLifestyle.SetIncrementsAsync(0, GenericToken).ConfigureAwait(false);
-                        await CharacterObject.Lifestyles.AddAsync(objLifestyle, GenericToken).ConfigureAwait(false);
-                    }
-                } while (blnAddAgain);
+                                blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
+
+                                Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                                objNewLifestyle.StyleType = LifestyleType.Advanced;
+
+                                await CharacterObject.Lifestyles.AddAsync(objNewLifestyle, GenericToken)
+                                    .ConfigureAwait(false);
+                            }
+                        }
+                        catch
+                        {
+                            await objLifestyle.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -16490,54 +16516,26 @@ namespace Chummer
                         decimal decOldLifestyleTotalCost
                             = await objLifestyle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
-                        if (await objLifestyle.GetStyleTypeAsync(GenericToken).ConfigureAwait(false) !=
-                            LifestyleType.Standard)
+                        Lifestyle objLifestyleLocal = objLifestyle;
+                        using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                               = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
+                                       () => new SelectLifestyleAdvanced(
+                                           CharacterObject, objLifestyleLocal, objLifestyleLocal.StyleType != LifestyleType.Standard),
+                                       GenericToken)
+                                   .ConfigureAwait(false))
                         {
-                            Lifestyle objLifestyleLocal = objLifestyle;
-                            // Edit Advanced Lifestyle.
-                            using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
-                                   = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
-                                           () => new SelectLifestyleAdvanced(
-                                               CharacterObject, objLifestyleLocal),
-                                           GenericToken)
-                                       .ConfigureAwait(false))
+                            DialogResult eResult = await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken)
+                                .ConfigureAwait(false);
+                            Lifestyle objSelected = frmPickLifestyle.MyForm.SelectedLifestyle;
+                            if (eResult == DialogResult.Cancel)
                             {
-                                DialogResult eResult = await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken)
-                                    .ConfigureAwait(false);
-                                Lifestyle objSelected = frmPickLifestyle.MyForm.SelectedLifestyle;
-                                if (eResult == DialogResult.Cancel)
-                                {
-                                    if (objSelected != null && !ReferenceEquals(objLifestyle, objSelected))
-                                        await objSelected.DisposeAsync().ConfigureAwait(false);
-                                    return;
-                                }
-
-                                // Update the selected Lifestyle and refresh the list.
-                                objLifestyle = objSelected;
+                                if (objSelected != null && !ReferenceEquals(objLifestyle, objSelected))
+                                    await objSelected.DisposeAsync().ConfigureAwait(false);
+                                return;
                             }
-                        }
-                        else
-                        {
-                            // Edit Basic Lifestyle.
-                            using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
-                                   = await ThreadSafeForm<SelectLifestyle>
-                                       .GetAsync(() => new SelectLifestyle(CharacterObject), GenericToken)
-                                       .ConfigureAwait(false))
-                            {
-                                frmPickLifestyle.MyForm.SetLifestyle(objLifestyle);
-                                DialogResult eResult = await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken)
-                                    .ConfigureAwait(false);
-                                Lifestyle objSelected = frmPickLifestyle.MyForm.SelectedLifestyle;
-                                if (eResult == DialogResult.Cancel)
-                                {
-                                    if (objSelected != null && !ReferenceEquals(objLifestyle, objSelected))
-                                        await objSelected.DisposeAsync().ConfigureAwait(false);
-                                    return;
-                                }
 
-                                // Update the selected Lifestyle and refresh the list.
-                                objLifestyle = objSelected;
-                            }
+                            // Update the selected Lifestyle and refresh the list.
+                            objLifestyle = objSelected;
                         }
 
                         await objLifestyle.SetIncrementsAsync(intMonths, GenericToken).ConfigureAwait(false);

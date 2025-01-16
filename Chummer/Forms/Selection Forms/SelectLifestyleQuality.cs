@@ -57,6 +57,13 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            if (_objParentLifestyle.StyleType == LifestyleType.Standard)
+            {
+                lblBP.Visible = false;
+                lblBPLabel.Visible = false;
+                lblMinimum.Visible = false;
+                lblMinimumLabel.Visible = false;
+            }
             // Load the Quality information.
             _objXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
         }
@@ -92,7 +99,7 @@ namespace Chummer
             }).ConfigureAwait(false);
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
-            if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
+            if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false) || !await _objCharacter.GetEffectiveBuildMethodUsesPriorityTablesAsync().ConfigureAwait(false))
             {
                 string strTemp = await LanguageManager.GetStringAsync("Label_LP").ConfigureAwait(false);
                 await lblBPLabel.DoThreadSafeAsync(x => x.Text = strTemp).ConfigureAwait(false);
@@ -130,13 +137,17 @@ namespace Chummer
             await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
             try
             {
-                int intBP = 0;
-                objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
-                string strBP = await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
-                    ? await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false)
-                    : intBP.ToString(GlobalSettings.CultureInfo);
-                await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
-                await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP)).ConfigureAwait(false);
+                if (_objParentLifestyle.StyleType != LifestyleType.Standard)
+                {
+                    int intBP = 0;
+                    objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
+                    string strBP = await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                        ? await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false)
+                        : intBP.ToString(GlobalSettings.CultureInfo);
+                    await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
+                    await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP))
+                        .ConfigureAwait(false);
+                }
 
                 string strSource = objXmlQuality.SelectSingleNodeAndCacheExpression("source")?.Value
                                    ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
@@ -157,39 +168,49 @@ namespace Chummer
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
-                string strAllowed = objXmlQuality.SelectSingleNodeAndCacheExpression("allowed")?.Value;
-                if (!string.IsNullOrEmpty(strAllowed))
+                string strAllowed = string.Empty;
+                if (_objParentLifestyle.StyleType != LifestyleType.Standard)
                 {
-                    await lblMinimum.DoThreadSafeAsync(x =>
+                    strAllowed = objXmlQuality.SelectSingleNodeAndCacheExpression("allowed")?.Value ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strAllowed))
                     {
-                        x.Text = GetMinimumRequirement(strAllowed);
-                        x.Visible = true;
-                    }).ConfigureAwait(false);
-                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
-                }
-                else
-                {
-                    await lblMinimum.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
-                    await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                        await lblMinimum.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = GetMinimumRequirement(strAllowed);
+                            x.Visible = true;
+                        }).ConfigureAwait(false);
+                        await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await lblMinimum.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                        await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                    }
                 }
 
-                string strCost = objXmlQuality.SelectSingleNodeAndCacheExpression("cost")?.Value;
+                string strCost = objXmlQuality.SelectSingleNodeAndCacheExpression("cost")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strCost))
                 {
-                    if (chkFree.Checked)
+                    if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                     {
                         strCost = await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false);
                     }
-                    else if (strAllowed?.Contains(_objParentLifestyle.BaseLifestyle) == true)
+                    else if (strAllowed.Contains(await _objParentLifestyle.GetBaseLifestyleAsync().ConfigureAwait(false)))
                     {
                         strCost = await LanguageManager.GetStringAsync("String_LifestyleFreeNuyen").ConfigureAwait(false);
                     }
                     else
                     {
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
-                        decimal decCost = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
-                        strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+                        if (blnIsSuccess)
+                        {
+                            decimal decCost = Convert.ToDecimal((double)objProcess);
+                            strCost = decCost.ToString(
+                                          await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false),
+                                          GlobalSettings.CultureInfo)
+                                      + await LanguageManager.GetStringAsync("String_NuyenSymbol")
+                                          .ConfigureAwait(false);
+                        }
                     }
 
                     await lblCost.DoThreadSafeAsync(x =>
@@ -356,7 +377,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                sbdFilter.Append('(').Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
                                                            || string.IsNullOrWhiteSpace(strSearch)))
@@ -382,9 +403,14 @@ namespace Chummer
                     }
                 }
 
-                if (_objParentLifestyle.BaseLifestyle != "Bolt Hole")
+                if (await _objParentLifestyle.GetBaseLifestyleAsync(token).ConfigureAwait(false) != "Bolt Hole")
                 {
                     sbdFilter.Append(" and (name != \"Dug a Hole\")");
+                }
+
+                if (_objParentLifestyle.StyleType == LifestyleType.Standard)
+                {
+                    sbdFilter.Append(" and (source = \"SR5\" or category = \"Contracts\")");
                 }
 
                 if (!string.IsNullOrEmpty(strSearch))
