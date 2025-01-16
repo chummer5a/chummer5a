@@ -431,17 +431,18 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                if (_objReferenceCharacterSettings.BuildMethod != _objCharacterSettings.BuildMethod)
+                if (await _objReferenceCharacterSettings.GetBuildMethodAsync().ConfigureAwait(false) != await _objCharacterSettings.GetBuildMethodAsync().ConfigureAwait(false))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdConflictingCharacters))
                     {
-                        foreach (Character objCharacter in Program.OpenCharacters)
+                        await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                         {
-                            if (!objCharacter.Created
-                                && ReferenceEquals(objCharacter.Settings, _objReferenceCharacterSettings))
-                                sbdConflictingCharacters.AppendLine(objCharacter.CharacterName);
-                        }
+                            if (!await objCharacter.GetCreatedAsync().ConfigureAwait(false)
+                                && ReferenceEquals(await objCharacter.GetSettingsAsync().ConfigureAwait(false),
+                                    _objReferenceCharacterSettings))
+                                sbdConflictingCharacters.AppendLine(await objCharacter.GetCharacterNameAsync().ConfigureAwait(false));
+                        }).ConfigureAwait(false);
 
                         if (sbdConflictingCharacters.Length > 0)
                         {

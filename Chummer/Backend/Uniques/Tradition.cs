@@ -1618,13 +1618,13 @@ namespace Chummer.Backend.Uniques
             if (await GetTypeAsync(token).ConfigureAwait(false) != TraditionType.None
                 && (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalValue))
                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.Value)) &&
-                        (await GetDrainExpressionAsync(token)).Contains("Unaug}"))
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Unaug}"))
                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalBase)) &&
-                        (await GetDrainExpressionAsync(token)).Contains("Base}"))
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Base}"))
                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMinimum)) &&
-                        (await GetDrainExpressionAsync(token)).Contains("Minimum}"))
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Minimum}"))
                     || (e.PropertyNames.Contains(nameof(CharacterAttrib.TotalMaximum)) &&
-                        (await GetDrainExpressionAsync(token)).Contains("Maximum}"))))
+                        (await GetDrainExpressionAsync(token).ConfigureAwait(false)).Contains("Maximum}"))))
             {
                 await OnPropertyChangedAsync(nameof(DrainValue), token).ConfigureAwait(false);
             }

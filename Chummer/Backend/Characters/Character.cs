@@ -5933,7 +5933,7 @@ namespace Chummer
         public bool IsLoading
         {
             get => _intIsLoading > 0;
-            set
+            private set
             {
                 if (value)
                 {
@@ -5947,6 +5947,28 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Set to true while data is being populated by the Load function
+        /// </summary>
+        private Task SetIsLoadingAsync(bool value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (value)
+            {
+                if (Interlocked.Increment(ref _intIsLoading) == 1)
+                {
+                    return OnPropertyChangedAsync(nameof(IsLoading), token);
+                }
+            }
+            else if (Interlocked.Decrement(ref _intIsLoading) == 0)
+            {
+                return OnPropertyChangedAsync(nameof(IsLoading), token);
+            }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -6247,7 +6269,10 @@ namespace Chummer
                             //Timekeeper.Finish("load_xml");
                         }
 
-                        IsLoading = true;
+                        if (blnSync)
+                            IsLoading = true;
+                        else
+                            await SetIsLoadingAsync(true, token).ConfigureAwait(false);
 
                         try
                         {
@@ -10468,7 +10493,10 @@ namespace Chummer
                         }
                         finally
                         {
-                            IsLoading = false;
+                            if (blnSync)
+                                IsLoading = false;
+                            else
+                                await SetIsLoadingAsync(false, token).ConfigureAwait(false);
                         }
 
                         if (frmLoadingForm != null)
@@ -12542,7 +12570,7 @@ namespace Chummer
                 return;
 
             if (await Program.OpenCharacters.ContainsAsync(this).ConfigureAwait(false)
-                || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(this)).ConfigureAwait(false))
+                || await Program.OpenCharacters.AnyAsync(async x => (await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(this)).ConfigureAwait(false))
                 return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
 
             if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
@@ -39498,6 +39526,23 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Characters referenced by some member of this character (usually a contact).
+        /// </summary>
+        public async Task<ConcurrentHashSet<Character>> GetLinkedCharactersAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstLinkedCharacters;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         #endregion Application Properties
 
         #region Old Quality Conversion Code
@@ -45940,30 +45985,6 @@ namespace Chummer
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
-
-            if (Program.MainForm == null || IsLoading)
-                return;
-            foreach (Character objLoopOpenCharacter in Program.OpenCharacters)
-            {
-                if (objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
-                {
-                    foreach (Spirit objSpirit in objLoopOpenCharacter.Spirits)
-                    {
-                        if (objSpirit.LinkedCharacter == this)
-                        {
-                            objSpirit.OnPropertyChanged(nameof(Spirit.LinkedCharacter));
-                        }
-                    }
-
-                    foreach (Contact objContact in objLoopOpenCharacter.Contacts)
-                    {
-                        if (objContact.LinkedCharacter == this)
-                        {
-                            objContact.OnPropertyChanged(nameof(Contact.LinkedCharacter));
-                        }
-                    }
-                }
-            }
         }
 
         public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames, CancellationToken token = default)
@@ -46280,34 +46301,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            if (Program.MainForm == null || IsLoading)
-                return;
-            await Program.OpenCharacters.ForEachParallelAsync(objLoopOpenCharacter =>
-            {
-                if (objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
-                {
-                    return Task.WhenAll(objLoopOpenCharacter.Spirits.ForEachParallelAsync(objSpirit =>
-                    {
-                        if (objSpirit.LinkedCharacter == this)
-                        {
-                            return objSpirit.OnPropertyChangedAsync(nameof(Spirit.LinkedCharacter), token);
-                        }
-
-                        return Task.CompletedTask;
-                    }, token), objLoopOpenCharacter.Contacts.ForEachParallelAsync(objContact =>
-                    {
-                        if (objContact.LinkedCharacter == this)
-                        {
-                            return objContact.OnPropertyChangedAsync(nameof(Contact.LinkedCharacter), token);
-                        }
-
-                        return Task.CompletedTask;
-                    }, token));
-                }
-
-                return Task.CompletedTask;
-            }, token).ConfigureAwait(false);
         }
 
         #region Hero Lab Importing
@@ -46666,7 +46659,10 @@ namespace Chummer
                             return false;
                         }
 
-                        IsLoading = true;
+                        if (blnSync)
+                            IsLoading = true;
+                        else
+                            await SetIsLoadingAsync(true, token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -49295,7 +49291,10 @@ namespace Chummer
                         }
                         finally
                         {
-                            IsLoading = false;
+                            if (blnSync)
+                                IsLoading = false;
+                            else
+                                await SetIsLoadingAsync(false, token).ConfigureAwait(false);
                         }
 
                         // Refresh certain improvements

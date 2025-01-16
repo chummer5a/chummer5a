@@ -421,77 +421,63 @@ namespace Chummer
         private static readonly PropertyDependencyGraph<Contact> s_ContactDependencyGraph =
             new PropertyDependencyGraph<Contact>(
                 new DependencyGraphNode<string, Contact>(nameof(NoLinkedCharacter),
-                                                         new DependencyGraphNode<string, Contact>(
-                                                             nameof(LinkedCharacter)
-                                                         )
+                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(CurrentDisplayName),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Name),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(LinkedCharacter)
-                                                                 )
-                                                         )
+                    new DependencyGraphNode<string, Contact>(nameof(Name),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
+                    )
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayGender),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Gender),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(LinkedCharacter)
-                                                                 )
-                                                         )
+                    new DependencyGraphNode<string, Contact>(nameof(Gender),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
+                    )
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayMetatype),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Metatype),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(LinkedCharacter))
-                                                         )
+                    new DependencyGraphNode<string, Contact>(nameof(Metatype),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
+                    )
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(DisplayAge),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Age),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(LinkedCharacter))
-                                                         )
+                    new DependencyGraphNode<string, Contact>(nameof(Age),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
+                    )
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(MainMugshot),
-                                                         new DependencyGraphNode<string, Contact>(
-                                                             nameof(LinkedCharacter)),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Mugshots),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(LinkedCharacter))
-                                                         ),
-                                                         new DependencyGraphNode<string, Contact>(
-                                                             nameof(MainMugshotIndex))
+                    new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter)),
+                    new DependencyGraphNode<string, Contact>(nameof(Mugshots),
+                        new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))
+                    ),
+                    new DependencyGraphNode<string, Contact>(nameof(MainMugshotIndex))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(IsEnemy),
-                                                         new DependencyGraphNode<string, Contact>(nameof(EntityType))
+                    new DependencyGraphNode<string, Contact>(nameof(EntityType))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(GroupEnabled),
-                                                         new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
+                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(LoyaltyEnabled),
-                                                         new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
-                                                         new DependencyGraphNode<string, Contact>(
-                                                             nameof(ForcedLoyalty)),
-                                                         new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
+                    new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                    new DependencyGraphNode<string, Contact>(
+                        nameof(ForcedLoyalty)),
+                    new DependencyGraphNode<string, Contact>(nameof(ReadOnly))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(ContactPoints),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Free)),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Connection),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(ConnectionMaximum))
-                                                         ),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Family)),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Blackmail))
+                    new DependencyGraphNode<string, Contact>(nameof(Free)),
+                    new DependencyGraphNode<string, Contact>(nameof(Connection),
+                        new DependencyGraphNode<string, Contact>(nameof(ConnectionMaximum))
+                    ),
+                    new DependencyGraphNode<string, Contact>(nameof(Loyalty)),
+                    new DependencyGraphNode<string, Contact>(nameof(Family)),
+                    new DependencyGraphNode<string, Contact>(nameof(Blackmail))
                 ),
                 new DependencyGraphNode<string, Contact>(nameof(QuickText),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Connection)),
-                                                         new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
-                                                         new DependencyGraphNode<string, Contact>(nameof(Loyalty),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(IsGroup)),
-                                                                 new DependencyGraphNode<string, Contact>(
-                                                                     nameof(ForcedLoyalty))
-                                                         )
+                    new DependencyGraphNode<string, Contact>(nameof(Connection)),
+                    new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                    new DependencyGraphNode<string, Contact>(nameof(Loyalty),
+                        new DependencyGraphNode<string, Contact>(nameof(IsGroup)),
+                        new DependencyGraphNode<string, Contact>(nameof(ForcedLoyalty))
+                    )
                 )
             );
 
@@ -1063,8 +1049,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return LinkedCharacter != null
-                    ? await LinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                return objLinkedCharacter != null
+                    ? await objLinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
                     : _strName;
             }
             finally
@@ -1376,7 +1363,8 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn;
-                if (LinkedCharacter != null)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
                 {
                     // Update character information fields.
                     XPathNavigator objMetatypeNode
@@ -1385,15 +1373,15 @@ namespace Chummer
                     strReturn
                         = objMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                           ?? await _objCharacter.TranslateExtraAsync(
-                              await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false),
+                              await objLinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false),
                               strLanguage, "metatypes.xml", token).ConfigureAwait(false);
 
-                    Guid guiMetavariant = await LinkedCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false);
+                    Guid guiMetavariant = await objLinkedCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false);
                     if (guiMetavariant == Guid.Empty)
                         return strReturn;
                     objMetatypeNode
                         = objMetatypeNode.TryGetNodeById("metavariants/metavariant",
-                            await LinkedCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false));
+                            await objLinkedCharacter.GetMetavariantGuidAsync(token).ConfigureAwait(false));
 
                     string strMetatypeTranslate = objMetatypeNode
                         ?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value;
@@ -1403,7 +1391,7 @@ namespace Chummer
                                  + (!string.IsNullOrEmpty(strMetatypeTranslate)
                                      ? strMetatypeTranslate
                                      : await _objCharacter.TranslateExtraAsync(
-                                         await LinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false),
+                                         await objLinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false),
                                          strLanguage, "metatypes.xml",
                                          token).ConfigureAwait(false))
                                  + ')';
@@ -1479,10 +1467,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
                 {
-                    string strMetatype = await LinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
-                    string strMetavariant = await LinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
+                    string strMetatype = await objLinkedCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
+                    string strMetavariant = await objLinkedCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
 
                     if (!string.IsNullOrEmpty(strMetavariant))
                     {
@@ -1569,8 +1558,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return LinkedCharacter != null
-                    ? await LinkedCharacter.GetGenderAsync(token).ConfigureAwait(false)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                return objLinkedCharacter != null
+                    ? await objLinkedCharacter.GetGenderAsync(token).ConfigureAwait(false)
                     : _strGender;
             }
             finally
@@ -1645,8 +1635,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return LinkedCharacter != null
-                    ? await LinkedCharacter.GetAgeAsync(token).ConfigureAwait(false)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                return objLinkedCharacter != null
+                    ? await objLinkedCharacter.GetAgeAsync(token).ConfigureAwait(false)
                     : _strGender;
             }
             finally
@@ -2826,6 +2817,20 @@ namespace Chummer
             }
         }
 
+        public async Task<Character> GetLinkedCharacterAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objLinkedCharacter;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool NoLinkedCharacter
         {
             get
@@ -2966,7 +2971,9 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
+                    ConcurrentHashSet<Character> lstLinkedCharacters =
+                        await CharacterObject.GetLinkedCharactersAsync(token).ConfigureAwait(false);
+                    lstLinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
                     bool blnUseRelative = false;
 
@@ -3014,7 +3021,7 @@ namespace Chummer
                             }
 
                             if (_objLinkedCharacter != null)
-                                CharacterObject.LinkedCharacters.TryAdd(_objLinkedCharacter);
+                                lstLinkedCharacters.TryAdd(_objLinkedCharacter);
                         }
                     }
 
@@ -3027,8 +3034,8 @@ namespace Chummer
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(x => x == _objLinkedCharacter
-                                                                               || !x.LinkedCharacters.Contains(
+                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
+                                                                               || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
@@ -3102,7 +3109,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(Character.Name)))
+            if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
                 lstProperties.Add(nameof(Name));
             if (e.PropertyNames.Contains(nameof(Character.Age)))
                 lstProperties.Add(nameof(Age));
@@ -3194,8 +3201,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    return await LinkedCharacter.GetMainMugshotAsync(token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    return await objLinkedCharacter.GetMainMugshotAsync(token).ConfigureAwait(false);
                 int intIndex = await GetMainMugshotIndexAsync(token).ConfigureAwait(false);
                 if (intIndex >= await Mugshots.GetCountAsync(token).ConfigureAwait(false) || intIndex < 0)
                     return null;
@@ -3223,9 +3231,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
                 {
-                    await LinkedCharacter.SetMainMugshotAsync(value, token).ConfigureAwait(false);
+                    await objLinkedCharacter.SetMainMugshotAsync(value, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -3306,8 +3315,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    return await LinkedCharacter.GetMainMugshotIndexAsync(token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    return await objLinkedCharacter.GetMainMugshotIndexAsync(token).ConfigureAwait(false);
                 return _intMainMugshotIndex;
             }
             finally
@@ -3328,8 +3338,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    await LinkedCharacter.SetMainMugshotIndexAsync(value, token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.SetMainMugshotIndexAsync(value, token).ConfigureAwait(false);
                 else
                 {
                     if (value >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
@@ -3356,8 +3367,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    await LinkedCharacter.ModifyMainMugshotIndexAsync(value, token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.ModifyMainMugshotIndexAsync(value, token).ConfigureAwait(false);
                 else
                 {
                     int intOldValue = _intMainMugshotIndex;
@@ -3531,8 +3543,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    await LinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
                 else if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
@@ -3639,8 +3652,8 @@ namespace Chummer
             {
                 if (_objLinkedCharacter != null && !Utils.IsUnitTest
                                                 && await Program.OpenCharacters.AllAsync(
-                                                                    x => x == _objLinkedCharacter
-                                                                         || !x.LinkedCharacters.Contains(
+                                                                    async x => x == _objLinkedCharacter
+                                                                         || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(
                                                                              _objLinkedCharacter))
                                                                 .ConfigureAwait(false)
                                                 && Program.MainForm.OpenFormsWithCharacters.All(

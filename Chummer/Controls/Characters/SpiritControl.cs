@@ -215,11 +215,12 @@ namespace Chummer
         {
             try
             {
-                if (_objSpirit.LinkedCharacter != null)
+                Character objLinkedCharacter = await _objSpirit.GetLinkedCharacterAsync(_objMyToken).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
                 {
-                    Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter, _objMyToken)
+                    Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken)
                         .ConfigureAwait(false)
-                        ? _objSpirit.LinkedCharacter
+                        ? objLinkedCharacter
                         : null;
                     CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
                     try
@@ -228,10 +229,10 @@ namespace Chummer
                         {
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
-                                           _objSpirit.LinkedCharacter.FileName, Character.NumLoadingSections, _objMyToken)
+                                           await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections, _objMyToken)
                                        .ConfigureAwait(false))
                                 objOpenCharacter = await Program.LoadCharacterAsync(
-                                        _objSpirit.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
+                                        await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
                                     .ConfigureAwait(false);
                         }
 

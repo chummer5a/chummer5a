@@ -536,11 +536,12 @@ namespace Chummer
         {
             try
             {
-                if (_objContact.LinkedCharacter != null)
+                Character objLinkedCharacter = await _objContact.GetLinkedCharacterAsync(_objMyToken).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
                 {
                     Character objOpenCharacter = await Program.OpenCharacters
-                        .ContainsAsync(_objContact.LinkedCharacter, _objMyToken).ConfigureAwait(false)
-                        ? _objContact.LinkedCharacter
+                        .ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false)
+                        ? objLinkedCharacter
                         : null;
                     CursorWait objCursorWait =
                         await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
@@ -550,11 +551,11 @@ namespace Chummer
                         {
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
-                                           await _objContact.LinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections,
+                                           await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections,
                                            _objMyToken)
                                        .ConfigureAwait(false))
                                 objOpenCharacter = await Program.LoadCharacterAsync(
-                                    await _objContact.LinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm,
+                                    await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm,
                                     token: _objMyToken).ConfigureAwait(false);
                         }
 

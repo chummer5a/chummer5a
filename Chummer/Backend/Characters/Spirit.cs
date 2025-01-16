@@ -961,8 +961,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return LinkedCharacter != null
-                    ? await LinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                return objLinkedCharacter != null
+                    ? await objLinkedCharacter.GetCharacterNameAsync(token).ConfigureAwait(false)
                     : _strCritterName;
             }
             finally
@@ -1013,7 +1014,7 @@ namespace Chummer
                 string strReturn = await GetCritterNameAsync(token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strReturn))
                     strReturn = await LanguageManager.TranslateExtraAsync(
-                        Name, strPreferFile: "critters.xml", token: token).ConfigureAwait(false);
+                        await GetNameAsync(token).ConfigureAwait(false), strPreferFile: "critters.xml", token: token).ConfigureAwait(false);
                 return strReturn;
             }
             finally
@@ -2521,6 +2522,20 @@ namespace Chummer
             }
         }
 
+        public async Task<Character> GetLinkedCharacterAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _objLinkedCharacter;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public bool NoLinkedCharacter
         {
             get
@@ -2661,7 +2676,9 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
+                    ConcurrentHashSet<Character> lstLinkedCharacters =
+                        await CharacterObject.GetLinkedCharactersAsync(token).ConfigureAwait(false);
+                    lstLinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
                     bool blnUseRelative = false;
 
@@ -2711,7 +2728,7 @@ namespace Chummer
                             }
 
                             if (_objLinkedCharacter != null)
-                                CharacterObject.LinkedCharacters.TryAdd(_objLinkedCharacter);
+                                lstLinkedCharacters.TryAdd(_objLinkedCharacter);
                         }
                     }
 
@@ -2725,8 +2742,8 @@ namespace Chummer
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(x => x == _objLinkedCharacter
-                                                                               || !x.LinkedCharacters.Contains(
+                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
+                                                                               || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
                                     && Program.MainForm.OpenFormsWithCharacters.All(
@@ -2791,7 +2808,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(Character.Name)))
+            if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
                 lstProperties.Add(nameof(CritterName));
             if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
                 lstProperties.Add(nameof(Mugshots));
@@ -2885,8 +2902,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    return await LinkedCharacter.GetMainMugshotAsync(token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    return await objLinkedCharacter.GetMainMugshotAsync(token).ConfigureAwait(false);
                 int intIndex = await GetMainMugshotIndexAsync(token).ConfigureAwait(false);
                 if (intIndex >= await Mugshots.GetCountAsync(token).ConfigureAwait(false) || intIndex < 0)
                     return null;
@@ -2914,9 +2932,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
                 {
-                    await LinkedCharacter.SetMainMugshotAsync(value, token).ConfigureAwait(false);
+                    await objLinkedCharacter.SetMainMugshotAsync(value, token).ConfigureAwait(false);
                 }
                 else
                 {
@@ -2997,8 +3016,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    return await LinkedCharacter.GetMainMugshotIndexAsync(token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    return await objLinkedCharacter.GetMainMugshotIndexAsync(token).ConfigureAwait(false);
                 return _intMainMugshotIndex;
             }
             finally
@@ -3019,8 +3039,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    await LinkedCharacter.SetMainMugshotIndexAsync(value, token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.SetMainMugshotIndexAsync(value, token).ConfigureAwait(false);
                 else
                 {
                     if (value >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
@@ -3047,8 +3068,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    await LinkedCharacter.ModifyMainMugshotIndexAsync(value, token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.ModifyMainMugshotIndexAsync(value, token).ConfigureAwait(false);
                 else
                 {
                     int intOldValue = _intMainMugshotIndex;
@@ -3217,8 +3239,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (LinkedCharacter != null)
-                    await LinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    await objLinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
                 else if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
@@ -3323,8 +3346,8 @@ namespace Chummer
             {
                 if (_objLinkedCharacter != null && !Utils.IsUnitTest
                                                 && await Program.OpenCharacters.AllAsync(
-                                                                    x => x == _objLinkedCharacter
-                                                                         || !x.LinkedCharacters.Contains(
+                                                                    async x => x == _objLinkedCharacter
+                                                                         || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(
                                                                              _objLinkedCharacter))
                                                                 .ConfigureAwait(false)
                                                 && Program.MainForm.OpenFormsWithCharacters.All(

@@ -1323,7 +1323,7 @@ namespace Chummer
                 {
                     objCharacter = blnSync
                         ? OpenCharacters.FirstOrDefault(x => x.FileName == strFileName)
-                        : await OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFileName, token)
+                        : await OpenCharacters.FirstOrDefaultAsync(async x => await x.GetFileNameAsync(token).ConfigureAwait(false) == strFileName, token)
                                               .ConfigureAwait(false);
                     if (objCharacter != null)
                         return objCharacter;
