@@ -12183,10 +12183,8 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (WeaponAccessory objChild in _lstAccessories)
-                objChild.Dispose();
-            foreach (Weapon objChild in _lstUnderbarrel)
-                objChild.Dispose();
+            _lstAccessories.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+            _lstUnderbarrel.EnumerateWithSideEffects().ForEach(x => x.Dispose());
             DisposeSelf();
         }
 
@@ -12199,10 +12197,8 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            foreach (WeaponAccessory objChild in _lstAccessories)
-                await objChild.DisposeAsync().ConfigureAwait(false);
-            foreach (Weapon objChild in _lstUnderbarrel)
-                await objChild.DisposeAsync().ConfigureAwait(false);
+            await _lstAccessories.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            await _lstUnderbarrel.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
             await DisposeSelfAsync().ConfigureAwait(false);
         }
 

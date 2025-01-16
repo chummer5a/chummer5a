@@ -3518,10 +3518,8 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (ArmorMod objChild in _lstArmorMods)
-                objChild.Dispose();
-            foreach (Gear objChild in _lstGear)
-                objChild.Dispose();
+            _lstArmorMods.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+            _lstGear.EnumerateWithSideEffects().ForEach(x => x.Dispose());
             DisposeSelf();
         }
 
@@ -3534,10 +3532,8 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            foreach (ArmorMod objChild in _lstArmorMods)
-                await objChild.DisposeAsync().ConfigureAwait(false);
-            foreach (Gear objChild in _lstGear)
-                await objChild.DisposeAsync().ConfigureAwait(false);
+            await _lstArmorMods.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            await _lstGear.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
             await DisposeSelfAsync().ConfigureAwait(false);
         }
 

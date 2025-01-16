@@ -2041,10 +2041,8 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (Weapon objChild in _lstWeapons)
-                objChild.Dispose();
-            foreach (VehicleMod objChild in _lstMods)
-                objChild.Dispose();
+            _lstWeapons.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+            _lstMods.EnumerateWithSideEffects().ForEach(x => x.Dispose());
             DisposeSelf();
         }
 
@@ -2057,10 +2055,8 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            foreach (Weapon objChild in _lstWeapons)
-                await objChild.DisposeAsync().ConfigureAwait(false);
-            foreach (VehicleMod objChild in _lstMods)
-                await objChild.DisposeAsync().ConfigureAwait(false);
+            await _lstWeapons.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            await _lstMods.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
             await DisposeSelfAsync().ConfigureAwait(false);
         }
 

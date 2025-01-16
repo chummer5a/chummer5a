@@ -1369,8 +1369,8 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (await GetCostFreeAsync(token))
-                    return await LanguageManager.GetStringAsync("Checkbox_Free", strLanguage, token: token);
+                if (await GetCostFreeAsync(token).ConfigureAwait(false))
+                    return await LanguageManager.GetStringAsync("Checkbox_Free", strLanguage, token: token).ConfigureAwait(false);
                 string strReturn = string.Empty;
                 int intMultiplier = await GetMultiplierAsync(token).ConfigureAwait(false);
                 if (intMultiplier != 0)

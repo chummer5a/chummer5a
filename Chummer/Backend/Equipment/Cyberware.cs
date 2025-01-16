@@ -12373,10 +12373,8 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterWriteLock())
             {
-                foreach (Cyberware objChild in _lstChildren)
-                    objChild.Dispose();
-                foreach (Gear objChild in _lstGear)
-                    objChild.Dispose();
+                _lstChildren.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+                _lstGear.EnumerateWithSideEffects().ForEach(x => x.Dispose());
             }
 
             DisposeSelf();
@@ -12399,10 +12397,8 @@ namespace Chummer.Backend.Equipment
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                foreach (Cyberware objChild in _lstChildren)
-                    await objChild.DisposeAsync().ConfigureAwait(false);
-                foreach (Gear objChild in _lstGear)
-                    await objChild.DisposeAsync().ConfigureAwait(false);
+                await _lstChildren.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstGear.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
             }
             finally
             {

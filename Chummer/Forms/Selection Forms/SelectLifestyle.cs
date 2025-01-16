@@ -452,8 +452,8 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstLifestyles))
             {
-                string strFilter = await (await _objCharacter.GetSettingsAsync()).BookXPathAsync().ConfigureAwait(false);
-                if (await _objLifestyle.GetStyleTypeAsync() == LifestyleType.Standard)
+                string strFilter = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false);
+                if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                     strFilter += " and (source = \"SR5\" or category = \"Contracts\")";
                 using (XmlNodeList xmlLifestyleList
                        = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + strFilter + ']'))
@@ -475,7 +475,7 @@ namespace Chummer
                     }
                 }
 
-                if (await _objLifestyle.GetStyleTypeAsync() != LifestyleType.Standard)
+                if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) != LifestyleType.Standard)
                 {
                     await chkBonusLPRandomize.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                         _objLifestyle,
@@ -514,7 +514,7 @@ namespace Chummer
                 (x, y) => x.ValueChanged += y,
                 x => x.GetPercentageAsync(),
                 (x, y) => x.SetPercentageAsync(y), 250).ConfigureAwait(false);
-            if (await _objLifestyle.GetStyleTypeAsync() != LifestyleType.Standard)
+            if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) != LifestyleType.Standard)
             {
                 await nudArea.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
                     _objLifestyle,
@@ -580,7 +580,7 @@ namespace Chummer
                     nameof(Lifestyle.DisplayTotalMonthlyCost),
                     x => x.GetDisplayTotalMonthlyCostAsync())
                 .ConfigureAwait(false);
-            if (await _objLifestyle.GetStyleTypeAsync() != LifestyleType.Standard)
+            if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) != LifestyleType.Standard)
             {
                 await lblArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                         nameof(Lifestyle.FormattedArea),
@@ -808,7 +808,7 @@ namespace Chummer
         {
             if (await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality)
             {
-                if (await _objLifestyle.GetStyleTypeAsync() != LifestyleType.Standard)
+                if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) != LifestyleType.Standard)
                 {
                     bool blnUseLpCostEnabled = !await objQuality.GetFreeAsync().ConfigureAwait(false) &&
                                                await objQuality.GetCanBeFreeByLifestyleAsync().ConfigureAwait(false);
@@ -851,7 +851,7 @@ namespace Chummer
 
         private async void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
-            if (_intSkipRefresh > 0 || await _objLifestyle.GetStyleTypeAsync() == LifestyleType.Standard)
+            if (_intSkipRefresh > 0 || await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                 return;
             if (!(await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality))
                 return;
@@ -864,7 +864,7 @@ namespace Chummer
 
         private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
         {
-            if (await _objLifestyle.GetStyleTypeAsync() == LifestyleType.Standard)
+            if (await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                 return;
             if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
@@ -994,7 +994,7 @@ namespace Chummer
                 await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
-            if (await _objLifestyle.GetStyleTypeAsync(token) != LifestyleType.Standard && await _objLifestyle.GetTotalLPAsync(token).ConfigureAwait(false) < 0)
+            if (await _objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) != LifestyleType.Standard && await _objLifestyle.GetTotalLPAsync(token).ConfigureAwait(false) < 0)
             {
                 await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_OverLPLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
@@ -1010,7 +1010,7 @@ namespace Chummer
             await _objLifestyle.SetCostAsync(Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
             await _objLifestyle.SetPercentageAsync(await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetBaseLifestyleAsync(strBaseLifestyle, token).ConfigureAwait(false);
-            if (await _objLifestyle.GetStyleTypeAsync(token) != LifestyleType.Standard)
+            if (await _objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) != LifestyleType.Standard)
             {
                 await _objLifestyle
                     .SetAreaAsync(await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false),
@@ -1028,7 +1028,7 @@ namespace Chummer
             await _objLifestyle.SetTrustFundAsync(await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetRoommatesAsync(await _objLifestyle.GetTrustFundAsync(token).ConfigureAwait(false) ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false) ;
             await _objLifestyle.SetPrimaryTenantAsync(await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
-            if (await _objLifestyle.GetStyleTypeAsync(token) != LifestyleType.Standard)
+            if (await _objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) != LifestyleType.Standard)
                 await _objLifestyle.SetBonusLPAsync(await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
 
             // Get the starting Nuyen information.
@@ -1092,7 +1092,7 @@ namespace Chummer
                 }, token).ConfigureAwait(false);
             }
 
-            if (await _objLifestyle.GetStyleTypeAsync(token) == LifestyleType.Standard)
+            if (await _objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) == LifestyleType.Standard)
                 return;
 
             if (await _objLifestyle.GetAllowBonusLPAsync(token).ConfigureAwait(false))

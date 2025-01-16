@@ -4486,11 +4486,10 @@ namespace Chummer.Backend.Equipment
         {
             using (LockObject.EnterWriteLock())
             {
-                foreach (LifestyleQuality objQuality in LifestyleQualities)
-                    objQuality.Dispose();
-                LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
-                LifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
-                LifestyleQualities.Dispose();
+                _lstLifestyleQualities.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+                _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
+                _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+                _lstLifestyleQualities.Dispose();
             }
         }
 
@@ -4500,10 +4499,10 @@ namespace Chummer.Backend.Equipment
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                await LifestyleQualities.ForEachAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
-                LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
-                LifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
-                await LifestyleQualities.DisposeAsync().ConfigureAwait(false);
+                await _lstLifestyleQualities.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
+                _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+                await _lstLifestyleQualities.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {

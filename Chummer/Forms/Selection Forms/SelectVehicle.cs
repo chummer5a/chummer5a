@@ -650,150 +650,200 @@ namespace Chummer
                 bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token).ConfigureAwait(false);
                 if (await tabViews.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == 1)
                 {
-                    XmlDocument dummy = new XmlDocument {XmlResolver = null};
-                    DataTable tabVehicles = new DataTable("vehicles");
-                    tabVehicles.Columns.Add("VehicleGuid");
-                    tabVehicles.Columns.Add("VehicleName");
-                    tabVehicles.Columns.Add("Accel");
-                    tabVehicles.Columns.Add("Armor");
-                    tabVehicles.Columns.Add("Body");
-                    tabVehicles.Columns.Add("Handling");
-                    tabVehicles.Columns.Add("Pilot");
-                    tabVehicles.Columns.Add("Sensor");
-                    tabVehicles.Columns.Add("Speed");
-                    tabVehicles.Columns.Add("Seats");
-                    tabVehicles.Columns.Add("Gear");
-                    tabVehicles.Columns.Add("Mods");
-                    tabVehicles.Columns.Add("Weapons");
-                    tabVehicles.Columns.Add("WeaponMounts");
-                    tabVehicles.Columns.Add("Avail", typeof(AvailabilityValue));
-                    tabVehicles.Columns.Add("Source", typeof(SourceString));
-                    tabVehicles.Columns.Add("Cost", typeof(NuyenString));
-
-                    decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                    foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
+                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        if (blnHideOverAvailLimit && !await objXmlVehicle.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false))
-                        {
-                            ++intOverLimit;
-                            continue;
-                        }
+                        token.ThrowIfCancellationRequested();
+                        XmlDocument dummy = new XmlDocument { XmlResolver = null };
+                        DataTable tabVehicles = new DataTable("vehicles");
+                        tabVehicles.Columns.Add("VehicleGuid");
+                        tabVehicles.Columns.Add("VehicleName");
+                        tabVehicles.Columns.Add("Accel");
+                        tabVehicles.Columns.Add("Armor");
+                        tabVehicles.Columns.Add("Body");
+                        tabVehicles.Columns.Add("Handling");
+                        tabVehicles.Columns.Add("Pilot");
+                        tabVehicles.Columns.Add("Sensor");
+                        tabVehicles.Columns.Add("Speed");
+                        tabVehicles.Columns.Add("Seats");
+                        tabVehicles.Columns.Add("Gear");
+                        tabVehicles.Columns.Add("Mods");
+                        tabVehicles.Columns.Add("Weapons");
+                        tabVehicles.Columns.Add("WeaponMounts");
+                        tabVehicles.Columns.Add("Avail", typeof(AvailabilityValue));
+                        tabVehicles.Columns.Add("Source", typeof(SourceString));
+                        tabVehicles.Columns.Add("Cost", typeof(NuyenString));
 
-                        if (!blnFreeItem && blnShowOnlyAffordItems)
+                        decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems
+                            ? decimal.MaxValue
+                            : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
+                        foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
                         {
-                            decimal decCostMultiplier = decBaseCostMultiplier;
-                            if (blnBlackMarketDiscount
-                                && _setBlackMarketMaps.Contains(objXmlVehicle
-                                    .SelectSingleNodeAndCacheExpression(
-                                        "category", token)
-                                                                ?.Value))
-                                decCostMultiplier *= 0.9m;
-                            if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                                                  objXmlVehicle
-                                                                      .SelectSingleNodeAndCacheExpression(
-                                                                          "category", token)
-                                                                  ?.Value))
-                                decCostMultiplier *= 0.9m;
-                            if (!await objXmlVehicle.CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token).ConfigureAwait(false))
+                            if (blnHideOverAvailLimit && !await objXmlVehicle
+                                    .CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false))
                             {
                                 ++intOverLimit;
                                 continue;
                             }
-                        }
 
-                        Vehicle objVehicle = new Vehicle(_objCharacter);
-                        try
-                        {
-                            await objVehicle.CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, true, token).ConfigureAwait(false);
-                            string strID = objVehicle.SourceIDString;
-                            string strVehicleName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            string strAccel = await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false);
-                            string strArmor = (await objVehicle.GetTotalArmorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                            string strBody = (await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                            string strHandling = await objVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
-                            string strPilot = (await objVehicle.GetPilotAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                            string strSensor = (await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                            string strSpeed = await objVehicle.GetTotalSpeedAsync(token).ConfigureAwait(false);
-                            string strSeats = (await objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdGear))
+                            if (!blnFreeItem && blnShowOnlyAffordItems)
                             {
-                                foreach (Gear objGear in objVehicle.GearChildren)
+                                decimal decCostMultiplier = decBaseCostMultiplier;
+                                if (blnBlackMarketDiscount
+                                    && _setBlackMarketMaps.Contains(objXmlVehicle
+                                        .SelectSingleNodeAndCacheExpression(
+                                            "category", token)
+                                        ?.Value))
+                                    decCostMultiplier *= 0.9m;
+                                if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
+                                        objXmlVehicle
+                                            .SelectSingleNodeAndCacheExpression(
+                                                "category", token)
+                                            ?.Value))
+                                    decCostMultiplier *= 0.9m;
+                                if (!await objXmlVehicle
+                                        .CheckNuyenRestrictionAsync(decNuyen, decCostMultiplier, token: token)
+                                        .ConfigureAwait(false))
                                 {
-                                    sbdGear.AppendLine(await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                    ++intOverLimit;
+                                    continue;
+                                }
+                            }
+
+                            Vehicle objVehicle = new Vehicle(_objCharacter);
+                            try
+                            {
+                                await objVehicle
+                                    .CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, true, token)
+                                    .ConfigureAwait(false);
+                                string strID = objVehicle.SourceIDString;
+                                string strVehicleName =
+                                    await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                string strAccel = await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false);
+                                string strArmor =
+                                    (await objVehicle.GetTotalArmorAsync(token).ConfigureAwait(false)).ToString(
+                                        GlobalSettings.CultureInfo);
+                                string strBody =
+                                    (await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(
+                                        GlobalSettings.CultureInfo);
+                                string strHandling =
+                                    await objVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
+                                string strPilot =
+                                    (await objVehicle.GetPilotAsync(token).ConfigureAwait(false)).ToString(
+                                        GlobalSettings
+                                            .CultureInfo);
+                                string strSensor =
+                                    (await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false)).ToString(
+                                        GlobalSettings.CultureInfo);
+                                string strSpeed = await objVehicle.GetTotalSpeedAsync(token).ConfigureAwait(false);
+                                string strSeats =
+                                    (await objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(
+                                        GlobalSettings.CultureInfo);
+
+                                string strGear;
+                                string strMods;
+                                string strWeapons;
+                                string strMounts;
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                           out StringBuilder sbdGear))
+                                {
+                                    foreach (Gear objGear in objVehicle.GearChildren)
+                                    {
+                                        sbdGear.AppendLine(await objGear.GetCurrentDisplayNameAsync(token)
+                                            .ConfigureAwait(false));
+                                    }
+
+                                    if (sbdGear.Length > 0)
+                                        sbdGear.Length -= Environment.NewLine.Length;
+
+                                    strGear = sbdGear.ToString();
                                 }
 
-                                if (sbdGear.Length > 0)
-                                    sbdGear.Length -= Environment.NewLine.Length;
-
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdMods))
+                                           out StringBuilder sbdMods))
                                 {
-                                    foreach (VehicleMod objMod in objVehicle.Mods)
+                                    await objVehicle.Mods.ForEachAsync(async objMod =>
                                     {
-                                        sbdMods.AppendLine(await objMod.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                    }
+                                        sbdMods.AppendLine(await objMod.GetCurrentDisplayNameAsync(token)
+                                            .ConfigureAwait(false));
+                                    }, token).ConfigureAwait(false);
 
                                     if (sbdMods.Length > 0)
                                         sbdMods.Length -= Environment.NewLine.Length;
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                               out StringBuilder sbdWeapons))
-                                    {
-                                        if (sbdWeapons.Length > 0)
-                                            sbdWeapons.Length -= Environment.NewLine.Length;
-                                        foreach (Weapon objWeapon in objVehicle.Weapons)
-                                        {
-                                            sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                        }
 
-                                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                   out StringBuilder sbdWeaponMounts))
-                                        {
-                                            foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
-                                            {
-                                                sbdWeaponMounts.AppendLine(await objWeaponMount.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                            }
-
-                                            if (sbdWeaponMounts.Length > 0)
-                                                sbdWeaponMounts.Length -= Environment.NewLine.Length;
-
-                                            AvailabilityValue objAvail = await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                                            SourceString strSource = await SourceString.GetSourceStringAsync(
-                                                objVehicle.Source,
-                                                await objVehicle.DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
-                                                GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                                _objCharacter, token).ConfigureAwait(false);
-                                            NuyenString strCost =
-                                                new NuyenString(
-                                                    (await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
-
-                                            tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
-                                                                 strHandling, strPilot, strSensor, strSpeed, strSeats,
-                                                                 sbdGear.ToString(), sbdMods.ToString(),
-                                                                 sbdWeapons.ToString(), sbdWeaponMounts.ToString(),
-                                                                 objAvail, strSource, strCost);
-                                        }
-                                    }
+                                    strMods = sbdMods.ToString();
                                 }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                           out StringBuilder sbdWeapons))
+                                {
+                                    if (sbdWeapons.Length > 0)
+                                        sbdWeapons.Length -= Environment.NewLine.Length;
+                                    await objVehicle.Weapons.ForEachAsync(async objWeapon =>
+                                    {
+                                        sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync(token)
+                                            .ConfigureAwait(false));
+                                    }, token).ConfigureAwait(false);
+
+                                    strWeapons = sbdWeapons.ToString();
+                                }
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                           out StringBuilder sbdWeaponMounts))
+                                {
+                                    await objVehicle.WeaponMounts.ForEachAsync(async objWeaponMount =>
+                                    {
+                                        sbdWeaponMounts.AppendLine(await objWeaponMount
+                                            .GetCurrentDisplayNameAsync(token)
+                                            .ConfigureAwait(false));
+                                    }, token).ConfigureAwait(false);
+
+                                    if (sbdWeaponMounts.Length > 0)
+                                        sbdWeaponMounts.Length -= Environment.NewLine.Length;
+
+                                    strMounts = sbdWeaponMounts.ToString();
+                                }
+
+                                AvailabilityValue objAvail =
+                                    await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                                SourceString strSource = await SourceString.GetSourceStringAsync(
+                                    objVehicle.Source,
+                                    await objVehicle.DisplayPageAsync(GlobalSettings.Language, token)
+                                        .ConfigureAwait(false),
+                                    GlobalSettings.Language, GlobalSettings.CultureInfo,
+                                    _objCharacter, token).ConfigureAwait(false);
+                                NuyenString strCost =
+                                    new NuyenString(
+                                        (await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings.CultureInfo));
+                                tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
+                                    strHandling, strPilot, strSensor, strSpeed, strSeats,
+                                    strGear, strMods,
+                                    strWeapons, strMounts,
+                                    objAvail, strSource, strCost);
+                            }
+                            finally
+                            {
+                                await objVehicle.DisposeAsync().ConfigureAwait(false);
                             }
                         }
-                        finally
+
+                        await dgvVehicles.DoThreadSafeAsync(x =>
                         {
-                            await objVehicle.DisposeAsync().ConfigureAwait(false);
-                        }
+                            x.Columns[0].Visible = false;
+                            x.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
+                            x.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+                            DataSet set = new DataSet("vehicles");
+                            set.Tables.Add(tabVehicles);
+                            x.DataSource = set;
+                            x.DataMember = "vehicles";
+                        }, token).ConfigureAwait(false);
                     }
-
-                    await dgvVehicles.DoThreadSafeAsync(x =>
+                    finally
                     {
-                        x.Columns[0].Visible = false;
-                        x.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
-                        x.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-
-                        DataSet set = new DataSet("vehicles");
-                        set.Tables.Add(tabVehicles);
-                        x.DataSource = set;
-                        x.DataMember = "vehicles";
-                    }, token).ConfigureAwait(false);
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 else
                 {

@@ -5390,16 +5390,11 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (VehicleMod objChild in _lstVehicleMods)
-                objChild.Dispose();
-            foreach (Gear objChild in _lstGear)
-                objChild.Dispose();
-            foreach (Weapon objChild in _lstWeapons)
-                objChild.Dispose();
-            foreach (WeaponMount objChild in _lstWeaponMounts)
-                objChild.Dispose();
-            foreach (Location objChild in _lstLocations)
-                objChild.Dispose();
+            _lstVehicleMods.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+            _lstGear.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+            _lstWeapons.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+            _lstWeaponMounts.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+            _lstLocations.EnumerateWithSideEffects().ForEach(x => x.Dispose());
             DisposeSelf();
         }
 
@@ -5415,16 +5410,11 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            foreach (VehicleMod objChild in _lstVehicleMods)
-                await objChild.DisposeAsync().ConfigureAwait(false);
-            foreach (Gear objChild in _lstGear)
-                await objChild.DisposeAsync().ConfigureAwait(false);
-            foreach (Weapon objChild in _lstWeapons)
-                await objChild.DisposeAsync().ConfigureAwait(false);
-            foreach (WeaponMount objChild in _lstWeaponMounts)
-                await objChild.DisposeAsync().ConfigureAwait(false);
-            foreach (Location objChild in _lstLocations)
-                await objChild.DisposeAsync().ConfigureAwait(false);
+            await _lstVehicleMods.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            await _lstGear.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            await _lstWeapons.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            await _lstWeaponMounts.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            await _lstLocations.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
             await DisposeSelfAsync().ConfigureAwait(false);
         }
 
