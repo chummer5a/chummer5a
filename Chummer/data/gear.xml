@@ -71,6 +71,7 @@
     <category blackmarket="Nanoware">Nanogear</category>
     <category blackmarket="Software">Paydata</category>
     <category blackmarket="Electronics">PI-Tac</category>
+    <category blackmarket="Software">PI-Tac Programs</category>
     <category>Printing</category>
     <category blackmarket="Electronics">Reporter Gear</category>
     <category blackmarket="Electronics">RFID Tags</category>
@@ -6246,7 +6247,7 @@
     <gear>
       <id>d900aa9c-5914-4e5b-baa4-b4e0c0625123</id>
       <name>Pantheon Industries "Co-Pilot" Mk I</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6256,7 +6257,7 @@
     <gear>
       <id>5294813b-3421-46b6-b30a-de8cab38f89f</id>
       <name>Pantheon Industries "Co-Pilot" Mk II</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6266,7 +6267,7 @@
     <gear>
       <id>3727d9a2-c556-4133-8083-d1c61f239034</id>
       <name>Pantheon Industries "Co-Pilot" Mk III</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6276,7 +6277,7 @@
     <gear>
       <id>cf954b05-0c06-4fdd-8af6-15b03770bccc</id>
       <name>Pantheon Industries "Door Gunner"</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6286,7 +6287,7 @@
     <gear>
       <id>52adb8cf-22a4-4581-a354-0f7b9bcf6999</id>
       <name>Pantheon Industries "ECM-Warrior"</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6296,7 +6297,7 @@
     <gear>
       <id>4b7ec6a4-243b-490c-92f5-d337e5cc36de</id>
       <name>Pantheon Industries Mobile CNC</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6306,7 +6307,7 @@
     <gear>
       <id>a9edf32b-dea2-4939-9fa1-016ed3693a23</id>
       <name>Pantheon Industries Shield Wall</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>

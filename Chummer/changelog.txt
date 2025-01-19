@@ -113,6 +113,7 @@ Data Changes:
 - Removed Aware from discount for Dedicated Spellslinger.
 - Added Adept to discount for Dedicated Spellslinger.
 - Actioneer Business Clothes' integrated holster is now properly a concealable holster.
+- PI-Tac Programs can now be filtered for when buying new gear.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
