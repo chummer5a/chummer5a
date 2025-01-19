@@ -9056,7 +9056,7 @@ namespace Chummer
                                     frmPickCyberware.MyForm.SelectedGrade,
                                     frmPickCyberware.MyForm.SelectedRating,
                                     objVehicle, objMod.Cyberware, await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false),
-                                    objMod.Weapons,
+                                    objVehicle.Weapons,
                                     frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
                                     frmPickCyberware.MyForm.BlackMarketDiscount, true,
                                     "String_ExpensePurchaseVehicleCyberware", objCyberwareParent).ConfigureAwait(false))
