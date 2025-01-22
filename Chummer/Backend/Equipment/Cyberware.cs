@@ -34,7 +34,6 @@ using Chummer.Backend.Attributes;
 using Microsoft.VisualStudio.Threading;
 using NLog;
 using IAsyncDisposable = System.IAsyncDisposable;
-using Version = System.Version;
 
 namespace Chummer.Backend.Equipment
 {
