@@ -636,7 +636,7 @@ namespace Chummer
                         _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
                         break;
                     // Legacy shim for priority-given qualities
-                    case QualitySource.Metatype when _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
+                    case QualitySource.Metatype when _objCharacter.LastSavedVersion <= new ValueVersion(5, 212, 71)
                                                      && _objCharacter.EffectiveBuildMethodUsesPriorityTables
                                                      && objMyNode.Value != null
                                                      && objMyNode.Value["onlyprioritygiven"] != null:

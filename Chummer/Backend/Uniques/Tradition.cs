@@ -513,7 +513,7 @@ namespace Chummer.Backend.Uniques
                 if (!xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression))
                     objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
                 // Legacy catch for if a drain expression is not empty but has no attributes associated with it.
-                if (_objCharacter.LastSavedVersion < new Version(5, 214, 77) &&
+                if (_objCharacter.LastSavedVersion < new ValueVersion(5, 214, 77) &&
                     !string.IsNullOrEmpty(_strDrainExpression) && !_strDrainExpression.Contains('{') &&
                     AttributeSection.AttributeStrings.Any(x => _strDrainExpression.Contains(x)))
                 {

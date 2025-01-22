@@ -597,7 +597,7 @@ namespace Chummer.Backend.Equipment
                 if (_strBaseLifestyle == "Middle")
                     _strBaseLifestyle = "Medium";
                 // Legacy sweep for issues with Advanced Lifestyle selector not properly resetting values upon changes to the Base Lifestyle
-                if (_objCharacter.LastSavedVersion <= new Version(5, 212, 73)
+                if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 212, 73)
                     && _strBaseLifestyle != "Street"
                     && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
                 {
@@ -724,7 +724,7 @@ namespace Chummer.Backend.Equipment
             using (LockObject.EnterWriteLock())
             {
                 //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
-                if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
+                if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) ||
                     xmlLifestyleNode["costforarea"] != null) return;
                 XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
                 XPathNavigator objLifestyleQualityNode

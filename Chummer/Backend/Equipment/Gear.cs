@@ -1656,7 +1656,7 @@ namespace Chummer.Backend.Equipment
             // Convert old qi foci to the new bonus. In order to force the user to update their powers, unequip the focus and remove all improvements.
             if (_strName == "Qi Focus")
             {
-                int intResult = _objCharacter.LastSavedVersion.CompareTo(new Version(5, 193, 5));
+                int intResult = _objCharacter.LastSavedVersion.CompareTo(new ValueVersion(5, 193, 5));
                 if (intResult == -1)
                 {
                     XmlNode gear = _objCharacter.LoadData("gear.xml")

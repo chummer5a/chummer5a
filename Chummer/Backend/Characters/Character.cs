@@ -241,7 +241,7 @@ namespace Chummer
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
 
-        private Version _verSavedVersion = new Version();
+        private ValueVersion _verSavedVersion;
 
         public AsyncFriendlyReaderWriterLock LockObject { get; }
 
@@ -6343,14 +6343,14 @@ namespace Chummer
                                 {
                                     strVersion = strVersion.TrimStartOnce("0.");
 
-                                    if (!VersionExtensions.TryParse(strVersion, out _verSavedVersion))
+                                    if (!ValueVersion.TryParse(strVersion, out _verSavedVersion))
                                     {
                                         _verSavedVersion = Utils.IsUnitTest
-                                            ? new Version(int.MaxValue, int.MaxValue, int.MaxValue)
-                                            : new Version();
+                                            ? new ValueVersion(int.MaxValue, int.MaxValue, int.MaxValue)
+                                            : new ValueVersion();
                                     }
                                     // Check for typo in Corrupter quality and correct it
-                                    else if (_verSavedVersion?.CompareTo(new Version(5, 188, 34)) == -1)
+                                    else if (_verSavedVersion.CompareTo(new ValueVersion(5, 188, 34)) == -1)
                                     {
                                         objXmlDocument.InnerXml =
                                             objXmlDocument.InnerXml.Replace("Corruptor", "Corrupter");
@@ -7006,7 +7006,7 @@ namespace Chummer
                                                  && !objProspectiveSettings.BuiltInOption
                                                  // Need to make sure that the save was made in the same version of Chummer, otherwise we can get a hash code mismatch from settings themselves changing
                                                  && LastSavedVersion.CompareTo(
-                                                     new Version(
+                                                     new ValueVersion(
                                                          Application.ProductVersion.FastEscapeOnceFromStart("0.0.")))
                                                  == 0
                                                  && (blnSync
@@ -7578,7 +7578,7 @@ namespace Chummer
                                                 .SourceName);
                                         }
                                         // Cyberadept fix
-                                        else if (LastSavedVersion <= new Version(5, 212, 78)
+                                        else if (LastSavedVersion <= new ValueVersion(5, 212, 78)
                                                  && objImprovement.ImproveSource ==
                                                  Improvement.ImprovementSource.Echo
                                                  && objImprovement.ImproveType ==
@@ -7726,7 +7726,7 @@ namespace Chummer
                                                     }
 
                                                     // Legacy shim
-                                                    if (LastSavedVersion <= new Version(5, 195, 1)
+                                                    if (LastSavedVersion <= new ValueVersion(5, 195, 1)
                                                         && (objQuality.Name == "The Artisan's Way"
                                                             || objQuality.Name == "The Artist's Way"
                                                             || objQuality.Name == "The Athlete's Way"
@@ -7864,7 +7864,7 @@ namespace Chummer
                                                         }
                                                     }
 
-                                                    if (LastSavedVersion <= new Version(5, 200, 0)
+                                                    if (LastSavedVersion <= new ValueVersion(5, 200, 0)
                                                         && objQuality.Name == "Made Man"
                                                         && objQuality.Bonus["selectcontact"] != null)
                                                     {
@@ -8059,7 +8059,7 @@ namespace Chummer
                                                             await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                                                     }
 
-                                                    if (LastSavedVersion <= new Version(5, 212, 43)
+                                                    if (LastSavedVersion <= new ValueVersion(5, 212, 43)
                                                         && objQuality.Name == "Inspired"
                                                         && objQuality.Source == "SASS"
                                                         && objQuality.Bonus["selectexpertise"] == null)
@@ -8071,7 +8071,7 @@ namespace Chummer
                                                             objQuality.InternalId);
                                                     }
 
-                                                    if (LastSavedVersion <= new Version(5, 212, 56)
+                                                    if (LastSavedVersion <= new ValueVersion(5, 212, 56)
                                                         && objQuality.Name == "Chain Breaker"
                                                         && objQuality.Bonus == null)
                                                     {
@@ -8080,7 +8080,7 @@ namespace Chummer
                                                             objQuality.InternalId);
                                                     }
 
-                                                    if (LastSavedVersion <= new Version(5, 212, 78)
+                                                    if (LastSavedVersion <= new ValueVersion(5, 212, 78)
                                                         && objQuality.Name == "Resonant Stream: Cyberadept"
                                                         && objQuality.Bonus == null)
                                                     {
@@ -8709,7 +8709,7 @@ namespace Chummer
 
                                     // Legacy shim #1
                                     if (objCyberware.Name == "Myostatin Inhibitor" &&
-                                        LastSavedVersion <= new Version(5, 195, 1) &&
+                                        LastSavedVersion <= new ValueVersion(5, 195, 1) &&
                                         !(blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
                                             ? Improvements.Any(x =>
@@ -8830,7 +8830,7 @@ namespace Chummer
                                 }
 
                                 // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
-                                if (LastSavedVersion <= new Version(5, 200, 0))
+                                if (LastSavedVersion <= new ValueVersion(5, 200, 0))
                                 {
                                     if (blnSync)
                                     {
@@ -9139,7 +9139,7 @@ namespace Chummer
                                                Utils.ListItemListPool, out List<ListItem> lstPowerOrder))
                                     {
                                         bool blnDoEnhancedAccuracyRefresh =
-                                            LastSavedVersion <= new Version(5, 198, 26);
+                                            LastSavedVersion <= new ValueVersion(5, 198, 26);
                                         // Sort the Powers in alphabetical order.
                                         foreach (XmlNode xmlPower in objXmlNodeList)
                                         {
@@ -9465,7 +9465,7 @@ namespace Chummer
                                 }
 
                                 // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
-                                if (objLivingPersonaQuality != null && LastSavedVersion <= new Version(5, 195, 1))
+                                if (objLivingPersonaQuality != null && LastSavedVersion <= new ValueVersion(5, 195, 1))
                                 {
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
@@ -10350,7 +10350,7 @@ namespace Chummer
                                 }
                             }
 
-                            if (LastSavedVersion <= new Version(5, 225, 686))
+                            if (LastSavedVersion <= new ValueVersion(5, 225, 686))
                             {
                                 // Fix legacy cases where characters have dealer connection improvement keys saved in non-English
                                 using (Timekeeper.StartSyncron("load_char_nonenglishdealerconnectionfix", loadActivity))
@@ -44634,7 +44634,7 @@ namespace Chummer
             }
         }
 
-        public Version LastSavedVersion
+        public ValueVersion LastSavedVersion
         {
             get
             {

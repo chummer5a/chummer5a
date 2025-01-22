@@ -1650,7 +1650,7 @@ namespace Chummer.Backend.Skills
                                         }
 
                                         // Legacy sweep for native language skills
-                                        if (_objCharacter.LastSavedVersion <= new Version(5, 212, 72))
+                                        if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 212, 72))
                                         {
                                             if (blnSync)
                                             {

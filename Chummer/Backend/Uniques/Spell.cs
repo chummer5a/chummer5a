@@ -387,7 +387,7 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("dv", ref _strDV);
                 if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited
                                                                                && _objCharacter.LastSavedVersion
-                                                                               <= new Version(5, 197, 30))
+                                                                               <= new ValueVersion(5, 197, 30))
                 {
                     objMyNode.Value?.TryGetStringFieldQuickly("dv", ref _strDV);
                 }

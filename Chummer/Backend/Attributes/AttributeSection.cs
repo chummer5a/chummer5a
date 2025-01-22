@@ -1489,7 +1489,7 @@ namespace Chummer.Backend.Attributes
                                                               ']');
                         // Couldn't find the appropriate attribute in the loaded file, so regenerate it from scratch.
                         if (lstAttributeNodes == null || lstAttributeNodes.Count == 0 || xmlCharNodeAnimalForm != null
-                            && _objCharacter.LastSavedVersion < new Version(5, 200, 25))
+                            && _objCharacter.LastSavedVersion < new ValueVersion(5, 200, 25))
                         {
                             CharacterAttrib objAttribute;
                             switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))

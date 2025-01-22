@@ -2000,14 +2000,14 @@ namespace Chummer
                     {
                         case DpiScalingMethod.Rescale:
                             if (Environment.OSVersion.Version
-                                < new Version(
+                                < new ValueVersion(
                                     6, 3, 0)) // Need at least Windows 8.1 to get PerMonitor/PerMonitorV2 Scaling
                                 continue;
                             break;
 
                         case DpiScalingMethod.SmartZoom:
                             if (Environment.OSVersion.Version
-                                < new Version(
+                                < new ValueVersion(
                                     10, 0, 17763)) // Need at least Windows 10 Version 1809 to get GDI+ Scaling
                                 continue;
                             break;

@@ -532,7 +532,7 @@ namespace Chummer.Backend.Equipment
             if (Utils.IsUnitTest)
                 return;
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
-            if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
+            if (_objCharacter.LastSavedVersion > new ValueVersion(5, 190, 0))
                 return;
             using (LockObject.EnterWriteLock())
             {

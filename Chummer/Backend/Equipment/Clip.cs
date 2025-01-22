@@ -170,7 +170,7 @@ namespace Chummer.Backend.Equipment
                         : objCharacter.Gear.DeepFindById(strAmmoGuid);
                 }
                 //Fix for older versions where ammo loaded into clips was separate from ammo lying around in the inventory
-                if (objCharacter.LastSavedVersion <= new Version(5, 222, 61) && objGear != null)
+                if (objCharacter.LastSavedVersion <= new ValueVersion(5, 222, 61) && objGear != null)
                 {
                     Gear objNewGear = new Gear(objCharacter);
                     objNewGear.Copy(objGear);

@@ -579,7 +579,7 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("extrachoice2", ref _strExtraChoice2);
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
-                if (_objCharacter.LastSavedVersion <= new Version(5, 217, 31))
+                if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 217, 31))
                 {
                     // Cache advantages from data file because localized version used to be cached directly.
                     XPathNavigator node = objMyNode.Value;

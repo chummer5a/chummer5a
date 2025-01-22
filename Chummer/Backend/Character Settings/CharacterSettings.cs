@@ -6180,7 +6180,7 @@ namespace Chummer
                     string strKey = kvpCustomDataDirectoryName.Key;
                     string strId
                         = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
-                            strKey, out Version objPreferredVersion);
+                            strKey, out ValueVersion objPreferredVersion);
                     CustomDataDirectoryInfo objInfoToAdd = null;
                     if (string.IsNullOrEmpty(strId))
                     {
@@ -6205,7 +6205,7 @@ namespace Chummer
                                 objInfoToAdd = objLoopInfo;
                         }
 
-                        int VersionMatchScore(Version objVersion)
+                        int VersionMatchScore(ValueVersion objVersion)
                         {
                             int intReturn = int.MaxValue;
                             intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
@@ -6247,7 +6247,7 @@ namespace Chummer
                     string strKey = kvpCustomDataDirectoryName.Key;
                     string strId
                         = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
-                            strKey, out Version objPreferredVersion);
+                            strKey, out ValueVersion objPreferredVersion);
                     CustomDataDirectoryInfo objInfoToAdd = null;
                     if (string.IsNullOrEmpty(strId))
                     {
@@ -6272,7 +6272,7 @@ namespace Chummer
                                 objInfoToAdd = objLoopInfo;
                         }
 
-                        int VersionMatchScore(Version objVersion)
+                        int VersionMatchScore(ValueVersion objVersion)
                         {
                             int intReturn = int.MaxValue;
                             intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)

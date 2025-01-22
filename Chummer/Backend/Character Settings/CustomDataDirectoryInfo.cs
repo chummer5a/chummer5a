@@ -35,7 +35,7 @@ namespace Chummer
     public sealed class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>,
         IComparable<CustomDataDirectoryInfo>, IHasInternalId
     {
-        private Version _objMyVersion = new Version(1, 0);
+        private ValueVersion _objMyVersion = new ValueVersion(1);
         private Guid _guid = Guid.NewGuid();
 
         public Exception XmlException { get; private set; }
@@ -85,8 +85,8 @@ namespace Chummer
                     XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
                                                            .SelectSingleNodeAndCacheExpression("manifest");
 
-                    if (!xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion))
-                        _objMyVersion = new Version(1, 0);
+                    if (!xmlNode.TryGetField("version", ValueVersion.TryParse, out _objMyVersion))
+                        _objMyVersion = new ValueVersion(1, 0);
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
                     ConstructorGetManifestDescriptions(xmlNode);
@@ -118,8 +118,8 @@ namespace Chummer
                     XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
                                                            .SelectSingleNodeAndCacheExpression("manifest", token);
 
-                    if (!xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion))
-                        _objMyVersion = new Version(1, 0);
+                    if (!xmlNode.TryGetField("version", ValueVersion.TryParse, out _objMyVersion))
+                        _objMyVersion = new ValueVersion(1, 0);
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
                     ConstructorGetManifestDescriptions(xmlNode, token);
@@ -684,7 +684,7 @@ namespace Chummer
         /// <summary>
         /// The version of the custom data directory
         /// </summary>
-        public Version MyVersion => _objMyVersion;
+        public ValueVersion MyVersion => _objMyVersion;
 
         // /// <summary>
         // /// The Sha512 Hash of all non manifest.xml files in the directory
@@ -858,14 +858,14 @@ namespace Chummer
         /// <summary>
         /// The name including the Version in this format "NAME (Version)"
         /// </summary>
-        public string DisplayName => MyVersion == default
+        public string DisplayName => MyVersion == new ValueVersion(1)
             ? Name
             : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
                             LanguageManager.GetString("String_Space"), MyVersion);
 
         public async Task<string> GetDisplayNameAsync(CancellationToken token = default)
         {
-            return MyVersion == default
+            return MyVersion == new ValueVersion(1)
                 ? Name
                 : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Name,
                                 await LanguageManager.GetStringAsync("String_Space", token: token)
@@ -892,7 +892,7 @@ namespace Chummer
             return string.Empty;
         }
 
-        public static string GetIdFromCharacterSettingsSaveKey(string strKey, out Version objPreferredVersion)
+        public static string GetIdFromCharacterSettingsSaveKey(string strKey, out ValueVersion objPreferredVersion)
         {
             int intSeparatorIndex = strKey.IndexOf('>');
             if (intSeparatorIndex >= 0 && intSeparatorIndex + 1 < strKey.Length)
@@ -900,7 +900,7 @@ namespace Chummer
                 string strReturn = strKey.Substring(0, intSeparatorIndex);
                 if (strReturn.IsGuid())
                 {
-                    objPreferredVersion = new Version(strKey.Substring(intSeparatorIndex + 1));
+                    objPreferredVersion = new ValueVersion(strKey.Substring(intSeparatorIndex + 1));
                     return strReturn;
                 }
             }

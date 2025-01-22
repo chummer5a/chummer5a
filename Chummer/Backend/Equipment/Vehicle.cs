@@ -1106,7 +1106,7 @@ namespace Chummer.Backend.Equipment
                         Guid guidDummy = Guid.Empty;
                         if (Name.StartsWith("Proteus Krake", StringComparison.Ordinal)
                             && !blnKrakePassDone
-                            && _objCharacter.LastSavedVersion < new Version(5, 213, 28)
+                            && _objCharacter.LastSavedVersion < new ValueVersion(5, 213, 28)
                             && (!nodChild.TryGetGuidFieldQuickly("sourceid", ref guidDummy) || guidDummy == Guid.Empty))
                         {
                             blnKrakePassDone = true;

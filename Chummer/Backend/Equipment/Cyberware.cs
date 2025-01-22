@@ -2358,7 +2358,7 @@ namespace Chummer.Backend.Equipment
 
                     // Legacy shim for mis-formatted name of Reflex Recorder
                     if (_strName == "Reflex Recorder (Skill)"
-                        && _objCharacter.LastSavedVersion <= new Version(5, 198, 31))
+                        && _objCharacter.LastSavedVersion <= new ValueVersion(5, 198, 31))
                     {
                         // This step is needed in case there's a custom data file that has the name "Reflex Recorder (Skill)", in which case we wouldn't want to rename the 'ware
                         XPathNavigator xmlReflexRecorderNode
@@ -2422,7 +2422,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     // Legacy shim for older style of requesting the maximum or minimum of an attribute
-                    if (_objCharacter.LastSavedVersion < new Version(5, 225, 443) && (_strMinRating.Contains("imum") || _strMaxRating.Contains("imum")))
+                    if (_objCharacter.LastSavedVersion < new ValueVersion(5, 225, 443) && (_strMinRating.Contains("imum") || _strMaxRating.Contains("imum")))
                     {
                         _strMinRating = _strMinRating.Replace("MinimumSTR", "{STRMinimum}")
                             .Replace("MaximumSTR", "{STRMaximum}")

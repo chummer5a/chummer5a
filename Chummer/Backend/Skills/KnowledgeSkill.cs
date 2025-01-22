@@ -1446,7 +1446,7 @@ namespace Chummer.Backend.Skills
                 // Legacy sweep for native language skills
                 blnTemp = false;
                 if (!xmlNode.TryGetBoolFieldQuickly("isnativelanguage", ref blnTemp) && IsLanguage &&
-                    CharacterObject.LastSavedVersion <= new Version(5, 212, 72))
+                    CharacterObject.LastSavedVersion <= new ValueVersion(5, 212, 72))
                 {
                     int intKarma = 0;
                     int intBase = 0;

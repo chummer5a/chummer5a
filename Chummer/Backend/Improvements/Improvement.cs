@@ -538,7 +538,7 @@ namespace Chummer
             if (objNode["improvementsource"] != null)
                 _eImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             // Legacy shims
-            if (_objCharacter.LastSavedVersion <= new Version(5, 214, 112)
+            if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 214, 112)
                 && (_eImprovementSource == ImprovementSource.Initiation
                     || _eImprovementSource == ImprovementSource.Submersion)
                 && _eImprovementType == ImprovementType.Attribute
@@ -560,7 +560,7 @@ namespace Chummer
                     _decVal = 24;
                     break;
 
-                case ImprovementType.BlockSkillDefault when _objCharacter.LastSavedVersion <= new Version(5, 224, 39):
+                case ImprovementType.BlockSkillDefault when _objCharacter.LastSavedVersion <= new ValueVersion(5, 224, 39):
                     _eImprovementType = ImprovementType.BlockSkillGroupDefault;
                     break;
             }
