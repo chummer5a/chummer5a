@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -238,6 +239,43 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                         _lstData[index] = (T)value;
                 }
+            }
+        }
+
+        public bool SequenceEqual(ThreadSafeList<T> other)
+        {
+            if (other == null)
+                return false;
+            using (other.LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock())
+            {
+                return _lstData.Count == other._lstData.Count
+                       && _lstData.SequenceEqual(other._lstData);
+            }
+        }
+
+        public async Task<bool> SequenceEqualAsync(ThreadSafeList<T> other, CancellationToken token = default)
+        {
+            if (other == null)
+                return false;
+            IAsyncDisposable objLocker = await other.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    return _lstData.Count == other._lstData.Count
+                           && _lstData.SequenceEqual(other._lstData);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

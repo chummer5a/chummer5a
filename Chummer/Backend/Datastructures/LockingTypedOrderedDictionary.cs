@@ -266,6 +266,100 @@ namespace Chummer
                 return _dicUnorderedData.ContainsValue(value);
         }
 
+        public bool SequenceEqual(LockingTypedOrderedDictionary<TKey, TValue> other)
+        {
+            if (other == null)
+                return false;
+            using (other.LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock())
+            {
+                int intLength = _lstIndexes.Count;
+                if (intLength != other._lstIndexes.Count)
+                    return false;
+                for (int i = 0; i < intLength; i++)
+                {
+                    TKey objKey = _lstIndexes[i];
+                    if (objKey == null)
+                    {
+                        if (other._lstIndexes[i] == null)
+                            continue;
+                        return false;
+                    }
+
+                    if (!objKey.Equals(other._lstIndexes[i]))
+                        return false;
+
+                    TValue objValue = _dicUnorderedData[objKey];
+                    if (objValue == null)
+                    {
+                        if (other._dicUnorderedData[objKey] == null)
+                            continue;
+                        return false;
+                    }
+
+                    if (!objValue.Equals(other._dicUnorderedData[objKey]))
+                        return false;
+                }
+
+            }
+
+            return true;
+        }
+
+        public async Task<bool> SequenceEqualAsync(LockingTypedOrderedDictionary<TKey, TValue> other, CancellationToken token = default)
+        {
+            if (other == null)
+                return false;
+            IAsyncDisposable objLocker = await other.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    int intLength = _lstIndexes.Count;
+                    if (intLength != other._lstIndexes.Count)
+                        return false;
+                    for (int i = 0; i < intLength; i++)
+                    {
+                        TKey objKey = _lstIndexes[i];
+                        if (objKey == null)
+                        {
+                            if (other._lstIndexes[i] == null)
+                                continue;
+                            return false;
+                        }
+
+                        if (!objKey.Equals(other._lstIndexes[i]))
+                            return false;
+
+                        TValue objValue = _dicUnorderedData[objKey];
+                        if (objValue == null)
+                        {
+                            if (other._dicUnorderedData[objKey] == null)
+                                continue;
+                            return false;
+                        }
+
+                        if (!objValue.Equals(other._dicUnorderedData[objKey]))
+                            return false;
+                    }
+
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            return true;
+        }
+
         /// <inheritdoc />
         public void Add(KeyValuePair<TKey, TValue> item)
         {

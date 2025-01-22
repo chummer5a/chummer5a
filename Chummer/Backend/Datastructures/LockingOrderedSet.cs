@@ -389,6 +389,43 @@ namespace Chummer
             }
         }
 
+        public bool SequenceEqual(LockingOrderedSet<T> other)
+        {
+            if (other == null)
+                return false;
+            using (other.LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock())
+            {
+                return _lstOrderedData.Count == other._lstOrderedData.Count
+                       && _lstOrderedData.SequenceEqual(other._lstOrderedData);
+            }
+        }
+
+        public async Task<bool> SequenceEqualAsync(LockingOrderedSet<T> other, CancellationToken token = default)
+        {
+            if (other == null)
+                return false;
+            IAsyncDisposable objLocker = await other.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    return _lstOrderedData.Count == other._lstOrderedData.Count
+                           && _lstOrderedData.SequenceEqual(other._lstOrderedData);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <inheritdoc />
         void ICollection<T>.Add(T item)
         {

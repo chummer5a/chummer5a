@@ -1070,7 +1070,7 @@ namespace Chummer
                         lstReturn.Add(objProperty.Name);
                     }
 
-                    if (!_dicCustomDataDirectoryKeys.SequenceEqual(await objOther.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false)))
+                    if (!await _dicCustomDataDirectoryKeys.SequenceEqualAsync(await objOther.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false), token).ConfigureAwait(false))
                     {
                         lstReturn.Add(nameof(CustomDataDirectoryKeys));
                     }
