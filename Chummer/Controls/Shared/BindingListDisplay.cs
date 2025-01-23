@@ -232,10 +232,11 @@ namespace Chummer.Controls.Shared
             }
 
             objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
+            int intDisplayIndexCount = _lstDisplayIndex.Count;
 
             // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
-            int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalSettings.MaxStackLimit
-                ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count)
+            int[] aintSharedOldDisplayIndexes = intDisplayIndexCount > GlobalSettings.MaxStackLimit
+                ? ArrayPool<int>.Shared.Rent(intDisplayIndexCount)
                 : null;
             try
             {
@@ -243,15 +244,16 @@ namespace Chummer.Controls.Shared
 #pragma warning disable IDE0029 // Use coalesce expression
                 Span<int> aintOldDisplayIndex = aintSharedOldDisplayIndexes != null
                     ? aintSharedOldDisplayIndexes
-                    : stackalloc int[_lstDisplayIndex.Count];
+                    : stackalloc int[intDisplayIndexCount];
 #pragma warning restore IDE0029 // Use coalesce expression
-                for (int i = 0; i < _lstDisplayIndex.Count; ++i)
+                for (int i = 0; i < intDisplayIndexCount; ++i)
                     aintOldDisplayIndex[i] = _lstDisplayIndex[i];
                 _lstDisplayIndex.Clear();
                 _lstDisplayIndex.AddRange(objTTypeList.Select(x => x.Item2));
+                intDisplayIndexCount = _lstDisplayIndex.Count;
 
-                if (_ablnRendered == null || _ablnRendered.Length != _lstDisplayIndex.Count)
-                    _ablnRendered = new bool[_lstDisplayIndex.Count];
+                if (_ablnRendered == null || _ablnRendered.Length != intDisplayIndexCount)
+                    _ablnRendered = new bool[intDisplayIndexCount];
                 else
                 {
                     for (int i = 0; i < _ablnRendered.Length; ++i)

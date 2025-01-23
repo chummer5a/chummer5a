@@ -1760,10 +1760,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
-                foreach (KeyValuePair<string, SourcebookInfo> kvpSourcebookInfo in dicNewValues)
+                foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
                 {
                     token.ThrowIfCancellationRequested();
-                    s_DicSourcebookInfos.TryAdd(kvpSourcebookInfo.Value.Code, kvpSourcebookInfo.Value);
+                    s_DicSourcebookInfos.TryAdd(objSourcebookInfo.Code, objSourcebookInfo);
                 }
             }
             finally
@@ -1781,10 +1781,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
-                foreach (KeyValuePair<string, SourcebookInfo> kvpSourcebookInfo in dicNewValues)
+                foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
                 {
                     token.ThrowIfCancellationRequested();
-                    s_DicSourcebookInfos.TryAdd(kvpSourcebookInfo.Value.Code, kvpSourcebookInfo.Value);
+                    s_DicSourcebookInfos.TryAdd(objSourcebookInfo.Code, objSourcebookInfo);
                 }
             }
             finally
@@ -1800,54 +1800,50 @@ namespace Chummer
             try
             {
                 s_DicSourcebookInfos.Clear();
-                Utils.SafelyRunSynchronously(async () => // Retrieve the SourcebookInfo objects.
+                foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", token: token)
+                             .SelectAndCacheExpression("/chummer/books/book", token: token))
                 {
-                    foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", token: token)
-                                     .ConfigureAwait(false))
-                                 .SelectAndCacheExpression("/chummer/books/book", token: token))
+                    string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                    if (string.IsNullOrEmpty(strCode))
+                        continue;
+                    SourcebookInfo objSource = new SourcebookInfo
                     {
-                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
-                        if (string.IsNullOrEmpty(strCode))
-                            continue;
-                        SourcebookInfo objSource = new SourcebookInfo
-                        {
-                            Code = strCode
-                        };
+                        Code = strCode
+                    };
 
-                        try
+                    try
+                    {
+                        string strTemp = string.Empty;
+                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                            && !string.IsNullOrEmpty(strTemp))
                         {
-                            string strTemp = string.Empty;
-                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
-                                && !string.IsNullOrEmpty(strTemp))
+                            string[] strParts = strTemp.Split('|');
+                            objSource.Path = strParts[0];
+                            if (string.IsNullOrEmpty(objSource.Path))
                             {
-                                string[] strParts = strTemp.Split('|');
-                                objSource.Path = strParts[0];
-                                if (string.IsNullOrEmpty(objSource.Path))
-                                {
+                                objSource.Path = string.Empty;
+                                objSource.Offset = 0;
+                            }
+                            else
+                            {
+                                if (!File.Exists(objSource.Path))
                                     objSource.Path = string.Empty;
-                                    objSource.Offset = 0;
-                                }
-                                else
-                                {
-                                    if (!File.Exists(objSource.Path))
-                                        objSource.Path = string.Empty;
-                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                        objSource.Offset = intTmp;
-                                }
+                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                    objSource.Offset = intTmp;
                             }
                         }
-                        catch (System.Security.SecurityException)
-                        {
-                            //swallow this
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            //swallow this
-                        }
-
-                        s_DicSourcebookInfos.TryAdd(strCode, objSource);
                     }
-                }, token);
+                    catch (System.Security.SecurityException)
+                    {
+                        //swallow this
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //swallow this
+                    }
+
+                    s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                }
             }
             catch
             {
