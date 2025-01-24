@@ -1665,7 +1665,7 @@ namespace Chummer
                 GlobalSettings.CustomDataDirectoryInfos.Add(objInfo);
             await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos, token)
                             .ConfigureAwait(false);
-            await GlobalSettings.SetSourcebookInfosAsync(_dicSourcebookInfos, token).ConfigureAwait(false);
+            await GlobalSettings.SetSourcebookInfosAsync(_dicSourcebookInfos, false, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -2471,11 +2471,11 @@ namespace Chummer
 
             async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile)
             {
-                FileInfo fileInfo = new FileInfo(strBookFile);
+                FileInfo objFileInfo = new FileInfo(strBookFile);
                 await frmProgressBar
-                      .PerformStepAsync(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning, token)
+                      .PerformStepAsync(objFileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning, token)
                       .ConfigureAwait(false);
-                return await ScanPDFForMatchingText(fileInfo, dicPatternsToMatch, token).ConfigureAwait(false);
+                return await ScanPDFForMatchingText(objFileInfo.FullName, dicPatternsToMatch, token).ConfigureAwait(false);
             }
 
             List<SourcebookInfo> lstReturn
@@ -2496,7 +2496,7 @@ namespace Chummer
         }
 
         private static async Task<List<SourcebookInfo>> ScanPDFForMatchingText(
-            FileSystemInfo fileInfo, ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch, CancellationToken token = default)
+            string strPath, ConcurrentDictionary<string, Tuple<string, int>> dicPatternsToMatch, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<SourcebookInfo> lstReturn = new List<SourcebookInfo>();
@@ -2506,7 +2506,6 @@ namespace Chummer
             PdfDocument objPdfDocument = null;
             try
             {
-                string strPath = fileInfo.FullName;
                 try
                 {
                     objPdfReader = new PdfReader(strPath);

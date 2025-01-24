@@ -38,8 +38,7 @@ namespace Chummer
         public FetchSafelyFromPool(ObjectPool<T> objMyPool, out T objReturn)
         {
             _objMyPool = objMyPool;
-            _objMyValue = objMyPool.Get();
-            objReturn = _objMyValue;
+            objReturn = _objMyValue = objMyPool.Get();
         }
 
         [CLSCompliant(false)]
@@ -47,8 +46,7 @@ namespace Chummer
         public FetchSafelyFromPool(SafeObjectPool<T> objMySafePool, out T objReturn)
         {
             _objMySafePool = objMySafePool;
-            _objMyValue = objMySafePool.Get();
-            objReturn = _objMyValue;
+            objReturn = _objMyValue = objMySafePool.Get();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

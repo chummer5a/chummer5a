@@ -152,6 +152,8 @@ namespace Chummer
         private static void LoadCharacterSettings()
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
+            foreach (CharacterSettings objSettings in s_DicLoadedCharacterSettings.Values)
+                objSettings.Dispose();
             s_DicLoadedCharacterSettings.Clear();
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
@@ -175,11 +177,10 @@ namespace Chummer
                 return;
             }
 
-            Utils.RunWithoutThreadLock(async () =>
+            Utils.RunWithoutThreadLock(() =>
             {
                 IEnumerable<XPathNavigator> xmlSettingsIterator
-                    = (await XmlManager.LoadXPathAsync("settings.xml").ConfigureAwait(false))
-                    .SelectAndCacheExpression("/chummer/settings/setting")
+                    = XmlManager.LoadXPath("settings.xml").SelectAndCacheExpression("/chummer/settings/setting")
                     .Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                 {
@@ -236,6 +237,8 @@ namespace Chummer
         private static async Task LoadCharacterSettingsAsync(CancellationToken token = default)
         {
             _intDicLoadedCharacterSettingsLoadedStatus = 0;
+            foreach (CharacterSettings objSettings in s_DicLoadedCharacterSettings.Values)
+                await objSettings.DisposeAsync().ConfigureAwait(false);
             s_DicLoadedCharacterSettings.Clear();
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {

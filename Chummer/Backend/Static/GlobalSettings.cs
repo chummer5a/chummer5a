@@ -1751,13 +1751,18 @@ namespace Chummer
             return s_DicSourcebookInfos;
         }
 
-        public static void SetSourcebookInfos(IReadOnlyDictionary<string, SourcebookInfo> dicNewValues, CancellationToken token = default)
+        public static void SetSourcebookInfos(IReadOnlyDictionary<string, SourcebookInfo> dicNewValues, bool blnDisposeOldInfos = true, CancellationToken token = default)
         {
             while (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 2) != 2)
                 Utils.SafeSleep(token);
             try
             {
                 token.ThrowIfCancellationRequested();
+                if (blnDisposeOldInfos)
+                {
+                    foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                        objInfo.Dispose();
+                }
                 s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
@@ -1772,13 +1777,19 @@ namespace Chummer
             }
         }
 
-        public static async Task SetSourcebookInfosAsync(IReadOnlyDictionary<string, SourcebookInfo> dicNewValues, CancellationToken token = default)
+        public static async Task SetSourcebookInfosAsync(IReadOnlyDictionary<string, SourcebookInfo> dicNewValues, bool blnDisposeOldInfos = true, CancellationToken token = default)
         {
             while (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 2) != 2)
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
+                if (blnDisposeOldInfos)
+                {
+                    foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                        objInfo.Dispose();
+                }
+
                 s_DicSourcebookInfos.Clear();
                 token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
@@ -1799,6 +1810,8 @@ namespace Chummer
                 return;
             try
             {
+                foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                    objInfo.Dispose();
                 s_DicSourcebookInfos.Clear();
                 foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", token: token)
                              .SelectAndCacheExpression("/chummer/books/book", token: token))
@@ -1863,11 +1876,13 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                foreach (SourcebookInfo objInfo in s_DicSourcebookInfos.Values)
+                    objInfo.Dispose();
                 s_DicSourcebookInfos.Clear();
                 foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", token: token)
-                                 .ConfigureAwait(false))
-                             .SelectAndCacheExpression(
-                                 "/chummer/books/book", token: token))
+                             .ConfigureAwait(false))
+                         .SelectAndCacheExpression(
+                             "/chummer/books/book", token: token))
                 {
                     string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
                     if (string.IsNullOrEmpty(strCode))

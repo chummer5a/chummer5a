@@ -35,10 +35,10 @@ namespace Chummer
 
         #region Control Events
 
-        public SelectSpec(Skill skill)
+        public SelectSpec(Skill objSkill)
         {
-            _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
-            _objCharacter = skill.CharacterObject ?? throw new ArgumentNullException(nameof(skill.CharacterObject));
+            _objSkill = objSkill ?? throw new ArgumentNullException(nameof(objSkill));
+            _objCharacter = objSkill.CharacterObject;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

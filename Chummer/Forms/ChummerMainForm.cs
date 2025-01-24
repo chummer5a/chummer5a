@@ -4407,11 +4407,11 @@ namespace Chummer
             }
         }
 
-        private static FetchSafelyFromPool<HashSet<string>> ProcessCommandLineArguments(IReadOnlyCollection<string> strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
+        private static FetchSafelyFromPool<HashSet<string>> ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
             FetchSafelyFromPool<HashSet<string>> objReturn = new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool, out setFilesToLoad);
-            if (strArgs.Count == 0)
+            if (strArgs.Length == 0)
                 return objReturn;
             try
             {
