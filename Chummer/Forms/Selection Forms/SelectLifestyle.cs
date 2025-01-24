@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -98,6 +99,18 @@ namespace Chummer
         private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objLifestyle.LifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesOnCollectionChanged;
+            _objLifestyle.PropertyChangedAsync -= RefreshLifestyleQualities;
+        }
+
+        private Task RefreshLifestyleQualities(object sender, PropertyChangedEventArgs e,
+            CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (e.PropertyName == nameof(Lifestyle.LifestyleQualities))
+                return LifestyleQualitiesOnCollectionChanged(sender,
+                    new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset), token);
+            return Task.CompletedTask;
         }
 
         private async Task LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -624,6 +637,7 @@ namespace Chummer
             }).ConfigureAwait(false);
 
             _objLifestyle.LifestyleQualities.CollectionChangedAsync += LifestyleQualitiesOnCollectionChanged;
+            _objLifestyle.PropertyChangedAsync += RefreshLifestyleQualities;
 
             // Populate the City ComboBox
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCity))
@@ -853,13 +867,17 @@ namespace Chummer
         {
             if (_intSkipRefresh > 0 || await _objLifestyle.GetStyleTypeAsync().ConfigureAwait(false) == LifestyleType.Standard)
                 return;
-            if (!(await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is LifestyleQuality objQuality))
+            TreeNode objNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode)
+                .ConfigureAwait(false);
+            if (!(objNode?.Tag is LifestyleQuality objQuality))
                 return;
             await objQuality.SetUseLPCostAsync(await chkQualityUseLPCost.DoThreadSafeFuncAsync(x => !x.Enabled || x.Checked).ConfigureAwait(false)).ConfigureAwait(false);
             string strLp = (await objQuality.GetLPCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
             await lblQualityLp.DoThreadSafeAsync(x => x.Text = strLp).ConfigureAwait(false);
             string strCost = await objQuality.GetCurrentDisplayCostAsync().ConfigureAwait(false);
             await lblQualityCost.DoThreadSafeAsync(x => x.Text = strCost).ConfigureAwait(false);
+            string strNewTreeNodeText = await objQuality.GetCurrentFormattedDisplayNameAsync().ConfigureAwait(false);
+            await treLifestyleQualities.DoThreadSafeAsync(() => objNode.Text = strNewTreeNodeText).ConfigureAwait(false);
         }
 
         private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
