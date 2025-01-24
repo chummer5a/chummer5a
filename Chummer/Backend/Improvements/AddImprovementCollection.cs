@@ -2671,6 +2671,33 @@ namespace Chummer
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ReflexRecorderOptimization, _strUnique);
         }
 
+        public void removeskillcategorydefaultpenalty(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            // Expected values are either a Skill Name or an empty string.
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.RemoveSkillCategoryDefaultPenalty, _strUnique);
+        }
+
+        public void removeskillgroupdefaultpenalty(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            // Expected values are either a Skill Name or an empty string.
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.RemoveSkillGroupDefaultPenalty, _strUnique);
+        }
+
+        public void removeskilldefaultpenalty(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            // Expected values are either a Skill Name or an empty string.
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.RemoveSkillDefaultPenalty, _strUnique);
+        }
+
         // The Improvement adds a martial art
         public void martialart(XmlNode bonusNode)
         {

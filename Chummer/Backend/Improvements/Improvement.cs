@@ -187,6 +187,9 @@ namespace Chummer
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
+            RemoveSkillCategoryDefaultPenalty,
+            RemoveSkillGroupDefaultPenalty,
+            RemoveSkillDefaultPenalty,
             BlockSkillCategoryDefault,
             BlockSkillGroupDefault,
             BlockSkillDefault,
@@ -2113,12 +2116,50 @@ namespace Chummer
                     break;
 
                 case ImprovementType.SkillAttribute:
-                case ImprovementType.ReflexRecorderOptimization:
                 {
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                     {
                         yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.PoolModifiers));
+                    }
+                }
+                    break;
+                case ImprovementType.RemoveSkillCategoryDefaultPenalty:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier));
+                    }
+                }
+                    break;
+                case ImprovementType.RemoveSkillGroupDefaultPenalty:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillGroup == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier));
+                    }
+                }
+                    break;
+                case ImprovementType.RemoveSkillDefaultPenalty:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.DictionaryKey == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.DictionaryKey) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier));
+                    }
+                }
+                    break;
+                case ImprovementType.ReflexRecorderOptimization:
+                {
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                            nameof(Skill.DefaultModifier));
                     }
                 }
                     break;
@@ -4479,12 +4520,53 @@ namespace Chummer
                     break;
 
                 case ImprovementType.SkillAttribute:
-                case ImprovementType.ReflexRecorderOptimization:
                 {
                     await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
                     {
                         lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
                             nameof(Skill.PoolModifiers)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.RemoveSkillCategoryDefaultPenalty:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.RemoveSkillGroupDefaultPenalty:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillGroup == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillGroup) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.RemoveSkillDefaultPenalty:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.DictionaryKey == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.DictionaryKey) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.DefaultModifier)));
+                    }, token).ConfigureAwait(false);
+                }
+                    break;
+                case ImprovementType.ReflexRecorderOptimization:
+                {
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objSkill =>
+                    {
+                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objSkill,
+                            nameof(Skill.DefaultModifier)));
                     }, token).ConfigureAwait(false);
                 }
                     break;

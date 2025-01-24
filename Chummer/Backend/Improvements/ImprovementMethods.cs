@@ -174,6 +174,12 @@ namespace Chummer
                     return objImprovementAdder.specificskill;
                 case "REFLEXRECORDEROPTIMIZATION":
                     return objImprovementAdder.reflexrecorderoptimization;
+                case "REMOVESKILLCATEGORYDEFAULTPENALTY":
+                    return objImprovementAdder.removeskillcategorydefaultpenalty;
+                case "REMOVESKILLGROUPDEFAULTPENALTY":
+                    return objImprovementAdder.removeskillgroupdefaultpenalty;
+                case "REMOVESKILLDEFAULTPENALTY":
+                    return objImprovementAdder.removeskilldefaultpenalty;
                 case "MARTIALART":
                     return objImprovementAdder.martialart;
                 case "LIMITMODIFIER":

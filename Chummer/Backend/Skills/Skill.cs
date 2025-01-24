@@ -1922,6 +1922,24 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                 {
                     if (ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
+                            Improvement.ImprovementType.RemoveSkillCategoryDefaultPenalty, SkillCategory, true).Count > 0)
+                    {
+                        return 0;
+                    }
+
+                    if (ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
+                            Improvement.ImprovementType.RemoveSkillCategoryDefaultPenalty, SkillGroup, true).Count > 0)
+                    {
+                        return 0;
+                    }
+
+                    if (ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
+                            Improvement.ImprovementType.RemoveSkillDefaultPenalty, DictionaryKey, true).Count > 0)
+                    {
+                        return 0;
+                    }
+
+                    if (ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
                             Improvement.ImprovementType.ReflexRecorderOptimization).Count > 0)
                     {
                         List<Cyberware> lstReflexRecorders = CharacterObject.Cyberware
@@ -1957,6 +1975,27 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
+                if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject,
+                        Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                        SkillCategory, true, token)).Count > 0)
+                {
+                    return 0;
+                }
+
+                if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject,
+                        Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                        SkillGroup, true, token)).Count > 0)
+                {
+                    return 0;
+                }
+
+                if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject,
+                        Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                        await GetDictionaryKeyAsync(token).ConfigureAwait(false), true, token)).Count > 0)
+                {
+                    return 0;
+                }
+
                 if ((await ImprovementManager
                         .GetCachedImprovementListForValueOfAsync(CharacterObject,
                             Improvement.ImprovementType.ReflexRecorderOptimization, token: token).ConfigureAwait(false))
@@ -4438,11 +4477,23 @@ namespace Chummer.Backend.Skills
                         int intDefaultModifier = DefaultModifier;
                         if (intDefaultModifier == 0)
                         {
-                            Improvement objReflexRecorder
+                            Improvement objImprovement
                                 = ImprovementManager.GetCachedImprovementListForValueOf(
-                                        CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization)
-                                    .FirstOrDefault();
-                            sbdReturn.Append(strSpace).Append(CharacterObject.GetObjectName(objReflexRecorder));
+                                          CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                                          SkillCategory, true)
+                                      .FirstOrDefault()
+                                  ?? ImprovementManager.GetCachedImprovementListForValueOf(
+                                          CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                                          SkillGroup, true)
+                                      .FirstOrDefault()
+                                  ?? ImprovementManager.GetCachedImprovementListForValueOf(
+                                          CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                                          DictionaryKey, true)
+                                      .FirstOrDefault()
+                                  ?? ImprovementManager.GetCachedImprovementListForValueOf(
+                                          CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization)
+                                      .FirstOrDefault();
+                            sbdReturn.Append(strSpace).Append(CharacterObject.GetObjectName(objImprovement));
                         }
                         else
                             sbdReturn.Append(strSpace).Append(intDefaultModifier > 0 ? '+' : '-').Append(strSpace)
@@ -4798,12 +4849,24 @@ namespace Chummer.Backend.Skills
                         int intDefaultModifier = await GetDefaultModifierAsync(token).ConfigureAwait(false);
                         if (intDefaultModifier == 0)
                         {
-                            Improvement objReflexRecorder
+                            Improvement objImprovement
                                 = (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                    CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization,
-                                    token: token).ConfigureAwait(false)).FirstOrDefault();
+                                      CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                                      SkillCategory, true, token))
+                                  .FirstOrDefault()
+                                  ?? (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                      CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                                      SkillGroup, true, token))
+                                  .FirstOrDefault()
+                                  ?? (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                      CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
+                                      await GetDictionaryKeyAsync(token), true, token))
+                                  .FirstOrDefault()
+                                  ?? (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                      CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization, token: token))
+                                  .FirstOrDefault();
                             sbdReturn.Append(strSpace).Append(await CharacterObject
-                                .GetObjectNameAsync(objReflexRecorder, token: token).ConfigureAwait(false));
+                                .GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false));
                         }
                         else
                             sbdReturn.Append(strSpace).Append(intDefaultModifier > 0 ? '+' : '-').Append(strSpace)
