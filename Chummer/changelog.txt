@@ -76,7 +76,6 @@ Application Changes:
 - The addware bonus node now properly supports adding essence holes and anti-holes.
 - Gear markups now properly apply when adding gear as plugins to cyberware, vehicles, and items inside of vehicles.
 - Fixed inability to rename Vehicles in Career mode.
-- Associating PDF files with sourcebooks added by custom data is now possible, as is the functionality to automatically open them to a specific page when a source entry is clicked on.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
