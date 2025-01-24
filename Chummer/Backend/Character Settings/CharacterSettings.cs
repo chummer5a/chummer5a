@@ -6228,6 +6228,7 @@ namespace Chummer
                     else
                         Utils.BreakIfDebug();
                 }, token);
+                GlobalSettings.ReloadCustomSourcebookInfos(token);
             }
         }
 
@@ -6295,6 +6296,7 @@ namespace Chummer
                     else
                         Utils.BreakIfDebug();
                 }, token: token).ConfigureAwait(false);
+                await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
             }
             finally
             {

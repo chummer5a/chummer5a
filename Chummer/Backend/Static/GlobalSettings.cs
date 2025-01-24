@@ -296,6 +296,7 @@ namespace Chummer
 
         private static string _strPdfParameters = string.Empty;
         private static readonly ConcurrentDictionary<string, SourcebookInfo> s_DicSourcebookInfos = new ConcurrentDictionary<string, SourcebookInfo>();
+        private static readonly ConcurrentStringHashSet s_DicCustomSourcebookCodes = new ConcurrentStringHashSet();
         private static int s_intSourcebookInfosLoadingStatus;
         private static bool _blnUseLogging;
         private static UseAILogging _eUseLoggingApplicationInsights;
@@ -947,6 +948,9 @@ namespace Chummer
                 {
                     if (objSourceRegistry != null)
                     {
+                        foreach (string strCustomSourcebookKey in s_DicCustomSourcebookCodes)
+                            objSourceRegistry.DeleteValue(strCustomSourcebookKey);
+
                         IReadOnlyDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
                         foreach (SourcebookInfo objSourcebookInfo in dicSourcebookInfos.Values)
                         {
@@ -1857,6 +1861,57 @@ namespace Chummer
 
                     s_DicSourcebookInfos.TryAdd(strCode, objSource);
                 }
+
+                s_DicCustomSourcebookCodes.Clear();
+                foreach (CharacterSettings objCustomSettings in SettingsManager.LoadedCharacterSettings.Values)
+                {
+                    foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
+                                     objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
+                                 .SelectAndCacheExpression("/chummer/books/book", token: token))
+                    {
+                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                        if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
+                            continue;
+                        SourcebookInfo objSource = new SourcebookInfo
+                        {
+                            Code = strCode
+                        };
+
+                        try
+                        {
+                            string strTemp = string.Empty;
+                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                && !string.IsNullOrEmpty(strTemp))
+                            {
+                                string[] strParts = strTemp.Split('|');
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
+                                    objSource.Path = string.Empty;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
+                            }
+                        }
+                        catch (System.Security.SecurityException)
+                        {
+                            //swallow this
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            //swallow this
+                        }
+
+                        s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                        s_DicCustomSourcebookCodes.TryAdd(strCode);
+                    }
+                }
             }
             catch
             {
@@ -1925,6 +1980,59 @@ namespace Chummer
 
                     s_DicSourcebookInfos.TryAdd(strCode, objSource);
                 }
+
+                s_DicCustomSourcebookCodes.Clear();
+                foreach (CharacterSettings objCustomSettings in (await SettingsManager
+                             .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).Values)
+                {
+                    foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
+                                 await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
+                                     .ConfigureAwait(false), token: token).ConfigureAwait(false))
+                             .SelectAndCacheExpression("/chummer/books/book", token: token))
+                    {
+                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                        if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
+                            continue;
+                        SourcebookInfo objSource = new SourcebookInfo
+                        {
+                            Code = strCode
+                        };
+
+                        try
+                        {
+                            string strTemp = string.Empty;
+                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                && !string.IsNullOrEmpty(strTemp))
+                            {
+                                string[] strParts = strTemp.Split('|');
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
+                                    objSource.Path = string.Empty;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
+                            }
+                        }
+                        catch (System.Security.SecurityException)
+                        {
+                            //swallow this
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            //swallow this
+                        }
+
+                        s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                        s_DicCustomSourcebookCodes.TryAdd(strCode);
+                    }
+                }
             }
             catch
             {
@@ -1934,6 +2042,174 @@ namespace Chummer
             finally
             {
                 Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+            }
+        }
+
+        public static void ReloadCustomSourcebookInfos(CancellationToken token = default)
+        {
+            s_intSourcebookInfosLoadingStatus = 0;
+            while (s_intSourcebookInfosLoadingStatus != 2)
+            {
+                if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) == 0)
+                {
+                    try
+                    {
+                        foreach (string strCode in s_DicCustomSourcebookCodes)
+                        {
+                            if (s_DicSourcebookInfos.TryRemove(strCode, out SourcebookInfo objInfo))
+                                objInfo.Dispose();
+                        }
+
+                        s_DicCustomSourcebookCodes.Clear();
+                        foreach (CharacterSettings objCustomSettings in SettingsManager.LoadedCharacterSettings.Values)
+                        {
+                            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
+                                             objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
+                                         .SelectAndCacheExpression("/chummer/books/book", token: token))
+                            {
+                                string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)
+                                    ?.Value;
+                                if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
+                                    continue;
+                                SourcebookInfo objSource = new SourcebookInfo
+                                {
+                                    Code = strCode
+                                };
+
+                                try
+                                {
+                                    string strTemp = string.Empty;
+                                    if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                        && !string.IsNullOrEmpty(strTemp))
+                                    {
+                                        string[] strParts = strTemp.Split('|');
+                                        objSource.Path = strParts[0];
+                                        if (string.IsNullOrEmpty(objSource.Path))
+                                        {
+                                            objSource.Path = string.Empty;
+                                            objSource.Offset = 0;
+                                        }
+                                        else
+                                        {
+                                            if (!File.Exists(objSource.Path))
+                                                objSource.Path = string.Empty;
+                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                                objSource.Offset = intTmp;
+                                        }
+                                    }
+                                }
+                                catch (System.Security.SecurityException)
+                                {
+                                    //swallow this
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    //swallow this
+                                }
+
+                                s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                                s_DicCustomSourcebookCodes.TryAdd(strCode);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
+                        throw;
+                    }
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+                    }
+                }
+
+                if (s_intSourcebookInfosLoadingStatus != 2)
+                    Utils.SafeSleep(token);
+            }
+        }
+
+        public static async Task ReloadCustomSourcebookInfosAsync(CancellationToken token = default)
+        {
+            s_intSourcebookInfosLoadingStatus = 0;
+            while (s_intSourcebookInfosLoadingStatus != 2)
+            {
+                if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) == 0)
+                {
+                    try
+                    {
+                        foreach (string strCode in s_DicCustomSourcebookCodes)
+                        {
+                            if (s_DicSourcebookInfos.TryRemove(strCode, out SourcebookInfo objInfo))
+                                objInfo.Dispose();
+                        }
+
+                        s_DicCustomSourcebookCodes.Clear();
+                        foreach (CharacterSettings objCustomSettings in (await SettingsManager
+                                     .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)).Values)
+                        {
+                            foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
+                                         await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
+                                             .ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                     .SelectAndCacheExpression("/chummer/books/book", token: token))
+                            {
+                                string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)
+                                    ?.Value;
+                                if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
+                                    continue;
+                                SourcebookInfo objSource = new SourcebookInfo
+                                {
+                                    Code = strCode
+                                };
+
+                                try
+                                {
+                                    string strTemp = string.Empty;
+                                    if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                        && !string.IsNullOrEmpty(strTemp))
+                                    {
+                                        string[] strParts = strTemp.Split('|');
+                                        objSource.Path = strParts[0];
+                                        if (string.IsNullOrEmpty(objSource.Path))
+                                        {
+                                            objSource.Path = string.Empty;
+                                            objSource.Offset = 0;
+                                        }
+                                        else
+                                        {
+                                            if (!File.Exists(objSource.Path))
+                                                objSource.Path = string.Empty;
+                                            if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                                objSource.Offset = intTmp;
+                                        }
+                                    }
+                                }
+                                catch (System.Security.SecurityException)
+                                {
+                                    //swallow this
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    //swallow this
+                                }
+
+                                s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                                s_DicCustomSourcebookCodes.TryAdd(strCode);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
+                        throw;
+                    }
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+                    }
+                }
+
+                if (s_intSourcebookInfosLoadingStatus != 2)
+                    await Utils.SafeSleepAsync(token);
             }
         }
 

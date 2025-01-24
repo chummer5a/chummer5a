@@ -1666,6 +1666,7 @@ namespace Chummer
             await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos, token)
                             .ConfigureAwait(false);
             await GlobalSettings.SetSourcebookInfosAsync(_dicSourcebookInfos, false, token).ConfigureAwait(false);
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
         /// <summary>
