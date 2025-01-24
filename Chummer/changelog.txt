@@ -76,6 +76,7 @@ Application Changes:
 - The addware bonus node now properly supports adding essence holes and anti-holes.
 - Gear markups now properly apply when adding gear as plugins to cyberware, vehicles, and items inside of vehicles.
 - Fixed inability to rename Vehicles in Career mode.
+- Lifestyle qualities that are restricted to a specific base lifestyle type now work properly.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -114,6 +115,7 @@ Data Changes:
 - Added Adept to discount for Dedicated Spellslinger.
 - Actioneer Business Clothes' integrated holster is now properly a concealable holster.
 - PI-Tac Programs can now be filtered for when buying new gear.
+- Added Shadows in Focus: Butte version of Dug a Hole.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership

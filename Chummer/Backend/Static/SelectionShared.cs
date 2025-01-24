@@ -2764,14 +2764,18 @@ namespace Chummer
                     }
 
                     return new Tuple<bool, string>(objParent is Lifestyle objLifestyle
-                        ? objLifestyle.BaseLifestyle == strNodeInnerText
+                        ? (blnSync
+                            ? objLifestyle.BaseLifestyle
+                            : await objLifestyle.GetBaseLifestyleAsync(token).ConfigureAwait(false)) == strNodeInnerText
                         : blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.Lifestyles.Any(
                                 x => x.BaseLifestyle == strNodeInnerText, token)
                             : await (await objCharacter.GetLifestylesAsync(token)
                                     .ConfigureAwait(false))
-                                .AnyAsync(x => x.BaseLifestyle == strNodeInnerText,
+                                .AnyAsync(
+                                    async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) ==
+                                               strNodeInnerText,
                                     token)
                                 .ConfigureAwait(false), strName);
                 }

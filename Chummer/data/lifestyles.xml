@@ -987,7 +987,9 @@
       <bonus>
         <selecttext />
       </bonus>
-      <allowed>Traveler</allowed>
+      <required>
+        <lifestyle>Traveler</lifestyle>
+      </required>
       <source>RF</source>
       <page>226</page>
     </quality>
@@ -1043,7 +1045,9 @@
       <category>Negative</category>
       <lp>2</lp>
       <cost>-1000</cost>
-      <allowed>Traveler</allowed>
+      <required>
+        <lifestyle>Traveler</lifestyle>
+      </required>
       <source>RF</source>
       <page>226</page>
     </quality>
@@ -1299,8 +1303,23 @@
       <category>Positive</category>
       <lp>0</lp>
       <cost>2000</cost>
+      <required>
+        <lifestyle>Bolt Hole</lifestyle>
+      </required>
       <source>HT</source>
       <page>141</page>
+    </quality>
+    <quality>
+      <id>1b783f81-b0f7-4273-a648-856002aac7d6</id>
+      <name>Dug a Hole</name>
+      <category>Positive</category>
+      <lp>0</lp>
+      <cost>2000</cost>
+      <required>
+        <lifestyle>Bolt Hole</lifestyle>
+      </required>
+      <source>SFB</source>
+      <page>20</page>
     </quality>
     <quality>
       <id>1fa52cd4-4342-4511-91dc-6d452032d2c7</id>

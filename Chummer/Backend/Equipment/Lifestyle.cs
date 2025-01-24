@@ -301,9 +301,10 @@ namespace Chummer.Backend.Equipment
 
                 if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
-                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlLifestyle, Name,
-                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
-                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false);
+                    Notes = await CommonFunctions.GetBookNotesAsync(objXmlLifestyle, _strName,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), _strSource, _strPage,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter,
+                        token).ConfigureAwait(false);
                 }
 
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
@@ -318,25 +319,25 @@ namespace Chummer.Backend.Equipment
                     await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
                 XPathNavigator xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + ']');
+                        "/chummer/comforts/comfort[name = " + _strBaseLifestyle.CleanXPath() + ']');
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
                 // Area.
                 xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + ']');
+                        "/chummer/neighborhoods/neighborhood[name = " + _strBaseLifestyle.CleanXPath() + ']');
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
                 // Security.
                 xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + ']');
+                        "/chummer/securities/security[name = " + _strBaseLifestyle.CleanXPath() + ']');
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
                 CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
-                if (await objSettings.BookEnabledAsync("HT", token).ConfigureAwait(false) || objSettings.AllowFreeGrids)
+                if (await objSettings.BookEnabledAsync("HT", token).ConfigureAwait(false) || await objSettings.GetAllowFreeGridsAsync(token).ConfigureAwait(false))
                 {
                     using (XmlNodeList lstGridNodes = objXmlLifestyle.SelectNodes("freegrids/freegrid"))
                     {
@@ -367,10 +368,26 @@ namespace Chummer.Backend.Equipment
                             await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn,
                                 token: token).ConfigureAwait(false);
                             await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
-                            await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            await _lstLifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
                         }
                     }
                 }
+
+                List<LifestyleQuality> lstToRemove = new List<LifestyleQuality>(await _lstLifestyleQualities.GetCountAsync(token).ConfigureAwait(false));
+                await _lstLifestyleQualities.ForEachAsync(async objQuality =>
+                {
+                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Selected)
+                    {
+                        XPathNavigator xmlQuality = await objQuality.GetNodeXPathAsync(token).ConfigureAwait(false);
+                        if (!await xmlQuality.RequirementsMetAsync(_objCharacter, this, token: token)
+                                .ConfigureAwait(false))
+                        {
+                            lstToRemove.Add(objQuality);
+                        }
+                    }
+                }, token).ConfigureAwait(false);
+                foreach (LifestyleQuality objQuality in lstToRemove)
+                    await objQuality.RemoveAsync(false, token).ConfigureAwait(false);
             }
             finally
             {
@@ -1583,25 +1600,28 @@ namespace Chummer.Backend.Equipment
                     using (LockObject.EnterWriteLock())
                     {
                         // This needs a handler for translations, will fix later.
+                        LifestyleQuality objNotAHomeQuality = LifestyleQualities.FirstOrDefault(
+                                                                  x => x.Name == "Not a Home"
+                                                                       && x.OriginSource == QualitySource.BuiltIn)
+                                                              ?? LifestyleQualities.FirstOrDefault(x =>
+                                                                  x.Name == "Not a Home");
                         if (value == "Bolt Hole")
                         {
-                            if (LifestyleQualities.All(x => x.Name != "Not a Home"))
+                            if (objNotAHomeQuality == null)
                             {
                                 XmlNode xmlQuality
                                     = xmlLifestyleDocument.SelectSingleNode(
                                         "/chummer/qualities/quality[name = \"Not a Home\"]");
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-
                                 LifestyleQualities.Add(objQuality);
                             }
+                            else if (objNotAHomeQuality.OriginSource != QualitySource.BuiltIn)
+                                objNotAHomeQuality.OriginSource = QualitySource.BuiltIn;
                         }
-                        else
+                        else if (objNotAHomeQuality?.OriginSource == QualitySource.BuiltIn)
                         {
-                            foreach (LifestyleQuality objNotAHomeQuality in LifestyleQualities
-                                         .Where(x => x.Name == "Not a Home"
-                                                     || x.Name == "Dug a Hole").ToList())
-                                objNotAHomeQuality.Remove(false);
+                            objNotAHomeQuality.OriginSource = QualitySource.Selected;
                         }
 
                         XmlNode xmlLifestyle
@@ -1691,30 +1711,41 @@ namespace Chummer.Backend.Equipment
                 {
                     token.ThrowIfCancellationRequested();
                     // This needs a handler for translations, will fix later.
+                    LifestyleQuality objNotAHomeQuality = await LifestyleQualities.FirstOrDefaultAsync(
+                                                              async x =>
+                                                                  await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                                  "Not a Home" &&
+                                                                  await x.GetOriginSourceAsync(token)
+                                                                      .ConfigureAwait(false) == QualitySource.BuiltIn,
+                                                              token: token).ConfigureAwait(false)
+                                                          ?? await LifestyleQualities.FirstOrDefaultAsync(
+                                                              async x => await x.GetNameAsync(token)
+                                                                  .ConfigureAwait(false) == "Not a Home",
+                                                              token: token).ConfigureAwait(false);
                     if (value == "Bolt Hole")
                     {
-                        if (await LifestyleQualities.AllAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) != "Not a Home",
-                                token: token).ConfigureAwait(false))
+                        if (objNotAHomeQuality == null)
                         {
                             XmlNode xmlQuality
                                 = xmlLifestyleDocument.SelectSingleNode(
                                     "/chummer/qualities/quality[name = \"Not a Home\"]");
                             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn, token: token).ConfigureAwait(false);
+                            await objQuality
+                                .CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn, token: token)
+                                .ConfigureAwait(false);
                             await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
                         }
-                    }
-                    else
-                    {
-                        foreach (LifestyleQuality objNotAHomeQuality in await LifestyleQualities
-                                     .ToListAsync(async x =>
-                                     {
-                                         string strName = await x.GetNameAsync(token).ConfigureAwait(false);
-                                         return strName == "Not a Home" || strName == "Dug a Hole";
-                                     }, token: token).ConfigureAwait(false))
+                        else if (await objNotAHomeQuality.GetOriginSourceAsync(token).ConfigureAwait(false) !=
+                                 QualitySource.BuiltIn)
                         {
-                            await objNotAHomeQuality.RemoveAsync(false, token).ConfigureAwait(false);
+                            await objNotAHomeQuality.SetOriginSourceAsync(QualitySource.BuiltIn, token)
+                                .ConfigureAwait(false);
                         }
+                    }
+                    else if (objNotAHomeQuality != null
+                             && await objNotAHomeQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.BuiltIn)
+                    {
+                        await objNotAHomeQuality.SetOriginSourceAsync(QualitySource.Selected, token).ConfigureAwait(false);
                     }
 
                     XmlNode xmlLifestyle

@@ -169,7 +169,7 @@ namespace Chummer
                 }
 
                 string strAllowed = string.Empty;
-                if (_objParentLifestyle.StyleType != LifestyleType.Standard)
+                if (await _objParentLifestyle.GetStyleTypeAsync().ConfigureAwait(false) != LifestyleType.Standard)
                 {
                     strAllowed = objXmlQuality.SelectSingleNodeAndCacheExpression("allowed")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strAllowed))
@@ -403,11 +403,6 @@ namespace Chummer
                     }
                 }
 
-                if (await _objParentLifestyle.GetBaseLifestyleAsync(token).ConfigureAwait(false) != "Bolt Hole")
-                {
-                    sbdFilter.Append(" and (name != \"Dug a Hole\")");
-                }
-
                 if (_objParentLifestyle.StyleType == LifestyleType.Standard)
                 {
                     sbdFilter.Append(" and (source = \"SR5\" or category = \"Contracts\")");
@@ -423,8 +418,7 @@ namespace Chummer
             List<ListItem> lstLifestyleQuality = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
             try
             {
-                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token)
-                                                      .ConfigureAwait(false);
+                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlQuality in _objXPathDocument.Select("/chummer/qualities/quality" + strFilter))
                 {
                     string strId = objXmlQuality.SelectSingleNodeAndCacheExpression("id", token)?.Value;
