@@ -583,12 +583,14 @@ namespace Chummer
             await chkTrustFund.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objLifestyle,
                     nameof(Lifestyle.IsTrustFundEligible), x => x.GetIsTrustFundEligibleAsync())
                 .ConfigureAwait(false);
-            await chkPrimaryTenant.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+            await chkSplitCostWithRoommates.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
                 _objLifestyle,
-                nameof(Lifestyle.PrimaryTenant),
+                nameof(Lifestyle.SplitCostWithRoommates),
                 (x, y) => x.CheckedChanged += y,
-                x => x.GetPrimaryTenantAsync(),
-                (x, y) => x.SetPrimaryTenantAsync(y)).ConfigureAwait(false);
+                x => x.GetSplitCostWithRoommatesAsync(),
+                (x, y) => x.SetSplitCostWithRoommatesAsync(y)).ConfigureAwait(false);
+            bool blnEnabled = await _objLifestyle.GetRoommatesAsync().ConfigureAwait(false) > 0;
+            await chkSplitCostWithRoommates.DoThreadSafeAsync(x => x.Enabled = blnEnabled);
             await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                     nameof(Lifestyle.DisplayTotalMonthlyCost),
                     x => x.GetDisplayTotalMonthlyCostAsync())
@@ -752,10 +754,14 @@ namespace Chummer
             if (_intSkipRefresh > 0)
                 return;
 
-            if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
+            if (nudRoommates.Value == 0)
             {
-                chkPrimaryTenant.Checked = true;
+                if (chkSplitCostWithRoommates.Checked)
+                    chkSplitCostWithRoommates.Checked = false;
+                chkSplitCostWithRoommates.Enabled = false;
             }
+            else
+                chkSplitCostWithRoommates.Enabled = true;
         }
 
         private async void cmdAddQuality_Click(object sender, EventArgs e)
@@ -1045,7 +1051,7 @@ namespace Chummer
 
             await _objLifestyle.SetTrustFundAsync(await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await _objLifestyle.SetRoommatesAsync(await _objLifestyle.GetTrustFundAsync(token).ConfigureAwait(false) ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false) ;
-            await _objLifestyle.SetPrimaryTenantAsync(await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            await _objLifestyle.SetSplitCostWithRoommatesAsync(await chkSplitCostWithRoommates.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false), token).ConfigureAwait(false);
             if (await _objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) != LifestyleType.Standard)
                 await _objLifestyle.SetBonusLPAsync(await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false), token).ConfigureAwait(false);
 

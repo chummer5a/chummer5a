@@ -76,7 +76,7 @@ namespace Chummer
             this.lblSecurity = new System.Windows.Forms.Label();
             this.nudPercentage = new Chummer.NumericUpDownEx();
             this.nudRoommates = new Chummer.NumericUpDownEx();
-            this.chkPrimaryTenant = new Chummer.ColorableCheckBox();
+            this.chkSplitCostWithRoommates = new Chummer.ColorableCheckBox();
             this.chkTrustFund = new Chummer.ColorableCheckBox();
             this.tlpRightTop = new System.Windows.Forms.TableLayoutPanel();
             this.cboBaseLifestyle = new Chummer.ElasticComboBox();
@@ -626,7 +626,7 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.nudPercentage, 1, 7);
             this.tlpRight.Controls.Add(this.lblPercentage, 0, 7);
             this.tlpRight.Controls.Add(this.nudRoommates, 1, 6);
-            this.tlpRight.Controls.Add(this.chkPrimaryTenant, 2, 6);
+            this.tlpRight.Controls.Add(this.chkSplitCostWithRoommates, 2, 6);
             this.tlpRight.Controls.Add(this.lblAreaLabel, 0, 3);
             this.tlpRight.Controls.Add(this.chkTrustFund, 2, 7);
             this.tlpRight.Controls.Add(this.tlpRightTop, 0, 0);
@@ -787,20 +787,20 @@ namespace Chummer
             this.nudRoommates.TabIndex = 15;
             this.nudRoommates.ValueChanged += new System.EventHandler(this.nudRoommates_ValueChanged);
             // 
-            // chkPrimaryTenant
+            // chkSplitCostWithRoommates
             // 
-            this.chkPrimaryTenant.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPrimaryTenant.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.chkPrimaryTenant, 5);
-            this.chkPrimaryTenant.DefaultColorScheme = true;
-            this.chkPrimaryTenant.Location = new System.Drawing.Point(191, 174);
-            this.chkPrimaryTenant.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkPrimaryTenant.Name = "chkPrimaryTenant";
-            this.chkPrimaryTenant.Size = new System.Drawing.Size(97, 17);
-            this.chkPrimaryTenant.TabIndex = 74;
-            this.chkPrimaryTenant.Tag = "Label_SelectAdvancedLifestyle_Tenant";
-            this.chkPrimaryTenant.Text = "Primary Tenant";
-            this.chkPrimaryTenant.UseVisualStyleBackColor = true;
+            this.chkSplitCostWithRoommates.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSplitCostWithRoommates.AutoSize = true;
+            this.tlpRight.SetColumnSpan(this.chkSplitCostWithRoommates, 5);
+            this.chkSplitCostWithRoommates.DefaultColorScheme = true;
+            this.chkSplitCostWithRoommates.Location = new System.Drawing.Point(191, 174);
+            this.chkSplitCostWithRoommates.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSplitCostWithRoommates.Name = "chkSplitCostWithRoommates";
+            this.chkSplitCostWithRoommates.Size = new System.Drawing.Size(97, 17);
+            this.chkSplitCostWithRoommates.TabIndex = 74;
+            this.chkSplitCostWithRoommates.Tag = "Label_SelectAdvancedLifestyle_Tenant";
+            this.chkSplitCostWithRoommates.Text = "Split Costs";
+            this.chkSplitCostWithRoommates.UseVisualStyleBackColor = true;
             // 
             // chkTrustFund
             // 
@@ -1127,7 +1127,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblQualitySourceLabel;
         private System.Windows.Forms.Label lblQualityCost;
         private System.Windows.Forms.Label lblQualityCostLabel;
-        private Chummer.ColorableCheckBox chkPrimaryTenant;
+        private Chummer.ColorableCheckBox chkSplitCostWithRoommates;
         private System.Windows.Forms.Label lblSecurityTotal;
         private System.Windows.Forms.Label lblAreaTotal;
         private System.Windows.Forms.Label lblComfortTotal;

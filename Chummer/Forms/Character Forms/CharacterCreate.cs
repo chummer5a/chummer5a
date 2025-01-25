@@ -18407,7 +18407,7 @@ namespace Chummer
                     string strCostLabelString;
                     string strIncrementString;
                     // Change the Cost/Month label.
-                    switch (objLifestyle.IncrementType)
+                    switch (await objLifestyle.GetIncrementTypeAsync(token).ConfigureAwait(false))
                     {
                         case LifestyleIncrement.Day:
                             strCostLabelString = await LanguageManager
@@ -18440,11 +18440,11 @@ namespace Chummer
                         GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Label_LifestylePermanent", token: token)
                                              .ConfigureAwait(false),
-                        objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalSettings.CultureInfo));
+                        (await objLifestyle.GetIncrementsRequiredForPermanentAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
                     await lblLifestyleMonthsLabel.DoThreadSafeAsync(x => x.Text = strMonthsLabel, token)
                                                  .ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
+                    if (!string.IsNullOrEmpty(await objLifestyle.GetBaseLifestyleAsync(token).ConfigureAwait(false)))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdQualities))
@@ -18471,6 +18471,29 @@ namespace Chummer
                                                 objImprovement.Value.ToString(
                                                     "+#,0;-#,0;0", GlobalSettings.CultureInfo))
                                             .Append("%]");
+                            }
+
+                            if (await objLifestyle.GetStyleTypeAsync(token).ConfigureAwait(false) == LifestyleType.Standard)
+                            {
+                                foreach (Improvement objImprovement in await ImprovementManager
+                                             .GetCachedImprovementListForValueOfAsync(
+                                                 CharacterObject,
+                                                 Improvement.ImprovementType.BasicLifestyleCost,
+                                                 token: token).ConfigureAwait(false))
+                                {
+                                    if (sbdQualities.Length > 0)
+                                        sbdQualities.AppendLine(',');
+
+                                    sbdQualities.Append(await CharacterObject
+                                            .GetObjectNameAsync(objImprovement, token: token)
+                                            .ConfigureAwait(false))
+                                        .Append(await LanguageManager.GetStringAsync("String_Space", token: token)
+                                            .ConfigureAwait(false)).Append('[')
+                                        .Append(
+                                            objImprovement.Value.ToString(
+                                                "+#,0;-#,0;0", GlobalSettings.CultureInfo))
+                                        .Append("%]");
+                                }
                             }
 
                             await lblLifestyleQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString(), token)

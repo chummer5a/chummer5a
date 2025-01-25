@@ -82,7 +82,7 @@ namespace Chummer.Backend.Equipment
         private int _intBonusLP;
         private int _intLP;
         private bool _blnAllowBonusLP;
-        private bool _blnIsPrimaryTenant;
+        private bool _blnSplitCostWithRoommates;
         private decimal _decCostForSecurity;
         private decimal _decCostForArea;
         private decimal _decCostForComforts;
@@ -484,8 +484,8 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
                 objWriter.WriteElementString("trustfund", _blnTrustFund.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("primarytenant",
-                                             _blnIsPrimaryTenant.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("splitcostwithroommates",
+                    _blnSplitCostWithRoommates.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("type", _eType.ToString());
                 objWriter.WriteElementString("increment", _eIncrement.ToString());
                 objWriter.WriteElementString("sourceid", SourceIDString);
@@ -667,13 +667,12 @@ namespace Chummer.Backend.Equipment
 
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetBoolFieldQuickly("trustfund", ref _blnTrustFund);
-                if (objNode["primarytenant"] == null)
+                if (!objNode.TryGetBoolFieldQuickly("splitcostwithroommates", ref _blnSplitCostWithRoommates))
                 {
-                    _blnIsPrimaryTenant = _intRoommates == 0;
-                }
-                else
-                {
-                    objNode.TryGetBoolFieldQuickly("primarytenant", ref _blnIsPrimaryTenant);
+                    if (objNode.TryGetBoolFieldQuickly("primarytenant", ref _blnSplitCostWithRoommates))
+                        _blnSplitCostWithRoommates = !_blnSplitCostWithRoommates;
+                    else
+                        _blnSplitCostWithRoommates = _intRoommates > 0;
                 }
 
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -1815,7 +1814,11 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Sum(x => x.LPCost);
+                    return LP - Comforts - Area - Security +
+                           // HT 140: Bonus LP cannot exceed 2x base LP
+                           Math.Min(Roommates + BonusLP - LifestyleQualities.Sum(x => x.LPCost < 0, x => x.LPCost),
+                               2*LP) -
+                           LifestyleQualities.Sum(x => x.LPCost > 0, x => x.LPCost);
             }
         }
 
@@ -1827,9 +1830,14 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 return LP - await GetComfortsAsync(token).ConfigureAwait(false)
                           - await GetAreaAsync(token).ConfigureAwait(false)
-                          - await GetSecurityAsync(token).ConfigureAwait(false) + await GetRoommatesAsync(token).ConfigureAwait(false) +
-                       await GetBonusLPAsync(token).ConfigureAwait(false) -
-                       await LifestyleQualities.SumAsync(x => x.GetLPCostAsync(token), token: token).ConfigureAwait(false);
+                          - await GetSecurityAsync(token).ConfigureAwait(false)
+                       // HT 140: Bonus LP cannot exceed 2x base LP
+                       + Math.Min(await GetRoommatesAsync(token).ConfigureAwait(false) +
+                                  await GetBonusLPAsync(token).ConfigureAwait(false) -
+                                  await LifestyleQualities
+                                      .SumAsync(x => x.LPCost < 0, x => x.GetLPCostAsync(token), token)
+                                      .ConfigureAwait(false), 2*LP) -
+                       await LifestyleQualities.SumAsync(x => x.LPCost > 0, x => x.GetLPCostAsync(token), token).ConfigureAwait(false);
             }
             finally
             {
@@ -2802,30 +2810,30 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether the character is the primary tenant for the Lifestyle.
+        /// Whether the character shares the costs of the Lifestyle with their roommates.
         /// </summary>
-        public bool PrimaryTenant
+        public bool SplitCostWithRoommates
         {
             get
             {
                 using (LockObject.EnterReadLock())
-                    return _blnIsPrimaryTenant || Roommates == 0 || TrustFund;
+                    return _blnSplitCostWithRoommates && Roommates > 0 && !TrustFund;
             }
             set
             {
                 using (LockObject.EnterReadLock())
                 {
-                    if (_blnIsPrimaryTenant == value)
+                    if (_blnSplitCostWithRoommates == value)
                         return;
                 }
 
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    if (_blnIsPrimaryTenant == value)
+                    if (_blnSplitCostWithRoommates == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _blnIsPrimaryTenant = value;
+                        _blnSplitCostWithRoommates = value;
                         OnPropertyChanged();
                     }
                 }
@@ -2833,17 +2841,17 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether the character is the primary tenant for the Lifestyle.
+        /// Whether the character shares the costs of the Lifestyle with their roommates.
         /// </summary>
-        public async Task<bool> GetPrimaryTenantAsync(CancellationToken token = default)
+        public async Task<bool> GetSplitCostWithRoommatesAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _blnIsPrimaryTenant || await GetRoommatesAsync(token).ConfigureAwait(false) == 0 ||
-                       await GetTrustFundAsync(token).ConfigureAwait(false);
+                return _blnSplitCostWithRoommates && await GetRoommatesAsync(token).ConfigureAwait(false) > 0 &&
+                       !await GetTrustFundAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -2852,16 +2860,16 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether the character is the primary tenant for the Lifestyle.
+        /// Whether the character shares the costs of the Lifestyle with their roommates.
         /// </summary>
-        public async Task SetPrimaryTenantAsync(bool value, CancellationToken token = default)
+        public async Task SetSplitCostWithRoommatesAsync(bool value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_blnIsPrimaryTenant == value)
+                if (_blnSplitCostWithRoommates == value)
                     return;
             }
             finally
@@ -2873,14 +2881,14 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_blnIsPrimaryTenant == value)
+                if (_blnSplitCostWithRoommates == value)
                     return;
                 IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    _blnIsPrimaryTenant = value;
-                    await OnPropertyChangedAsync(nameof(PrimaryTenant), token).ConfigureAwait(false);
+                    _blnSplitCostWithRoommates = value;
+                    await OnPropertyChangedAsync(nameof(SplitCostWithRoommates), token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -3274,61 +3282,6 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public decimal CostMultiplier
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                {
-                    decimal d = (Roommates + Area + Comforts + Security) * 10
-                                + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost,
-                                    false,
-                                    BaseLifestyle, true, true)
-                                + LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn,
-                                    lq => lq.Multiplier);
-                    if (StyleType == LifestyleType.Standard)
-                    {
-                        d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost)
-                             + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost,
-                                 false, BaseLifestyle);
-                    }
-                    return Math.Max((d + 100M) / 100, 0);
-                }
-            }
-        }
-
-        public async Task<decimal> GetCostMultiplierAsync(CancellationToken token = default)
-        {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                decimal d = (await GetRoommatesAsync(token).ConfigureAwait(false) + await GetAreaAsync(token).ConfigureAwait(false) +
-                             await GetComfortsAsync(token).ConfigureAwait(false) + await GetSecurityAsync(token).ConfigureAwait(false)) * 10
-                            + await ImprovementManager.ValueOfAsync(_objCharacter,
-                                Improvement.ImprovementType.LifestyleCost,
-                                false,
-                                await GetBaseLifestyleAsync(token).ConfigureAwait(false), true, true, token).ConfigureAwait(false)
-                            + await LifestyleQualities
-                                .SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
-                                    lq => lq.GetMultiplierAsync(token), token: token)
-                                .ConfigureAwait(false);
-                if (StyleType == LifestyleType.Standard)
-                {
-                    d += await ImprovementManager
-                        .ValueOfAsync(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, token: token)
-                        .ConfigureAwait(false) + await ImprovementManager.ValueOfAsync(_objCharacter,
-                        Improvement.ImprovementType.BasicLifestyleCost, false, await GetBaseLifestyleAsync(token).ConfigureAwait(false),
-                        token: token).ConfigureAwait(false);
-                }
-                return Math.Max((d + 100M) / 100, 0);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
         /// <summary>
         /// Total Area of the Lifestyle, including all Lifestyle qualities.
         /// </summary>
@@ -3636,65 +3589,127 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
+        /// Cost of the Lifestyle itself that is to be split among roommates if there are any. Does not include outing, service, and contract costs or character-based lifestyle cost adjustments.
         /// </summary>
-        public decimal BaseCost
-        {
-            get
-            {
-                using (LockObject.EnterReadLock())
-                    return Cost * (CostMultiplier + BaseCostMultiplier);
-            }
-        }
-
-        /// <summary>
-        /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
-        /// </summary>
-        public async Task<decimal> GetBaseCostAsync(CancellationToken token = default)
-        {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                return await GetCostAsync(token).ConfigureAwait(false) * (await GetCostMultiplierAsync(token).ConfigureAwait(false)
-                                                                          + await GetBaseCostMultiplierAsync(token).ConfigureAwait(false));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
-        /// </summary>
-        public decimal BaseCostMultiplier
+        public decimal CostPreSplit
         {
             get
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier)
-                           / 100.0m;
+                    // Follow steps on HT 139 before split.
+                    // Base cost
+                    decimal decCost = Cost;
+
+                    // Base cost multiplier
+                    decimal decMultiplier = LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier);
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + decMultiplier / 100.0m;
+
+                    // Add in costs from lifestyle categories.
+                    decMultiplier = Area + Comforts + Security;
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + 0.1m * decMultiplier;
+                    decCost += Area * CostForArea + Comforts * CostForComforts + Security * CostForSecurity;
+
+                    // Add costs from Entertainment Assets.
+                    decMultiplier =
+                        LifestyleQualities.Sum(
+                            x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                                 x.Category.Contains("Asset"),
+                            lq => lq.Multiplier);
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + decMultiplier / 100.0m;
+                    // Flat costs added after multipliers, as per HT 139
+                    decCost += LifestyleQualities.Sum(
+                        x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                             x.Category.Contains("Asset"),
+                        lq => lq.Cost);
+
+                    // Add costs from qualities that are not Entertainment Assets (or Contracts)
+                    decMultiplier =
+                        LifestyleQualities.Sum(
+                            x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                            lq => lq.Multiplier);
+                    if (decMultiplier != 0)
+                        decCost *= 1.0m + decMultiplier / 100.0m;
+                    // Flat costs added after multipliers, as per HT 139
+                    decCost += LifestyleQualities.Sum(
+                        x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                        lq => lq.Cost);
+
+                    // Shared lifestyle adjustment
+                    if (Roommates > 0)
+                        decCost *= 1.0m + 0.1m * Roommates;
+
+                    //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
+                    return Math.Max(decCost, 0);
                 }
             }
         }
 
         /// <summary>
-        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has.
+        /// Cost of the Lifestyle itself that is to be split among roommates if there are any. Does not include outing, service, and contract costs or character-based lifestyle cost adjustments.
         /// </summary>
-        public async Task<decimal> GetBaseCostMultiplierAsync(CancellationToken token = default)
+        public async Task<decimal> GetCostPreSplitAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await LifestyleQualities
-                    .SumAsync(
-                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn,
-                        lq => lq.GetBaseMultiplierAsync(token),
-                        token: token)
-                    .ConfigureAwait(false) / 100.0m;
+                // Follow steps on HT 139 before split.
+                // Base cost
+                decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
+
+                // Base cost multiplier
+                decimal decMultiplier = await LifestyleQualities.SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, lq => lq.GetBaseMultiplierAsync(token), token).ConfigureAwait(false) / 100.0m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+
+                // Add in costs from lifestyle categories.
+                int intArea = await GetAreaAsync(token).ConfigureAwait(false);
+                int intComforts = await GetComfortsAsync(token).ConfigureAwait(false);
+                int intSecurity = await GetSecurityAsync(token).ConfigureAwait(false);
+                decMultiplier = (intArea + intComforts + intSecurity) * 0.1m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+                decCost += intArea * CostForArea + intComforts * CostForComforts + intSecurity * CostForSecurity;
+
+                // Add costs from Entertainment Assets.
+                decMultiplier =
+                    await LifestyleQualities.SumAsync(
+                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                                   x.Category.Contains("Asset"),
+                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
+                    / 100.0m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+                // Flat costs added after multipliers, as per HT 139
+                decCost += await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
+                               x.Category.Contains("Asset"),
+                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+
+                // Add costs from qualities that are not Entertainment Assets (or Contracts)
+                decMultiplier =
+                    await LifestyleQualities.SumAsync(
+                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
+                    / 100.0m;
+                if (decMultiplier != 0)
+                    decCost *= 1.0m + decMultiplier;
+                // Flat costs added after multipliers, as per HT 139
+                decCost += await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
+                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+
+                // Shared lifestyle adjustment
+                int intRoommates = await GetRoommatesAsync(token).ConfigureAwait(false);
+                if (intRoommates > 0)
+                    decCost *= 1.0m + 0.1m * intRoommates;
+
+                //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
+                return Math.Max(decCost, 0);
             }
             finally
             {
@@ -3715,37 +3730,83 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!TrustFund)
                     {
-                        decReturn += BaseCost;
+                        decReturn += CostPreSplit;
+
+                        // Follow HT 139 from Split step onwards
+                        if (SplitCostWithRoommates)
+                        {
+                            decReturn /= Roommates + 1.0m;
+                        }
                     }
 
-                    decReturn += Area * CostForArea;
-                    decReturn += Comforts * CostForComforts;
-                    decReturn += Security * CostForSecurity;
-
-                    decimal decExtraAssetCost = 0;
-                    decimal decContractCost = 0;
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(
-                                 x => x.OriginSource != QualitySource.BuiltIn))
+                    // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
+                    List<Improvement> lstImprovements = ImprovementManager.GetCachedImprovementListForValueOf(
+                        _objCharacter,
+                        Improvement.ImprovementType.LifestyleCost,
+                        strImprovedName: BaseLifestyle, blnIncludeNonImproved: true);
+                    if (StyleType == LifestyleType.Standard)
                     {
-                        //Add the flat cost from Qualities.
+                        lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                            _objCharacter,
+                            Improvement.ImprovementType.BasicLifestyleCost,
+                            strImprovedName: BaseLifestyle, blnIncludeNonImproved: true));
+                    }
+                    // Dependents and metatype adjustments are handled separately
+                    List<Quality> lstDependentsQualities =
+                        _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
+                    decimal decDependents = 0;
+                    decimal decMetatype = 0;
+                    decimal decOther = 0;
+                    foreach (Improvement objImprovement in lstImprovements)
+                    {
+                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
+                            lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
+                            decDependents += objImprovement.Value;
+                        else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
+                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
+                            decMetatype += objImprovement.Value;
+                        else
+                            decOther += objImprovement.Value;
+                    }
+                    // Dependents first
+                    if (decDependents != 0)
+                        decReturn *= 1.0m + decDependents / 100.0m;
+                    // Metatype next
+                    if (decMetatype != 0)
+                        decReturn *= 1.0m + decMetatype / 100.0m;
+                    // Finally, everything else
+                    if (decOther != 0)
+                        decReturn *= 1.0m + decOther / 100.0m;
+
+                    // Add in Outings and Services costs
+                    decimal decContractCost = 0;
+                    decimal decOutingsAndServicesCost = 0;
+                    decimal decMultiplier = 0;
+                    decimal decBaseMultiplier = 0;
+                    foreach (LifestyleQuality objQuality in LifestyleQualities)
+                    {
+                        if (objQuality.OriginSource == QualitySource.BuiltIn)
+                            continue;
                         if (objQuality.Type == QualityType.Contracts)
                             decContractCost += objQuality.Cost;
-                        else
-                            decExtraAssetCost += objQuality.Cost;
+                        else if (objQuality.Type == QualityType.Entertainment && !objQuality.Category.Contains("Asset"))
+                        {
+                            decOutingsAndServicesCost += objQuality.Cost;
+                            decMultiplier += objQuality.Multiplier;
+                            decBaseMultiplier += objQuality.BaseMultiplier;
+                        }
                     }
+                    if (decMultiplier != 0)
+                        decReturn *= 1.0m + decMultiplier / 100.0m;
+                    decReturn += decOutingsAndServicesCost;
+                    if (decBaseMultiplier != 0)
+                        decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
 
-                    decReturn += decExtraAssetCost;
-
-                    //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
-                    decReturn = Math.Max(decReturn, 0);
-
-                    if (!PrimaryTenant)
-                    {
-                        decReturn /= Roommates + 1.0m;
-                    }
-
+                    // Apply final percentage modifier
                     decReturn *= Percentage / 100;
 
+                    // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
                     switch (IncrementType)
                     {
                         case LifestyleIncrement.Day:
@@ -3776,39 +3837,88 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
                 if (!await GetTrustFundAsync(token).ConfigureAwait(false))
                 {
-                    decReturn += await GetBaseCostAsync(token).ConfigureAwait(false);
-                }
+                    decReturn += await GetCostPreSplitAsync(token).ConfigureAwait(false);
 
-                decReturn += await GetAreaAsync(token).ConfigureAwait(false) * CostForArea
-                             + await GetComfortsAsync(token).ConfigureAwait(false) * CostForComforts
-                             + await GetSecurityAsync(token).ConfigureAwait(false) * CostForSecurity;
-
-                decimal decExtraAssetCost = 0;
-                decimal decContractCost = await LifestyleQualities.SumAsync(async objQuality =>
-                {
-                    if (objQuality.OriginSource != QualitySource.BuiltIn)
+                    // Follow HT 139 from Split step onwards
+                    if (await GetSplitCostWithRoommatesAsync(token).ConfigureAwait(false))
                     {
-                        //Add the flat cost from Qualities.
-                        if (objQuality.Type == QualityType.Contracts)
-                            return await objQuality.GetCostAsync(token).ConfigureAwait(false);
-                        decExtraAssetCost += await objQuality.GetCostAsync(token).ConfigureAwait(false);
+                        decReturn /= await GetRoommatesAsync(token).ConfigureAwait(false) + 1.0m;
                     }
-
-                    return 0;
-                }, token: token).ConfigureAwait(false);
-
-                decReturn += decExtraAssetCost;
-
-                //Qualities may have reduced the cost below zero. No spooky mansion payouts here, so clamp it to zero or higher.
-                decReturn = Math.Max(decReturn, 0);
-
-                if (!await GetPrimaryTenantAsync(token).ConfigureAwait(false))
-                {
-                    decReturn /= await GetRoommatesAsync(token).ConfigureAwait(false) + 1.0m;
                 }
 
+                string strBaseLifestyle = await GetBaseLifestyleAsync(token).ConfigureAwait(false);
+                // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
+                List<Improvement> lstImprovements = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                    _objCharacter,
+                    Improvement.ImprovementType.LifestyleCost,
+                    strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
+                if (StyleType == LifestyleType.Standard)
+                {
+                    lstImprovements.AddRange(await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                        _objCharacter,
+                        Improvement.ImprovementType.BasicLifestyleCost,
+                        strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true, token: token).ConfigureAwait(false));
+                }
+                // Dependents and metatype adjustments are handled separately
+                List<Quality> lstDependentsQualities =
+                    await _objCharacter.Qualities.ToListAsync(
+                        async x => (await x.GetNameAsync(token).ConfigureAwait(false)).Contains("Dependent"), token).ConfigureAwait(false);
+                decimal decDependents = 0;
+                decimal decMetatype = 0;
+                decimal decOther = 0;
+                foreach (Improvement objImprovement in lstImprovements)
+                {
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
+                        lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
+                        decDependents += objImprovement.Value;
+                    else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
+                             || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                             || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
+                        decMetatype += objImprovement.Value;
+                    else
+                        decOther += objImprovement.Value;
+                }
+                // Dependents first
+                if (decDependents != 0)
+                    decReturn *= 1.0m + decDependents / 100.0m;
+                // Metatype next
+                if (decMetatype != 0)
+                    decReturn *= 1.0m + decMetatype / 100.0m;
+                // Finally, everything else
+                if (decOther != 0)
+                    decReturn *= 1.0m + decOther / 100.0m;
+
+                // Add in Outings and Services costs
+                decimal decContractCost = 0;
+                decimal decMultiplier = 0;
+                decimal decBaseMultiplier = 0;
+                decimal decOutingsAndServicesCost = await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, async x =>
+                    {
+                        switch (x.Type)
+                        {
+                            case QualityType.Contracts:
+                                decContractCost += await x.GetCostAsync(token).ConfigureAwait(false);
+                                break;
+                            case QualityType.Entertainment when !x.Category.Contains("Asset"):
+                            {
+                                decMultiplier += await x.GetMultiplierAsync(token).ConfigureAwait(false);
+                                decBaseMultiplier += await x.GetBaseMultiplierAsync(token).ConfigureAwait(false);
+                                return await x.GetCostAsync(token).ConfigureAwait(false);
+                            }
+                        }
+                        return 0;
+                    }, token).ConfigureAwait(false);
+                if (decMultiplier != 0)
+                    decReturn *= 1.0m + decMultiplier / 100.0m;
+                decReturn += decOutingsAndServicesCost;
+                if (decBaseMultiplier != 0)
+                    decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
+
+                // Apply final percentage modifier
                 decReturn *= await GetPercentageAsync(token).ConfigureAwait(false) / 100;
 
+                // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
                 switch (IncrementType)
                 {
                     case LifestyleIncrement.Day:
@@ -4072,46 +4182,39 @@ namespace Chummer.Backend.Equipment
                                 new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
                             )
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost), x => x.TrustFund, (x, t) => x.GetTrustFundAsync(t),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CostPreSplit), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(PrimaryTenant),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(StyleType)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(SplitCostWithRoommates), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t),
                             new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => !x.PrimaryTenant, async (x, t) => !await x.GetPrimaryTenantAsync(t).ConfigureAwait(false),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(PrimaryTenant))
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => x.SplitCostWithRoommates, async (x, t) => await x.GetSplitCostWithRoommatesAsync(t).ConfigureAwait(false),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(SplitCostWithRoommates))
                         ),
                         new DependencyGraphNode<string, Lifestyle>(nameof(IncrementType)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(Percentage))
                     )
                 ),
-                new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost),
+                new DependencyGraphNode<string, Lifestyle>(nameof(CostPreSplit),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Cost)),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(CostMultiplier),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(StyleType)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
-                    ),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseCostMultiplier),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
-                    )
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalLP),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LP)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Security)),

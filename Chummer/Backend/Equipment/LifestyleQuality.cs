@@ -2290,7 +2290,7 @@ namespace Chummer.Backend.Equipment
                                     new DependencyGraphNode<string, LifestyleQuality>(nameof(IsFreeByLifestyle),
                                         new DependencyGraphNode<string, LifestyleQuality>(nameof(OriginSource)),
                                         new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => x.OriginSource != QualitySource.BuiltIn, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn),
-                                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => x.OriginSource != QualitySource.BuiltIn && x.UseLPCost, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn && !await x.GetUseLPCostAsync(t).ConfigureAwait(false))
+                                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => x.OriginSource != QualitySource.BuiltIn, async (x, t) => await x.GetOriginSourceAsync(t).ConfigureAwait(false) != QualitySource.BuiltIn)
                                     )
                                 ),
                                 new DependencyGraphNode<string, LifestyleQuality>(nameof(CostString), x => !x.CostFree, async (x, t) => !await x.GetCostFreeAsync(t).ConfigureAwait(false))
@@ -2304,8 +2304,8 @@ namespace Chummer.Backend.Equipment
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(LPCost),
                     new DependencyGraphNode<string, LifestyleQuality>(nameof(LPFree),
                         new DependencyGraphNode<string, LifestyleQuality>(nameof(Free)),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free && x.CanBeFreeByLifestyle, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false) && !await x.GetCanBeFreeByLifestyleAsync(t).ConfigureAwait(false)),
-                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => !x.Free && !x.UseLPCost, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false) && !await x.GetUseLPCostAsync(t).ConfigureAwait(false))
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(UseLPCost), x => !x.Free, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false)),
+                        new DependencyGraphNode<string, LifestyleQuality>(nameof(CanBeFreeByLifestyle), x => !x.Free, async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false))
                     )
                 ),
                 new DependencyGraphNode<string, LifestyleQuality>(nameof(BaseMultiplier),
@@ -2380,14 +2380,18 @@ namespace Chummer.Backend.Equipment
                             if (setNamesOfChangedProperties.Contains(nameof(LPCost)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
 
-                            if (setNamesOfChangedProperties.Contains(nameof(Cost)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
-
-                            if (setNamesOfChangedProperties.Contains(nameof(Multiplier)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-
-                            if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                            if ((setNamesOfChangedProperties.Contains(nameof(Cost))
+                                 || setNamesOfChangedProperties.Contains(nameof(BaseMultiplier))
+                                 || setNamesOfChangedProperties.Contains(nameof(Multiplier)))
+                                && OriginSource != QualitySource.BuiltIn)
+                            {
+                                if (Type == QualityType.Contracts || (Type == QualityType.Entertainment &&
+                                                                      !Category.Contains("Asset")))
+                                    setParentLifestyleNamesOfChangedProperties.Add(
+                                        nameof(Lifestyle.TotalMonthlyCost));
+                                else
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostPreSplit));
+                            }
 
                             if (setNamesOfChangedProperties.Contains(nameof(ComfortsMaximum)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComfortsMaximum));
@@ -2534,14 +2538,18 @@ namespace Chummer.Backend.Equipment
                             if (setNamesOfChangedProperties.Contains(nameof(LPCost)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalLP));
 
-                            if (setNamesOfChangedProperties.Contains(nameof(Cost)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalMonthlyCost));
-
-                            if (setNamesOfChangedProperties.Contains(nameof(Multiplier)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostMultiplier));
-
-                            if (setNamesOfChangedProperties.Contains(nameof(BaseMultiplier)))
-                                setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.BaseCostMultiplier));
+                            if ((setNamesOfChangedProperties.Contains(nameof(Cost))
+                                 || setNamesOfChangedProperties.Contains(nameof(BaseMultiplier))
+                                 || setNamesOfChangedProperties.Contains(nameof(Multiplier)))
+                                && await GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn)
+                            {
+                                if (Type == QualityType.Contracts || (Type == QualityType.Entertainment &&
+                                                                      !Category.Contains("Asset")))
+                                    setParentLifestyleNamesOfChangedProperties.Add(
+                                        nameof(Lifestyle.TotalMonthlyCost));
+                                else
+                                    setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.CostPreSplit));
+                            }
 
                             if (setNamesOfChangedProperties.Contains(nameof(ComfortsMaximum)))
                                 setParentLifestyleNamesOfChangedProperties.Add(nameof(Lifestyle.TotalComfortsMaximum));

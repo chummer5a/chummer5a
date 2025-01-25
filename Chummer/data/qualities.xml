@@ -4217,7 +4217,6 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus>
-        <basiclifestylecost>10</basiclifestylecost>
         <lifestylecost>10</lifestylecost>
       </bonus>
       <source>RF</source>
@@ -17732,7 +17731,6 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus>
-        <basiclifestylecost>10</basiclifestylecost>
         <lifestylecost>10</lifestylecost>
       </bonus>
       <source>TCT</source>

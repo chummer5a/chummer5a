@@ -8492,7 +8492,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
-      <text>Primary Tenant</text>
+      <text>Split Costs</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
