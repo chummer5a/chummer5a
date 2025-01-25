@@ -1977,21 +1977,21 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject,
                         Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                        SkillCategory, true, token)).Count > 0)
+                        SkillCategory, true, token).ConfigureAwait(false)).Count > 0)
                 {
                     return 0;
                 }
 
                 if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject,
                         Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                        SkillGroup, true, token)).Count > 0)
+                        SkillGroup, true, token).ConfigureAwait(false)).Count > 0)
                 {
                     return 0;
                 }
 
                 if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject,
                         Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                        await GetDictionaryKeyAsync(token).ConfigureAwait(false), true, token)).Count > 0)
+                        await GetDictionaryKeyAsync(token).ConfigureAwait(false), true, token).ConfigureAwait(false)).Count > 0)
                 {
                     return 0;
                 }
@@ -4852,18 +4852,18 @@ namespace Chummer.Backend.Skills
                             Improvement objImprovement
                                 = (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                       CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                                      SkillCategory, true, token))
+                                      SkillCategory, true, token).ConfigureAwait(false))
                                   .FirstOrDefault()
                                   ?? (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                       CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                                      SkillGroup, true, token))
+                                      SkillGroup, true, token).ConfigureAwait(false))
                                   .FirstOrDefault()
                                   ?? (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                       CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                                      await GetDictionaryKeyAsync(token), true, token))
+                                      await GetDictionaryKeyAsync(token).ConfigureAwait(false), true, token).ConfigureAwait(false))
                                   .FirstOrDefault()
                                   ?? (await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                      CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization, token: token))
+                                      CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization, token: token).ConfigureAwait(false))
                                   .FirstOrDefault();
                             sbdReturn.Append(strSpace).Append(await CharacterObject
                                 .GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false));
