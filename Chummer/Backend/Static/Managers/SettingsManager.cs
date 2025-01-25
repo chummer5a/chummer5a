@@ -387,6 +387,8 @@ namespace Chummer
                 await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
         private static async Task RemoveSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
@@ -445,6 +447,8 @@ namespace Chummer
                 s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out _);
                 await objSettingsToDelete.DisposeAsync().ConfigureAwait(false);
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
         private static async Task ReloadSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
@@ -510,6 +514,8 @@ namespace Chummer
                 await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
         private static async Task<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)

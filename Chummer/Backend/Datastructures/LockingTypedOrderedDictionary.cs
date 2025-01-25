@@ -300,7 +300,6 @@ namespace Chummer
                     if (!objValue.Equals(other._dicUnorderedData[objKey]))
                         return false;
                 }
-
             }
 
             return true;
@@ -345,7 +344,6 @@ namespace Chummer
                         if (!objValue.Equals(other._dicUnorderedData[objKey]))
                             return false;
                     }
-
                 }
                 finally
                 {

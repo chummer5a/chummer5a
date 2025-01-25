@@ -79,6 +79,7 @@ Application Changes:
 - Lifestyle qualities that are restricted to a specific base lifestyle type now work properly.
 - Added dedicated improvement types for removing skill defaulting penalties. They are `removeskillcategorydefaultpenalty`, `removeskillgroupdefaultpenalty`, and `removeskilldefaultpenalty` and remove skill defaulting penalties for the specified skill category, skill group, and skill, respectively. If any of them are left blank, they will remove all skill defaulting penalties.
 - Costs for shared advanced lifestyles, as well as lifestyles in general, now properly follow the order of operations specified in HT pp. 139-140.
+- Associating PDF files with sourcebooks added by custom data is now possible, as is the functionality to automatically open them to a specific page when a source entry is clicked on.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
