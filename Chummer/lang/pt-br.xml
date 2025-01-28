@@ -3452,7 +3452,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"Esta combinação Raça/Metavariante está incompleta e será completada em um lançamento futuro. Tentar criar um personagem com esta combinação Foi Possível produzir resultados inesperados."</text>
+      <text>Não suportado</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>Esta combinação Raça/Metavariante está incompleta e será completada em um lançamento futuro. Tentar criar um personagem com esta combinação Foi Possível produzir resultados inesperados.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>

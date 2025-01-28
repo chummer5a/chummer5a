@@ -8671,7 +8671,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"Diese Kombination von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen."</text>
+      <text>Nicht unterstützt</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>Diese Kombination von Rasse/Metavariante ist aktuell noch unvollständig und wird in künftige Versionen vervollständigt. Versuche, einen Charakter mit dieser Kombination zu erstellen, können zu unerwarteten Ergebnissen führen.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>

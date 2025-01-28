@@ -7967,7 +7967,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>“该种族/泛亚种搭配现在还未完成，会在未来发布版本中完成。尝试以该搭配创建该角色，可能会导致预料外的结果。”</text>
+      <text>不支持</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>该种族/泛亚种搭配现在还未完成，会在未来发布版本中完成。尝试以该搭配创建该角色，可能会导致预料外的结果。</text>
     </string>
     <string>
       <key>Node_SelectedQualities</key>

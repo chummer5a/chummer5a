@@ -34,14 +34,14 @@ namespace Chummer
     {
         private readonly ThreadSafeList<VehicleMod> _lstMods;
         private int _intLoading = 1;
-        private readonly bool _blnAllowEditOptions;
+        private bool _blnAllowEditOptions;
         private readonly Vehicle _objVehicle;
         private readonly Character _objCharacter;
         private WeaponMount _objMount;
         private readonly XmlDocument _xmlDoc;
         private readonly XPathNavigator _xmlDocXPath;
         private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-        private readonly decimal _decOldBaseCost;
+        private decimal _decOldBaseCost;
 
         private CancellationTokenSource _objUpdateInfoCancellationTokenSource;
         private CancellationTokenSource _objRefreshComboBoxesCancellationTokenSource;
@@ -84,9 +84,7 @@ namespace Chummer
             };
             _objVehicle = objVehicle;
             _objMount = objWeaponMount;
-            // Needed for cost calculations
-            _decOldBaseCost = _objCharacter.Created ? _objVehicle.TotalCost : 0;
-            _blnAllowEditOptions = _objMount == null || (!_objMount.IncludedInVehicle && !_objCharacter.Created);
+            _blnAllowEditOptions = objWeaponMount == null;
             _xmlDoc = _objCharacter.LoadData("vehicles.xml");
             _xmlDocXPath = _objCharacter.LoadDataXPath("vehicles.xml");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(
@@ -101,10 +99,21 @@ namespace Chummer
         {
             try
             {
+                // Needed for cost calculations
+                if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
+                {
+                    _decOldBaseCost = await _objVehicle.GetTotalCostAsync(_objGenericToken).ConfigureAwait(false);
+                }
+                else if (_objMount != null)
+                {
+                    _blnAllowEditOptions = !_objMount.IncludedInVehicle;
+                }
+
                 XPathNavigator xmlVehicleNode = await _objVehicle.GetNodeXPathAsync(_objGenericToken).ConfigureAwait(false);
                 // Populate the Weapon Mount Category list.
-                string strSizeFilter = "category = \'Size\' and " + await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false);
-                if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false);
+                string strSizeFilter = "category = \'Size\' and " + await objSettings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false);
+                if (!_objVehicle.IsDrone && await objSettings.GetDroneModsAsync(_objGenericToken).ConfigureAwait(false))
                     strSizeFilter += " and not(optionaldrone)";
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSize))
                 {
@@ -449,8 +458,9 @@ namespace Chummer
                     await _objMount.Mods.AddAsync(objMod, _objGenericToken).ConfigureAwait(false);
                 }
 
-                if (_objCharacter.Created)
+                if (await _objCharacter.GetCreatedAsync(_objGenericToken).ConfigureAwait(false))
                 {
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false);
                     bool blnRemoveMountAfterCheck = false;
                     // Check the item's Cost and make sure the character can afford it.
                     if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false))
@@ -467,12 +477,12 @@ namespace Chummer
                         // Multiply the cost if applicable.
                         switch ((await _objMount.TotalAvailTupleAsync(token: _objGenericToken).ConfigureAwait(false)).Suffix)
                         {
-                            case 'R' when _objCharacter.Settings.MultiplyRestrictedCost:
-                                decCost *= _objCharacter.Settings.RestrictedCostMultiplier;
+                            case 'R' when objSettings.MultiplyRestrictedCost:
+                                decCost *= objSettings.RestrictedCostMultiplier;
                                 break;
 
-                            case 'F' when _objCharacter.Settings.MultiplyForbiddenCost:
-                                decCost *= _objCharacter.Settings.ForbiddenCostMultiplier;
+                            case 'F' when objSettings.MultiplyForbiddenCost:
+                                decCost *= objSettings.ForbiddenCostMultiplier;
                                 break;
                         }
 
@@ -496,7 +506,7 @@ namespace Chummer
                     }
 
                     // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-                    if (_objCharacter.Settings.EnforceCapacity)
+                    if (await objSettings.GetEnforceCapacityAsync(_objGenericToken).ConfigureAwait(false))
                     {
                         // New mount, so temporarily add it to parent vehicle to make sure we can capture everything
                         if (_objMount.Parent == null)
@@ -505,9 +515,9 @@ namespace Chummer
                             await _objVehicle.WeaponMounts.AddAsync(_objMount, _objGenericToken).ConfigureAwait(false);
                         }
                         bool blnOverCapacity;
-                        if (await _objCharacter.Settings.BookEnabledAsync("R5", _objGenericToken).ConfigureAwait(false))
+                        if (await objSettings.BookEnabledAsync("R5", _objGenericToken).ConfigureAwait(false))
                         {
-                            if (_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
+                            if (_objVehicle.IsDrone && await objSettings.GetDroneModsAsync(_objGenericToken).ConfigureAwait(false))
                                 blnOverCapacity
                                     = await _objVehicle.GetDroneModSlotsUsedAsync(_objGenericToken)
                                                        .ConfigureAwait(false) > await _objVehicle

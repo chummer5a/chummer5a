@@ -11564,6 +11564,74 @@ namespace Chummer
             }
         }
 
+        private async void tsEditWeaponMount_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                            .ConfigureAwait(false) is WeaponMount
+                        objWeaponMount))
+                    return;
+
+                Vehicle objVehicle = objWeaponMount.Parent;
+                decimal decOldVehicleCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
+                string strOldName = await objWeaponMount.GetCurrentDisplayNameShortAsync(GenericToken)
+                    .ConfigureAwait(false);
+                using (ThreadSafeForm<CreateWeaponMount> frmCreateWeaponMount
+                       = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
+                           () => new CreateWeaponMount(objVehicle, CharacterObject, objWeaponMount),
+                           GenericToken).ConfigureAwait(false))
+                {
+                    if (await frmCreateWeaponMount.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                        == DialogResult.Cancel)
+                        return;
+                }
+
+                decimal decCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOldVehicleCost;
+
+                // Multiply the cost if applicable.
+                char chrAvail = (await objWeaponMount.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
+                switch (chrAvail)
+                {
+                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                        break;
+
+                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                        break;
+                }
+
+                string strNewName = await objWeaponMount.GetCurrentDisplayNameShortAsync(GenericToken)
+                    .ConfigureAwait(false);
+
+                if (strNewName != strOldName)
+                {
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                        .ConfigureAwait(false);
+                    strNewName = strOldName + strSpace + "->" + strSpace + strNewName;
+                }
+
+                // Create the Expense Log Entry.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(decCost * -1,
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseVehicleRetrofit", token: GenericToken)
+                        .ConfigureAwait(false), strNewName), ExpenseType.Nuyen,
+                    DateTime.Now);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
+                await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
+
+                ExpenseUndo objUndo = new ExpenseUndo();
+                objUndo.CreateNuyen(NuyenExpenseType.ModifyVehicleWeaponMount, objWeaponMount.InternalId);
+                objExpense.Undo = objUndo;
+                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
             try
@@ -13854,6 +13922,16 @@ namespace Chummer
                                 await objVehicleMod.DeleteVehicleModAsync(token: GenericToken).ConfigureAwait(false);
                         }
                             break;
+
+                        case NuyenExpenseType.ModifyVehicleWeaponMount:
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this, await LanguageManager.GetStringAsync("Message_UndoExpenseNotSupported", token: GenericToken).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("String_NotSupported", token: GenericToken)
+                                    .ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning).ConfigureAwait(false);
+                            return;
+                        }
 
                         case NuyenExpenseType.AddArmor:
                         {

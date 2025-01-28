@@ -7473,7 +7473,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
+      <text>未対応</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>

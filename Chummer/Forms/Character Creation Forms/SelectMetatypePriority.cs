@@ -2484,8 +2484,12 @@ namespace Chummer
                 {
                     if (objXmlMetavariantPriorityNode == null)
                     {
-                        await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("String_NotSupported", token: token).ConfigureAwait(false),
-                            Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                                await LanguageManager.GetStringAsync("Message_MetatypeNotSupported", token: token)
+                                    .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("String_NotSupported", token: token)
+                                    .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token)
+                            .ConfigureAwait(false);
                         await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     }
                     else

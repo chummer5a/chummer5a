@@ -8332,7 +8332,11 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"Cette combinaison race / métavariante est incomplète et sera complétée dans une prochaine version. Tenter de créer un personnage avec cette combinaison peut avoir des résultats inattendus."</text>
+      <text>Non pris en charge</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>Cette combinaison race / métavariante est incomplète et sera complétée dans une prochaine version. Tenter de créer un personnage avec cette combinaison peut avoir des résultats inattendus.</text>
     </string>
     <string>
       <key>String_Metatype</key>

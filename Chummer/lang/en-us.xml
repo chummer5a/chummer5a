@@ -4381,7 +4381,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
+      <text>Not Supported</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>
@@ -5830,6 +5834,10 @@
     <string>
       <key>Checkbox_ShowChart</key>
       <text>Show Chart</text>
+    </string>
+    <string>
+      <key>Message_UndoExpenseNotSupported</key>
+      <text>Undoing this type of expense is not currently supported. Please adjust the corresponding item(s) manually.</text>
     </string>
     <!-- End Region-->
     <!-- Region Calendar Tab -->

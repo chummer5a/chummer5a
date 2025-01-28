@@ -1395,6 +1395,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsEditWeaponMount = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponAccessoryGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponAccessoryGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -22524,8 +22525,9 @@ namespace Chummer
             // cmsWeaponMount
             // 
             this.cmsWeaponMount.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsWeaponMountWeapons,
             this.tsWeaponMountLocation,
+            this.tsWeaponMountWeapons,
+            this.tsEditWeaponMount,
             this.tsVehicleWeaponMountNotes});
             this.cmsWeaponMount.Name = "cmsWeapon";
             this.cmsWeaponMount.Size = new System.Drawing.Size(167, 70);
@@ -22606,6 +22608,21 @@ namespace Chummer
             this.tsWeaponMountLocation.Size = new System.Drawing.Size(166, 22);
             this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
             this.tsWeaponMountLocation.Text = "Rename &Location";
+            // 
+            // tsEditWeaponMount
+            // 
+            this.tsEditWeaponMount.Image = global::Chummer.Properties.Resources.hard_hat_military_edit_16;
+            this.tsEditWeaponMount.ImageDpi120 = global::Chummer.Properties.Resources.hard_hat_military_edit_20;
+            this.tsEditWeaponMount.ImageDpi144 = global::Chummer.Properties.Resources.hard_hat_military_edit_24;
+            this.tsEditWeaponMount.ImageDpi192 = global::Chummer.Properties.Resources.hard_hat_military_edit_32;
+            this.tsEditWeaponMount.ImageDpi288 = global::Chummer.Properties.Resources.hard_hat_military_edit_48;
+            this.tsEditWeaponMount.ImageDpi384 = global::Chummer.Properties.Resources.hard_hat_military_edit_64;
+            this.tsEditWeaponMount.ImageDpi96 = global::Chummer.Properties.Resources.hard_hat_military_edit_16;
+            this.tsEditWeaponMount.Name = "tsEditWeaponMount";
+            this.tsEditWeaponMount.Size = new System.Drawing.Size(180, 22);
+            this.tsEditWeaponMount.Tag = "Menu_EditWeaponMount";
+            this.tsEditWeaponMount.Text = "&Edit Weapon Mount";
+            this.tsEditWeaponMount.Click += new System.EventHandler(this.tsEditWeaponMount_Click);
             // 
             // tsVehicleWeaponMountNotes
             // 
@@ -24420,6 +24437,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountAddAccessory;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountAddUnderbarrel;
         private DpiFriendlyToolStripMenuItem tsWeaponMountLocation;
+        private DpiFriendlyToolStripMenuItem tsEditWeaponMount;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountNotes;
         private FlowLayoutPanel flpMagicianSpellButtons;
         private ElasticComboBox cboArmorFirewall;
