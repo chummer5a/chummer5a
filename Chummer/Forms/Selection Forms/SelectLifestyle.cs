@@ -590,7 +590,7 @@ namespace Chummer
                 x => x.GetSplitCostWithRoommatesAsync(),
                 (x, y) => x.SetSplitCostWithRoommatesAsync(y)).ConfigureAwait(false);
             bool blnEnabled = await _objLifestyle.GetRoommatesAsync().ConfigureAwait(false) > 0;
-            await chkSplitCostWithRoommates.DoThreadSafeAsync(x => x.Enabled = blnEnabled);
+            await chkSplitCostWithRoommates.DoThreadSafeAsync(x => x.Enabled = blnEnabled).ConfigureAwait(false);
             await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
                     nameof(Lifestyle.DisplayTotalMonthlyCost),
                     x => x.GetDisplayTotalMonthlyCostAsync())

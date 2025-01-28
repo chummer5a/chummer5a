@@ -2209,7 +2209,7 @@ namespace Chummer
                 }
 
                 if (s_intSourcebookInfosLoadingStatus != 2)
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
             }
         }
 

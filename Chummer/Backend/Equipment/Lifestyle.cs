@@ -4182,12 +4182,12 @@ namespace Chummer.Backend.Equipment
                                 new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
                             )
                         ),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CostPreSplit), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CostPreSplit), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
                         new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
                         new DependencyGraphNode<string, Lifestyle>(nameof(StyleType)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(SplitCostWithRoommates), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(SplitCostWithRoommates), x => !x.TrustFund, async (x, t) => !await x.GetTrustFundAsync(t).ConfigureAwait(false),
                             new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
                             new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
                         ),
