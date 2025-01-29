@@ -120,6 +120,7 @@ Data Changes:
 - Actioneer Business Clothes' integrated holster is now properly a concealable holster.
 - PI-Tac Programs can now be filtered for when buying new gear.
 - Added Shadows in Focus: Butte version of Dug a Hole.
+- Removed the Delnar Skills Remake (Lite) custom dataset because it cannot properly be implemented in Chummer at its current time.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
