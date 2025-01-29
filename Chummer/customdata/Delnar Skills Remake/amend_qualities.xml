@@ -103,7 +103,7 @@
           <name>Command</name>
           <condition>Leadership</condition>
         </specificskill>
-        <specificskill xpathfilter="name = 'Negotiation'">
+        <specificskill xpathfilter="name = 'Negotiation' or name = 'Con'">
           <name>Persuade</name>
         </specificskill>
         <specificskill xpathfilter="name = 'Ritual Spellcasting'">
@@ -266,8 +266,8 @@
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Etiquette)'">
           <extracontains>Improved Ability (skill) (Socialize)</extracontains>
         </focusbindingkarmacost>
-        <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Impersonation)'">
-          <extracontains>Improved Ability (skill) (Acting)</extracontains>
+        <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Con)'">
+          <extracontains>Improved Ability (skill) (Persuade)</extracontains>
         </focusbindingkarmacost>
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Instruction)'">
           <extracontains>Improved Ability (skill) (Command)</extracontains>

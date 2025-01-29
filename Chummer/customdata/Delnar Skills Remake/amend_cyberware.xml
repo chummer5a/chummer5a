@@ -24,8 +24,7 @@
       <bonus>
         <skilllinkedattribute amendoperation="remove" />
         <specificskill xpathfilter="name = 'Impersonation'">
-          <name>Acting</name>
-          <condition>Voice</condition>
+          <condition amendoperation="addnode">Vocal</condition>
         </specificskill>
         <specificskill xpathfilter="name = 'Disguise'">
           <name>Acting</name>
@@ -48,8 +47,7 @@
       </bonus>
       <pairbonus>
         <specificskill xpathfilter="name = 'Impersonation'">
-          <name>Acting</name>
-          <condition>Voice</condition>
+          <condition amendoperation="addnode">Vocal</condition>
         </specificskill>
         <specificskill xpathfilter="name = 'Disguise'">
           <name>Acting</name>
@@ -70,6 +68,16 @@
           <condition>Navigation</condition>
         </specificskill>
       </pairbonus>
+    </cyberware>
+    <cyberware>
+      <name>False Face</name>
+      <bonus>
+        <specificskill amendoperation="addnode">
+          <name>Impersonation</name>
+          <bonus>4</bonus>
+          <condition>Physical</condition>
+        </specificskill>
+      </bonus>
     </cyberware>
     <cyberware>
       <name>Neural Amplifiers (Limbic)</name>
