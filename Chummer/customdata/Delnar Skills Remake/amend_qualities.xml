@@ -322,6 +322,82 @@
       <hide />
     </quality>
     <quality>
+      <!-- Adept gets a 50% discount to Sorcery and Spellcasting (only active with Adept Spell, of course) -->
+      <name>Adept</name>
+      <bonus>
+        <skillgrouppointcostmultiplier amendoperation="addnode">
+          <name>Sorcery</name>
+          <val>50</val>
+        </skillgrouppointcostmultiplier>
+        <skillgroupkarmacostmultiplier amendoperation="addnode">
+          <name>Sorcery</name>
+          <val>50</val>
+        </skillgroupkarmacostmultiplier>
+        <activeskillpointcostmultiplier amendoperation="addnode">
+          <name>Spellcasting</name>
+          <val>50</val>
+        </activeskillpointcostmultiplier>
+        <activeskillkarmacostmultiplier amendoperation="addnode">
+          <name>Spellcasting</name>
+          <val>50</val>
+        </activeskillkarmacostmultiplier>
+      </bonus>
+    </quality>
+    <quality>
+      <!-- Apprentice gets a 50% discount to Spellcasting, Alchemy, Summoning, and Binding and a 40% discount to Sorcery and Conjuring (to compensate for their more limited selection options) -->
+      <name>Apprentice</name>
+      <bonus>
+        <skillgrouppointcostmultiplier amendoperation="addnode">
+          <name>Sorcery</name>
+          <val>60</val>
+        </skillgrouppointcostmultiplier>
+        <skillgroupkarmacostmultiplier amendoperation="addnode">
+          <name>Sorcery</name>
+          <val>60</val>
+        </skillgroupkarmacostmultiplier>
+        <skillgrouppointcostmultiplier amendoperation="addnode">
+          <name>Conjuring</name>
+          <val>60</val>
+        </skillgrouppointcostmultiplier>
+        <skillgroupkarmacostmultiplier amendoperation="addnode">
+          <name>Conjuring</name>
+          <val>60</val>
+        </skillgroupkarmacostmultiplier>
+        <activeskillpointcostmultiplier amendoperation="addnode">
+          <name>Spellcasting</name>
+          <val>50</val>
+        </activeskillpointcostmultiplier>
+        <activeskillpointcostmultiplier amendoperation="addnode">
+          <name>Alchemy</name>
+          <val>50</val>
+        </activeskillpointcostmultiplier>
+        <activeskillpointcostmultiplier amendoperation="addnode">
+          <name>Summoning</name>
+          <val>50</val>
+        </activeskillpointcostmultiplier>
+        <activeskillpointcostmultiplier amendoperation="addnode">
+          <name>Binding</name>
+          <val>50</val>
+        </activeskillpointcostmultiplier>
+        <activeskillkarmacostmultiplier amendoperation="addnode">
+          <name>Spellcasting</name>
+          <val>50</val>
+        </activeskillkarmacostmultiplier>
+        <activeskillkarmacostmultiplier amendoperation="addnode">
+          <name>Alchemy</name>
+          <val>50</val>
+        </activeskillkarmacostmultiplier>
+        <activeskillkarmacostmultiplier amendoperation="addnode">
+          <name>Summoning</name>
+          <val>50</val>
+        </activeskillkarmacostmultiplier>
+        <activeskillkarmacostmultiplier amendoperation="addnode">
+          <name>Binding</name>
+          <val>50</val>
+        </activeskillkarmacostmultiplier>
+      </bonus>
+    </quality>
+    <quality>
       <!-- Sharper Knife from Delnar's One Karma Qualities (Not needed because everything is now defaultable) -->
       <id>60dcf3b1-8b34-4c4f-a2f5-0131bd5dc13b</id>
       <hide />
