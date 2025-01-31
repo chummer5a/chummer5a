@@ -2959,26 +2959,178 @@ namespace Chummer
 
                 case ImprovementType.AttributePointCost:
                 case ImprovementType.AttributePointCostMultiplier:
+                {
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
+                    {
+                        if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.SpentPriorityPoints));
+                        }
+                    }
+                }
                     break;
 
                 case ImprovementType.ActiveSkillPointCost:
                 case ImprovementType.ActiveSkillPointCostMultiplier:
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                            {
+                                string strKey = objTargetSkill.DictionaryKey;
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(Skill.CurrentSpCost));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                _objCharacter.SkillsSection.Skills.FirstOrDefault(
+                                    x => x.DictionaryKey == ImprovedName);
+                            if (objTargetSkill != null)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CurrentSpCost));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost));
+                        }
+                    }
                     break;
 
                 case ImprovementType.SkillGroupPointCost:
                 case ImprovementType.SkillGroupPointCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                            {
+                                if (objTargetGroup.Name == ImprovedName || lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                        nameof(SkillGroup.CurrentSpCost));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            SkillGroup objTargetGroup =
+                                _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(x => x.Name == ImprovedName);
+                            if (objTargetGroup != null)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.CurrentSpCost));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                nameof(SkillGroup.CurrentSpCost));
+                        }
+                    }
+                }
                     break;
 
                 case ImprovementType.KnowledgeSkillPointCost:
                 case ImprovementType.KnowledgeSkillPointCostMultiplier:
+                    {
+                        if (!string.IsNullOrEmpty(ImprovedName))
+                        {
+                            if (lstExtraImprovedName?.Count > 0)
+                            {
+                                foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                                {
+                                    string strKey = objTargetSkill.DictionaryKey;
+                                    if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                               || ImprovedName == objTargetSkill.InternalId
+                                                               || lstExtraImprovedName.Contains(objTargetSkill.InternalId))
+                                    {
+                                        yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                            nameof(KnowledgeSkill.CurrentSpCost));
+                                    }
+                                    else
+                                    {
+                                        string strDisplayName = objTargetSkill.CurrentDisplayName;
+                                        if (strDisplayName == ImprovedName || lstExtraImprovedName.Contains(strDisplayName))
+                                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                                nameof(KnowledgeSkill.CurrentSpCost));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                KnowledgeSkill objTargetSkill
+                                    = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                                        x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
+                                if (objTargetSkill != null)
+                                {
+                                    yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(KnowledgeSkill.CurrentSpCost));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                            {
+                                yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(KnowledgeSkill.CurrentSpCost));
+                            }
+                        }
+                    }
                     break;
 
                 case ImprovementType.SkillCategoryPointCost:
                 case ImprovementType.SkillCategoryPointCostMultiplier:
+                {
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost));
+                    }
+
+                    foreach (KnowledgeSkill objTargetSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost));
+                    }
+                }
                     break;
 
                 case ImprovementType.SkillGroupCategoryPointCost:
                 case ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                {
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                    {
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
+                            || (lstExtraImprovedName != null
+                                && objTargetGroup.GetRelevantSkillCategories.Any(
+                                    lstExtraImprovedName.Contains)))
+                        {
+                            yield return new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objTargetGroup, nameof(SkillGroup.CurrentSpCost));
+                        }
+                    }
+                }
                     break;
 
                 case ImprovementType.NewSpellKarmaCost:
@@ -5392,26 +5544,189 @@ namespace Chummer
 
                 case ImprovementType.AttributePointCost:
                 case ImprovementType.AttributePointCostMultiplier:
+                {
+                    foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
+                    {
+                        if (string.IsNullOrEmpty(ImprovedName) || objCharacterAttrib.Abbrev == ImprovedName || lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) == true)
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objCharacterAttrib,
+                                nameof(CharacterAttrib.SpentPriorityPoints)));
+                        }
+                    }
+                }
                     break;
 
                 case ImprovementType.ActiveSkillPointCost:
                 case ImprovementType.ActiveSkillPointCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.Skills.ForEachAsync(async objTargetSkill =>
+                            {
+                                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetSkill,
+                                        nameof(Skill.CurrentSpCost)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Skill objTargetSkill =
+                                await _objCharacter.SkillsSection.Skills.FirstOrDefaultAsync(
+                                    async x => await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetSkill != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(Skill.CurrentSpCost)));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost)));
+                        }, token).ConfigureAwait(false);
+                    }
+                }
                     break;
 
                 case ImprovementType.SkillGroupPointCost:
                 case ImprovementType.SkillGroupPointCostMultiplier:
+                {
+                    if (!string.IsNullOrEmpty(ImprovedName))
+                    {
+                        if (lstExtraImprovedName?.Count > 0)
+                        {
+                            await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                            {
+                                if (objTargetGroup.Name == ImprovedName ||
+                                    lstExtraImprovedName.Contains(objTargetGroup.Name))
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                        objTargetGroup,
+                                        nameof(SkillGroup.CurrentSpCost)));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            SkillGroup objTargetGroup =
+                                await _objCharacter.SkillsSection.SkillGroups.FirstOrDefaultAsync(x => x.Name == ImprovedName, token).ConfigureAwait(false);
+                            if (objTargetGroup != null)
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                    nameof(SkillGroup.CurrentSpCost)));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
+                                nameof(SkillGroup.CurrentSpCost)));
+                        }, token).ConfigureAwait(false);
+                    }
+                }
                     break;
 
                 case ImprovementType.KnowledgeSkillPointCost:
                 case ImprovementType.KnowledgeSkillPointCostMultiplier:
+                    {
+                        if (!string.IsNullOrEmpty(ImprovedName))
+                        {
+                            if (lstExtraImprovedName?.Count > 0)
+                            {
+                                await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objTargetSkill =>
+                                {
+                                    string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                                    if (strKey == ImprovedName || lstExtraImprovedName.Contains(strKey)
+                                                               || ImprovedName == objTargetSkill.InternalId
+                                                               || lstExtraImprovedName.Contains(objTargetSkill
+                                                                   .InternalId))
+                                    {
+                                        lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                            objTargetSkill,
+                                            nameof(KnowledgeSkill.CurrentSpCost)));
+                                    }
+                                    else
+                                    {
+                                        string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                        if (strDisplayName == ImprovedName ||
+                                            lstExtraImprovedName.Contains(strDisplayName))
+                                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                                objTargetSkill,
+                                                nameof(KnowledgeSkill.CurrentSpCost)));
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                KnowledgeSkill objTargetSkill
+                                    = await _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefaultAsync(async x =>
+                                        await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == ImprovedName || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                if (objTargetSkill != null)
+                                {
+                                    lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                        nameof(KnowledgeSkill.CurrentSpCost)));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                            {
+                                lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                    nameof(KnowledgeSkill.CurrentSpCost)));
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
                     break;
 
                 case ImprovementType.SkillCategoryPointCost:
                 case ImprovementType.SkillCategoryPointCostMultiplier:
+                {
+                    // Keeping two enumerations separate helps avoid extra heap allocations
+                    await _objCharacter.SkillsSection.Skills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost)));
+                    }, token).ConfigureAwait(false);
+
+                    await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(objTargetSkill =>
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName ||
+                            lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetSkill,
+                                nameof(Skill.CurrentSpCost)));
+                    }, token).ConfigureAwait(false);
+                }
                     break;
 
                 case ImprovementType.SkillGroupCategoryPointCost:
                 case ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                {
+                    await _objCharacter.SkillsSection.SkillGroups.ForEachAsync(objTargetGroup =>
+                    {
+                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
+                            || (lstExtraImprovedName != null
+                                && objTargetGroup.GetRelevantSkillCategories.Any(
+                                    lstExtraImprovedName.Contains)))
+                        {
+                            lstReturn.Add(new Tuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objTargetGroup, nameof(SkillGroup.CurrentSpCost)));
+                        }
+                    }, token).ConfigureAwait(false);
+                }
                     break;
 
                 case ImprovementType.NewSpellKarmaCost:
