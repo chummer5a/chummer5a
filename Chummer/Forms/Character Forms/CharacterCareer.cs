@@ -5584,7 +5584,7 @@ namespace Chummer
                                         = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                     CritterPower objCritterPower = new CritterPower(objMerge);
-                                    objCritterPower.Create(objPower, 0, "Normal Weapons");
+                                    await objCritterPower.CreateAsync(objPower, 0, "Normal Weapons", token: GenericToken).ConfigureAwait(false);
                                     await objMerge.CritterPowers.AddAsync(objCritterPower, GenericToken).ConfigureAwait(false);
                                 }
 
@@ -5960,7 +5960,7 @@ namespace Chummer
                                                 objXmlPower.Attributes?["rating"]?.InnerText,
                                                 GlobalSettings.InvariantCultureInfo);
 
-                                            objPower.Create(objXmlCritterPower, intRating, strSelect);
+                                            await objPower.CreateAsync(objXmlCritterPower, intRating, strSelect, GenericToken).ConfigureAwait(false);
 
                                             await objMerge.CritterPowers.AddAsync(objPower, GenericToken)
                                                           .ConfigureAwait(false);
@@ -5979,7 +5979,7 @@ namespace Chummer
                                     = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
-                                objCritterPower.Create(objPower, 0, "Normal Weapons");
+                                await objCritterPower.CreateAsync(objPower, 0, "Normal Weapons", token: GenericToken).ConfigureAwait(false);
                                 await objMerge.CritterPowers.AddAsync(objCritterPower, GenericToken)
                                               .ConfigureAwait(false);
                             }
@@ -6132,7 +6132,7 @@ namespace Chummer
                                            .ConfigureAwait(false);
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
                 CritterPower objPower = new CritterPower(CharacterObject);
-                objPower.Create(objXmlPower);
+                await objPower.CreateAsync(objXmlPower, token: GenericToken).ConfigureAwait(false);
                 objPower.CountTowardsLimit = false;
                 if (objPower.InternalId.IsEmptyGuid())
                     return;
@@ -8037,7 +8037,7 @@ namespace Chummer
 
                         XmlNode objXmlPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickCritterPower.MyForm.SelectedPower);
                         CritterPower objPower = new CritterPower(CharacterObject);
-                        objPower.Create(objXmlPower, frmPickCritterPower.MyForm.SelectedRating);
+                        await objPower.CreateAsync(objXmlPower, frmPickCritterPower.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
                         objPower.PowerPoints = frmPickCritterPower.MyForm.PowerPoints;
                         if (objPower.InternalId.IsEmptyGuid())
                             continue;
@@ -9591,8 +9591,8 @@ namespace Chummer
                                     break;
                                 }
 
-                                objQuality.BP = await objSelectedQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
-                                objQuality.ContributeToLimit = await objSelectedQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false);
+                                await objQuality.SetBPAsync(await objSelectedQuality.GetBPAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objQuality.SetContributeToLimitAsync(await objSelectedQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                                 // Make sure the character has enough Karma to pay for the Quality.
                                 if (await objQuality.GetTypeAsync(GenericToken).ConfigureAwait(false) == QualityType.Positive)

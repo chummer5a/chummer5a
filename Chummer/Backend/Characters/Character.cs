@@ -3500,7 +3500,7 @@ namespace Chummer
                                         await objQuality.CreateAsync(objXmlQuality, objSource, lstWeapons,
                                             strForceValue,
                                             token: token).ConfigureAwait(false);
-                                        objQuality.ContributeToLimit = false;
+                                        await objQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
                                         await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
                                     }
                                     catch
@@ -3536,7 +3536,7 @@ namespace Chummer
                                     0,
                                     0, token).ConfigureAwait(false);
 
-                            objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                            await objPower.CreateAsync(objXmlCritterPower, intRating, strForcedValue, token).ConfigureAwait(false);
                             objPower.CountTowardsLimit = false;
                             await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
                             try
@@ -4085,7 +4085,7 @@ namespace Chummer
                                 if (objXmlCritterPower != null)
                                 {
                                     CritterPower objPower = new CritterPower(this);
-                                    objPower.Create(objXmlCritterPower, 0, string.Empty);
+                                    await objPower.CreateAsync(objXmlCritterPower, 0, string.Empty, token).ConfigureAwait(false);
                                     objPower.CountTowardsLimit = false;
                                     await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
 
@@ -4119,7 +4119,7 @@ namespace Chummer
                             if (objXmlCritterPower != null)
                             {
                                 CritterPower objPower = new CritterPower(this);
-                                objPower.Create(objXmlCritterPower, 0, string.Empty);
+                                await objPower.CreateAsync(objXmlCritterPower, 0, string.Empty, token).ConfigureAwait(false);
                                 objPower.CountTowardsLimit = false;
                                 await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
 
@@ -40620,7 +40620,7 @@ namespace Chummer
                                 xmlOldQuality["extra"]?.InnerText, token: token).ConfigureAwait(false);
                             if (xmlOldQuality["bp"] != null
                                 && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
-                                objQuality.BP = intOldBP / intRanks;
+                                await objQuality.SetBPAsync(intOldBP / intRanks, token).ConfigureAwait(false);
 
                             await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
                         }
@@ -50646,7 +50646,7 @@ namespace Chummer
                     if (objXmlPowerNode != null)
                     {
                         CritterPower objCritterPower = new CritterPower(this);
-                        objCritterPower.Create(objXmlPowerNode);
+                        await objCritterPower.CreateAsync(objXmlPowerNode, token).ConfigureAwait(false);
                         await CritterPowers.AddAsync(objCritterPower, token).ConfigureAwait(false);
                     }
                 }
@@ -50662,7 +50662,7 @@ namespace Chummer
                     if (objXmlPowerNode != null)
                     {
                         CritterPower objCritterPower = new CritterPower(this);
-                        objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
+                        await objCritterPower.CreateAsync(objXmlPowerNode, 0, "Normal Weapons", token).ConfigureAwait(false);
                         await CritterPowers.AddAsync(objCritterPower, token).ConfigureAwait(false);
                     }
                 }

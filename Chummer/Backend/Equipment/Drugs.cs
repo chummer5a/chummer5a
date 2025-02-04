@@ -1459,8 +1459,8 @@ namespace Chummer.Backend.Equipment
 
                                 if (blnDoesNotContributeToBP)
                                 {
-                                    objAddQuality.BP = 0;
-                                    objAddQuality.ContributeToLimit = false;
+                                    await objAddQuality.SetBPAsync(0, token).ConfigureAwait(false);
+                                    await objAddQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
                                 }
 
                                 await _objCharacter.Qualities.AddAsync(objAddQuality, token).ConfigureAwait(false);

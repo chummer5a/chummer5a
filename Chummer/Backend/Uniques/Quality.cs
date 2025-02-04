@@ -1188,7 +1188,6 @@ namespace Chummer
         /// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
-        ///
         public int BP
         {
             get
@@ -1229,7 +1228,6 @@ namespace Chummer
         /// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
-        ///
         public async Task<int> GetBPAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1256,6 +1254,25 @@ namespace Chummer
                 }
 
                 return intReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Number of Build Points the Quality costs.
+        /// </summary>
+        public async Task SetBPAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intBP, value) != value)
+                    await OnPropertyChangedAsync(nameof(BP), token).ConfigureAwait(false);
             }
             finally
             {
@@ -1662,6 +1679,50 @@ namespace Chummer
                            .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                Improvement.ImprovementType.FreeQuality, strName, token: token).ConfigureAwait(false)).Count
                        == 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Whether the Quality contributes towards the character's Quality BP limits.
+        /// </summary>
+        public async Task SetContributeToLimitAsync(bool value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnContributeToLimit == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            token.ThrowIfCancellationRequested();
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnContributeToLimit == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnContributeToLimit = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                await OnPropertyChangedAsync(nameof(ContributeToLimit), token).ConfigureAwait(false);
             }
             finally
             {

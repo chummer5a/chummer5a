@@ -5022,7 +5022,7 @@ namespace Chummer
                                             .ConfigureAwait(false))
                     .SelectSingleNode("/chummer/powers/power[name = \"Denial\"]");
                 CritterPower objPower = new CritterPower(CharacterObject);
-                objPower.Create(objXmlPower);
+                await objPower.CreateAsync(objXmlPower, token: GenericToken).ConfigureAwait(false);
                 objPower.CountTowardsLimit = false;
                 if (objPower.InternalId.IsEmptyGuid())
                     return;
@@ -6102,7 +6102,7 @@ namespace Chummer
 
                             XmlNode objXmlPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickCritterPower.MyForm.SelectedPower);
                             CritterPower objPower = new CritterPower(CharacterObject);
-                            objPower.Create(objXmlPower, frmPickCritterPower.MyForm.SelectedRating);
+                            await objPower.CreateAsync(objXmlPower, frmPickCritterPower.MyForm.SelectedRating, token: GenericToken).ConfigureAwait(false);
                             objPower.PowerPoints = frmPickCritterPower.MyForm.PowerPoints;
                             if (objPower.InternalId.IsEmptyGuid())
                                 continue;
@@ -6333,7 +6333,7 @@ namespace Chummer
                                         }
 
                                         if (frmPickQuality.MyForm.FreeCost)
-                                            objQuality.BP = 0;
+                                            await objQuality.SetBPAsync(0, GenericToken).ConfigureAwait(false);
 
                                         // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                                         bool blnAddItem = true;
@@ -6542,7 +6542,7 @@ namespace Chummer
                                 await objReplaceQuality.CreateAsync(xmlDeleteQualityNoBonus,
                                     QualitySource.MetatypeRemovedAtChargen,
                                     lstWeapons, token: token).ConfigureAwait(false);
-                                objReplaceQuality.BP *= -1;
+                                await objReplaceQuality.SetBPAsync(-await objReplaceQuality.GetBPAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                 // If a Negative Quality is being bought off, the replacement one is Positive.
                                 if (await objSelectedQuality.GetTypeAsync(token).ConfigureAwait(false) ==
                                     QualityType.Positive)
@@ -6572,7 +6572,7 @@ namespace Chummer
 
                                 // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
                                 objReplaceQuality.AllowPrint = false;
-                                objReplaceQuality.ContributeToLimit = false;
+                                await objReplaceQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
                                 await CharacterObject.Qualities.AddAsync(objReplaceQuality, token)
                                     .ConfigureAwait(false);
                                 // The replacement Quality no longer adds its weapons to the character
@@ -10591,8 +10591,8 @@ namespace Chummer
                                 break;
                             }
 
-                            objQuality.BP = await objSelectedQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
-                            objQuality.ContributeToLimit = await objSelectedQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false);
+                            await objQuality.SetBPAsync(await objSelectedQuality.GetBPAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                            await objQuality.SetContributeToLimitAsync(await objSelectedQuality.GetContributeToLimitAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
 
                             // Make sure that adding the Quality would not cause the character to exceed their BP limits.
                             bool blnAddItem = true;
