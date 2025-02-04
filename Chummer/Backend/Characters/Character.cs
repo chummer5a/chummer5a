@@ -50646,7 +50646,7 @@ namespace Chummer
                     if (objXmlPowerNode != null)
                     {
                         CritterPower objCritterPower = new CritterPower(this);
-                        await objCritterPower.CreateAsync(objXmlPowerNode, token).ConfigureAwait(false);
+                        await objCritterPower.CreateAsync(objXmlPowerNode, token: token).ConfigureAwait(false);
                         await CritterPowers.AddAsync(objCritterPower, token).ConfigureAwait(false);
                     }
                 }
