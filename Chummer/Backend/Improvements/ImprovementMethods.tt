@@ -53,6 +53,7 @@ namespace Chummer
         // Having to re-run this template is a small price to pay compared to what is gained from having this much more straightforward structure.
 
         List<string> lststrSyncMethodNames = new List<string>();
+        List<string> lststrStaticSyncMethodNames = new List<string>();
         string strAddImprovementCollectionFilePath = System.IO.Path.Combine(dte.ActiveDocument.Path, "AddImprovementCollection.cs");
         if (File.Exists(strAddImprovementCollectionFilePath))
         {
@@ -71,6 +72,10 @@ namespace Chummer
                         lststrSyncMethodNames.Add(strLine.Substring(("public void ").Length, strLine.Length - ("public void ").Length - (strSuffix).Length));
                     else if (strLine.StartsWith("public async void "))
                         lststrSyncMethodNames.Add(strLine.Substring(("public async void ").Length, strLine.Length - ("public async void ").Length - (strSuffix).Length));
+                    else if (strLine.StartsWith("public static void "))
+                        lststrStaticSyncMethodNames.Add(strLine.Substring(("public static void ").Length, strLine.Length - ("public static void ").Length - (strSuffix).Length));
+                    else if (strLine.StartsWith("public static async void "))
+                        lststrStaticSyncMethodNames.Add(strLine.Substring(("public static async void ").Length, strLine.Length - ("public static async void ").Length - (strSuffix).Length));
                 }
             }
             // Now we add cases for each method, and each case returns a pointer to the function that we're looking for
@@ -79,6 +84,13 @@ namespace Chummer
 #>
                 case "<#= strMethodName.ToUpperInvariant() #>":
                     return objImprovementAdder.<#= strMethodName #>;
+<#
+            }
+            foreach (string strMethodName in lststrStaticSyncMethodNames)
+            {
+#>
+                case "<#= strMethodName.ToUpperInvariant() #>":
+                    return AddImprovementCollection.<#= strMethodName #>;
 <#
             }
 #>
@@ -120,6 +132,7 @@ namespace Chummer
         // Having to re-run this template is a small price to pay compared to what is gained from having this much more straightforward structure.
 
         List<string> lststrAsyncMethodNames = new List<string>();
+        List<string> lststrStaticAsyncMethodNames = new List<string>();
         string strAddImprovementAsyncCollectionFilePath = System.IO.Path.Combine(dte.ActiveDocument.Path, "AddImprovementAsyncCollection.cs");
         if (File.Exists(strAddImprovementAsyncCollectionFilePath))
         {
@@ -138,6 +151,10 @@ namespace Chummer
                         lststrAsyncMethodNames.Add(strLine.Substring(("public Task ").Length, strLine.Length - ("public Task ").Length - (strSuffix).Length));
                     else if (strLine.StartsWith("public async Task "))
                         lststrAsyncMethodNames.Add(strLine.Substring(("public async Task ").Length, strLine.Length - ("public async Task ").Length - (strSuffix).Length));
+                    else if (strLine.StartsWith("public static Task "))
+                        lststrStaticAsyncMethodNames.Add(strLine.Substring(("public static Task ").Length, strLine.Length - ("public static Task ").Length - (strSuffix).Length));
+                    else if (strLine.StartsWith("public static async Task "))
+                        lststrStaticAsyncMethodNames.Add(strLine.Substring(("public static async Task ").Length, strLine.Length - ("public static async Task ").Length - (strSuffix).Length));
                 }
             }
 
@@ -147,6 +164,14 @@ namespace Chummer
 #>
                 case "<#= strMethodName.ToUpperInvariant() #>":
                     return objImprovementAsyncAdder.<#= strMethodName #>;
+<#
+            }
+            // Now we add cases for each method, and each case returns a pointer to the function that we're looking for
+            foreach (string strMethodName in lststrStaticAsyncMethodNames)
+            {
+#>
+                case "<#= strMethodName.ToUpperInvariant() #>":
+                    return AddImprovementAsyncCollection.<#= strMethodName #>;
 <#
             }
 #>
@@ -166,7 +191,7 @@ namespace Chummer
 <#
         }
 
-        if (lststrSyncMethodNames.Count > 0 && lststrAsyncMethodNames.Count > 0)
+        if (lststrSyncMethodNames.Count > 0 || lststrAsyncMethodNames.Count > 0)
         {
             bool blnFoundMatch;
             foreach (string strAsyncMethodName in lststrAsyncMethodNames)
@@ -195,6 +220,38 @@ namespace Chummer
             {
 #>
 #error Synchronous improvement adder is missing asynchronous version: <#= strSyncMethodName #>. Please add one to AddImprovementAsyncCollection.cs.
+<#
+            }
+        }
+        if (lststrStaticSyncMethodNames.Count > 0 || lststrStaticAsyncMethodNames.Count > 0)
+        {
+            bool blnFoundMatch;
+            foreach (string strAsyncMethodName in lststrStaticAsyncMethodNames)
+            {
+                blnFoundMatch = false;
+                foreach (string strSyncMethodName in lststrStaticSyncMethodNames)
+                {
+                    if (strAsyncMethodName == strSyncMethodName)
+                    {
+                        blnFoundMatch = true;
+                        break;
+                    }
+                }
+                if (blnFoundMatch)
+                {
+                    lststrStaticSyncMethodNames.Remove(strAsyncMethodName);
+                }
+                else
+                {
+#>
+#error Static asynchronous improvement adder is missing static synchronous version: <#= strAsyncMethodName #>. Please add one to AddImprovementCollection.cs.
+<#
+                }
+            }
+            foreach (string strSyncMethodName in lststrStaticSyncMethodNames)
+            {
+#>
+#error Static synchronous improvement adder is missing static asynchronous version: <#= strSyncMethodName #>. Please add one to AddImprovementAsyncCollection.cs.
 <#
             }
         }

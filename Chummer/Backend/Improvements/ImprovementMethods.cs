@@ -44,10 +44,6 @@ namespace Chummer
             // Switch-cases get compiled as hashes, so this is as close as you can get to a compile-time Dictionary
             switch (strMethodName)
             {
-                case "QUALITYLEVEL":
-                    return objImprovementAdder.qualitylevel;
-                case "SELECTTEXT":
-                    return objImprovementAdder.selecttext;
                 case "SURPRISE":
                     return objImprovementAdder.surprise;
                 case "SPELLRESISTANCE":
@@ -670,6 +666,10 @@ namespace Chummer
                     return objImprovementAdder.penaltyfreesustain;
                 case "REPLACESKILLSPELL":
                     return objImprovementAdder.replaceskillspell;
+                case "QUALITYLEVEL":
+                    return AddImprovementCollection.qualitylevel;
+                case "SELECTTEXT":
+                    return AddImprovementCollection.selecttext;
                 // No method matches, return a null pointer
                 default:
                     return null;
@@ -689,10 +689,6 @@ namespace Chummer
             // Switch-cases get compiled as hashes, so this is as close as you can get to a compile-time Dictionary
             switch (strMethodName)
             {
-                case "QUALITYLEVEL":
-                    return objImprovementAsyncAdder.qualitylevel;
-                case "SELECTTEXT":
-                    return objImprovementAsyncAdder.selecttext;
                 case "SURPRISE":
                     return objImprovementAsyncAdder.surprise;
                 case "SPELLRESISTANCE":
@@ -1315,6 +1311,10 @@ namespace Chummer
                     return objImprovementAsyncAdder.penaltyfreesustain;
                 case "REPLACESKILLSPELL":
                     return objImprovementAsyncAdder.replaceskillspell;
+                case "QUALITYLEVEL":
+                    return AddImprovementAsyncCollection.qualitylevel;
+                case "SELECTTEXT":
+                    return AddImprovementAsyncCollection.selecttext;
                 // No method matches, return a null pointer
                 default:
                     return null;

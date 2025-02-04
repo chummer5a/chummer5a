@@ -125,7 +125,7 @@ namespace Chummer
 
 #pragma warning disable IDE1006 // Naming Styles
 
-        public void qualitylevel(XmlNode bonusNode)
+        public static void qualitylevel(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
@@ -153,7 +153,7 @@ namespace Chummer
         }
 
         // Dummy Method for SelectText
-        public void selecttext(XmlNode bonusNode)
+        public static void selecttext(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));

@@ -127,7 +127,7 @@ namespace Chummer
 
 #pragma warning disable IDE1006 // Naming Styles
 
-        public Task qualitylevel(XmlNode bonusNode, CancellationToken token = default)
+        public static Task qualitylevel(XmlNode bonusNode, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
@@ -158,7 +158,7 @@ namespace Chummer
         }
 
         // Dummy Method for SelectText
-        public Task selecttext(XmlNode bonusNode, CancellationToken token = default)
+        public static Task selecttext(XmlNode bonusNode, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
