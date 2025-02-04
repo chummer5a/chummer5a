@@ -4989,6 +4989,36 @@
       </gears>
     </gear>
     <gear>
+      <id>2da87cc0-5291-4628-a38d-85271899fc71</id>
+      <name>Transys Graygul</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>LCD</source>
+      <page>219</page>
+      <avail>16R</avail>
+      <capacity>0</capacity>
+      <cost>789475</cost>
+      <devicerating>6</devicerating>
+      <attributearray>8,8,7,6</attributearray>
+      <programs>8</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord</name>
+          <category>Tools</category>
+          <rating>1</rating>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
       <id>34efd0cd-3d0e-4b6b-8c3d-85543d41373d</id>
       <name>Allegiance Sigma</name>
       <category>Cyberdecks</category>

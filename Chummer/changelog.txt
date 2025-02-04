@@ -122,6 +122,7 @@ Data Changes:
 - Added Shadows in Focus: Butte version of Dug a Hole.
 - Removed the Delnar Skills Remake (Lite) custom dataset because it cannot properly be implemented in Chummer at its current time.
 - Morgan Cutlass' page reference is now properly p. 464.
+- Added missing Transys Graygul cyberdeck whose stats, cost, and availability were buried in an NPC statblock.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
