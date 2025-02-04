@@ -1501,9 +1501,25 @@ namespace Chummer
             return decReturn;
         }
 
-        public static string DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
-                                           string strFriendlyName, ref bool blnIsKnowledgeSkill)
+        public static Tuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
+            string strFriendlyName, bool blnIsKnowledgeSkill = false)
         {
+            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter,
+                intRating, strFriendlyName,
+                blnIsKnowledgeSkill));
+        }
+
+        public static Task<Tuple<string, bool>> DoSelectSkillAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
+            string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
+        {
+            return DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter, intRating, strFriendlyName,
+                blnIsKnowledgeSkill, token);
+        }
+
+        private static async Task<Tuple<string, bool>> DoSelectSkillCoreAsync(bool blnSync, XmlNode xmlBonusNode, Character objCharacter, int intRating,
+                                           string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (xmlBonusNode == null)
                 throw new ArgumentNullException(nameof(xmlBonusNode));
             if (objCharacter == null)
@@ -1516,19 +1532,25 @@ namespace Chummer
                 int intMinimumRating = 0;
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                    intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                    intMinimumRating = blnSync
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                        : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token).ConfigureAwait(false);
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
                 string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerText ?? string.Empty;
 
                 if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                    intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                    intMaximumRating = blnSync
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                        : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token).ConfigureAwait(false);
 
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string>
                                                                     setAllowedCategories))
                 {
-                    string strOnlyCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
+                    string strOnlyCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory", token)?.Value;
                     if (!string.IsNullOrEmpty(strOnlyCategory))
                     {
                         setAllowedCategories.AddRange(strOnlyCategory
@@ -1553,7 +1575,7 @@ namespace Chummer
                                                                     out HashSet<string>
                                                                         setForbiddenCategories))
                     {
-                        string strExcludeCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
+                        string strExcludeCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)?.Value;
                         if (!string.IsNullOrEmpty(strExcludeCategory))
                         {
                             setForbiddenCategories.AddRange(
@@ -1576,7 +1598,7 @@ namespace Chummer
                             }
                             else
                             {
-                                string strLimitToSkill = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
+                                string strLimitToSkill = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill", token)?.Value;
                                 if (!string.IsNullOrEmpty(strLimitToSkill))
                                 {
                                     setAllowedNames.AddRange(
@@ -1590,7 +1612,7 @@ namespace Chummer
                                                                                 setAllowedLinkedAttributes))
                             {
                                 string strLimitToAttribute
-                                    = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
+                                    = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute", token)?.Value;
                                 if (!string.IsNullOrEmpty(strLimitToAttribute))
                                 {
                                     setAllowedLinkedAttributes.AddRange(
@@ -1605,36 +1627,92 @@ namespace Chummer
                                                out HashSet<string>
                                                    setProcessedSkillNames))
                                     {
-                                        using (objCharacter.LockObject.EnterReadLock())
+                                        IDisposable objLocker = null;
+                                        IAsyncDisposable objLockerAsync = null;
+                                        if (blnSync)
+                                            objLocker = objCharacter.LockObject.EnterReadLock(token);
+                                        else
+                                            objLockerAsync = await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                        try
                                         {
-                                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
-                                                         .KnowledgeSkills)
+                                            if (blnSync)
                                             {
-                                                if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false
-                                                    &&
-                                                    setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory)
-                                                    != true &&
-                                                    setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
-                                                    setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute)
-                                                    != false)
+                                                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
+                                                             .KnowledgeSkills)
                                                 {
-                                                    int intSkillRating = objKnowledgeSkill.Rating;
-                                                    if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                                                    token.ThrowIfCancellationRequested();
+                                                    string strName = objKnowledgeSkill.Name;
+                                                    if (setAllowedCategories?.Contains(objKnowledgeSkill
+                                                            .SkillCategory) !=
+                                                        false
+                                                        &&
+                                                        setForbiddenCategories?.Contains(
+                                                            objKnowledgeSkill.SkillCategory)
+                                                        != true &&
+                                                        setAllowedNames?.Contains(strName) != false &&
+                                                        setAllowedLinkedAttributes?.Contains(blnSync
+                                                            ? objKnowledgeSkill.Attribute
+                                                            : await objKnowledgeSkill.GetAttributeAsync(token).ConfigureAwait(false))
+                                                        != false)
                                                     {
-                                                        lstDropdownItems.Add(
-                                                            new ListItem(objKnowledgeSkill.Name,
-                                                                         objKnowledgeSkill.CurrentDisplayName));
+                                                        int intSkillRating = objKnowledgeSkill.Rating;
+                                                        if (intSkillRating >= intMinimumRating &&
+                                                            intRating < intMaximumRating)
+                                                        {
+                                                            lstDropdownItems.Add(
+                                                                new ListItem(strName,
+                                                                    objKnowledgeSkill.CurrentDisplayName));
+                                                        }
                                                     }
-                                                }
 
-                                                setProcessedSkillNames.Add(objKnowledgeSkill.Name);
+                                                    setProcessedSkillNames.Add(strName);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                await objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(
+                                                    async objKnowledgeSkill =>
+                                                    {
+                                                        string strName = await objKnowledgeSkill.GetNameAsync(token).ConfigureAwait(false);
+                                                        if (setAllowedCategories?.Contains(objKnowledgeSkill
+                                                                .SkillCategory) !=
+                                                            false
+                                                            &&
+                                                            setForbiddenCategories?.Contains(
+                                                                objKnowledgeSkill.SkillCategory)
+                                                            != true &&
+                                                            setAllowedNames?.Contains(strName) !=
+                                                            false &&
+                                                            setAllowedLinkedAttributes?.Contains(
+                                                                await objKnowledgeSkill.GetAttributeAsync(token).ConfigureAwait(false))
+                                                            != false)
+                                                        {
+                                                            int intSkillRating =
+                                                                await objKnowledgeSkill.GetRatingAsync(token).ConfigureAwait(false);
+                                                            if (intSkillRating >= intMinimumRating &&
+                                                                intRating < intMaximumRating)
+                                                            {
+                                                                lstDropdownItems.Add(
+                                                                    new ListItem(strName,
+                                                                        await objKnowledgeSkill
+                                                                            .GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                                                            }
+                                                        }
+
+                                                        setProcessedSkillNames.Add(strName);
+                                                    }, token).ConfigureAwait(false);
                                             }
 
                                             if (!string.IsNullOrEmpty(strPrompt)
                                                 && !setProcessedSkillNames.Contains(strPrompt))
                                             {
                                                 lstDropdownItems.Add(
-                                                    new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
+                                                    new ListItem(strPrompt,
+                                                        blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? objCharacter.TranslateExtra(strPrompt, token: token)
+                                                            : await objCharacter.TranslateExtraAsync(strPrompt,
+                                                                token: token).ConfigureAwait(false)));
                                                 setProcessedSkillNames.Add(strPrompt);
                                             }
 
@@ -1648,8 +1726,9 @@ namespace Chummer
                                                         sbdFilter.Append('(');
                                                         foreach (string strCategory in setAllowedCategories)
                                                         {
-                                                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
-                                                                     .Append(" or ");
+                                                            sbdFilter.Append("category = ")
+                                                                .Append(strCategory.CleanXPath())
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1661,8 +1740,9 @@ namespace Chummer
                                                         sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                                                         foreach (string strCategory in setForbiddenCategories)
                                                         {
-                                                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
-                                                                     .Append(" or ");
+                                                            sbdFilter.Append("category = ")
+                                                                .Append(strCategory.CleanXPath())
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1675,7 +1755,7 @@ namespace Chummer
                                                         foreach (string strName in setAllowedNames)
                                                         {
                                                             sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                     .Append(" or ");
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1688,7 +1768,7 @@ namespace Chummer
                                                         foreach (string strName in setProcessedSkillNames)
                                                         {
                                                             sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                     .Append(" or ");
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1701,8 +1781,8 @@ namespace Chummer
                                                         foreach (string strAttribute in setAllowedLinkedAttributes)
                                                         {
                                                             sbdFilter.Append("attribute = ")
-                                                                     .Append(strAttribute.CleanXPath())
-                                                                     .Append(" or ");
+                                                                .Append(strAttribute.CleanXPath())
+                                                                .Append(" or ");
                                                         }
 
                                                         sbdFilter.Length -= 4;
@@ -1712,23 +1792,36 @@ namespace Chummer
                                                     string strFilter = sbdFilter.Length > 0
                                                         ? ") and (" + sbdFilter
                                                         : string.Empty;
-                                                    foreach (XPathNavigator xmlSkill in objCharacter
-                                                                 .LoadDataXPath("skills.xml")
-                                                                 .Select(
-                                                                     "/chummer/knowledgeskills/skill[(not(hide)"
-                                                                     + strFilter + ")]"))
+                                                    foreach (XPathNavigator xmlSkill in (blnSync
+                                                                 ? objCharacter
+                                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                                     .LoadDataXPath("skills.xml", token: token)
+                                                                 : await objCharacter
+                                                                     .LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                                                             .Select(
+                                                                 "/chummer/knowledgeskills/skill[(not(hide)"
+                                                                 + strFilter + ")]"))
                                                     {
-                                                        string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                                        string strName = xmlSkill
+                                                            .SelectSingleNodeAndCacheExpression("name", token)?.Value;
                                                         if (!string.IsNullOrEmpty(strName))
                                                             lstDropdownItems.Add(
                                                                 new ListItem(
                                                                     strName,
-                                                                    xmlSkill.SelectSingleNodeAndCacheExpression("translate")
-                                                                            ?.Value
+                                                                    xmlSkill.SelectSingleNodeAndCacheExpression(
+                                                                            "translate", token)
+                                                                        ?.Value
                                                                     ?? strName));
                                                     }
                                                 }
                                             }
+                                        }
+                                        finally
+                                        {
+                                            if (blnSync)
+                                                objLocker.Dispose();
+                                            else
+                                                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                                         }
                                     }
 
@@ -1741,19 +1834,35 @@ namespace Chummer
                                     {
                                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
+                                        string strDescription = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Title_SelectSkill", token: token)
+                                            : await LanguageManager.GetStringAsync("Title_SelectSkill", token: token).ConfigureAwait(false);
+                                        bool blnAllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt);
                                         using (ThreadSafeForm<SelectItem> frmPickSkill
-                                               = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
-                                               {
-                                                   Description = LanguageManager.GetString("Title_SelectSkill"),
-                                                   AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                                               }))
+                                               = blnSync
+                                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                   ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                                   {
+                                                       Description = strDescription,
+                                                       AllowAutoSelect = blnAllowAutoSelect
+                                                   })
+                                                   : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                                                   {
+                                                       Description = strDescription,
+                                                       AllowAutoSelect = blnAllowAutoSelect
+                                                   }, token).ConfigureAwait(false))
                                         {
                                             if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
                                                 frmPickSkill.MyForm.SetGeneralItemsMode(lstDropdownItems);
                                             else
                                                 frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
 
-                                            if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? frmPickSkill.ShowDialogSafe(objCharacter, token)
+                                                    : await frmPickSkill.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
+                                                DialogResult.Cancel)
                                             {
                                                 throw new AbortedException();
                                             }
@@ -1773,35 +1882,60 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strForcedValue))
                 {
                     (bool blnIsExotic, string strExoticName)
-                        = ExoticSkill.IsExoticSkillNameTuple(objCharacter, strForcedValue);
-                    string strFilter;
+                        = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? ExoticSkill.IsExoticSkillNameTuple(objCharacter, strForcedValue, token)
+                            : await ExoticSkill.IsExoticSkillNameTupleAsync(objCharacter, strForcedValue, token)
+                                .ConfigureAwait(false);
+                    string strFilter = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? objCharacter.Settings.BookXPath(token: token)
+                        : await (await objCharacter
+                                .GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token)
+                            .ConfigureAwait(false);
                     if (blnIsExotic)
                     {
                         strFilter = "/chummer/skills/skill[name = "
                                     + strExoticName.CleanXPath() + " and exotic = 'True' and ("
-                                    + objCharacter.Settings.BookXPath() + ")]";
+                                    + strFilter + ")]";
                     }
                     else
                     {
                         strFilter = "/chummer/skills/skill[name = "
                                     + strForcedValue.CleanXPath() + " and not(exotic = 'True') and ("
-                                    + objCharacter.Settings.BookXPath() + ")]";
+                                    + strFilter + ")]";
                     }
 
                     XPathNavigator xmlSkillNode =
-                        objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(strFilter) ??
+                        (blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.LoadDataXPath("skills.xml", token: token)
+                            : await objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
+                        .SelectSingleNode(strFilter) ??
                         throw new AbortedException();
                     int intMinimumRating = 0;
                     string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
                     if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                        intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                        intMinimumRating = blnSync
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                            : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
+                                .ConfigureAwait(false);
                     int intMaximumRating = int.MaxValue;
                     string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
                     if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                        intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                        intMaximumRating = blnSync
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                            : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
+                                .ConfigureAwait(false);
                     if (intMinimumRating != 0 || intMaximumRating != int.MaxValue)
                     {
-                        Skill objExistingSkill = objCharacter.SkillsSection.GetActiveSkill(strForcedValue);
+                        Skill objExistingSkill = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.SkillsSection.GetActiveSkill(strForcedValue, token)
+                            : await (await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                                .GetActiveSkillAsync(strForcedValue, token).ConfigureAwait(false);
                         if (objExistingSkill == null)
                         {
                             if (intMinimumRating > 0)
@@ -1809,17 +1943,20 @@ namespace Chummer
                         }
                         else
                         {
-                            int intCurrentRating = objExistingSkill.TotalBaseRating;
+                            int intCurrentRating =
+                                blnSync
+                                    ? objExistingSkill.TotalBaseRating
+                                    : await objExistingSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
                             if (intCurrentRating > intMaximumRating || intCurrentRating < intMinimumRating)
                                 throw new AbortedException();
                         }
                     }
 
                     XPathNavigator xmlSkillCategories =
-                        xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories");
+                        xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories", token);
                     if (xmlSkillCategories != null)
                     {
-                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
                                              ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strCategory))
                             throw new AbortedException();
@@ -1837,11 +1974,11 @@ namespace Chummer
                             throw new AbortedException();
                     }
 
-                    string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")
+                    string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory", token)
                         ?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
                                              ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strCategory) || !strTemp
                                 .SplitNoAlloc(
@@ -1850,11 +1987,12 @@ namespace Chummer
                             throw new AbortedException();
                     }
 
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup", token)?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
-                                               ?? string.Empty;
+                        string strSkillGroup =
+                            xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)?.Value
+                            ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp
                                 .SplitNoAlloc(
                                     ',', StringSplitOptions.RemoveEmptyEntries)
@@ -1862,10 +2000,11 @@ namespace Chummer
                             throw new AbortedException();
                     }
 
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)
+                        ?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                        string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category", token)?.Value
                                              ?? string.Empty;
                         if (!string.IsNullOrWhiteSpace(strCategory) && strTemp
                                 .SplitNoAlloc(
@@ -1874,11 +2013,13 @@ namespace Chummer
                             throw new AbortedException();
                     }
 
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup", token)
+                        ?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
-                                               ?? string.Empty;
+                        string strSkillGroup =
+                            xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup", token)?.Value
+                            ?? string.Empty;
                         if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp
                                 .SplitNoAlloc(
                                     ',', StringSplitOptions.RemoveEmptyEntries)
@@ -1886,20 +2027,21 @@ namespace Chummer
                             throw new AbortedException();
                     }
 
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill", token)?.Value;
                     if (!string.IsNullOrEmpty(strTemp) && !strTemp
                             .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                             .Contains(strForcedValue))
                         throw new AbortedException();
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill", token)?.Value;
                     if (!string.IsNullOrEmpty(strTemp) && strTemp
                             .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                             .Contains(strForcedValue))
                         throw new AbortedException();
-                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute", token)
+                        ?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                     {
-                        string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value
+                        string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute", token)?.Value
                                               ?? string.Empty;
                         if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp
                                 .SplitNoAlloc(
@@ -1912,55 +2054,93 @@ namespace Chummer
                 }
                 else
                 {
+                    string strDescription;
+                    if (blnSync)
+                        strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                            ? string.Format(GlobalSettings.CultureInfo,
+                                // ReSharper disable once MethodHasAsyncOverload
+                                LanguageManager.GetString("String_Improvement_SelectSkillNamed", token: token),
+                                strFriendlyName)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            : LanguageManager.GetString("String_Improvement_SelectSkill", token: token);
+                    else
+                        strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                            ? string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager
+                                    .GetStringAsync("String_Improvement_SelectSkillNamed", token: token)
+                                    .ConfigureAwait(false),
+                                strFriendlyName)
+                            : await LanguageManager.GetStringAsync("String_Improvement_SelectSkill", token: token)
+                                .ConfigureAwait(false);
                     // Display the Select Skill window and record which Skill was selected.
                     using (ThreadSafeForm<SelectSkill> frmPickSkill
-                           = ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
-                           {
-                               Description = !string.IsNullOrEmpty(strFriendlyName)
-                                   ? string.Format(GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
-                                       strFriendlyName)
-                                   : LanguageManager.GetString("String_Improvement_SelectSkill")
-                           }))
+                           = blnSync
+                               ? ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
+                               {
+                                   Description = strDescription
+                               })
+                               : await ThreadSafeForm<SelectSkill>.GetAsync(() =>
+                                   new SelectSkill(objCharacter, strFriendlyName)
+                                   {
+                                       Description = strDescription
+                                   }, token).ConfigureAwait(false))
                     {
                         string strMinimumRating = xmlBonusNode
-                            .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating")?.Value;
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating", token)?.Value;
                         if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                            frmPickSkill.MyForm.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                            frmPickSkill.MyForm.MinimumRating = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                ? ValueToInt(objCharacter, strMinimumRating, intRating)
+                                : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token)
+                                    .ConfigureAwait(false);
                         string strMaximumRating = xmlBonusNode
-                            .SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating")?.Value;
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating", token)?.Value;
                         if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                            frmPickSkill.MyForm.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                            frmPickSkill.MyForm.MaximumRating = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                ? ValueToInt(objCharacter, strMaximumRating, intRating)
+                                : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token)
+                                    .ConfigureAwait(false);
 
                         XmlElement xmlSkillCategories = xmlBonusNode["skillcategories"];
                         if (xmlSkillCategories != null)
                             frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
-                        string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")
+                        string strTemp = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory", token)
                             ?.Value;
                         if (!string.IsNullOrEmpty(strTemp))
                             frmPickSkill.MyForm.OnlyCategory = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup", token)
+                            ?.Value;
                         if (!string.IsNullOrEmpty(strTemp))
                             frmPickSkill.MyForm.OnlySkillGroup = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)
+                            ?.Value;
                         if (!string.IsNullOrEmpty(strTemp))
                             frmPickSkill.MyForm.ExcludeCategory = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")
+                        strTemp = xmlBonusNode
+                            .SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup", token)
                             ?.Value;
                         if (!string.IsNullOrEmpty(strTemp))
                             frmPickSkill.MyForm.ExcludeSkillGroup = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill", token)
+                            ?.Value;
                         if (!string.IsNullOrEmpty(strTemp))
                             frmPickSkill.MyForm.LimitToSkill = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill", token)
+                            ?.Value;
                         if (!string.IsNullOrEmpty(strTemp))
                             frmPickSkill.MyForm.ExcludeSkill = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")
+                        strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute", token)
                             ?.Value;
                         if (!string.IsNullOrEmpty(strTemp))
                             frmPickSkill.MyForm.LinkedAttribute = strTemp;
 
-                        if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
+                        if ((blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? frmPickSkill.ShowDialogSafe(objCharacter)
+                                : await frmPickSkill.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
+                            DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
@@ -1970,7 +2150,7 @@ namespace Chummer
                 }
             }
 
-            return strSelectedSkill;
+            return new Tuple<string, bool>(strSelectedSkill, blnIsKnowledgeSkill);
         }
 
         #endregion Helper Methods
@@ -2551,14 +2731,15 @@ namespace Chummer
             //So far it is just a slower Dictionary<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
             //getting a different parameter injected
 
-            AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                                                                              strSourceName, strUnique, GetForcedValue(objCharacter),
-                                                                              GetLimitSelection(objCharacter), GetSelectedValue(objCharacter),
-                                                                              strFriendlyName,
-                                                                              intRating);
+            AddImprovementAsyncCollection container = new AddImprovementAsyncCollection(objCharacter,
+                objImprovementSource,
+                strSourceName, strUnique, GetForcedValue(objCharacter),
+                GetLimitSelection(objCharacter), GetSelectedValue(objCharacter),
+                strFriendlyName,
+                intRating);
 
-            Action<XmlNode> objImprovementMethod
-                = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
+            Func<XmlNode, CancellationToken, Task> objImprovementMethod
+                = ImprovementMethods.GetAsyncMethod(bonusNode.Name.ToUpperInvariant(), container);
             if (objImprovementMethod != null)
             {
                 try
@@ -2567,7 +2748,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        objImprovementMethod.Invoke(bonusNode);
+                        await objImprovementMethod.Invoke(bonusNode, token).ConfigureAwait(false);
                     }
                     finally
                     {

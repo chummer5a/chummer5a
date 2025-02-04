@@ -607,9 +607,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedSkill))
             {
                 string strForcedValue = ForcedValue;
-                bool blnDummy = false;
                 strSelectedSkill = string.IsNullOrEmpty(strForcedValue)
-                    ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
+                    ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName).Item1
                     : strForcedValue;
             }
             // Expected values are either a Skill Name or an empty string.
@@ -635,8 +634,7 @@ namespace Chummer
             if (ForcedValue == "+2 to a Combat Skill")
                 ForcedValue = string.Empty;
 
-            bool blnIsKnowledgeSkill = false;
-            string strSelectedSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill);
+            (string strSelectedSkill, bool blnIsKnowledgeSkill) = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName);
 
             bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
 
@@ -2274,28 +2272,26 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            string strForcedValue = ForcedValue;
-
-            bool blnDummy = false;
-            SelectedValue = string.IsNullOrEmpty(strForcedValue)
-                ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
-                : strForcedValue;
-            if (blnDummy)
+            string strSelectedValue = ForcedValue;
+            bool blnKnowledgeSkill = false;
+            if (string.IsNullOrEmpty(strSelectedValue))
+                (strSelectedValue, blnKnowledgeSkill) = ImprovementManager
+                    .DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName);
+            if (blnKnowledgeSkill)
                 throw new AbortedException();
-
+            SelectedValue = strSelectedValue;
             string strVal = bonusNode["val"]?.InnerText;
-
             (bool blnIsExotic, string strExoticSkillName)
-                = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, SelectedValue);
+                = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, strSelectedValue);
             if (blnIsExotic)
             {
                 if (!string.IsNullOrEmpty(strVal))
                 {
                     // Make sure we have the exotic skill in the list if we're adding an activesoft
-                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(SelectedValue);
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strSelectedValue);
                     if (objExistingSkill?.IsExoticSkill != true)
                     {
-                        string strSkillName = SelectedValue;
+                        string strSkillName = strSelectedValue;
                         int intParenthesesIndex = strExoticSkillName.Length - 1 + strSkillName.TrimStartOnce(strExoticSkillName, true).IndexOf(" (", StringComparison.OrdinalIgnoreCase);
                         if (intParenthesesIndex >= strExoticSkillName.Length)
                         {
@@ -2303,7 +2299,7 @@ namespace Chummer
                             _objCharacter.SkillsSection.AddExoticSkill(strExoticSkillName, strSkillSpecific);
                         }
                     }
-                    CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                    CreateImprovement(strSelectedValue, _objImprovementSource, SourceName,
                         Improvement.ImprovementType.Activesoft,
                         _strUnique,
                         ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
@@ -2311,7 +2307,7 @@ namespace Chummer
             }
             else if (!string.IsNullOrEmpty(strVal))
             {
-                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                CreateImprovement(strSelectedValue, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.Activesoft,
                                   _strUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
@@ -2319,7 +2315,7 @@ namespace Chummer
 
             if (bonusNode["addknowledge"] != null)
             {
-                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
+                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedValue, false);
 
                 _objCharacter.SkillsSection.KnowsoftSkills.Add(objKnowledgeSkill);
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0)
@@ -2337,8 +2333,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             string strForcedValue = ForcedValue;
 
-            bool blnIsKnowledgeSkill = true;
-            SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill) : strForcedValue;
+            SelectedValue = string.IsNullOrEmpty(strForcedValue)
+                ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, true).Item1
+                : strForcedValue;
 
             string strVal = bonusNode["val"]?.InnerText;
 
@@ -3391,29 +3388,31 @@ namespace Chummer
              * abominations
              */
 
+            string strSelectedValue = string.Empty;
             if (bonusNode["selectskill"] != null)
             {
-                bool blnDummy = false;
-                SelectedValue = ImprovementManager.DoSelectSkill(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, ref blnDummy);
+                bool blnKnowledgeSkill;
+                (strSelectedValue, blnKnowledgeSkill) = ImprovementManager.DoSelectSkill(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName);
 
-                if (blnDummy)
+                if (blnKnowledgeSkill)
                 {
                     throw new AbortedException();
                 }
 
                 Power objPower = _objCharacter.Powers.FirstOrDefault(p => p.InternalId == SourceName);
                 if (objPower != null)
-                    objPower.Extra = SelectedValue;
+                    objPower.Extra = strSelectedValue;
             }
             else if (bonusNode["name"] != null)
             {
-                SelectedValue = bonusNode["name"].InnerText;
+                strSelectedValue = bonusNode["name"].InnerText;
             }
             else
             {
                 Utils.BreakIfDebug();
             }
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+            SelectedValue = strSelectedValue;
+            CreateImprovement(strSelectedValue, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating));
         }
 
@@ -4324,24 +4323,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            string strForcedValue = ForcedValue;
-
-            bool blnDummy = false;
-            SelectedValue = string.IsNullOrEmpty(strForcedValue)
-                ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
-                : strForcedValue;
-
+            string strSelectedValue = ForcedValue;
+            if (string.IsNullOrEmpty(strSelectedValue))
+                strSelectedValue = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName).Item1;
+            SelectedValue = strSelectedValue;
             (bool blnIsExotic, string strExoticSkillName)
-                = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, SelectedValue);
+                = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, strSelectedValue);
             if (blnIsExotic)
             {
                 if (!string.IsNullOrEmpty(bonusNode.InnerText))
                 {
                     // Make sure we have the exotic skill in the list if we're adding an activesoft
-                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(SelectedValue);
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strSelectedValue);
                     if (objExistingSkill?.IsExoticSkill != true)
                     {
-                        string strSkillName = SelectedValue;
+                        string strSkillName = strSelectedValue;
                         int intParenthesesIndex = strExoticSkillName.Length - 1 + strSkillName.TrimStartOnce(strExoticSkillName, true).IndexOf(" (", StringComparison.OrdinalIgnoreCase);
                         if (intParenthesesIndex >= strExoticSkillName.Length)
                         {
@@ -4349,7 +4345,7 @@ namespace Chummer
                             _objCharacter.SkillsSection.AddExoticSkill(strExoticSkillName, strSkillSpecific);
                         }
                     }
-                    CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                    CreateImprovement(strSelectedValue, _objImprovementSource, SourceName,
                                       Improvement.ImprovementType.Hardwire,
                                       _strUnique,
                                       ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -4357,9 +4353,9 @@ namespace Chummer
             }
             else
             {
-                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                CreateImprovement(strSelectedValue, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.Hardwire,
-                                  SelectedValue,
+                                  strSelectedValue,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
             }
         }
@@ -6648,23 +6644,26 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            string strForcedValue = ForcedValue;
-            XmlElement xmlSelectSkillNode = bonusNode["selectskill"];
-            if (xmlSelectSkillNode != null)
+            string strSelectedValue = ForcedValue;
+            if (string.IsNullOrEmpty(strSelectedValue))
             {
-                bool blnDummy = false;
-                SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(xmlSelectSkillNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy) : strForcedValue;
-                if (blnDummy)
-                    throw new AbortedException();
-            }
-            else
-            {
-                SelectedValue = string.IsNullOrEmpty(strForcedValue) ? bonusNode["name"]?.InnerText ?? string.Empty : strForcedValue;
+                XmlElement xmlSelectSkillNode = bonusNode["selectskill"];
+                if (xmlSelectSkillNode != null)
+                {
+                    bool blnKnowledgeSkill;
+                    (strSelectedValue, blnKnowledgeSkill) = ImprovementManager.DoSelectSkill(xmlSelectSkillNode, _objCharacter, _intRating,
+                            _strFriendlyName);
+                    if (blnKnowledgeSkill)
+                        throw new AbortedException();
+                }
+                else
+                    strSelectedValue = bonusNode["name"]?.InnerText ?? string.Empty;
             }
 
+            SelectedValue = strSelectedValue;
             string strVal = bonusNode["value"]?.InnerText;
 
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponSkillAccuracy, _strUnique,
+            CreateImprovement(strSelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponSkillAccuracy, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
         }
 
@@ -6853,10 +6852,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
 
             // Select the skill to get the expertise
-            bool blnIsKnowledgeSkill = false;
             string strForcedValue = ForcedValue;
             ForcedValue = string.Empty; // Temporarily clear Forced Value because the Forced Value should be for the specialization name, not the skill
-            string strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill);
+            string strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName).Item1;
             ForcedValue = strForcedValue;
             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill) ?? throw new AbortedException();
             // Select the actual specialization to add as an expertise
