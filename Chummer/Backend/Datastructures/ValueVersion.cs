@@ -121,6 +121,14 @@ namespace Chummer
             _Revision = version1.Revision;
         }
 
+        public ValueVersion(Version version)
+        {
+            _Major = version.Major;
+            _Minor = version.Minor;
+            _Build = version.Build;
+            _Revision = version.Revision;
+        }
+
         /// <summary>Gets the value of the major component of the version number for the current ValueVersion struct.</summary>
         /// <returns>The major version number.</returns>
         public int Major => _Major;

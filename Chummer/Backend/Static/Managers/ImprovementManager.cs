@@ -2075,6 +2075,7 @@ namespace Chummer
                     // Display the Select Skill window and record which Skill was selected.
                     using (ThreadSafeForm<SelectSkill> frmPickSkill
                            = blnSync
+                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                ? ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
                                {
                                    Description = strDescription

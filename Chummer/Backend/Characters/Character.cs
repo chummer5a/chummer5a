@@ -6719,8 +6719,7 @@ namespace Chummer
                                                                                .ConfigureAwait(false)
                                                                         == intSettingsHashCode, token)
                                                          .ConfigureAwait(false)).Value;
-                                        if (objHashCodeMatchSettings != default
-                                            && objHashCodeMatchSettings.BuildMethod == eSavedBuildMethod)
+                                        if (objHashCodeMatchSettings?.BuildMethod == eSavedBuildMethod)
                                         {
                                             blnSuccess = true;
                                             objProspectiveSettings = objHashCodeMatchSettings;

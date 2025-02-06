@@ -8063,13 +8063,13 @@ namespace Chummer
                     bool blnAddAgain;
                     do
                     {
-                        Gear objGear;
                         lstWeapons.Clear();
                         IAsyncDisposable objLocker =
                             await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
                         try
                         {
                             GenericToken.ThrowIfCancellationRequested();
+                            Gear objGear;
                             using (ThreadSafeForm<SelectGear> frmPickGear
                                    = await ThreadSafeForm<SelectGear>.GetAsync(
                                            () => new SelectGear(CharacterObject, 0, 1,
