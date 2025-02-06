@@ -185,8 +185,8 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                     continue;
 
-                objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
-                objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
+                objXmlNode.TryGetField("maxversion", ValueVersion.TryParse, out ValueVersion objNewMaximumVersion);
+                objXmlNode.TryGetField("minversion", ValueVersion.TryParse, out ValueVersion objNewMinimumVersion);
 
                 DirectoryDependency objDependency
                     = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
@@ -210,8 +210,8 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                     continue;
 
-                objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
-                objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
+                objXmlNode.TryGetField("maxversion", ValueVersion.TryParse, out ValueVersion objNewMaximumVersion);
+                objXmlNode.TryGetField("minversion", ValueVersion.TryParse, out ValueVersion objNewMinimumVersion);
 
                 DirectoryDependency objIncompatibility
                     = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion,
@@ -288,18 +288,18 @@ namespace Chummer
                         if (lstEnabledCustomData.Count > 0)
                         {
                             // First check if we have any data whose version matches
-                            Version objMinVersion = dependency.MinimumVersion;
-                            Version objMaxVersion = dependency.MaximumVersion;
-                            if (objMinVersion != default || objMaxVersion != default)
+                            ValueVersion objMinVersion = dependency.MinimumVersion;
+                            ValueVersion objMaxVersion = dependency.MaximumVersion;
+                            if (objMinVersion != default(ValueVersion) || objMaxVersion != default(ValueVersion))
                             {
                                 bool blnMismatch;
-                                if (objMinVersion != default && objMaxVersion != default)
+                                if (objMinVersion != default(ValueVersion) && objMaxVersion != default(ValueVersion))
                                 {
                                     blnMismatch = lstEnabledCustomData.TrueForAll(
                                         x => x.MyVersion < objMinVersion
                                              || x.MyVersion > objMaxVersion);
                                 }
-                                else if (objMinVersion != default)
+                                else if (objMinVersion != default(ValueVersion))
                                 {
                                     blnMismatch = lstEnabledCustomData.TrueForAll(x => x.MyVersion < objMinVersion);
                                 }
@@ -318,12 +318,12 @@ namespace Chummer
                                 }
 
                                 // Remove all from the list where version does not match before moving on to load orders
-                                if (objMinVersion != default && objMaxVersion != default)
+                                if (objMinVersion != default(ValueVersion) && objMaxVersion != default(ValueVersion))
                                 {
                                     lstEnabledCustomData.RemoveAll(x => x.MyVersion < objMinVersion
                                                                         || x.MyVersion > objMaxVersion);
                                 }
-                                else if (objMinVersion != default)
+                                else if (objMinVersion != default(ValueVersion))
                                 {
                                     lstEnabledCustomData.RemoveAll(x => x.MyVersion < objMinVersion);
                                 }
@@ -388,18 +388,18 @@ namespace Chummer
                         if (lstEnabledCustomData.Count > 0)
                         {
                             // First check if we have any data whose version matches
-                            Version objMinVersion = dependency.MinimumVersion;
-                            Version objMaxVersion = dependency.MaximumVersion;
-                            if (objMinVersion != default || objMaxVersion != default)
+                            ValueVersion objMinVersion = dependency.MinimumVersion;
+                            ValueVersion objMaxVersion = dependency.MaximumVersion;
+                            if (objMinVersion != default(ValueVersion) || objMaxVersion != default(ValueVersion))
                             {
                                 bool blnMismatch;
-                                if (objMinVersion != default && objMaxVersion != default)
+                                if (objMinVersion != default(ValueVersion) && objMaxVersion != default(ValueVersion))
                                 {
                                     blnMismatch = lstEnabledCustomData.TrueForAll(
                                         x => x.MyVersion < objMinVersion
                                              || x.MyVersion > objMaxVersion);
                                 }
-                                else if (objMinVersion != default)
+                                else if (objMinVersion != default(ValueVersion))
                                 {
                                     blnMismatch = lstEnabledCustomData.TrueForAll(x => x.MyVersion < objMinVersion);
                                 }
@@ -422,12 +422,12 @@ namespace Chummer
                                 }
 
                                 // Remove all from the list where version does not match before moving on to load orders
-                                if (objMinVersion != default && objMaxVersion != default)
+                                if (objMinVersion != default(ValueVersion) && objMaxVersion != default(ValueVersion))
                                 {
                                     lstEnabledCustomData.RemoveAll(x => x.MyVersion < objMinVersion
                                                                         || x.MyVersion > objMaxVersion);
                                 }
-                                else if (objMinVersion != default)
+                                else if (objMinVersion != default(ValueVersion))
                                 {
                                     lstEnabledCustomData.RemoveAll(x => x.MyVersion < objMinVersion);
                                 }
@@ -499,18 +499,18 @@ namespace Chummer
                         if (lstEnabledCustomData.Count == 0)
                             continue;
                         CustomDataDirectoryInfo objInfoToDisplay;
-                        Version objMinVersion = incompatibility.MinimumVersion;
-                        Version objMaxVersion = incompatibility.MaximumVersion;
-                        if (objMinVersion != default)
+                        ValueVersion objMinVersion = incompatibility.MinimumVersion;
+                        ValueVersion objMaxVersion = incompatibility.MaximumVersion;
+                        if (objMinVersion != default(ValueVersion))
                         {
-                            if (incompatibility.MaximumVersion != default)
+                            if (incompatibility.MaximumVersion != default(ValueVersion))
                                 objInfoToDisplay = lstEnabledCustomData.Find(
                                     x => x.MyVersion >= objMinVersion || x.MyVersion <= objMaxVersion);
                             else
                                 objInfoToDisplay
                                     = lstEnabledCustomData.Find(x => x.MyVersion >= objMinVersion);
                         }
-                        else if (incompatibility.MaximumVersion != default)
+                        else if (incompatibility.MaximumVersion != default(ValueVersion))
                         {
                             objInfoToDisplay
                                 = lstEnabledCustomData.Find(x => x.MyVersion <= objMaxVersion);
@@ -571,18 +571,18 @@ namespace Chummer
                         if (lstEnabledCustomData.Count == 0)
                             continue;
                         CustomDataDirectoryInfo objInfoToDisplay;
-                        Version objMinVersion = incompatibility.MinimumVersion;
-                        Version objMaxVersion = incompatibility.MaximumVersion;
-                        if (objMinVersion != default)
+                        ValueVersion objMinVersion = incompatibility.MinimumVersion;
+                        ValueVersion objMaxVersion = incompatibility.MaximumVersion;
+                        if (objMinVersion != default(ValueVersion))
                         {
-                            if (incompatibility.MaximumVersion != default)
+                            if (incompatibility.MaximumVersion != default(ValueVersion))
                                 objInfoToDisplay = lstEnabledCustomData.Find(
                                     x => x.MyVersion >= objMinVersion || x.MyVersion <= objMaxVersion);
                             else
                                 objInfoToDisplay
                                     = lstEnabledCustomData.Find(x => x.MyVersion >= objMinVersion);
                         }
-                        else if (incompatibility.MaximumVersion != default)
+                        else if (incompatibility.MaximumVersion != default(ValueVersion))
                         {
                             objInfoToDisplay
                                 = lstEnabledCustomData.Find(x => x.MyVersion <= objMaxVersion);
@@ -1003,7 +1003,7 @@ namespace Chummer
     /// </summary>
     public readonly struct DirectoryDependency : IEquatable<DirectoryDependency>
     {
-        public DirectoryDependency(string name, Guid guid, Version minVersion, Version maxVersion)
+        public DirectoryDependency(string name, Guid guid, ValueVersion minVersion, ValueVersion maxVersion)
         {
             Name = name;
             UniqueIdentifier = guid;
@@ -1015,9 +1015,9 @@ namespace Chummer
 
         public Guid UniqueIdentifier { get; }
 
-        public Version MinimumVersion { get; }
+        public ValueVersion MinimumVersion { get; }
 
-        public Version MaximumVersion { get; }
+        public ValueVersion MaximumVersion { get; }
 
         public string DisplayName
         {
@@ -1025,9 +1025,9 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
 
-                if (MinimumVersion != default)
+                if (MinimumVersion != default(ValueVersion))
                 {
-                    return MaximumVersion != default
+                    return MaximumVersion != default(ValueVersion)
                         ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace,
                                         MinimumVersion, MaximumVersion)
                         // If maxversion is not given, don't display decimal.max display > instead
@@ -1035,7 +1035,7 @@ namespace Chummer
                                         MinimumVersion);
                 }
 
-                return MaximumVersion != default
+                return MaximumVersion != default(ValueVersion)
                     // If minversion is not given, don't display decimal.min display < instead
                     ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
                     // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
@@ -1047,16 +1047,16 @@ namespace Chummer
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-            if (MinimumVersion != default)
+            if (MinimumVersion != default(ValueVersion))
             {
-                return MaximumVersion != default
+                return MaximumVersion != default(ValueVersion)
                     ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace, MinimumVersion,
                                     MaximumVersion)
                     // If maxversion is not given, don't display decimal.max display > instead
                     : string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
             }
 
-            return MaximumVersion != default
+            return MaximumVersion != default(ValueVersion)
                 // If minversion is not given, don't display decimal.min display < instead
                 ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
                 // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
@@ -1084,8 +1084,8 @@ namespace Chummer
             {
                 int hashCode = Name?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ UniqueIdentifier.GetHashCode();
-                hashCode = (hashCode * 397) ^ (MinimumVersion?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (MaximumVersion?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ MinimumVersion.GetHashCode();
+                hashCode = (hashCode * 397) ^ MaximumVersion.GetHashCode();
                 return hashCode;
             }
         }
