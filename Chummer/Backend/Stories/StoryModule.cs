@@ -617,9 +617,9 @@ namespace Chummer
                         }
                         if (string.IsNullOrEmpty(strExtra))
                         {
-                            Cyberware objCyberware = await _objCharacter.Cyberware
+                            Cyberware objCyberware = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                                 .DeepFirstOrDefaultAsync(
-                                    x => x.Children,
+                                    x => x.GetChildrenAsync(token),
                                     x => x.Name == strArguments
                                          && !string.IsNullOrEmpty(x.Extra), token).ConfigureAwait(false);
                             if (objCyberware != null)

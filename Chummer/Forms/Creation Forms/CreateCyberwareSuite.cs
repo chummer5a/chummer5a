@@ -172,11 +172,11 @@ namespace Chummer
                                       "rating", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                                   .ConfigureAwait(false);
                         // Write out child items.
-                        if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
+                        if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
                         {
                             // <cyberwares>
                             await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
-                            await objCyberware.Children.ForEachAsync(async objChild =>
+                            await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChild =>
                             {
                                 // Do not include items that come with the base item by default.
                                 if (objChild.Capacity != "[*]")

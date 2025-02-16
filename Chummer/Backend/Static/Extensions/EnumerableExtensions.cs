@@ -98,11 +98,11 @@ namespace Chummer
             unchecked
             {
                 // uint to prevent overflows
-                uint result = 19;
+                uint result = 19u;
                 foreach (T item in lstItems)
                 {
                     token.ThrowIfCancellationRequested();
-                    result = result * 31 + (uint)item.GetHashCode();
+                    result = result * 31u + (uint)item.GetHashCode();
                 }
 
                 return (int)result;
@@ -132,7 +132,7 @@ namespace Chummer
                     result += (uint)item.GetHashCode();
                 }
 
-                return (int)(19 + result * 31);
+                return (int)(19u + result * 31u);
             }
         }
 
@@ -162,7 +162,7 @@ namespace Chummer
                     },
                     localResult => result += (uint)localResult);
                 token.ThrowIfCancellationRequested();
-                return (int)(19 + result * 31);
+                return (int)(19u + result * 31u);
             }
         }
 
@@ -253,102 +253,6 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 objFuncToRun.Invoke(objItem);
             }
-        }
-
-        public static async Task<int> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
-            {
-                token.ThrowIfCancellationRequested();
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    intReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
-                }
-            }
-            return intReturn;
-        }
-
-        public static async Task<long> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            long lngReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
-            {
-                token.ThrowIfCancellationRequested();
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    lngReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
-                }
-            }
-            return lngReturn;
-        }
-
-        public static async Task<short> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<short>> funcSelector, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            short shtReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
-            {
-                token.ThrowIfCancellationRequested();
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    shtReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
-                }
-            }
-            return shtReturn;
-        }
-
-        public static async Task<float> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            float fltReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
-            {
-                token.ThrowIfCancellationRequested();
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    fltReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
-                }
-            }
-            return fltReturn;
-        }
-
-        public static async Task<double> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            double dblReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
-            {
-                token.ThrowIfCancellationRequested();
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    dblReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
-                }
-            }
-            return dblReturn;
-        }
-
-        public static async Task<decimal> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            decimal decReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
-            {
-                token.ThrowIfCancellationRequested();
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    decReturn += await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
-                }
-            }
-            return decReturn;
         }
     }
 }

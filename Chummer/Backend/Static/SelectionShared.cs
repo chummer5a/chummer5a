@@ -431,7 +431,7 @@ namespace Chummer
                                     foreach (Cyberware objItem in blnSync
                                                  ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                                  : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                         .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                                                         .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                     {
                                         if (!setNamesIncludedInLimit.Contains(objItem.Name)
                                             && !setNamesIncludedInLimit.Contains(objItem.InternalId))
@@ -481,7 +481,7 @@ namespace Chummer
                             foreach (Cyberware objItem in blnSync
                                          ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                          : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                             .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                                             .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                             {
                                 if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
                                     continue;
@@ -1036,9 +1036,9 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(
                             await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.Children, async objCyberware =>
+                                x => x.GetChildrenAsync(token), async objCyberware =>
                                     (objCyberware.Name == strNodeInnerText
-                                     || objCyberware.SourceIDString
+                                     || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                      == strNodeInnerText)
                                     && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                     == Improvement.ImprovementSource.Bioware
@@ -1048,9 +1048,9 @@ namespace Chummer
                             >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, async objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 (objCyberware.Name == strNodeInnerText
-                                 || objCyberware.SourceIDString
+                                 || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                  == strNodeInnerText)
                                 && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Bioware
@@ -1102,10 +1102,10 @@ namespace Chummer
                                                    mod.SourceIDString, strNodeInnerText,
                                                    StringComparison.OrdinalIgnoreCase),
                                         token)
-                                    : await objCyberware.Children
-                                        .AnyAsync(mod => mod.Name == strNodeInnerText
+                                    : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                        .AnyAsync(async mod => mod.Name == strNodeInnerText
                                                          || string.Equals(
-                                                             mod.SourceIDString,
+                                                             await mod.GetSourceIDStringAsync(token).ConfigureAwait(false),
                                                              strNodeInnerText,
                                                              StringComparison
                                                                  .OrdinalIgnoreCase), token)
@@ -1145,7 +1145,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(
                             await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.Children, async objCyberware =>
+                                x => x.GetChildrenAsync(token), async objCyberware =>
                                     (objCyberware.Name == strNodeInnerText
                                      || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                      == strNodeInnerText)
@@ -1157,7 +1157,7 @@ namespace Chummer
                             >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, async objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 (objCyberware.Name == strNodeInnerText
                                  || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
                                  == strNodeInnerText)
@@ -1202,7 +1202,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? objCyberware.Children.Any(
                                     mod => mod.Category == strNodeInnerText, token)
-                                : await objCyberware.Children
+                                : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                                     .AnyAsync(mod => mod.Category == strNodeInnerText,
                                         token)
                                     .ConfigureAwait(false), strName);
@@ -1236,7 +1236,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(
                             await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.Children, async objCyberware =>
+                                x => x.GetChildrenAsync(token), async objCyberware =>
                                     objCyberware.Category == strNodeInnerText &&
                                     await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                     == Improvement.ImprovementSource.Bioware
@@ -1246,7 +1246,7 @@ namespace Chummer
                             strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, async objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 objCyberware.Category == strNodeInnerText &&
                                 await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Bioware
@@ -1287,7 +1287,7 @@ namespace Chummer
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? objCyberware.Children.Any(mod => mod.Category == strNodeInnerText, token)
-                                    : await objCyberware.Children
+                                    : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                                         .AnyAsync(mod => mod.Category == strNodeInnerText, token)
                                         .ConfigureAwait(false), strName);
                         return new Tuple<bool, string>(false, strName);
@@ -1320,7 +1320,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(
                             await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.Children, async objCyberware =>
+                                x => x.GetChildrenAsync(token), async objCyberware =>
                                     objCyberware.Category == strNodeInnerText &&
                                     await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                     == Improvement.ImprovementSource.Cyberware
@@ -1330,7 +1330,7 @@ namespace Chummer
                             strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, async objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 objCyberware.Category == strNodeInnerText &&
                                 await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Cyberware
@@ -1395,7 +1395,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(
                             await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.Children, async objCyberware =>
+                                x => x.GetChildrenAsync(token), async objCyberware =>
                                     objCyberware.Name.Contains(strNodeInnerText) &&
                                     await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                     == Improvement.ImprovementSource.Bioware
@@ -1405,7 +1405,7 @@ namespace Chummer
                             >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, async objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 objCyberware.Name.Contains(strNodeInnerText) &&
                                 await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Bioware
@@ -1470,7 +1470,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
                         return new Tuple<bool, string>(
                             await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.Children, async objCyberware =>
+                                x => x.GetChildrenAsync(token), async objCyberware =>
                                     objCyberware.Name.Contains(strNodeInnerText) &&
                                     await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                     == Improvement.ImprovementSource.Cyberware
@@ -1480,7 +1480,7 @@ namespace Chummer
                             >= intCount, strName);
                     return new Tuple<bool, string>(
                         await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.Children, async objCyberware =>
+                            x => x.GetChildrenAsync(token), async objCyberware =>
                                 objCyberware.Name.Contains(strNodeInnerText) &&
                                 await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
                                 == Improvement.ImprovementSource.Cyberware

@@ -4863,7 +4863,7 @@ namespace Chummer.Backend.Equipment
             VehicleMod objReturnMod = null;
             await Mods.ForEachWithBreakAsync(async objMod =>
             {
-                objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.Children, funcPredicate, token: token).ConfigureAwait(false);
+                objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.GetChildrenAsync(token), funcPredicate, token: token).ConfigureAwait(false);
                 if (objReturn == null)
                     return true;
                 objReturnMod = objMod;
@@ -4876,7 +4876,7 @@ namespace Chummer.Backend.Equipment
             {
                 await objMount.Mods.ForEachWithBreakAsync(async objMod =>
                 {
-                    objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.Children, funcPredicate, token: token).ConfigureAwait(false);
+                    objReturn = await objMod.Cyberware.DeepFirstOrDefaultAsync(x => x.GetChildrenAsync(token), funcPredicate, token: token).ConfigureAwait(false);
                     if (objReturn == null)
                         return true;
                     objReturnMod = objMod;

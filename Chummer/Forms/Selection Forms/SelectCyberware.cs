@@ -1613,9 +1613,9 @@ namespace Chummer
                             {
                                 ICollection<Cyberware> lstWareListToCheck = null;
                                 if (CyberwareParent != null)
-                                    lstWareListToCheck = CyberwareParent.Children;
+                                    lstWareListToCheck = await CyberwareParent.GetChildrenAsync(token).ConfigureAwait(false);
                                 else if (ParentVehicle == null)
-                                    lstWareListToCheck = _objCharacter.Cyberware;
+                                    lstWareListToCheck = await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false);
                                 if (xmlCyberware
                                           .SelectSingleNodeAndCacheExpression("selectside", token: token) == null
                                     || !string.IsNullOrEmpty(CyberwareParent?.Location) ||

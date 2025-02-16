@@ -149,7 +149,7 @@ namespace Chummer
                         {
                             // Cyberware/Bioware.
                             foreach (Cyberware objCyberware in await (await _objCharacter.GetCyberwareAsync().ConfigureAwait(false)).GetAllDescendantsAsync(
-                                         x => x.Children).ConfigureAwait(false))
+                                         x => x.GetChildrenAsync()).ConfigureAwait(false))
                             {
                                 if ((await objCyberware.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {

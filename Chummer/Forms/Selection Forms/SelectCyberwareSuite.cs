@@ -305,7 +305,7 @@ namespace Chummer
 
                             lstChildren.Add(objCyberware);
 
-                            await ParseNode(xmlChildItem, objGrade, objCyberware.Children, token).ConfigureAwait(false);
+                            await ParseNode(xmlChildItem, objGrade, await objCyberware.GetChildrenAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -329,9 +329,8 @@ namespace Chummer
                 objCyberwareLabelString.Append("   ");
 
             objCyberwareLabelString.AppendLine(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-
-            foreach (Cyberware objPlugin in objCyberware.Children)
-                await WriteList(objCyberwareLabelString, objPlugin, intDepth + 1, token).ConfigureAwait(false);
+            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(
+                objPlugin => WriteList(objCyberwareLabelString, objPlugin, intDepth + 1, token), token).ConfigureAwait(false);
         }
 
         #endregion Methods

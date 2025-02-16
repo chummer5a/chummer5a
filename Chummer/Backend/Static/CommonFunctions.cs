@@ -1150,11 +1150,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Cyberware objCyberware in await lstCyberware.DeepWhereAsync(x => x.Children,
-                             async x => await x.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0,
+                foreach (Cyberware objCyberware in await lstCyberware.DeepWhereAsync(x => x.GetChildrenAsync(token),
+                             async x => await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0,
                              token: token).ConfigureAwait(false))
                 {
-                    Gear objReturn = await objCyberware.GearChildren.DeepFindByIdAsync(strGuid, token: token)
+                    Gear objReturn = await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(strGuid, token: token)
                         .ConfigureAwait(false);
 
                     if (objReturn != null)

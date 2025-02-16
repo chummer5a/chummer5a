@@ -517,11 +517,11 @@ namespace Chummer
                                     await objWriter.WriteElementStringAsync("grade",
                                             (await objCyberware.GetGradeAsync().ConfigureAwait(false)).Name)
                                         .ConfigureAwait(false);
-                                    if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
+                                    if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
                                     {
                                         // <cyberwares>
                                         await objWriter.WriteStartElementAsync("cyberwares").ConfigureAwait(false);
-                                        await objCyberware.Children.ForEachAsync(async objChildCyberware =>
+                                        await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChildCyberware =>
                                         {
                                             if (objChildCyberware.Capacity != "[*]")
                                             {
@@ -595,11 +595,11 @@ namespace Chummer
                                     await objWriter.WriteElementStringAsync("grade",
                                             (await objCyberware.GetGradeAsync().ConfigureAwait(false)).Name)
                                         .ConfigureAwait(false);
-                                    if (await objCyberware.Children.GetCountAsync().ConfigureAwait(false) > 0)
+                                    if (await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).GetCountAsync().ConfigureAwait(false) > 0)
                                     {
                                         // <cyberwares>
                                         await objWriter.WriteStartElementAsync("cyberwares").ConfigureAwait(false);
-                                        await objCyberware.Children.ForEachAsync(async objChildCyberware =>
+                                        await (await objCyberware.GetChildrenAsync().ConfigureAwait(false)).ForEachAsync(async objChildCyberware =>
                                         {
                                             if (objChildCyberware.Capacity != "[*]")
                                             {

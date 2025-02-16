@@ -5166,8 +5166,8 @@ namespace Chummer
                                 foreach (Cyberware objCyberware in blnSync
                                              ? objCharacter.Cyberware.GetAllDescendants(
                                                  x => x.Children, token)
-                                             : await objCharacter.Cyberware.GetAllDescendantsAsync(
-                                                 x => x.Children, token).ConfigureAwait(false))
+                                             : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                                                 x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                 {
                                     Grade objOldGrade = blnSync ? objCyberware.Grade : await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
                                     if (objOldGrade.Adapsin)

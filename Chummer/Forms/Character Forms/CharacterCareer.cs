@@ -3354,7 +3354,7 @@ namespace Chummer
                     }
 
                     foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
-                                     x => x.Children, async x =>
+                                     x => x.GetChildrenAsync(token), async x =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Bioware)
                                              return false;
@@ -3376,9 +3376,9 @@ namespace Chummer
                                 continue;
                             Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                             if (objParent != null)
-                                await objParent.Children.RemoveAsync(objCyberware, token)
+                                await (await objParent.GetChildrenAsync(token).ConfigureAwait(false)).RemoveAsync(objCyberware, token)
                                     .ConfigureAwait(false);
-                            await CharacterObject.Cyberware.AddAsync(objCyberware, token)
+                            await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token)
                                 .ConfigureAwait(false);
                             await objCyberware.ChangeModularEquipAsync(false, token: token)
                                 .ConfigureAwait(false);
@@ -3427,7 +3427,7 @@ namespace Chummer
                     }
 
                     foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
-                                     x => x.Children, async x =>
+                                     x => x.GetChildrenAsync(token), async x =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Cyberware)
                                              return false;
@@ -3449,9 +3449,9 @@ namespace Chummer
                                 continue;
                             Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                             if (objParent != null)
-                                await objParent.Children.RemoveAsync(objCyberware, token)
+                                await (await objParent.GetChildrenAsync(token).ConfigureAwait(false)).RemoveAsync(objCyberware, token)
                                     .ConfigureAwait(false);
-                            await CharacterObject.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token).ConfigureAwait(false);
                             await objCyberware.ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
                         }
                         else
@@ -3496,7 +3496,7 @@ namespace Chummer
                     }
 
                     foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
-                                     x => x.Children, async x =>
+                                     x => x.GetChildrenAsync(token), async x =>
                                      {
                                          Guid guidSourceId = await x.GetSourceIDAsync(token).ConfigureAwait(false);
                                          return guidSourceId != Cyberware.EssenceHoleGUID
@@ -3521,9 +3521,9 @@ namespace Chummer
                                 continue;
                             Cyberware objParent = await objCyberware.GetParentAsync(token).ConfigureAwait(false);
                             if (objParent != null)
-                                await objParent.Children.RemoveAsync(objCyberware, token)
+                                await (await objParent.GetChildrenAsync(token).ConfigureAwait(false)).RemoveAsync(objCyberware, token)
                                     .ConfigureAwait(false);
-                            await CharacterObject.Cyberware.AddAsync(objCyberware, token)
+                            await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token)
                                 .ConfigureAwait(false);
                             await objCyberware.ChangeModularEquipAsync(false, token: token)
                                 .ConfigureAwait(false);
@@ -5109,9 +5109,9 @@ namespace Chummer
 
                             // Refresh Cyberware and Bioware.
                             Dictionary<Cyberware, int> dicPairableCyberwares
-                                = new Dictionary<Cyberware, int>(await CharacterObject.Cyberware.GetCountAsync(token).ConfigureAwait(false));
-                            foreach (Cyberware objCyberware in await CharacterObject.Cyberware.GetAllDescendantsAsync(
-                                         x => x.Children, token).ConfigureAwait(false))
+                                = new Dictionary<Cyberware, int>(await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false));
+                            foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                                         x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                             {
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
@@ -5197,8 +5197,8 @@ namespace Chummer
                             {
                                 Cyberware objCyberware = objItem.Key;
                                 int intCyberwaresCount = objItem.Value;
-                                List<Cyberware> lstPairableCyberwares = await CharacterObject.Cyberware
-                                    .DeepWhereAsync(x => x.Children,
+                                List<Cyberware> lstPairableCyberwares = await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false))
+                                    .DeepWhereAsync(x => x.GetChildrenAsync(token),
                                                     async x => objCyberware.IncludePair.Contains(x.Name)
                                                                && x.Extra == objCyberware.Extra
                                                                && await x.GetIsModularCurrentlyEquippedAsync(token)
@@ -14436,7 +14436,7 @@ namespace Chummer
                                                                             out HashSet<string> setHasMounts))
                             {
                                 foreach (Cyberware objLoopCyberware in await objMod.Cyberware.DeepWhereAsync(
-                                             x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
+                                             x => x.GetChildrenAsync(GenericToken), async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
                                 {
                                     foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(GenericToken).ConfigureAwait(false)).SplitNoAlloc(
                                                  ',', StringSplitOptions.RemoveEmptyEntries))
@@ -14511,8 +14511,8 @@ namespace Chummer
                                 string strLoopHasModularMount = await objCyberwareParent.GetHasModularMountAsync(GenericToken).ConfigureAwait(false);
                                 if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                     setHasMounts.Add(strLoopHasModularMount);
-                                foreach (Cyberware objLoopCyberware in await objCyberwareParent.Children.DeepWhereAsync(
-                                             x => x.Children, async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
+                                foreach (Cyberware objLoopCyberware in await (await objCyberwareParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).DeepWhereAsync(
+                                             x => x.GetChildrenAsync(GenericToken), async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
                                 {
                                     foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(GenericToken).ConfigureAwait(false)).SplitNoAlloc(
                                                  ',', StringSplitOptions.RemoveEmptyEntries))
@@ -23737,8 +23737,8 @@ namespace Chummer
                                 dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
                             string strSelectedLocation =
                                 await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
-                            foreach (Cyberware objLoopCyberware in await objSelectedCyberware.Children.DeepWhereAsync(
-                                             x => x.Children,
+                            foreach (Cyberware objLoopCyberware in await (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                                             x => x.GetChildrenAsync(token),
                                              async x => string.IsNullOrEmpty(await x
                                                  .GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
                                          .ConfigureAwait(false))
@@ -23782,9 +23782,9 @@ namespace Chummer
                                         .GetHasModularMountAsync(token).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setLoopHasModularMount.Add(strLoopHasModularMount);
-                                    foreach (Cyberware objInnerLoopCyberware in await objLoopCyberware.Children
+                                    foreach (Cyberware objInnerLoopCyberware in await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                                                  .DeepWhereAsync(
-                                                     x => x.Children,
+                                                     x => x.GetChildrenAsync(token),
                                                      async x => string.IsNullOrEmpty(
                                                          await x.GetPlugsIntoModularMountAsync(token)
                                                              .ConfigureAwait(false)),
@@ -23910,8 +23910,9 @@ namespace Chummer
                         if (!await objCyberware.Purchase(objXmlCyberware, objSource,
                                 frmPickCyberware.MyForm.SelectedGrade,
                                 frmPickCyberware.MyForm.SelectedRating, null,
-                                objSelectedCyberware?.Children ??
-                                await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false),
+                                objSelectedCyberware != null
+                                    ? await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)
+                                    : await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false),
                                 await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false),
                                 await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false),
                                 frmPickCyberware.MyForm.Markup,
@@ -27141,9 +27142,9 @@ namespace Chummer
             }, token: token).ConfigureAwait(false);
 
             // Look through any children and add their Improvements as well.
-            await objCyberware.Children.ForEachWithSideEffectsAsync(x =>
+            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(x =>
                 CopyCyberwareImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
-            await objCyberware.GearChildren.ForEachWithSideEffectsAsync(x =>
+            await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(x =>
                 CopyGearImprovements(objSource, objDestination, x, token), token: token).ConfigureAwait(false);
         }
 
@@ -27344,7 +27345,7 @@ namespace Chummer
                                 = Convert.ToInt32(objXmlChild["rating"]?.InnerText,
                                     GlobalSettings.InvariantCultureInfo);
 
-                            await objCyberware.Children.AddAsync(await CreateSuiteCyberware(objXmlChild,
+                            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(await CreateSuiteCyberware(objXmlChild,
                                 objXmlChildCyberware, objGrade,
                                 intChildRating, eSource, token).ConfigureAwait(false), token).ConfigureAwait(false);
                         }
@@ -28806,27 +28807,27 @@ namespace Chummer
                     {
                         if (objOldParent != null)
                         {
-                            await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                            await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                 .ConfigureAwait(false);
 
-                            await CharacterObject.Cyberware.AddAsync(objModularCyberware, GenericToken)
+                            await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                                 .ConfigureAwait(false);
                         }
                     }
                     else
                     {
-                        Cyberware objNewParent = await CharacterObject.Cyberware
+                        Cyberware objNewParent = await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false))
                             .DeepFindByIdAsync(strSelectedParentID, GenericToken).ConfigureAwait(false);
                         if (objNewParent != null)
                         {
                             if (objOldParent != null)
-                                await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                                await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                     .ConfigureAwait(false);
                             else
-                                await CharacterObject.Cyberware.RemoveAsync(objModularCyberware, GenericToken)
+                                await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                     .ConfigureAwait(false);
 
-                            await objNewParent.Children.AddAsync(objModularCyberware, GenericToken)
+                            await (await objNewParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                                 .ConfigureAwait(false);
 
                             await objModularCyberware.ChangeModularEquipAsync(true, token: GenericToken)
@@ -28847,14 +28848,14 @@ namespace Chummer
                             if (objNewVehicleModParent != null || objNewParent != null)
                             {
                                 if (objOldParent != null)
-                                    await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                                    await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                         .ConfigureAwait(false);
                                 else
-                                    await CharacterObject.Cyberware.RemoveAsync(objModularCyberware, GenericToken)
+                                    await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                         .ConfigureAwait(false);
 
                                 if (objNewParent != null)
-                                    await objNewParent.Children.AddAsync(objModularCyberware, GenericToken)
+                                    await (await objNewParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                                         .ConfigureAwait(false);
                                 else
                                     await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware, GenericToken)
@@ -28862,10 +28863,10 @@ namespace Chummer
                             }
                             else if (objOldParent != null)
                             {
-                                await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                                await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                     .ConfigureAwait(false);
 
-                                await CharacterObject.Cyberware.AddAsync(objModularCyberware, GenericToken)
+                                await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                                     .ConfigureAwait(false);
                             }
                         }
@@ -28951,29 +28952,29 @@ namespace Chummer
                     if (strSelectedParentID == "None")
                     {
                         if (objOldParent != null)
-                            await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                            await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                 .ConfigureAwait(false);
                         else
                             await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware, GenericToken)
                                 .ConfigureAwait(false);
 
-                        await CharacterObject.Cyberware.AddAsync(objModularCyberware, GenericToken)
+                        await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                             .ConfigureAwait(false);
                     }
                     else
                     {
-                        Cyberware objNewParent = await CharacterObject.Cyberware
+                        Cyberware objNewParent = await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false))
                             .DeepFindByIdAsync(strSelectedParentID, GenericToken).ConfigureAwait(false);
                         if (objNewParent != null)
                         {
                             if (objOldParent != null)
-                                await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                                await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                     .ConfigureAwait(false);
                             else
                                 await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware, GenericToken)
                                     .ConfigureAwait(false);
 
-                            await objNewParent.Children.AddAsync(objModularCyberware, GenericToken)
+                            await (await objNewParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                                 .ConfigureAwait(false);
 
                             await objModularCyberware.ChangeModularEquipAsync(true, token: GenericToken)
@@ -28994,7 +28995,7 @@ namespace Chummer
                             if (objNewVehicleModParent != null || objNewParent != null)
                             {
                                 if (objOldParent != null)
-                                    await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                                    await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                         .ConfigureAwait(false);
                                 else
                                     await objOldParentVehicleMod.Cyberware
@@ -29002,7 +29003,7 @@ namespace Chummer
                                         .ConfigureAwait(false);
 
                                 if (objNewParent != null)
-                                    await objNewParent.Children.AddAsync(objModularCyberware, GenericToken)
+                                    await (await objNewParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                                         .ConfigureAwait(false);
                                 else
                                     await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware, GenericToken)
@@ -29011,14 +29012,14 @@ namespace Chummer
                             else
                             {
                                 if (objOldParent != null)
-                                    await objOldParent.Children.RemoveAsync(objModularCyberware, GenericToken)
+                                    await (await objOldParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).RemoveAsync(objModularCyberware, GenericToken)
                                         .ConfigureAwait(false);
                                 else
                                     await objOldParentVehicleMod.Cyberware
                                         .RemoveAsync(objModularCyberware, GenericToken)
                                         .ConfigureAwait(false);
 
-                                await CharacterObject.Cyberware.AddAsync(objModularCyberware, GenericToken)
+                                await (await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false)).AddAsync(objModularCyberware, GenericToken)
                                     .ConfigureAwait(false);
                             }
                         }

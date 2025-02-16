@@ -1663,7 +1663,7 @@ namespace Chummer.Backend.Attributes
                             }
                             else
                             {
-                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(objCyberware.Children)
+                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                                     .ConfigureAwait(false);
                                 intLimbCountReturn += intLoop1;
                                 intLimbTotalReturn += intLoop2;
@@ -2852,7 +2852,7 @@ namespace Chummer.Backend.Attributes
 
                 if (await objCyberware.GetInheritAttributesAsync(token).ConfigureAwait(false))
                 {
-                    await objCyberware.Children.ForEachAsync(objChild => BuildTooltip(sbdModifier, objChild, strSpace), token: token).ConfigureAwait(false);
+                    await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(objChild => BuildTooltip(sbdModifier, objChild, strSpace), token: token).ConfigureAwait(false);
 
                     return;
                 }
