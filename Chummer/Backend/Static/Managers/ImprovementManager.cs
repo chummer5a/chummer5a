@@ -2570,8 +2570,13 @@ namespace Chummer
                                         return false;
                                     }
                                 }
+#if DEBUG
+                                catch (Exception e)
+#else
                                 catch
+#endif
                                 {
+                                    Utils.BreakIfDebug();
                                     // ReSharper disable once MethodHasAsyncOverload
                                     Rollback(objCharacter, token);
                                     throw;
@@ -2596,8 +2601,13 @@ namespace Chummer
                                         return false;
                                     }
                                 }
+#if DEBUG
+                                catch (Exception e)
+#else
                                 catch
+#endif
                                 {
+                                    Utils.BreakIfDebug();
                                     await RollbackAsync(objCharacter, token).ConfigureAwait(false);
                                     throw;
                                 }

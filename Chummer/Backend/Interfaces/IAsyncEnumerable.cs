@@ -8917,7 +8917,7 @@ namespace Chummer
                     return false;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenAsync)
-                    return await lstChildrenAsync.DeepAllAsync(funcGetChildrenMethod, predicate, token);
+                    return await lstChildrenAsync.DeepAllAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 return lstChildren.DeepAll(funcGetChildrenMethod, predicate);
             }, token);
         }
@@ -8930,7 +8930,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return objParentList.AllAsync(async objLoopChild =>
             {
-                if (!await predicate(objLoopChild))
+                if (!await predicate(objLoopChild).ConfigureAwait(false))
                     return false;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
@@ -8964,7 +8964,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return objParentList.AllAsync(async objLoopChild =>
             {
-                if (!await predicate(objLoopChild))
+                if (!await predicate(objLoopChild).ConfigureAwait(false))
                     return false;
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                 return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
@@ -8983,7 +8983,7 @@ namespace Chummer
                     return true;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenAsync)
-                    return await lstChildrenAsync.DeepAnyAsync(funcGetChildrenMethod, predicate, token);
+                    return await lstChildrenAsync.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
                 return lstChildren.DeepAny(funcGetChildrenMethod, predicate);
             }, token);
         }
@@ -8996,7 +8996,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return objParentList.AnyAsync(async objLoopChild =>
             {
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     return true;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
@@ -9013,7 +9013,7 @@ namespace Chummer
             {
                 if (predicate(objLoopChild))
                     return true;
-                T2 lstChildren = await funcGetChildrenMethod(objLoopChild);
+                T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                 return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             }, token);
         }
@@ -9026,9 +9026,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return objParentList.AnyAsync(async objLoopChild =>
             {
-                if (await predicate(objLoopChild))
+                if (await predicate(objLoopChild).ConfigureAwait(false))
                     return true;
-                T2 lstChildren = await funcGetChildrenMethod(objLoopChild);
+                T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                 return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
             }, token);
         }
@@ -9703,7 +9703,7 @@ namespace Chummer
                     : lstChildrenRaw.ToList();
                 if (lstChildren.Count > 0)
                 {
-                    T objTemp = await lstChildren.DeepLastOrDefaultAsync(funcGetChildrenMethod, token);
+                    T objTemp = await lstChildren.DeepLastOrDefaultAsync(funcGetChildrenMethod, token).ConfigureAwait(false);
                     if (objTemp?.Equals(default(T)) == false)
                         return objTemp;
                 }
