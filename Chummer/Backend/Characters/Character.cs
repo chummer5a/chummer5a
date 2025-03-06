@@ -22800,36 +22800,56 @@ namespace Chummer
                                 else
                                     EssenceAtSpecialStart = ESS.MetatypeMaximum;
                             }
-                        }
-                        else
-                        {
-                            if (!RESEnabled)
+
+                            XmlNode xmlTraditionListDataNode
+                                = LoadData("traditions.xml").SelectSingleNode("/chummer/traditions");
+                            if (xmlTraditionListDataNode != null)
                             {
-                                ClearInitiations();
-                                MagicTradition.ResetTradition();
-                            }
-                            else
-                            {
-                                XmlNode xmlTraditionListDataNode
-                                    = LoadData("streams.xml").SelectSingleNode("/chummer/traditions");
-                                if (xmlTraditionListDataNode != null)
+                                XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                                if (xmlTraditionDataNodes?.Count == 1)
                                 {
-                                    XmlNode xmlTraditionDataNode
-                                        = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
-                                    if (xmlTraditionDataNode != null)
-                                    {
-                                        if (!MagicTradition.Create(xmlTraditionDataNode, true))
-                                            MagicTradition.ResetTradition();
-                                    }
-                                    else
+                                    if (!MagicTradition.Create(xmlTraditionDataNodes[0]))
                                         MagicTradition.ResetTradition();
                                 }
                                 else
+                                {
                                     MagicTradition.ResetTradition();
+                                }
                             }
+                            else
+                            {
+                                MagicTradition.ResetTradition();
+                            }
+                        }
+                        else if (!RESEnabled)
+                        {
+                            ClearInitiations();
+                            MagicTradition.ResetTradition();
 
-                            if (!Created && !RESEnabled && !DEPEnabled)
+                            if (!Created && !DEPEnabled)
                                 EssenceAtSpecialStart = decimal.MinValue;
+                        }
+                        else
+                        {
+                            XmlNode xmlTraditionListDataNode
+                                = LoadData("streams.xml").SelectSingleNode("/chummer/traditions");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                                if (xmlTraditionDataNodes?.Count == 1)
+                                {
+                                    if (!MagicTradition.Create(xmlTraditionDataNodes[0], true))
+                                        MagicTradition.ResetTradition();
+                                }
+                                else
+                                {
+                                    MagicTradition.ResetTradition();
+                                }
+                            }
+                            else
+                            {
+                                MagicTradition.ResetTradition();
+                            }
                         }
                         OnPropertyChanged();
                     }
@@ -23087,39 +23107,57 @@ namespace Chummer
                                         await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false), token)
                                     .ConfigureAwait(false);
                         }
-                    }
-                    else
-                    {
-                        if (!await GetRESEnabledAsync(token).ConfigureAwait(false))
+
+                        XmlNode xmlTraditionListDataNode
+                            = (await LoadDataAsync("traditions.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/traditions");
+                        if (xmlTraditionListDataNode != null)
                         {
-                            await ClearInitiationsAsync(token).ConfigureAwait(false);
-                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            XmlNode xmlTraditionListDataNode
-                                = (await LoadDataAsync("streams.xml", token: token).ConfigureAwait(false))
-                                .SelectSingleNode("/chummer/traditions");
-                            if (xmlTraditionListDataNode != null)
+                            XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                            if (xmlTraditionDataNodes?.Count == 1)
                             {
-                                XmlNode xmlTraditionDataNode
-                                    = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
-                                if (xmlTraditionDataNode != null)
-                                {
-                                    if (!await MagicTradition.CreateAsync(xmlTraditionDataNode, true, token: token).ConfigureAwait(false))
-                                        await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
-                                }
-                                else
+                                if (!await MagicTradition.CreateAsync(xmlTraditionDataNodes[0], token: token).ConfigureAwait(false))
                                     await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                             }
                             else
+                            {
                                 await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
                         }
+                        else
+                        {
+                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (!await GetRESEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        await ClearInitiationsAsync(token).ConfigureAwait(false);
+                        await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
 
                         if (!await GetCreatedAsync(token).ConfigureAwait(false)
-                            && !await GetRESEnabledAsync(token).ConfigureAwait(false)
                             && !await GetDEPEnabledAsync(token).ConfigureAwait(false))
                             await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        XmlNode xmlTraditionListDataNode
+                            = (await LoadDataAsync("streams.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/traditions");
+                        if (xmlTraditionListDataNode != null)
+                        {
+                            XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                            if (xmlTraditionDataNodes?.Count == 1)
+                            {
+                                if (!await MagicTradition.CreateAsync(xmlTraditionDataNodes[0], true, token: token).ConfigureAwait(false))
+                                    await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
                     }
                 }
                 finally
@@ -24156,54 +24194,50 @@ namespace Chummer
                                 = LoadData("streams.xml").SelectSingleNode("/chummer/traditions");
                             if (xmlTraditionListDataNode != null)
                             {
-                                XmlNode xmlTraditionDataNode
-                                    = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
-                                if (xmlTraditionDataNode != null)
+                                XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                                if (xmlTraditionDataNodes?.Count == 1)
                                 {
-                                    if (!MagicTradition.Create(xmlTraditionDataNode, true))
+                                    if (!MagicTradition.Create(xmlTraditionDataNodes[0], true))
                                         MagicTradition.ResetTradition();
                                 }
                                 else
                                 {
-                                    xmlTraditionDataNode = xmlTraditionListDataNode["tradition"];
-                                    if (xmlTraditionDataNode != null
-                                        && !MagicTradition.Create(xmlTraditionDataNode, true))
-                                    {
-                                        MagicTradition.ResetTradition();
-                                    }
+                                    MagicTradition.ResetTradition();
                                 }
-                            }
-                        }
-                        else
-                        {
-                            if (!MAGEnabled)
-                            {
-                                ClearInitiations();
-                                MagicTradition.ResetTradition();
                             }
                             else
                             {
-                                XmlNode xmlTraditionListDataNode
-                                    = LoadData("traditions.xml").SelectSingleNode("/chummer/traditions");
-                                if (xmlTraditionListDataNode != null)
+                                MagicTradition.ResetTradition();
+                            }
+                        }
+                        else if (!MAGEnabled)
+                        {
+                            ClearInitiations();
+                            MagicTradition.ResetTradition();
+                            if (!Created && !DEPEnabled)
+                                EssenceAtSpecialStart = decimal.MinValue;
+                        }
+                        else
+                        {
+                            XmlNode xmlTraditionListDataNode
+                                = LoadData("traditions.xml").SelectSingleNode("/chummer/traditions");
+                            if (xmlTraditionListDataNode != null)
+                            {
+                                XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                                if (xmlTraditionDataNodes?.Count == 1)
                                 {
-                                    XmlNode xmlTraditionDataNode
-                                        = xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition",
-                                            Tradition.CustomMagicalTraditionGuidString);
-                                    if (xmlTraditionDataNode != null)
-                                    {
-                                        if (!MagicTradition.Create(xmlTraditionDataNode))
-                                            MagicTradition.ResetTradition();
-                                    }
-                                    else
+                                    if (!MagicTradition.Create(xmlTraditionDataNodes[0]))
                                         MagicTradition.ResetTradition();
                                 }
                                 else
+                                {
                                     MagicTradition.ResetTradition();
+                                }
                             }
-
-                            if (!Created && !DEPEnabled && !MAGEnabled)
-                                EssenceAtSpecialStart = decimal.MinValue;
+                            else
+                            {
+                                MagicTradition.ResetTradition();
+                            }
                         }
 
                         ImprovementManager.ClearCachedValue(this, Improvement.ImprovementType.MatrixInitiativeDice);
@@ -24463,39 +24497,57 @@ namespace Chummer
                                         await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false), token)
                                     .ConfigureAwait(false);
                         }
-                    }
-                    else
-                    {
-                        if (!await GetMAGEnabledAsync(token).ConfigureAwait(false))
+
+                        XmlNode xmlTraditionListDataNode
+                            = (await LoadDataAsync("streams.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/traditions");
+                        if (xmlTraditionListDataNode != null)
                         {
-                            await ClearInitiationsAsync(token).ConfigureAwait(false);
-                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            XmlNode xmlTraditionListDataNode
-                                = (await LoadDataAsync("streams.xml", token: token).ConfigureAwait(false))
-                                .SelectSingleNode("/chummer/traditions");
-                            if (xmlTraditionListDataNode != null)
+                            XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                            if (xmlTraditionDataNodes?.Count == 1)
                             {
-                                XmlNode xmlTraditionDataNode
-                                    = xmlTraditionListDataNode.SelectSingleNode("tradition[name = \"Default\"]");
-                                if (xmlTraditionDataNode != null)
-                                {
-                                    if (!await MagicTradition.CreateAsync(xmlTraditionDataNode, true, token: token).ConfigureAwait(false))
-                                        await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
-                                }
-                                else
+                                if (!await MagicTradition.CreateAsync(xmlTraditionDataNodes[0], true, token: token).ConfigureAwait(false))
                                     await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
                             }
                             else
+                            {
                                 await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
                         }
+                        else
+                        {
+                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
+                    }
+                    else if (!await GetMAGEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        await ClearInitiationsAsync(token).ConfigureAwait(false);
+                        await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
 
                         if (!await GetCreatedAsync(token).ConfigureAwait(false)
-                            && !await GetMAGEnabledAsync(token).ConfigureAwait(false)
                             && !await GetDEPEnabledAsync(token).ConfigureAwait(false))
                             await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        XmlNode xmlTraditionListDataNode
+                            = (await LoadDataAsync("traditions.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/traditions");
+                        if (xmlTraditionListDataNode != null)
+                        {
+                            XmlNodeList xmlTraditionDataNodes = xmlTraditionListDataNode.SelectNodes("tradition");
+                            if (xmlTraditionDataNodes?.Count == 1)
+                            {
+                                if (!await MagicTradition.CreateAsync(xmlTraditionDataNodes[0], token: token).ConfigureAwait(false))
+                                    await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            await MagicTradition.ResetTraditionAsync(token).ConfigureAwait(false);
+                        }
                     }
 
                     ImprovementManager.ClearCachedValue(this, Improvement.ImprovementType.MatrixInitiativeDice,

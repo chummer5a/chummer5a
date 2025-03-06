@@ -12988,33 +12988,45 @@ namespace Chummer
                 return;
             try
             {
-                Tradition objTradition = await CharacterObject.GetMagicTraditionAsync(GenericToken).ConfigureAwait(false);
-                TraditionType eType = await objTradition.GetTypeAsync(GenericToken).ConfigureAwait(false);
-                if (eType == TraditionType.MAG)
-                    return;
                 string strSelectedId = await cboStream
                                              .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken)
                                              .ConfigureAwait(false);
-                if (string.IsNullOrEmpty(strSelectedId)
-                    || strSelectedId == await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
+                if (string.IsNullOrEmpty(strSelectedId))
                     return;
 
-                XmlNode xmlNewStreamNode
-                    = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken).ConfigureAwait(false))
+                XmlNode xmlNewStreamNode = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken)
+                        .ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
-                if (xmlNewStreamNode != null && await objTradition.CreateAsync(xmlNewStreamNode, true, token: GenericToken).ConfigureAwait(false))
+
+                Tradition objTradition =
+                    await CharacterObject.GetMagicTraditionAsync(GenericToken).ConfigureAwait(false);
+                if (strSelectedId == await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false))
+                    return;
+                if (xmlNewStreamNode == null)
                 {
-                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    if (eType == TraditionType.RES)
+                    if (await objTradition.GetTypeAsync(GenericToken).ConfigureAwait(false) == TraditionType.RES)
                     {
                         await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
 
-                    string strSourceIDString = await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
+                    string strSourceIDString =
+                        await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strSourceIDString))
+                        await cboStream
+                            .DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString,
+                                GenericToken).ConfigureAwait(false);
+                }
+                else if (await objTradition.CreateAsync(xmlNewStreamNode, true, token: GenericToken)
+                             .ConfigureAwait(false))
+                {
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await objTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
+                    string strSourceIDString =
+                        await objTradition.GetSourceIDStringAsync(GenericToken).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSourceIDString))
                         await cboStream
                             .DoThreadSafeAsync(x => x.SelectedValue = strSourceIDString,
