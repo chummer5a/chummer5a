@@ -42,7 +42,7 @@ namespace Chummer
         private List<ListItem> _lstSettings = Utils.ListItemListPool.Get();
 
         // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
-        private readonly LockingTypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos;
+        private readonly LockingTypedOrderedDictionary<string, bool> _dicEnabledCharacterCustomDataDirectorys;
 
         private int _intLoading = 1;
         private int _intSkipLimbCountUpdate;
@@ -79,12 +79,12 @@ namespace Chummer
                     _objReferenceCharacterSettings = SettingsManager.LoadedCharacterSettings.First().Value;
             }
 
-            _dicCharacterCustomDataDirectoryInfos = new LockingTypedOrderedDictionary<object, bool>();
+            _dicEnabledCharacterCustomDataDirectorys = new LockingTypedOrderedDictionary<string, bool>();
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
             _objCharacterSettings.MultiplePropertiesChangedAsync += SettingsChanged;
             Disposed += (sender, args) =>
             {
-                _dicCharacterCustomDataDirectoryInfos.Dispose();
+                _dicEnabledCharacterCustomDataDirectorys.Dispose();
                 _objCharacterSettings.MultiplePropertiesChangedAsync -= SettingsChanged;
                 _objCharacterSettings.Dispose();
                 Utils.ListItemListPool.Return(ref _lstSettings);
@@ -792,7 +792,7 @@ namespace Chummer
             int intIndex = nodSelected.Index;
             if (intIndex <= 0)
                 return;
-            await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex - 1, 2).ConfigureAwait(false);
+            await _dicEnabledCharacterCustomDataDirectorys.ReverseAsync(intIndex - 1, 2).ConfigureAwait(false);
             await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(intIndex - 1, 2).ConfigureAwait(false);
             await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.CustomDataDirectoryKeys)).ConfigureAwait(false);
             await PopulateCustomDataDirectoryTreeView().ConfigureAwait(false);
@@ -811,12 +811,12 @@ namespace Chummer
             try
             {
                 IAsyncDisposable objLocker2
-                    = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     for (int i = intIndex; i > 0; --i)
                     {
-                        await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(i - 1, 2).ConfigureAwait(false);
+                        await _dicEnabledCharacterCustomDataDirectorys.ReverseAsync(i - 1, 2).ConfigureAwait(false);
                         await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(i - 1, 2).ConfigureAwait(false);
                     }
                 }
@@ -841,19 +841,19 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
+            if (intIndex >= await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false) - 1)
                 return;
 
-            IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
             try
             {
-                if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
+                if (intIndex >= await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
-                IAsyncDisposable objLocker2 = await _dicCharacterCustomDataDirectoryInfos.LockObject
+                IAsyncDisposable objLocker2 = await _dicEnabledCharacterCustomDataDirectorys.LockObject
                     .EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(intIndex, 2).ConfigureAwait(false);
+                    await _dicEnabledCharacterCustomDataDirectorys.ReverseAsync(intIndex, 2).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -877,26 +877,26 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            if (intIndex >= await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false) - 1)
+            if (intIndex >= await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
 
-            IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
             try
             {
-                int intCount = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync().ConfigureAwait(false);
+                int intCount = await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false);
                 if (intIndex >= intCount - 1)
                     return;
                 IAsyncDisposable objLocker2 = await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).LockObject
                     .EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    IAsyncDisposable objLocker3 = await _dicCharacterCustomDataDirectoryInfos.LockObject
+                    IAsyncDisposable objLocker3 = await _dicEnabledCharacterCustomDataDirectorys.LockObject
                         .EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         for (int i = intIndex; i < intCount - 1; ++i)
                         {
-                            await _dicCharacterCustomDataDirectoryInfos.ReverseAsync(i, 2).ConfigureAwait(false);
+                            await _dicEnabledCharacterCustomDataDirectorys.ReverseAsync(i, 2).ConfigureAwait(false);
                             await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(i, 2)
                                 .ConfigureAwait(false);
                         }
@@ -928,7 +928,7 @@ namespace Chummer
                 return;
             int intIndex = objNode.Index;
             bool blnChecked = objNode.Checked;
-            await _dicCharacterCustomDataDirectoryInfos.SetValueAtAsync(intIndex, blnChecked).ConfigureAwait(false);
+            await _dicEnabledCharacterCustomDataDirectorys.SetValueAtAsync(intIndex, blnChecked).ConfigureAwait(false);
             switch (objNode.Tag)
             {
                 case CustomDataDirectoryInfo objCustomDataDirectoryInfo:
@@ -1261,28 +1261,30 @@ namespace Chummer
                                                               .ConfigureAwait(false);
                 Color objErrorColor = ColorManager.ErrorColor;
                 Color objGrayTextColor = ColorManager.GrayText;
-                IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject.EnterUpgradeableReadLockAsync(token)
+                IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync(token)
                     .ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
                     int intNewCount
-                        = await _dicCharacterCustomDataDirectoryInfos.GetCountAsync(token).ConfigureAwait(false);
+                        = await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync(token).ConfigureAwait(false);
                     if (intNewCount != await treCustomDataDirectories
                             .DoThreadSafeFuncAsync(x => x.Nodes.Count, token: token)
                             .ConfigureAwait(false))
                     {
                         List<TreeNode> lstNodes = new List<TreeNode>(intNewCount);
-                        await _dicCharacterCustomDataDirectoryInfos.ForEachAsync(async kvpInfo =>
+                        await _dicEnabledCharacterCustomDataDirectorys.ForEachAsync(async kvpKeyAndEnabled =>
                         {
                             TreeNode objNode = new TreeNode
                             {
-                                Tag = kvpInfo.Key,
-                                Checked = kvpInfo.Value
+                                Checked = kvpKeyAndEnabled.Value
                             };
-                            if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
+                            CustomDataDirectoryInfo objInfo = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
+                                x => x.CharacterSettingsSaveKey == kvpKeyAndEnabled.Key);
+                            if (objInfo != null)
                             {
-                                objNode.Text = objInfo.DisplayName;
+                                objNode.Tag = objInfo;
+                                objNode.Text = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);
                                 if (objNode.Checked)
                                 {
                                     // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
@@ -1311,7 +1313,8 @@ namespace Chummer
                             }
                             else
                             {
-                                objNode.Text = kvpInfo.Key.ToString();
+                                objNode.Tag = kvpKeyAndEnabled.Key;
+                                objNode.Text = kvpKeyAndEnabled.Key;
                                 objNode.ForeColor = objGrayTextColor;
                                 objNode.ToolTipText = strFileNotFound;
                             }
@@ -1331,21 +1334,26 @@ namespace Chummer
                         Color objWindowTextColor = ColorManager.WindowText;
                         for (int i = 0; i < intNewCount; ++i)
                         {
-                            KeyValuePair<object, bool> kvpInfo = await _dicCharacterCustomDataDirectoryInfos
+                            KeyValuePair<string, bool> kvpKeyAndEnabled = await _dicEnabledCharacterCustomDataDirectorys
                                 .GetValueAtAsync(i, token).ConfigureAwait(false);
+                            CustomDataDirectoryInfo objInfo = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
+                                x => x.CharacterSettingsSaveKey == kvpKeyAndEnabled.Key);
                             int i1 = i;
                             TreeNode objNode = await treCustomDataDirectories
                                 .DoThreadSafeFuncAsync(x => x.Nodes[i1], token)
                                 .ConfigureAwait(false);
                             await treCustomDataDirectories.DoThreadSafeAsync(() =>
                             {
-                                objNode.Tag = kvpInfo.Key;
-                                objNode.Checked = kvpInfo.Value;
+                                objNode.Checked = kvpKeyAndEnabled.Value;
                             }, token: token).ConfigureAwait(false);
-                            if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
+                            if (objInfo != null)
                             {
                                 string strText = await objInfo.GetDisplayNameAsync(token).ConfigureAwait(false);
-                                await treCustomDataDirectories.DoThreadSafeAsync(() => objNode.Text = strText, token)
+                                await treCustomDataDirectories.DoThreadSafeAsync(() =>
+                                    {
+                                        objNode.Tag = objInfo;
+                                        objNode.Text = strText;
+                                    }, token)
                                     .ConfigureAwait(false);
                                 if (objNode.Checked)
                                 {
@@ -1397,7 +1405,8 @@ namespace Chummer
                             {
                                 await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                 {
-                                    objNode.Text = kvpInfo.Key.ToString();
+                                    objNode.Tag = kvpKeyAndEnabled.Key;
+                                    objNode.Text = kvpKeyAndEnabled.Key;
                                     objNode.ForeColor = objGrayTextColor;
                                     objNode.ToolTipText = strFileNotFound;
                                 }, token: token).ConfigureAwait(false);
@@ -1700,50 +1709,29 @@ namespace Chummer
 
         private void RebuildCustomDataDirectoryInfos()
         {
-            using (_dicCharacterCustomDataDirectoryInfos.LockObject.EnterWriteLock())
+            using (_dicEnabledCharacterCustomDataDirectorys.LockObject.EnterWriteLock())
             {
-                _dicCharacterCustomDataDirectoryInfos.Clear();
+                _dicEnabledCharacterCustomDataDirectorys.Clear();
                 _objCharacterSettings.CustomDataDirectoryKeys.ForEach(kvpCustomDataDirectory =>
                 {
-                    CustomDataDirectoryInfo objLoopInfo
-                        = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
-                            x => x.CharacterSettingsSaveKey == kvpCustomDataDirectory.Key);
-                    if (objLoopInfo != default)
-                    {
-                        _dicCharacterCustomDataDirectoryInfos.Add(objLoopInfo, kvpCustomDataDirectory.Value);
-                    }
-                    else
-                    {
-                        _dicCharacterCustomDataDirectoryInfos.Add(kvpCustomDataDirectory.Key,
-                                                                  kvpCustomDataDirectory.Value);
-                    }
+                    _dicEnabledCharacterCustomDataDirectorys.Add(kvpCustomDataDirectory.Key,
+                        kvpCustomDataDirectory.Value);
                 });
             }
         }
 
         private async Task RebuildCustomDataDirectoryInfosAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _dicCharacterCustomDataDirectoryInfos.LockObject
+            IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject
                 .EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                await _dicCharacterCustomDataDirectoryInfos.ClearAsync(token).ConfigureAwait(false);
-                await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false)).ForEachAsync(kvpCustomDataDirectory =>
-                    {
-                        CustomDataDirectoryInfo objLoopInfo
-                            = GlobalSettings.CustomDataDirectoryInfos.FirstOrDefault(
-                                x => x.CharacterSettingsSaveKey == kvpCustomDataDirectory.Key);
-                        if (objLoopInfo != default)
-                        {
-                            return _dicCharacterCustomDataDirectoryInfos.AddAsync(objLoopInfo, kvpCustomDataDirectory.Value, token);
-                        }
-                        else
-                        {
-                            return _dicCharacterCustomDataDirectoryInfos.AddAsync(kvpCustomDataDirectory.Key,
-                                kvpCustomDataDirectory.Value, token);
-                        }
-                    }, token: token).ConfigureAwait(false);
+                await _dicEnabledCharacterCustomDataDirectorys.ClearAsync(token).ConfigureAwait(false);
+                await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false))
+                    .ForEachAsync(kvpCustomDataDirectory => _dicEnabledCharacterCustomDataDirectorys.AddAsync(
+                        kvpCustomDataDirectory.Key,
+                        kvpCustomDataDirectory.Value, token), token: token).ConfigureAwait(false);
             }
             finally
             {
