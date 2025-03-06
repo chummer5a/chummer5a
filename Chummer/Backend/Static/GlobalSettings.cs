@@ -327,7 +327,7 @@ namespace Chummer
                     if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
                         blnStorage = blnTemp;
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strBoolName);
+                        objKey.DeleteValue(strBoolName, false);
                     return true;
                 }
             }
@@ -359,7 +359,7 @@ namespace Chummer
                     if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
                         intStorage = intTemp;
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strIntName);
+                        objKey.DeleteValue(strIntName, false);
                     return true;
                 }
             }
@@ -390,7 +390,7 @@ namespace Chummer
                     if (decimal.TryParse(objRegistryResult.ToString(), NumberStyles.Any, InvariantCultureInfo, out decimal decTemp))
                         decStorage = decTemp;
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strDecName);
+                        objKey.DeleteValue(strDecName, false);
                     return true;
                 }
             }
@@ -420,7 +420,7 @@ namespace Chummer
                 {
                     strStorage = objRegistryResult.ToString();
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strStringName);
+                        objKey.DeleteValue(strStringName, false);
                     return true;
                 }
             }
@@ -949,7 +949,7 @@ namespace Chummer
                     if (objSourceRegistry != null)
                     {
                         foreach (string strCustomSourcebookKey in s_DicCustomSourcebookCodes)
-                            objSourceRegistry.DeleteValue(strCustomSourcebookKey);
+                            objSourceRegistry.DeleteValue(strCustomSourcebookKey, false);
 
                         IReadOnlyDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
                         foreach (SourcebookInfo objSourcebookInfo in dicSourcebookInfos.Values)
@@ -2244,8 +2244,7 @@ namespace Chummer
                         return;
                     if (value)
                     {
-                        if (objRegistry.GetValueNames().Contains("charactercustomdatawarningshown"))
-                            objRegistry.DeleteValue("charactercustomdatawarningshown");
+                        objRegistry.DeleteValue("charactercustomdatawarningshown", false);
                     }
                     else
                     {
