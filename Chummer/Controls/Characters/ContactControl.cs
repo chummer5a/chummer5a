@@ -950,7 +950,7 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = DecimalExtensions.Twelve,
+                        Maximum = 12m,
                         Minimum = decimal.One,
                         Name = "nudConnection",
                         Value = decimal.One
@@ -968,7 +968,7 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = DecimalExtensions.Six,
+                        Maximum = 6m,
                         Minimum = decimal.One,
                         Name = "nudLoyalty",
                         Value = decimal.One

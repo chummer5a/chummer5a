@@ -113,7 +113,7 @@ namespace Chummer.UI.Attributes
                         AutoSize = true,
                         InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 0, 3, 0),
-                        Maximum = DecimalExtensions.NinetyNine,
+                        Maximum = 99m,
                         MinimumSize = new Size(35, 0),
                         Name = "nudKarma"
                     };
@@ -127,7 +127,7 @@ namespace Chummer.UI.Attributes
                         AutoSize = true,
                         InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 0, 3, 0),
-                        Maximum = DecimalExtensions.NinetyNine,
+                        Maximum = 99m,
                         MinimumSize = new Size(35, 0),
                         Name = "nudBase"
                     };

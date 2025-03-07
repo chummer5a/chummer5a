@@ -224,10 +224,138 @@ namespace Chummer
         /// </summary>
         public static int FloorLog2(this int n)
         {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
             int num = 0;
-            for (; n >= 1; n /= 2)
+            for (; n >= 65536; n /= 65536)
+                num += 16;
+            for (; n >= 256; n /= 256)
+                num += 8;
+            for (; n >= 16; n /= 16)
+                num += 4;
+            for (; n >= 2; n /= 2)
                 ++num;
             return num;
+        }
+
+        /// <summary>
+        /// Quick way to get the ceiling of the base-2 logarithm of an integer
+        /// </summary>
+        public static int CeilingLog2(this int n)
+        {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
+            return FloorLog2(n) + (n % 2);
+        }
+
+        /// <summary>
+        /// Quick way to get the floor of the base-10 logarithm of an integer
+        /// </summary>
+        public static int FloorLog10(this int n)
+        {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
+            int num = 0;
+            for (; n >= 10000; n /= 10000)
+                num += 4;
+            for (; n >= 10; n /= 10)
+                ++num;
+            return num;
+        }
+
+        /// <summary>
+        /// Quick way to get the ceiling of the base-2 logarithm of an integer
+        /// </summary>
+        public static int CeilingLog10(this int n)
+        {
+            if (n <= 0)
+                throw new ArgumentOutOfRangeException(nameof(n));
+            int num = FloorLog10(n);
+            if (n % 10 != 0)
+                ++num;
+            return num;
+        }
+
+        /// <inheritdoc cref="Math.Log(double, double)"/>
+        public static decimal Log(this decimal d, decimal decBase)
+        {
+            decimal decReturn = Log2(d);
+            if (decBase != 2.0m)
+                decReturn /= Log2(decBase);
+            return decReturn;
+        }
+
+        /// <inheritdoc cref="Math.Log10(double)"/>
+        public static decimal Log10(this decimal d)
+        {
+            return Log2(d) / 3.32192809488736234787031942948939017586483139302458061205475639581593477660m; // Log_2(10) for transforming the base
+        }
+
+        /// <summary>
+        /// A high-precision version of calculating a base-2 logarithm, used for an arbitrary precision number
+        /// </summary>
+        /// <param name="d">Num</param>
+        /// <returns>The base-2 logarithm of <paramref name="d"/>, calculated as accurately as possible within decimal precision.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
+        private static decimal Log2(this decimal d)
+        {
+            if (d <= 0)
+                throw new ArgumentOutOfRangeException(nameof(d));
+            if (d == 1)
+                return 0;
+            bool blnNegate = d < 1;
+            if (blnNegate)
+                d = 1m / d;
+            decimal decReturn = 0;
+            // First handle the integer part
+            for (; d >= 18446744073709551615m; d /= 18446744073709551615m)
+                decReturn += 64;
+            for (; d >= 4294967296m; d /= 4294967296m)
+                decReturn += 32;
+            for (; d >= 65536m; d /= 65536m)
+                decReturn += 16;
+            for (; d >= 256m; d /= 256m)
+                decReturn += 8;
+            for (; d >= 16m; d /= 16m)
+                decReturn += 4;
+            for (; d >= 2m; d /= 2m)
+                ++decReturn;
+            // d is now between 1 and 2, so the remaining part should be a fraction.
+            if (d == 1)
+                return blnNegate ? -decReturn : decReturn;
+            decimal decReturnFraction = 0;
+            // Handle this through a Taylor series of ln(x)/ln(2)
+            // Start with ln(x)
+            const int intUpperLimit = 75; // Decimal types have ca. 30 digits of precision, and this is enough terms to get < 10^-30 for the last term.
+            // To help with precision, center around 1 if we are less than sqrt(2), around 2 if greater or equal.
+            if (d >= 1.41421356237309504880168872420969807856967187537694807317667973799073247846m)
+            {
+                // Taylor series if centered around 2 is: ln(2) + sum_k (-1/2)^(k+1) (x-2)^k / k
+                decReturn += 1m; // The ln(2) part, but adding it directly to the output as 1 because we will be dividing the fraction part by ln(2) at the end anyway 
+                for (int i = 1; i <= intUpperLimit; ++i)
+                {
+                    if (i % 2 == 1)
+                        decReturnFraction += ((d / 2m - 1m) / 2m).RaiseToPower(i) / i;
+                    else
+                        decReturnFraction -= ((d / 2m - 1m) / 2m).RaiseToPower(i) / i;
+                }
+            }
+            else
+            {
+                // Taylor series if centered around 1 is: sum_k (-1)^(k+1) * (x-1)^k / k
+                for (int i = 1; i <= intUpperLimit; ++i)
+                {
+                    if (i % 2 == 1)
+                        decReturnFraction += (d - 1m).RaiseToPower(i) / i;
+                    else
+                        decReturnFraction -= (d - 1m).RaiseToPower(i) / i;
+                }
+            }
+
+            // divide by ln(2) to transform base from e to 2 for fraction part
+            decReturn += decReturnFraction /
+                         0.69314718055994530941723212145817656807550013436025525412068000949339362196m;
+            return blnNegate ? -decReturn : decReturn;
         }
     }
 }

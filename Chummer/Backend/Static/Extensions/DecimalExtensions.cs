@@ -24,10 +24,6 @@ namespace Chummer
 {
     public static class DecimalExtensions
     {
-        public const decimal Six = decimal.One * 6;
-        public const decimal Twelve = decimal.One * 12;
-        public const decimal NinetyNine = decimal.One * 99;
-
         /// <summary>
         /// Syntactic sugar for rounding a decimal away from zero and then converting it to an integer.
         /// </summary>
