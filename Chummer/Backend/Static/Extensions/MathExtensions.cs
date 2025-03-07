@@ -327,17 +327,17 @@ namespace Chummer
             // Handle this through a Taylor series of ln(x)/ln(2)
             // Start with ln(x)
             const int intUpperLimit = 75; // Decimal types have ca. 30 digits of precision, and this is enough terms to get < 10^-30 for the last term.
-            // To help with precision, center around 1 if we are less than sqrt(2), around 2 if greater or equal.
+            // To help with precision, center around 1 if we are less than sqrt(2), around 2 if greater or equal. x = sqrt(2) should be where ln(x) is halfway between ln(1) and ln(2).
             if (d >= 1.41421356237309504880168872420969807856967187537694807317667973799073247846m)
             {
                 // Taylor series if centered around 2 is: ln(2) + sum_k (-1/2)^(k+1) (x-2)^k / k
-                decReturn += 1m; // The ln(2) part, but adding it directly to the output as 1 because we will be dividing the fraction part by ln(2) at the end anyway 
+                ++decReturn; // The ln(2) part, but adding it directly to the output as 1 because we will be dividing the fraction part by ln(2) at the end anyway 
                 for (int i = 1; i <= intUpperLimit; ++i)
                 {
                     if (i % 2 == 1)
-                        decReturnFraction += ((d / 2m - 1m) / 2m).RaiseToPower(i) / i;
+                        decReturnFraction += (d / 4m - 0.5m).RaiseToPower(i) / i;
                     else
-                        decReturnFraction -= ((d / 2m - 1m) / 2m).RaiseToPower(i) / i;
+                        decReturnFraction -= (d / 4m - 0.5m).RaiseToPower(i) / i;
                 }
             }
             else
