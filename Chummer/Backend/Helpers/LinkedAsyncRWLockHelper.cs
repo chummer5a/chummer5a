@@ -536,9 +536,10 @@ namespace Chummer
                     {
                         _objPendingWriterSemaphore?.Release();
                     }
-                    catch (SemaphoreFullException) when (_intDisposedStatus > 1)
+                    catch (SemaphoreFullException)
                     {
-                        // swallow this if we got disposed in-between
+                        Utils.BreakIfDebug();
+                        // swallow if full, can happen if we get the timing just wrong on the backup code meant to prevent deadlocks
                     }
                     catch (ObjectDisposedException) when (_intDisposedStatus > 1)
                     {
@@ -630,9 +631,10 @@ namespace Chummer
                     {
                         _objPendingWriterSemaphore?.Release();
                     }
-                    catch (SemaphoreFullException) when (_intDisposedStatus > 1)
+                    catch (SemaphoreFullException)
                     {
-                        // swallow this if we got disposed in-between
+                        Utils.BreakIfDebug();
+                        // // swallow if full, can happen if we get the timing just wrong on the backup code meant to prevent deadlocks
                     }
                     catch (ObjectDisposedException) when (_intDisposedStatus > 1)
                     {
@@ -673,9 +675,10 @@ namespace Chummer
                     {
                         _objPendingWriterSemaphore?.Release();
                     }
-                    catch (SemaphoreFullException) when (_intDisposedStatus > 1)
+                    catch (SemaphoreFullException)
                     {
-                        // swallow this if we got disposed in-between
+                        Utils.BreakIfDebug();
+                        // // swallow if full, can happen if we get the timing just wrong on the backup code meant to prevent deadlocks
                     }
                     catch (ObjectDisposedException) when (_intDisposedStatus > 1)
                     {
@@ -715,9 +718,10 @@ namespace Chummer
                     {
                         _objPendingWriterSemaphore?.Release();
                     }
-                    catch (SemaphoreFullException) when (_intDisposedStatus > 1)
+                    catch (SemaphoreFullException)
                     {
-                        // swallow this if we got disposed in-between
+                        Utils.BreakIfDebug();
+                        // swallow if full, can happen if we get the timing just wrong on the backup code meant to prevent deadlocks
                     }
                     catch (ObjectDisposedException) when (_intDisposedStatus > 1)
                     {
@@ -838,7 +842,11 @@ namespace Chummer
                                     if (lngPendingCount > 0)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        objLoopSemaphore.SafeWait(token);
+                                        while (!objLoopSemaphore.SafeWait(Utils.SleepEmergencyReleaseMaxTicks, token))
+                                        {
+                                            if (_lngPendingCountForWriter <= 0)
+                                                break; // Just in case we get a rare deadlock that can happen with read locks releasing at just the wrong time
+                                        }
                                     }
                                 }
                             }
@@ -969,7 +977,13 @@ namespace Chummer
                                     if (lngPendingCount > 0)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                        while (!await objLoopSemaphore
+                                                   .WaitAsync(Utils.SleepEmergencyReleaseMaxTicks, token)
+                                                   .ConfigureAwait(false))
+                                        {
+                                            if (_lngPendingCountForWriter <= 0)
+                                                break;// Just in case we get a rare deadlock that can happen with read locks releasing at just the wrong time
+                                        }
                                     }
                                 }
                             }
@@ -1093,7 +1107,11 @@ namespace Chummer
                                 if (lngPendingCount > 0)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    objLoopSemaphore.SafeWait(token);
+                                    while (!objLoopSemaphore.SafeWait(Utils.SleepEmergencyReleaseMaxTicks, token))
+                                    {
+                                        if (_lngPendingCountForWriter <= 0)
+                                            break;// Just in case we get a rare deadlock that can happen with read locks releasing at just the wrong time
+                                    }
                                 }
                             }
                         }
@@ -1191,7 +1209,11 @@ namespace Chummer
                                 if (lngPendingCount > 0)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                    while (!await objLoopSemaphore.WaitAsync(Utils.SleepEmergencyReleaseMaxTicks, token).ConfigureAwait(false))
+                                    {
+                                        if (_lngPendingCountForWriter <= 0)
+                                            break; // Just in case we get a rare deadlock that can happen with read locks releasing at just the wrong time
+                                    }
                                 }
                             }
                         }
@@ -1289,7 +1311,11 @@ namespace Chummer
                                 if (lngPendingCount > 0)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    objLoopSemaphore.SafeWait(token);
+                                    while (!objLoopSemaphore.SafeWait(Utils.SleepEmergencyReleaseMaxTicks, token))
+                                    {
+                                        if (_lngPendingCountForWriter <= 0)
+                                            break; // Just in case we get a rare deadlock that can happen with read locks releasing at just the wrong time
+                                    }
                                 }
                             }
                         }
@@ -1385,7 +1411,11 @@ namespace Chummer
                                 if (lngPendingCount > 0)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    await objLoopSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                    while (!await objLoopSemaphore.WaitAsync(Utils.SleepEmergencyReleaseMaxTicks, token).ConfigureAwait(false))
+                                    {
+                                        if (_lngPendingCountForWriter <= 0)
+                                            break; // Just in case we get a rare deadlock that can happen with read locks releasing at just the wrong time
+                                    }
                                 }
                             }
                         }
