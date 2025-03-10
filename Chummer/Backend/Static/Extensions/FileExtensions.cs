@@ -245,16 +245,16 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 token.ThrowIfCancellationRequested();
-                using (FileStream objFileStream
-                       = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                await using (FileStream objFileStream
+                             = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
                 {
                     token.ThrowIfCancellationRequested();
                     using (StreamReader objReader = new StreamReader(objFileStream))
                     {
                         token.ThrowIfCancellationRequested();
-                        for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                        for (string strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false);
                              strLine != null;
-                             strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                             strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (!string.IsNullOrEmpty(strLine))
@@ -282,16 +282,16 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 token.ThrowIfCancellationRequested();
-                using (FileStream objFileStream
-                       = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                await using (FileStream objFileStream
+                             = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
                 {
                     token.ThrowIfCancellationRequested();
                     using (StreamReader objReader = new StreamReader(objFileStream, eEncoding))
                     {
                         token.ThrowIfCancellationRequested();
-                        for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                        for (string strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false);
                              strLine != null;
-                             strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                             strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (!string.IsNullOrEmpty(strLine))

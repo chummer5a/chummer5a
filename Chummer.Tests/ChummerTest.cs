@@ -472,7 +472,7 @@ namespace Chummer.Tests
                             {
                                 frmCharacterForm.DoThreadSafe(x =>
                                 {
-                                    x.FormClosed += (sender, args) => blnFormClosed = true;
+                                    x.FormClosed += (_, _) => blnFormClosed = true;
                                     x.MdiParent = frmTestForm;
                                     x.ShowInTaskbar = false;
                                     x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
