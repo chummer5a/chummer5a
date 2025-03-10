@@ -58,17 +58,22 @@ namespace Chummer
                         nameof(SustainedObject.CurrentDisplayName),
                         x => x.GetCurrentDisplayNameAsync(_objMyToken), token: _objMyToken)
                     .ConfigureAwait(false);
-                await nudForce.DoDataBindingAsync("Value", _objLinkedSustainedObject, nameof(SustainedObject.Force), token: _objMyToken)
-                    .ConfigureAwait(false);
-                await nudNetHits.DoDataBindingAsync("Value", _objLinkedSustainedObject,
-                    nameof(SustainedObject.NetHits), token: _objMyToken).ConfigureAwait(false);
+                await nudForce.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objLinkedSustainedObject, nameof(SustainedObject.Force),
+                    (x, y) => x.ValueChanged += y, x => x.GetForceAsync(_objMyToken),
+                    (x, y) => x.SetForceAsync(y, _objMyToken), _objMyToken, _objMyToken).ConfigureAwait(false);
+                await nudForce.RegisterAsyncDataBindingAsync(x => x.ValueAsInt, (x, y) => x.ValueAsInt = y,
+                    _objLinkedSustainedObject, nameof(SustainedObject.NetHits),
+                    (x, y) => x.ValueChanged += y, x => x.GetNetHitsAsync(_objMyToken),
+                    (x, y) => x.SetNetHitsAsync(y, _objMyToken), _objMyToken, _objMyToken).ConfigureAwait(false);
 
                 //Only do  the binding if it's actually needed
                 if (_objLinkedSustainedObject.LinkedObjectType != Improvement.ImprovementSource.CritterPower)
                 {
-                    await chkSelfSustained.DoDataBindingAsync("Checked", _objLinkedSustainedObject,
-                            nameof(SustainedObject.SelfSustained), token: _objMyToken)
-                        .ConfigureAwait(false);
+                    await chkSelfSustained.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y,
+                        _objLinkedSustainedObject, nameof(SustainedObject.SelfSustained),
+                        (x, y) => x.CheckedChanged += y, x => x.GetSelfSustainedAsync(_objMyToken),
+                        (x, y) => x.SetSelfSustainedAsync(y, _objMyToken), _objMyToken, _objMyToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

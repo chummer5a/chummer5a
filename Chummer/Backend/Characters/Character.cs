@@ -2653,18 +2653,18 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     blnDoRefreshPenalties =
-                        e.NewItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                        await e.NewItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     blnDoRefreshPenalties =
-                        e.OldItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                        await e.OldItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     blnDoRefreshPenalties =
-                        e.OldItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty) ||
-                        e.NewItems.OfType<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                        await e.OldItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false) ||
+                        await e.NewItems.OfType<SustainedObject>().AnyAsync(objItem => objItem.GetHasSustainingPenaltyAsync(token)).ConfigureAwait(false);
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
@@ -44459,7 +44459,7 @@ namespace Chummer
 
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
                 List<SustainedObject> lstSustainedSpells =
-                    await SustainedCollection.ToListAsync(x => x.HasSustainingPenalty, token: token)
+                    await SustainedCollection.ToListAsync(x => x.GetHasSustainingPenaltyAsync(token), token: token)
                         .ConfigureAwait(false);
                 List<Improvement> lstUsedImprovements
                     = await ImprovementManager
@@ -44491,7 +44491,7 @@ namespace Chummer
                         foreach (SustainedObject objLoopObject in lstSustainedSpells)
                         {
                             token.ThrowIfCancellationRequested();
-                            int intLoopForce = objLoopObject.Force;
+                            int intLoopForce = await objLoopObject.GetForceAsync(token).ConfigureAwait(false);
                             if (intLoopForce > intSupportedForce)
                                 continue;
                             if (intLoopForce == intSupportedForce)
@@ -44502,7 +44502,7 @@ namespace Chummer
                                 // Safe to insert object at the top because we cannot get objects with more Force in the list
                                 lstSupportedObjects.Insert(0, objLoopObject);
                                 if (lstSupportedObjects.Count == intNumSupportsPossible &&
-                                    lstSupportedObjects[lstSupportedObjects.Count - 1].Force == intSupportedForce)
+                                    await lstSupportedObjects[lstSupportedObjects.Count - 1].GetForceAsync(token).ConfigureAwait(false) == intSupportedForce)
                                     // The entire list at this point is saturated with objects with the maximum allowable force, so quit out early
                                     break;
                             }
@@ -44511,7 +44511,7 @@ namespace Chummer
                                 if (lstSupportedObjects.Count > 0 && lstSupportedObjects.Count + 1 > intNumSupportsPossible)
                                 {
                                     // Check against the last element because we know it'll be the lowest, only replace item if loop has a higher force than this one
-                                    if (intLoopForce <= lstSupportedObjects[lstSupportedObjects.Count - 1].Force)
+                                    if (intLoopForce <= await lstSupportedObjects[lstSupportedObjects.Count - 1].GetForceAsync(token).ConfigureAwait(false))
                                         continue;
                                     lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
                                 }

@@ -175,12 +175,12 @@ namespace Chummer
                       .WriteElementStringAsync(
                           "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                       .ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token)
+                await objWriter.WriteElementStringAsync("name_english", await GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("force", (await GetForceAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                                .ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture), token)
+                await objWriter.WriteElementStringAsync("nethits", (await GetNetHitsAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                                .ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture), token)
+                await objWriter.WriteElementStringAsync("self", (await GetSelfSustainedAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                                .ConfigureAwait(false);
             }
             finally
@@ -199,13 +199,85 @@ namespace Chummer
         /// </summary>
         public bool SelfSustained
         {
-            get => _blnSelfSustained;
+            get
+            {
+                using (_objCharacter.LockObject.EnterReadLock())
+                    return _blnSelfSustained;
+            }
             set
             {
+                using (_objCharacter.LockObject.EnterReadLock())
+                {
+                    if (_blnSelfSustained == value)
+                        return;
+                }
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_blnSelfSustained == value)
+                        return;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                    {
+                        _blnSelfSustained = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Is the spell sustained by yourself?
+        /// </summary>
+        public async Task<bool> GetSelfSustainedAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnSelfSustained;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Is the spell sustained by yourself?
+        /// </summary>
+        public async Task SetSelfSustainedAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 if (_blnSelfSustained == value)
                     return;
-                _blnSelfSustained = value;
-                OnPropertyChanged();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnSelfSustained == value)
+                    return;
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnSelfSustained = value;
+                    await OnPropertyChangedAsync(nameof(SelfSustained), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -214,11 +286,85 @@ namespace Chummer
         /// </summary>
         public int Force
         {
-            get => _intForce;
+            get
+            {
+                using (_objCharacter.LockObject.EnterReadLock())
+                    return _intForce;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _intForce, value) != value)
-                    OnPropertyChanged();
+                using (_objCharacter.LockObject.EnterReadLock())
+                {
+                    if (_intForce == value)
+                        return;
+                }
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_intForce == value)
+                        return;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _intForce, value) != value)
+                            OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Force of the sustained spell
+        /// </summary>
+        public async Task<int> GetForceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intForce;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Force of the sustained spell
+        /// </summary>
+        public async Task SetForceAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intForce == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intForce == value)
+                    return;
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _intForce, value) != value)
+                        await OnPropertyChangedAsync(nameof(Force), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -227,11 +373,85 @@ namespace Chummer
         /// </summary>
         public int NetHits
         {
-            get => _intNetHits;
+            get
+            {
+                using (_objCharacter.LockObject.EnterReadLock())
+                    return _intNetHits;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _intNetHits, value) != value)
-                    OnPropertyChanged();
+                using (_objCharacter.LockObject.EnterReadLock())
+                {
+                    if (_intNetHits == value)
+                        return;
+                }
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_intNetHits == value)
+                        return;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _intNetHits, value) != value)
+                            OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The Net Hits the Sustained Spell has
+        /// </summary>
+        public async Task<int> GetNetHitsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intNetHits;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The Net Hits the Sustained Spell has
+        /// </summary>
+        public async Task SetNetHitsAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intNetHits == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intNetHits == value)
+                    return;
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _intNetHits, value) != value)
+                        await OnPropertyChangedAsync(nameof(NetHits), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -266,6 +486,8 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
@@ -312,6 +534,8 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
@@ -358,7 +582,36 @@ namespace Chummer
             }
         }
 
+        public async Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (_eLinkedObjectType)
+            {
+                case Improvement.ImprovementSource.Spell:
+                    if (_objLinkedObject is Spell objSpell)
+                        return objSpell.Name;
+                    break;
+
+                case Improvement.ImprovementSource.ComplexForm:
+                    if (_objLinkedObject is ComplexForm objComplexForm)
+                        return objComplexForm.Name;
+                    break;
+
+                case Improvement.ImprovementSource.CritterPower:
+                    if (_objLinkedObject is CritterPower objCritterPower)
+                        return objCritterPower.Name;
+                    break;
+            }
+            return await LanguageManager.GetStringAsync("String_Unknown", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
+        }
+
         public bool HasSustainingPenalty => SelfSustained && LinkedObjectType != Improvement.ImprovementSource.CritterPower;
+
+        public async Task<bool> GetHasSustainingPenaltyAsync(CancellationToken token = default)
+        {
+            return await GetSelfSustainedAsync(token).ConfigureAwait(false) && LinkedObjectType != Improvement.ImprovementSource.CritterPower;
+        }
 
         #endregion Properties
 
