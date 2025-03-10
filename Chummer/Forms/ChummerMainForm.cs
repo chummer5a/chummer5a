@@ -4454,10 +4454,17 @@ namespace Chummer
                                 }
 
                                 string strExtension = Path.GetExtension(strArg);
-                                if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
-                                    && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                    Utils.BreakIfDebug();
-                                setFilesToLoad.Add(strArg);
+                                // This check is needed because applications in .NET 8 are .dlls, and .exe files just serve to launch the .dlls (presumably for cross-platform support)
+                                if (!string.Equals(strExtension, ".dll", StringComparison.OrdinalIgnoreCase)
+                                    || !string.Equals(Path.GetFileNameWithoutExtension(strArg),
+                                        Path.GetFileNameWithoutExtension(Application.ExecutablePath),
+                                        StringComparison.OrdinalIgnoreCase))
+                                {
+                                    if (!string.Equals(strExtension, ".chum5", StringComparison.OrdinalIgnoreCase)
+                                        && !string.Equals(strExtension, ".chum5lz", StringComparison.OrdinalIgnoreCase))
+                                        Utils.BreakIfDebug();
+                                    setFilesToLoad.Add(strArg);
+                                }
                             }
 
                             break;
