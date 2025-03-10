@@ -642,8 +642,7 @@ namespace Chummer
                 XPathNavigator xmlMetavariantNode = null;
                 if (MetavariantGuid != Guid.Empty)
                     xmlMetavariantNode = xmlMetatypeNode.TryGetNodeById("/metavariants/metavariant", MetavariantGuid);
-                if (xmlMetavariantNode == null)
-                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
+                xmlMetavariantNode ??= xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
 
                 return xmlMetavariantNode ?? xmlMetatypeNode;
             }

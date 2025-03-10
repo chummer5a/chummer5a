@@ -47,7 +47,7 @@ namespace Chummer
                 : objMyParent.LockObject.EnterReadLockWithMatchingParentLockAsync(token);
             return Inner(tskMyRelease);
 
-            async Task<LockingDictionaryEnumerator> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
+            static async Task<LockingDictionaryEnumerator> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
             {
                 // Can't dispose our disposable here (on cancellation) because it would mess up AsyncLocal assignments (since we are technically in a different async context here)
                 return new LockingDictionaryEnumerator(await tskInnerMyRelease.ConfigureAwait(false));
@@ -66,7 +66,7 @@ namespace Chummer
             Task<IAsyncDisposable> tskMyRelease = objMyParent.LockObject.EnterReadLockWithUpgradeableParentAsync(token);
             return Inner(tskMyRelease);
 
-            async Task<LockingDictionaryEnumerator> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
+            static async Task<LockingDictionaryEnumerator> Inner(Task<IAsyncDisposable> tskInnerMyRelease)
             {
                 // Can't dispose our disposable here (on cancellation) because it would mess up AsyncLocal assignments (since we are technically in a different async context here)
                 return new LockingDictionaryEnumerator(await tskInnerMyRelease.ConfigureAwait(false));

@@ -3988,8 +3988,7 @@ namespace Chummer.Backend.Skills
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            if (objCultureInfo == null)
-                objCultureInfo = GlobalSettings.CultureInfo;
+            objCultureInfo ??= GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strReturn = strInput;

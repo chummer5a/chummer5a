@@ -2760,8 +2760,7 @@ namespace Chummer.Backend.Attributes
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            if (objCultureInfo == null)
-                objCultureInfo = GlobalSettings.CultureInfo;
+            objCultureInfo ??= GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);

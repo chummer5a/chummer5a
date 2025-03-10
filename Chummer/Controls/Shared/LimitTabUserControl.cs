@@ -163,8 +163,8 @@ namespace Chummer.UI.Shared
             try
             {
                 _objMyToken.ThrowIfCancellationRequested();
-                if (!(await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: _objMyToken)
-                        .ConfigureAwait(false) is ICanRemove selectedObject))
+                if (await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: _objMyToken)
+                        .ConfigureAwait(false) is not ICanRemove selectedObject)
                     return;
                 await selectedObject.RemoveAsync(token: _objMyToken).ConfigureAwait(false);
             }

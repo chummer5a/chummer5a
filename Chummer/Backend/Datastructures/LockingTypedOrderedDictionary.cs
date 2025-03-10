@@ -395,9 +395,9 @@ namespace Chummer
 
         public Task AddAsync(object key, object value, CancellationToken token = default)
         {
-            if (!(key is TKey objKey))
+            if (key is not TKey objKey)
                 throw new ArgumentException(nameof(objKey));
-            if (!(value is TValue objValue))
+            if (value is not TValue objValue)
                 throw new ArgumentException(nameof(objValue));
             return AddAsync(objKey, objValue, token);
         }

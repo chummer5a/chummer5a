@@ -436,21 +436,21 @@ namespace Chummer
 
         public int IndexOf(object value)
         {
-            if (!(value is T objValue))
+            if (value is not T objValue)
                 return -1;
             return IndexOf(objValue);
         }
 
         public void Insert(int index, object value)
         {
-            if (!(value is T objValue))
+            if (value is not T objValue)
                 return;
             Insert(index, objValue);
         }
 
         public void Remove(object value)
         {
-            if (!(value is T objValue))
+            if (value is not T objValue)
                 return;
             Remove(objValue);
         }

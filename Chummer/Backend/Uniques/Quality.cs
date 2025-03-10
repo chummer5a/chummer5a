@@ -1396,8 +1396,7 @@ namespace Chummer
                         XPathNavigator xmlMyLimitNode = null;
                         if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("chargenlimit", token);
-                        if (xmlMyLimitNode == null)
-                            xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("limit", token);
+                        xmlMyLimitNode ??= xmlDataNode.SelectSingleNodeAndCacheExpression("limit", token);
                         if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                         {
                             strReturn += strSpace + intLevels.ToString(objCulture);

@@ -236,7 +236,7 @@ namespace Chummer
 
         public int Add(object value)
         {
-            if (!(value is T objValue))
+            if (value is not T objValue)
                 return -1;
             using (LockObject.EnterUpgradeableReadLock())
             {

@@ -572,7 +572,7 @@ namespace Chummer
 
         private void HookAsyncPropertyChanged(T item)
         {
-            if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
+            if (item is not INotifyPropertyChangedAsync notifyPropertyChanged)
                 return;
 
             IDisposable objLocker = BindingListLock?.EnterUpgradeableReadLock();
@@ -607,7 +607,7 @@ namespace Chummer
                 HookAsyncPropertyChanged(item);
                 return;
             }
-            if (!(item is INotifyPropertyChangedAsync notifyPropertyChanged))
+            if (item is not INotifyPropertyChangedAsync notifyPropertyChanged)
                 return;
 
             IAsyncDisposable objLocker = await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);

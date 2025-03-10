@@ -8349,7 +8349,7 @@ namespace Chummer
             if (objEnumerable is IAsyncEnumerable<T> objEnumerableCastOuter)
             {
                 return Inner(objEnumerableCastOuter, objFuncToRun, token);
-                async Task Inner(IAsyncEnumerable<T> objEnumerableCast, Action<T> objFuncToRunInner, CancellationToken tokenInner)
+                static async Task Inner(IAsyncEnumerable<T> objEnumerableCast, Action<T> objFuncToRunInner, CancellationToken tokenInner)
                 {
                     IEnumerator<T> objEnumerator =
                         await objEnumerableCast.GetEnumeratorAsync(tokenInner).ConfigureAwait(false);

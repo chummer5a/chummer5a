@@ -1091,7 +1091,7 @@ namespace Chummer
 
         private async void chkGrade_CheckedChanged(object sender, EventArgs e)
         {
-            if (!(sender is CheckBox chkGrade))
+            if (sender is not CheckBox chkGrade)
                 return;
 
             string strGrade = await chkGrade.DoThreadSafeFuncAsync(x => x.Tag.ToString()).ConfigureAwait(false);

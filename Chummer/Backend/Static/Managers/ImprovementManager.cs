@@ -1228,7 +1228,7 @@ namespace Chummer
                                     if (decHighest != decimal.MinValue)
                                     {
                                         decLoopValue += decHighest;
-                                        (lstLoopImprovements ?? (lstLoopImprovements = new List<Improvement>(1))).Add(
+                                        (lstLoopImprovements ??= new List<Improvement>(1)).Add(
                                             objHighestImprovement);
                                     }
                                 }

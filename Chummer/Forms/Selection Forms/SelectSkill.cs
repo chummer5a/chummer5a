@@ -260,7 +260,7 @@ namespace Chummer
                             string strLoopName = await objSkill.GetNameAsync().ConfigureAwait(false);
                             if (setAddedExotics.Contains(strLoopName))
                                 return;
-                            if (!(objSkill is ExoticSkill objExoticSkill))
+                            if (objSkill is not ExoticSkill objExoticSkill)
                                 return;
                             if (!string.IsNullOrEmpty(_strForceSkill) && _strForceSkill
                                 != await objExoticSkill.GetDictionaryKeyAsync().ConfigureAwait(false))

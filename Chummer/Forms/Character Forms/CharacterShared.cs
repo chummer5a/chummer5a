@@ -11137,7 +11137,7 @@ namespace Chummer
         private CharacterSettings _objCachedSettings;
         private Stopwatch _stpAutosaveStopwatch = Utils.StopwatchPool.Get();
 
-        protected CharacterSettings CharacterObjectSettings => _objCachedSettings ?? (_objCachedSettings = CharacterObject?.Settings);
+        protected CharacterSettings CharacterObjectSettings => _objCachedSettings ??= CharacterObject?.Settings;
 
         protected virtual string FormMode => string.Empty;
 

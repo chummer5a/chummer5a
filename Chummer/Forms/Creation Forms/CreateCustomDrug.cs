@@ -297,7 +297,7 @@ namespace Chummer
 
         private async void btnRemoveComponent_Click(object sender, EventArgs e)
         {
-            if (!(await treChosenComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is DrugNodeData objNodeData))
+            if (await treChosenComponents.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag).ConfigureAwait(false) is not DrugNodeData objNodeData)
                 return;
             await treChosenComponents.DoThreadSafeAsync(x => x.Nodes.Remove(x.SelectedNode)).ConfigureAwait(false);
 

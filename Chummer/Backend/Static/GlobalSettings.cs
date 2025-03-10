@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -470,7 +471,7 @@ namespace Chummer
             {
                 string strDpiScalingMethod = DefaultDpiScalingMethod.ToString();
                 LoadStringFromRegistry(ref strDpiScalingMethod, "dpiscalingmethod");
-                _eDpiScalingMethod = (DpiScalingMethod)Enum.Parse(typeof(DpiScalingMethod), strDpiScalingMethod);
+                _eDpiScalingMethod = Enum.Parse<DpiScalingMethod>(strDpiScalingMethod);
             }
             catch (Exception e)
             {
@@ -495,7 +496,7 @@ namespace Chummer
                         break;
 
                     default:
-                        _eUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
+                        _eUseLoggingApplicationInsights = Enum.Parse<UseAILogging>(useAI);
                         break;
                 }
             }
@@ -683,7 +684,7 @@ namespace Chummer
             {
                 string strTemp = DefaultChum5lzCompressionLevel.ToString();
                 LoadStringFromRegistry(ref strTemp, "chum5lzcompressionlevel");
-                _eChum5lzCompressionLevel = (LzmaHelper.ChummerCompressionPreset)Enum.Parse(typeof(LzmaHelper.ChummerCompressionPreset), strTemp);
+                _eChum5lzCompressionLevel = Enum.Parse<LzmaHelper.ChummerCompressionPreset>(strTemp);
             }
             catch (Exception e)
             {
@@ -977,18 +978,15 @@ namespace Chummer
 
                 using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory", true))
                 {
-                    if (objCustomDataDirectoryRegistry != null)
+                    foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
                     {
-                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
+                        token.ThrowIfCancellationRequested();
+                        using (RegistryKey objLoopKey =
+                               objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name, true))
                         {
-                            token.ThrowIfCancellationRequested();
-                            using (RegistryKey objLoopKey =
-                                   objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name, true))
-                            {
-                                objLoopKey?.SetValue("Path",
-                                                     objCustomDataDirectory.DirectoryPath.Replace(
-                                                         Utils.GetStartupPath, "$CHUMMER"));
-                            }
+                            objLoopKey.SetValue("Path",
+                                objCustomDataDirectory.DirectoryPath.Replace(
+                                    Utils.GetStartupPath, "$CHUMMER"));
                         }
                     }
                 }

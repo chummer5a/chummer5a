@@ -47,7 +47,7 @@ namespace Chummer
             }
             return dicReturn;
 
-            bool IsAnonymousType(object objInstance)
+            static bool IsAnonymousType(object objInstance)
             {
                 if (objInstance == null)
                     return false;

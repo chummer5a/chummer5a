@@ -62,8 +62,7 @@ namespace Chummer
                         objBestImage = ImageDpi144;
                     if (objBestImage == null && fltScalingRatio >= 1.25f)
                         objBestImage = ImageDpi120;
-                    if (objBestImage == null)
-                        objBestImage = ImageDpi96;
+                    objBestImage ??= ImageDpi96;
                 }
             }
             else

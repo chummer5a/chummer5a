@@ -12310,7 +12310,7 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> AllowPasteObject(object input, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!(input is Cyberware objCyberware))
+            if (input is not Cyberware objCyberware)
                 return true;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try

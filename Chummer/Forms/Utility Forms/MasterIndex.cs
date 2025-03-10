@@ -606,7 +606,7 @@ namespace Chummer
                                         {
                                             foreach (ListItem objItem in lstItemsForLoading)
                                             {
-                                                if (!(objItem.Value is MasterIndexEntry objEntry))
+                                                if (objItem.Value is not MasterIndexEntry objEntry)
                                                     continue;
                                                 string strKey = objEntry.DisplayName.ToUpperInvariant();
                                                 if (dicHelper.TryGetValue(strKey, out List<ListItem> lstExistingItems))

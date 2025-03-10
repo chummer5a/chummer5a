@@ -2457,7 +2457,7 @@ namespace SevenZip.Compression.LZMA
                 {
                     case CoderPropID.NumFastBytes:
                         {
-                            if (!(prop is int numFastBytes))
+                            if (prop is not int numFastBytes)
                                 throw new InvalidParamException();
                             if (numFastBytes < 5 || numFastBytes > Base.kMatchMaxLen)
                                 throw new InvalidParamException();

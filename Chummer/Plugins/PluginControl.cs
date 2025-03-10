@@ -400,7 +400,7 @@ namespace Chummer.Plugins
                           + Environment.NewLine + Environment.NewLine + e;
                     Log.Warn(e, msg);
                 }
-                catch (Exception e) when (!(e is ApplicationException))
+                catch (Exception e) when (e is not ApplicationException)
                 {
                     Log.Fatal(e);
                     throw;

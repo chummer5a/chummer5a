@@ -166,7 +166,7 @@ namespace Chummer
         {
             if (!(key is TKey objKey))
                 throw new ArgumentException(nameof(objKey));
-            if (!(value is TValue objValue))
+            if (value is not TValue objValue)
                 throw new ArgumentException(nameof(objValue));
             Add(objKey, objValue);
         }

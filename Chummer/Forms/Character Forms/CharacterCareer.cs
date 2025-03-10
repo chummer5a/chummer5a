@@ -8656,8 +8656,8 @@ namespace Chummer
         {
             try
             {
-                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                                   .ConfigureAwait(false) is Gear objGear))
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
+                        .ConfigureAwait(false) is not Gear objGear)
                     return;
                 bool blnAddAgain;
                 do

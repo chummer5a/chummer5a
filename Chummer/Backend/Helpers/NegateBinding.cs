@@ -70,7 +70,7 @@ namespace Chummer
             Parse += NegateValue;
             Format += NegateValue;
 
-            void NegateValue(object sender, ConvertEventArgs e)
+            static void NegateValue(object sender, ConvertEventArgs e)
             {
                 e.Value = !(bool)e.Value;
             }

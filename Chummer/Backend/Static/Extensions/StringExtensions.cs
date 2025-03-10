@@ -550,36 +550,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] {strSeparator}, eSplitOptions);
-        }
-
-        /// <summary>
-        /// Syntactic sugar for a version of Contains(char) for strings that is faster than messing with Linq
-        /// </summary>
-        /// <param name="strHaystack">Input string to search.</param>
-        /// <param name="chrNeedle">Character for which to look.</param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this string strHaystack, char chrNeedle)
-        {
-            if (strHaystack == null)
-                throw new ArgumentNullException(nameof(strHaystack));
-            return strHaystack.IndexOf(chrNeedle) != -1;
-        }
-
-        /// <summary>
-        /// Syntactic sugar for a version of Contains(string) for strings based on a specified StringComparison
-        /// </summary>
-        /// <param name="strHaystack">Input string to search.</param>
-        /// <param name="strNeedle">String for which to look.</param>
-        /// <param name="eComparison">Comparison to use.</param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this string strHaystack, string strNeedle, StringComparison eComparison)
-        {
-            if (strHaystack == null)
-                throw new ArgumentNullException(nameof(strHaystack));
-            return strHaystack.IndexOf(strNeedle, eComparison) != -1;
+            return strInput.Split([strSeparator], eSplitOptions);
         }
 
         /// <summary>
@@ -678,8 +649,7 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (funcIsWhiteSpace == null)
-                funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
+            funcIsWhiteSpace ??= x => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalSettings.MaxStackLimit)
             {
                 string strReturn;
@@ -1194,7 +1164,7 @@ namespace Chummer
                     if (strInput.Contains(strOldValue))
                         return strInput.Replace(strOldValue, funcNewValueFactory.Invoke());
                 }
-                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                else if (strInput.Contains(strOldValue, eStringComparison))
                     return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison);
             }
 
@@ -1239,7 +1209,7 @@ namespace Chummer
                         return strInput.Replace(strOldValue, strFactoryResult);
                     }
                 }
-                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                else if (strInput.Contains(strOldValue, eStringComparison))
                 {
                     token.ThrowIfCancellationRequested();
                     string strFactoryResult = string.Empty;
@@ -1335,7 +1305,7 @@ namespace Chummer
                         return strInput.Replace(strOldValue, strNewValue);
                     }
                 }
-                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                else if (strInput.Contains(strOldValue, eStringComparison))
                 {
                     token.ThrowIfCancellationRequested();
                     string strNewValue = await funcNewValueFactory.Invoke().ConfigureAwait(false);

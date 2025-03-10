@@ -344,7 +344,7 @@ namespace Chummer.UI.Powers
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
                 try
                 {
-                    if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, Task<bool>>> selectedItem))
+                    if (cboDisplayFilter.SelectedItem is not Tuple<string, Func<Power, Task<bool>>> selectedItem)
                         return;
                     if (selectedItem.Item2 == null)
                     {

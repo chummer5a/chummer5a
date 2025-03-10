@@ -20425,8 +20425,7 @@ namespace Chummer
                                                      ICollection<string> setDisallowedGrades = null,
                                                      string strForceGrade = "", CancellationToken token = default)
         {
-            if (setDisallowedGrades == null)
-                setDisallowedGrades = Array.Empty<string>();
+            setDisallowedGrades ??= Array.Empty<string>();
             List<Grade> objGradeList = await CharacterObject
                                              .GetGradesListAsync(
                                                  blnBioware

@@ -402,7 +402,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
 
                     // Get the stream containing content returned by the server.
-                    using (Stream dataStream = response?.GetResponseStream())
+                    await using (Stream dataStream = response?.GetResponseStream())
                     {
                         if (dataStream == null)
                             blnChummerVersionGotten = false;
@@ -418,9 +418,9 @@ namespace Chummer
                                 using (StreamReader objReader = new StreamReader(dataStream, Encoding.UTF8, true))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                    for (string strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false);
                                          strLine != null;
-                                         strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                                         strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
                                         if (!string.IsNullOrEmpty(strLine))
@@ -861,7 +861,7 @@ namespace Chummer
                 {
                     try
                     {
-                        using (FileStream objZipFileStream = new FileStream(strBackupZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        await using (FileStream objZipFileStream = new FileStream(strBackupZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
                             token.ThrowIfCancellationRequested();
                             using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
@@ -872,10 +872,10 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile));
                                     objEntry.LastWriteTime = File.GetLastWriteTime(strFile);
-                                    using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                                    await using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        using (Stream objStream = objEntry.Open())
+                                        await using (Stream objStream = objEntry.Open())
                                         {
                                             //magic number default buffer size, no overload that is only stream+token
                                             await objFileStream.CopyToAsync(objStream, 81920, token).ConfigureAwait(false);

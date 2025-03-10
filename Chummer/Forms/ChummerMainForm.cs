@@ -2038,7 +2038,7 @@ namespace Chummer
                     }, token: _objGenericToken).ConfigureAwait(false);
 
                     // If this is a new child form and does not have a tab page, create one.
-                    if (!(await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag, token: _objGenericToken).ConfigureAwait(false) is TabPage))
+                    if (await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag, token: _objGenericToken).ConfigureAwait(false) is not TabPage)
                     {
                         TabPage objTabPage = await this.DoThreadSafeFuncAsync(() => new TabPage
                         {

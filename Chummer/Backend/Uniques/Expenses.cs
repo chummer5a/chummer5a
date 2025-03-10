@@ -599,7 +599,7 @@ namespace Chummer
 
         public static bool operator >(ExpenseLogEntry left, ExpenseLogEntry right)
         {
-            return !(left is null) && left.CompareTo(right) > 0;
+            return left is not null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(ExpenseLogEntry left, ExpenseLogEntry right)

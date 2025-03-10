@@ -875,7 +875,7 @@ namespace Chummer
                 return;
             TreeNode objNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode)
                 .ConfigureAwait(false);
-            if (!(objNode?.Tag is LifestyleQuality objQuality))
+            if (objNode?.Tag is not LifestyleQuality objQuality)
                 return;
             await objQuality.SetUseLPCostAsync(await chkQualityUseLPCost.DoThreadSafeFuncAsync(x => !x.Enabled || x.Checked).ConfigureAwait(false)).ConfigureAwait(false);
             string strLp = (await objQuality.GetLPCostAsync().ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);

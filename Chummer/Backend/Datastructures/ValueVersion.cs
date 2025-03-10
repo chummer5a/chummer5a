@@ -192,7 +192,7 @@ namespace Chummer
         {
             if (version == null)
                 return 1;
-            if (!(version is Version version1))
+            if (version is not Version version1)
                 throw new ArgumentException();
             return CompareTo(version1);
         }

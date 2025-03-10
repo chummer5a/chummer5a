@@ -7477,12 +7477,10 @@ namespace Chummer.Backend.Equipment
                     if (ParentVehicle != null)
                     {
                         intDicePool = await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false);
-                        if (objAutosoft == null)
-                        {
-                            objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
-                                x => x.Name == strAutosoft && x.Equipped &&
-                                     (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
-                        }
+                        objAutosoft ??= await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(
+                            async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
+                            x => x.Name == strAutosoft && x.Equipped &&
+                                 (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
 
                         if (WirelessOn && HasWirelessSmartgun)
                         {

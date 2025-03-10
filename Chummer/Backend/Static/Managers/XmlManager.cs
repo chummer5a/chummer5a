@@ -2047,8 +2047,7 @@ namespace Chummer
                             }
                             else
                             {
-                                if (lstExtraNodesToAddIfNotFound == null)
-                                    lstExtraNodesToAddIfNotFound = new List<Tuple<XmlNode, string>>(1);
+                                lstExtraNodesToAddIfNotFound ??= new List<Tuple<XmlNode, string>>(1);
                                 Tuple<XmlNode, string> objMyData =
                                     new Tuple<XmlNode, string>(xmlAmendingNode, strXPath);
                                 lstExtraNodesToAddIfNotFound.Add(objMyData);

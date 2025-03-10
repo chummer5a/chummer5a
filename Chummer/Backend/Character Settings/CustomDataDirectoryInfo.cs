@@ -977,7 +977,7 @@ namespace Chummer
 
         public static bool operator <(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
         {
-            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+            return left is null ? right is not null : left.CompareTo(right) < 0;
         }
 
         public static bool operator <=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)

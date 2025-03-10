@@ -506,7 +506,7 @@ namespace Chummer
                         {
                             foreach (IHasName objItem in objListToCheck)
                             {
-                                if (strNodeName != objItem.Name && (!(objItem is IHasSourceId objItemId)
+                                if (strNodeName != objItem.Name && (objItem is not IHasSourceId objItemId
                                                                     || strNodeId != objItemId.SourceIDString))
                                     continue;
                                 ++intCount;

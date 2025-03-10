@@ -1053,7 +1053,7 @@ namespace Chummer.UI.Table
 
         public TableColumnCollection<T> Columns => _columns;
 
-        public override LayoutEngine LayoutEngine => _layoutEngine = _layoutEngine ?? new TableLayoutEngine(this);
+        public override LayoutEngine LayoutEngine => _layoutEngine ??= new TableLayoutEngine(this);
 
         public SortOrder SortOrder
         {

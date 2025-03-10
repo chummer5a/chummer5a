@@ -412,8 +412,7 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null)
                 return false;
-            if (objCulture == null)
-                objCulture = GlobalSettings.InvariantCultureInfo;
+            objCulture ??= GlobalSettings.InvariantCultureInfo;
             if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
                 return false;
             read = fltTmp;

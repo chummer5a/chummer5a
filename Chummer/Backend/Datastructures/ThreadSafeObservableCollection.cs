@@ -233,7 +233,7 @@ namespace Chummer
 
         public virtual int Add(object value)
         {
-            if (!(value is T objCastValue))
+            if (value is not T objCastValue)
                 return -1;
             using (LockObject.EnterWriteLock())
             {

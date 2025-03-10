@@ -1173,8 +1173,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            if (objCulture == null)
-                objCulture = GlobalSettings.CultureInfo;
+            objCulture ??= GlobalSettings.CultureInfo;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDescription))
             {

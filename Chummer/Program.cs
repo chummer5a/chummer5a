@@ -253,7 +253,7 @@ namespace Chummer
                         void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                         {
                             DateTime datCrashDateTime = DateTime.UtcNow;
-                            if (!(exa.ExceptionObject is Exception ex))
+                            if (exa.ExceptionObject is not Exception ex)
                                 return;
                             ex = ex.Demystify();
                             if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes

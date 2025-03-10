@@ -2046,7 +2046,7 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    if (cboThis.DataSource is not IEnumerable<ListItem> lstCurrentList)
                     {
                         cboThis.ValueMember = nameof(ListItem.Value);
                         cboThis.DisplayMember = nameof(ListItem.Name);

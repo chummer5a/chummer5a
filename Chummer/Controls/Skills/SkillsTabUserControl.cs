@@ -1284,8 +1284,8 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                if (!(await cboSortKnowledge.DoThreadSafeFuncAsync(x => x.SelectedItem, token: MyToken).ConfigureAwait(false) is
-                        Tuple<string, IComparer<KnowledgeSkill>> selectedItem))
+                if (await cboSortKnowledge.DoThreadSafeFuncAsync(x => x.SelectedItem, token: MyToken).ConfigureAwait(false) is
+                    not Tuple<string, IComparer<KnowledgeSkill>> selectedItem)
                     return;
                 await _lstKnowledgeSkills.DoThreadSafeAsync(x => x.SuspendLayout(), token: MyToken).ConfigureAwait(false);
                 try

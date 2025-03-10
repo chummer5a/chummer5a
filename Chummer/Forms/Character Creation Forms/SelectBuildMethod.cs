@@ -74,7 +74,7 @@ namespace Chummer
         {
             try
             {
-                if (!(await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) is CharacterSettings objSelectedGameplayOption))
+                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) is not CharacterSettings objSelectedGameplayOption)
                     return;
                 CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
                 if (_blnForExistingCharacter

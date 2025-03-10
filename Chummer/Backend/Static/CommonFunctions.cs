@@ -1980,7 +1980,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task OpenPdfFromControl(object sender, CancellationToken token = default)
         {
-            if (!(sender is Control objControl))
+            if (sender is not Control objControl)
                 return;
             Control objLoopControl = objControl;
             Character objCharacter = null;

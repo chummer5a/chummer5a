@@ -1963,8 +1963,7 @@ namespace Chummer
             if (_blnPopulatingGrades)
                 return;
             _blnPopulatingGrades = true;
-            if (setDisallowedGrades == null)
-                setDisallowedGrades = Array.Empty<string>();
+            setDisallowedGrades ??= Array.Empty<string>();
             if (blnForce || !_setDisallowedGrades.SetEquals(setDisallowedGrades) || _strForceGrade != strForceGrade || await cboGrade.DoThreadSafeFuncAsync(x => x.Items.Count, token: token).ConfigureAwait(false) == 0)
             {
                 _setDisallowedGrades.Clear();

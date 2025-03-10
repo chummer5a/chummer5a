@@ -741,7 +741,7 @@ namespace Chummer
 
         public static bool operator >(InitiationGrade left, InitiationGrade right)
         {
-            return !(left is null) && left.CompareTo(right) > 0;
+            return left is not null && left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(InitiationGrade left, InitiationGrade right)

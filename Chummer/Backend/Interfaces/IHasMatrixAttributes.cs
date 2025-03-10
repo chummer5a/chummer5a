@@ -968,7 +968,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objThis == null)
                 return;
-            if (!(objThis is IHasLockObject objHasLock))
+            if (objThis is not IHasLockObject objHasLock)
                 objHasLock = objThis.CharacterObject;
             IAsyncDisposable objLocker = null;
             if (objHasLock != null)

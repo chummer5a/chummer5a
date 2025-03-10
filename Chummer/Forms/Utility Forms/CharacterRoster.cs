@@ -1731,8 +1731,7 @@ namespace Chummer
                     // We shouldn't be caching characters if we've already disposed ourselves, so if you break here,
                     // something went wrong (but not fatally so, which is why the exception is handled)
                     Utils.BreakIfDebug();
-                    if (objCache == null)
-                        objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
+                    objCache ??= await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
                 }
             }
             else

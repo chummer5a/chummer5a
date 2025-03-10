@@ -59,7 +59,7 @@ namespace Chummer
         // Example: replace with your own criteria.
         private bool OKtoSend(ITelemetry item)
         {
-            return !(item is ExceptionTelemetry);
+            return item is not ExceptionTelemetry;
         }
 
         // Example: replace with your own modifiers.

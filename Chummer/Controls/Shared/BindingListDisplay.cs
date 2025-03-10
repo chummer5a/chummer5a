@@ -89,8 +89,8 @@ namespace Chummer.Controls.Shared
 
                 pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
                 _indexComparer = new IndexComparer(Contents);
-                _comparison = _comparison ?? _indexComparer;
-                _comparisonAsync = _comparisonAsync ?? ((x, y, z) => DefaultCompareAsync(_indexComparer, x, y, z));
+                _comparison ??= _indexComparer;
+                _comparisonAsync ??= (x, y, z) => DefaultCompareAsync(_indexComparer, x, y, z);
                 Contents.ListChanged += ContentsChanged;
                 Disposed += (sender, args) =>
                 {
