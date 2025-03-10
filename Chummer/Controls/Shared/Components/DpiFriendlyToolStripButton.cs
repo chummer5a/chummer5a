@@ -80,7 +80,7 @@ namespace Chummer
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in lstImages)
             {
-                int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) + (intWidth - objLoopImage.Width).RaiseToPower(2);
+                int intLoopMetric = (intHeight - objLoopImage.Height).Pow(2) + (intWidth - objLoopImage.Width).Pow(2);
                 // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
                 if (objLoopImage.Height >= intHeight)
                     --intLoopMetric;
@@ -254,10 +254,10 @@ namespace Chummer
             int intHeight = Height;
             intWidth -= Padding.Left + Padding.Right;
             intHeight -= Padding.Top + Padding.Bottom;
-            int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
-                                   (intWidth - Image.Width).RaiseToPower(2);
-            int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
-                               (intWidth - objNewImage.Width).RaiseToPower(2);
+            int intCurrentMetric = (intHeight - Image.Height).Pow(2) +
+                                   (intWidth - Image.Width).Pow(2);
+            int intNewMetric = (intHeight - objNewImage.Height).Pow(2) +
+                               (intWidth - objNewImage.Width).Pow(2);
             if (intNewMetric < intCurrentMetric)
                 Image = objNewImage;
         }

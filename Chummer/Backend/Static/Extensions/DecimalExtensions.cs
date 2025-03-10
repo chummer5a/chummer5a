@@ -25,6 +25,11 @@ namespace Chummer
     public static class DecimalExtensions
     {
         /// <summary>
+        /// Smallest positive number supported by the decimal type
+        /// </summary>
+        internal const decimal Epsilon = 0.000000000000000000000000001M;
+
+        /// <summary>
         /// Syntactic sugar for rounding a decimal away from zero and then converting it to an integer.
         /// </summary>
         /// <param name="decToRound">Decimal to round.</param>
@@ -44,115 +49,6 @@ namespace Chummer
         internal static int ToInt32(this decimal decIn)
         {
             return decimal.ToInt32(decIn);
-        }
-
-        /// <summary>
-        /// Exponentiates a decimal by another decimal without casting to floating point (and therefore maintaining exact precision) unless absolutely necessary.
-        /// Note: can be quite slow compared to just using Math.Pow and casting the result, so use with care.
-        /// </summary>
-        /// <param name="decBase">Number to exponentiate.</param>
-        /// <param name="decPower">Power to which to raise <paramref name="decBase"/>.</param>
-        /// <param name="decEpsilon">If <paramref name="decPower"/> is not an integer, the margin of error to target for approximating the answer past double-precision. Set this to decimal.MaxValue if no iterations are desired.</param>
-        /// <returns><paramref name="decBase"/> to the power of <paramref name="decPower"/>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static decimal RaiseToPower(this decimal decBase, decimal decPower, decimal decEpsilon = 0.0m)
-        {
-            // If we have an integer power, then we can maintain absolute precision
-            int intPower = decPower.ToInt32();
-            if (intPower == decPower)
-                return decBase.RaiseToPower(intPower);
-
-            if (decBase < 0)
-                throw new ArgumentException("Cannot raise negative number to a fractional power", nameof(decBase));
-
-            // Use Math.Pow for doing (square) roots and fractional exponents because we kind of have to, there's no easy way to do roots with built-in decimal arithmetic
-            decimal decCurrent = Convert.ToDecimal(Math.Pow(Convert.ToDouble(decBase), Convert.ToDouble(decPower)));
-            if (decEpsilon == decimal.MaxValue) // Don't do any iterations if our epsilon is massive
-                return decCurrent;
-            decimal decPrevious = decBase;
-            // Start doing Newton-Raphson iterations to find the root of the function f(x) = x^(1/b) - a, which is equivalent to finding x when x = a^b
-            if (decPower == 0.5m)
-            {
-                // Square root, special case that is common enough to warrant its own code
-                while (Math.Abs(decCurrent - decPrevious) > decEpsilon &&
-                       decCurrent != 0.0m) // Don't do any iterations if our epsilon is massive
-                {
-                    decPrevious = decCurrent;
-                    decCurrent = (decCurrent + decBase / decCurrent) / 2;
-                }
-            }
-            else
-            {
-                while (Math.Abs(decCurrent - decPrevious) > decEpsilon &&
-                       decCurrent != 0.0m) // Don't do any iterations if our epsilon is massive
-                {
-                    decPrevious = decCurrent;
-                    decCurrent = (1.0m - decPower) * decCurrent +
-                                 decBase * decPower / decCurrent.RaiseToPower(1.0m / decPower - 1.0m, decEpsilon);
-                }
-            }
-
-            return decCurrent;
-        }
-
-        /// <summary>
-        /// Exponentiates a decimal by an integer without casting to float, maintaining maximum precision.
-        /// </summary>
-        /// <param name="decBase">Number to exponentiate.</param>
-        /// <param name="intPower">Power to which to raise <paramref name="decBase"/>.</param>
-        /// <returns><paramref name="decBase"/> to the power of <paramref name="intPower"/>.</returns>
-        internal static decimal RaiseToPower(this decimal decBase, int intPower)
-        {
-            switch (intPower)
-            {
-                case 3: // (Potentially) common case, handle explicitly
-                    return decBase * decBase * decBase;
-
-                case 2: // Extremely common case, so handle it explicitly
-                    return decBase * decBase;
-
-                case 1:
-                    return decBase;
-
-                case 0: // Yes, even 0^0 should return 1 per IEEE specifications
-                    return 1;
-
-                case -1:
-                    if (decBase == decimal.Zero)
-                        throw new DivideByZeroException();
-                    return 1.0m / decBase;
-            }
-            switch (decBase)
-            {
-                case decimal.One:
-                    return 1;
-
-                case decimal.Zero:
-                    if (intPower < 0)
-                        throw new DivideByZeroException();
-                    return 0;
-
-                case decimal.MinusOne:
-                    return (Math.Abs(intPower) & 1) == 0 ? 1 : -1;
-            }
-            // Handle negative powers by dividing by the result of the positive power right before we return
-            bool blnNegativePower = intPower < 0;
-            if (blnNegativePower)
-                intPower = -intPower;
-            decimal decReturn = 1;
-            int i;
-            // Dual loop structure looks funky, but cuts down on number of multiplication operations in worst case scenarios compared to a single loop
-            for (; intPower > 1; intPower -= i >> 1)
-            {
-                decimal decLoopElement = decBase;
-                for (i = 2; i <= intPower; i <<= 1)
-                {
-                    decLoopElement *= decLoopElement;
-                }
-                decReturn *= decLoopElement;
-            }
-
-            return blnNegativePower ? 1.0m / decReturn : decReturn;
         }
     }
 }

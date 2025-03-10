@@ -6208,13 +6208,13 @@ namespace Chummer
                         int VersionMatchScore(ValueVersion objVersion)
                         {
                             int intReturn = int.MaxValue;
-                            intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
+                            intReturn -= (objPreferredVersion.Build - objVersion.Build).Pow(2)
                                          * 16777216;
-                            intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
+                            intReturn -= (objPreferredVersion.Major - objVersion.Major).Pow(2)
                                          * 65536;
-                            intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
+                            intReturn -= (objPreferredVersion.Minor - objVersion.Minor).Pow(2)
                                          * 256;
-                            intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
+                            intReturn -= (objPreferredVersion.Revision - objVersion.Revision).Pow(2);
                             return intReturn;
                         }
                     }
@@ -6275,13 +6275,13 @@ namespace Chummer
                         int VersionMatchScore(ValueVersion objVersion)
                         {
                             int intReturn = int.MaxValue;
-                            intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
+                            intReturn -= (objPreferredVersion.Build - objVersion.Build).Pow(2)
                                          * 16777216;
-                            intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
+                            intReturn -= (objPreferredVersion.Major - objVersion.Major).Pow(2)
                                          * 65536;
-                            intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
+                            intReturn -= (objPreferredVersion.Minor - objVersion.Minor).Pow(2)
                                          * 256;
-                            intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
+                            intReturn -= (objPreferredVersion.Revision - objVersion.Revision).Pow(2);
                             return intReturn;
                         }
                     }

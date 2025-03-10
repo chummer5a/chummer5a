@@ -20873,13 +20873,12 @@ namespace Chummer
                             if (decEss < 0)
                                 decExcessEss = -decEss;
                             else if (decEss == 0)
-                                decExcessEss
-                                    = 10.0m.RaiseToPower(-CharacterObjectSettings
-                                                             .EssenceDecimals); // Hacky, but necessary so that the player knows they need to increase their ESS
+                                // Hacky, but necessary so that the player knows they need to increase their ESS
+                                decExcessEss = 10.0m.Pow(-await CharacterObjectSettings.GetEssenceDecimalsAsync(token).ConfigureAwait(false));
                         }
                         else
                         {
-                            decimal decMinEss = 10.0m.RaiseToPower(-await CharacterObjectSettings.GetEssenceDecimalsAsync(token).ConfigureAwait(false));
+                            decimal decMinEss = 10.0m.Pow(-await CharacterObjectSettings.GetEssenceDecimalsAsync(token).ConfigureAwait(false));
                             if (decEss < decMinEss)
                                 decExcessEss = decMinEss - decEss;
                         }

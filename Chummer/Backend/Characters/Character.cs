@@ -6507,10 +6507,10 @@ namespace Chummer
                                     {
                                         int intReturn = int.MaxValue
                                                         - ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
-                                                           .RaiseToPower(2)
+                                                           .Pow(2)
                                                            + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
-                                                           .RaiseToPower(2))
-                                                          .RaiseToPower(0.5m, decimal.MaxValue).StandardRound();
+                                                           .Pow(2))
+                                                          .FastSqrt().StandardRound();
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 
@@ -6547,12 +6547,12 @@ namespace Chummer
                                             intBaselineCustomDataCount = lstSavedCustomDataDirectoryNames.Count;
                                             if (intBaselineCustomDataCount > 0)
                                             {
-                                                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                                intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
                                             }
                                         }
                                         else if (lstSavedCustomDataDirectoryNames.Count == 0)
                                         {
-                                            intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                            intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
                                         }
                                         else
                                         {
@@ -6600,10 +6600,10 @@ namespace Chummer
                                     {
                                         int intReturn = int.MaxValue
                                                         - ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
-                                                           .RaiseToPower(2)
+                                                           .Pow(2)
                                                            + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
-                                                           .RaiseToPower(2))
-                                                          .RaiseToPower(0.5m, decimal.MaxValue).StandardRound();
+                                                           .Pow(2))
+                                                          .FastSqrt().StandardRound();
 
                                         int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
 
@@ -6643,12 +6643,12 @@ namespace Chummer
                                             intBaselineCustomDataCount = lstSavedCustomDataDirectoryNames.Count;
                                             if (intBaselineCustomDataCount > 0)
                                             {
-                                                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                                intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
                                             }
                                         }
                                         else if (lstSavedCustomDataDirectoryNames.Count == 0)
                                         {
-                                            intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                            intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
                                         }
                                         else
                                         {

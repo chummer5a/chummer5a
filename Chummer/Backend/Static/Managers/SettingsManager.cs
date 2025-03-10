@@ -520,10 +520,10 @@ namespace Chummer
 
         private static async Task<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)
         {
-            int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).RaiseToPower(2)
+            int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).Pow(2)
                                             + (await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false))
-                                            .RaiseToPower(2))
-                                           .RaiseToPower(0.5m, decimal.MaxValue).StandardRound();
+                                            .Pow(2))
+                                           .FastSqrt().StandardRound();
             int intBaseline = await objOptionsToCheck.GetBuiltInOptionAsync(token).ConfigureAwait(false) ? 5 : 4;
             CharacterBuildMethod eLeftBuildMethod = await objBaselineSettings.GetBuildMethodAsync(token).ConfigureAwait(false);
             CharacterBuildMethod eRightBuildMethod = await objOptionsToCheck.GetBuildMethodAsync(token).ConfigureAwait(false);
@@ -549,12 +549,12 @@ namespace Chummer
                 intBaselineCustomDataCount = setBaselineCustomDataDirectoryInfos.Count;
                 if (intBaselineCustomDataCount > 0)
                 {
-                    intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                    intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
                 }
             }
             else if (setBaselineCustomDataDirectoryInfos.Count == 0)
             {
-                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
             }
             else
             {
