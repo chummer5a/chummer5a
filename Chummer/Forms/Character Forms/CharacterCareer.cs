@@ -28668,23 +28668,6 @@ namespace Chummer
             }
         }
 
-        private async void treAIPrograms_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                try
-                {
-                    await RemoveSelectedObject(
-                        await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-        }
-
         private async void tsAIProgramNotes_Click(object sender, EventArgs e)
         {
             try
