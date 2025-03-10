@@ -86,7 +86,7 @@ namespace Chummer
 
         public static JoinableTaskContext CreateSynchronizationContext()
         {
-            if (!Program.IsMainThread && (!IsUnitTest || IsUnitTestForUI))
+            if (!Program.IsMainThread)
                 throw new InvalidOperationException("Cannot call CreateSynchronizationContext outside of the main thread.");
 
             if (s_objJoinableTaskFactory.IsValueCreated)
