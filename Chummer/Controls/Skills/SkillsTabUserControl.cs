@@ -562,7 +562,7 @@ namespace Chummer.UI.Skills
 
             try
             {
-                RefreshSkillGroupLabels(MyToken);
+                Utils.RunOnMainThread(() => RefreshSkillGroupLabels(MyToken), token: MyToken);
             }
             catch (OperationCanceledException)
             {
@@ -631,7 +631,7 @@ namespace Chummer.UI.Skills
 
             try
             {
-                RefreshKnowledgeSkillLabels(MyToken);
+                Utils.RunOnMainThread(() => RefreshKnowledgeSkillLabels(MyToken), token: MyToken);
             }
             catch (OperationCanceledException)
             {

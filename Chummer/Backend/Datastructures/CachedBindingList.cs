@@ -309,7 +309,7 @@ namespace Chummer
                     await Task.WhenAll(lstTasks).ConfigureAwait(false);
                 }
 
-                await Utils.RunOnMainThreadAsync(() => base.OnListChanged(e), token).ConfigureAwait(false);
+                base.OnListChanged(e);
             }
             finally
             {
