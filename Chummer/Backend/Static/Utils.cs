@@ -88,6 +88,8 @@ namespace Chummer
         {
             if (!Program.IsMainThread)
                 throw new InvalidOperationException("Cannot call CreateSynchronizationContext outside of the main thread.");
+            if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
+                throw new InvalidOperationException("Should not call CreateSynchronizationContext on a non-STA thread.");
 
             if (s_objJoinableTaskFactory.IsValueCreated)
             {
